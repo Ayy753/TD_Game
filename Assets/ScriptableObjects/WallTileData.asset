@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66fc62f2f9d8e0e419dc9f111620edf3, type: 3}
+  m_Name: WallTileData
+  m_EditorClassIdentifier: 
+  tiles:
+  - {fileID: 11400000, guid: 9e7dc8deecf57464f9711ba2e6943015, type: 2}
+  - {fileID: 11400000, guid: 55ea998259c385d48b6870d5d8a61c41, type: 2}
+  - {fileID: 11400000, guid: 7f297066ca72faf4c8ea4233a2f7485d, type: 2}
+  - {fileID: 11400000, guid: 8926f25dd9756494dabf92e8c1fd00f6, type: 2}
+  - {fileID: 11400000, guid: 444492b0b9ead2540bcc49c49d678a86, type: 2}
+  - {fileID: 11400000, guid: e7903c1b0b419934db140981db3a7cb9, type: 2}
+  - {fileID: 11400000, guid: 3f60aaa388841f043b39a49e04fb5c55, type: 2}
+  - {fileID: 11400000, guid: 3ae77d6815319f84d802a14ca8381b35, type: 2}
+  - {fileID: 11400000, guid: a0c6611653d737c4496c95e3826e61eb, type: 2}
+  - {fileID: 11400000, guid: 639812dd0e2d79847b43994cd73093f9, type: 2}
+  - {fileID: 11400000, guid: 8c2314c563c9ea74982b2a22ec7cd51e, type: 2}
+  - {fileID: 11400000, guid: 950f9fc60fbf54d4fb2cbf1e2892878c, type: 2}
+  - {fileID: 11400000, guid: 6d69577b49044b541902ec9b514128d1, type: 2}
+  - {fileID: 11400000, guid: 4fc0558a7fc9d01409827b19533c76e3, type: 2}
+  - {fileID: 11400000, guid: b5ec7f9c2a4ee96458a1f95645896d51, type: 2}
+  - {fileID: 11400000, guid: 92b5d4cc05701e8478e05cd539ab82e6, type: 2}
+  - {fileID: 11400000, guid: a01b7532ef53c4f4db6af8e1f6eca4cb, type: 2}
+  - {fileID: 11400000, guid: 4860e6a6d455b8848a17c9d547000abf, type: 2}
+  - {fileID: 11400000, guid: dbec389dc0cfa104e89b68d9b7eae344, type: 2}
+  - {fileID: 11400000, guid: 5595943b5a9ee1c419c7bb2c644ced95, type: 2}
+  - {fileID: 11400000, guid: f91fa4b350272cd4084d77ac7d454dd1, type: 2}
+  - {fileID: 11400000, guid: de7b36b3635d7e84cbb0202369eb6b7a, type: 2}
+  - {fileID: 11400000, guid: cccd14e4bfd533f4cab4d3049f30d715, type: 2}
+  - {fileID: 11400000, guid: e0609051228a13640b719511cd9e77bf, type: 2}
+  - {fileID: 11400000, guid: 045ad103df1440d4796b5a197aead53e, type: 2}
+  - {fileID: 11400000, guid: e7c9de357162e3a4ca3fe0db2b78cf70, type: 2}
+  - {fileID: 11400000, guid: aef13079bd087a249b1b5654506f9c99, type: 2}
+  - {fileID: 11400000, guid: 7a23711f095113346a9755daf8d34621, type: 2}
+  - {fileID: 11400000, guid: 55acdbcc807aef646bfec21e69f217a1, type: 2}
+  - {fileID: 11400000, guid: 50eda5d345551a046965e27fb8f4f6e5, type: 2}
+  - {fileID: 11400000, guid: fee99c577fff40d4c9af33a423ecea57, type: 2}
+  - {fileID: 11400000, guid: 39e41501cbe838c499409d71b9271163, type: 2}
+  - {fileID: 11400000, guid: 4da4ecb2045f7bd4a8a12f96e0d7590b, type: 2}
+  - {fileID: 11400000, guid: c5285a959e6f8f94ea2bd27b7ca19f1a, type: 2}
+  - {fileID: 11400000, guid: 9e3b1d6492e612741b8053d1a9af81e3, type: 2}
+  - {fileID: 11400000, guid: 2f6c8e2dc6d48254383a34141db17b54, type: 2}
+  - {fileID: 11400000, guid: cb62010660cb55844ad81039d1dca948, type: 2}
+  - {fileID: 11400000, guid: 7b5aa128c395ef3459223c26d0ae9ddd, type: 2}
+  - {fileID: 11400000, guid: 68c2eae6c252e3d46b28ca32530ab723, type: 2}
+  walkSpeed: 1
+  passable: 0

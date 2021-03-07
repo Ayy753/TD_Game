@@ -16,6 +16,11 @@ public class MapManager : MonoBehaviour
 
     private Dictionary<TileBase, TileData> dataFromTiles;
 
+    private void Start()
+    {
+
+    }
+
     private void Awake()
     {
         //  Link each tile type to their respective shared data attributes
@@ -27,6 +32,32 @@ public class MapManager : MonoBehaviour
                 dataFromTiles.Add(tile, tileData);
             }
         }
+
+        BoundsInt cellBounds = map.cellBounds;
+        for (int x = cellBounds.xMin; x < cellBounds.xMax; x++)
+        {
+            for (int y = cellBounds.yMin; y < cellBounds.yMax; y++)
+            {
+                for (int z = cellBounds.zMin; z < cellBounds.zMax; z++)
+                {
+                    TileBase tile = map.GetTile(new Vector3Int(x, y, z));
+                    if (tile != null)
+                    {
+                        print(((Tile)tile).colliderType);
+
+                        if (dataFromTiles[tile].passable)
+                        {
+                            map.SetColliderType(new Vector3Int(x, y, z), Tile.ColliderType.Sprite);
+                        }
+                        else
+                        {
+                            map.SetColliderType(new Vector3Int(x, y, z), Tile.ColliderType.None);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private void Update()
