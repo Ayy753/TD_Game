@@ -16,3 +16,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4e66ce8e3c741c246ae928218aa6d9b4, type: 2}
   - {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7, type: 2}
   walkSpeed: 2
+  passable: 1
