@@ -16,5 +16,4 @@ public class TileData : ScriptableObject
     //  The tiles this data applies to
     public TileBase[] tiles;
     public float walkSpeed = 1;
-    public bool passable = true;
 }
