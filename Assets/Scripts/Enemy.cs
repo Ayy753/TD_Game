@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        exitGate = GameManager.Instance.ExitGate;  
+        exitGate = GameObject.Find("Exit");
     }
 
     /// <summary>

@@ -8,7 +8,10 @@ public class GateTrigger : MonoBehaviour
     {
         if (OnEnemyReachedGate != null)
         {
-            OnEnemyReachedGate(collision.gameObject);
+            if (collision.tag == "Enemy")
+            {
+                OnEnemyReachedGate(collision.gameObject);
+            }
         }
     }
 

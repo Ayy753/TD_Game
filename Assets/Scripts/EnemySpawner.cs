@@ -10,7 +10,8 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        entrance = GameManager.Instance.EntranceGate;
+        entrance = GameObject.Find("Entrance");
+        GameObject.Find("Exit").GetComponentInChildren<GateTrigger>().OnEnemyReachedGate += HandleEnemyReachedGate;
     }
 
     /// <summary>
@@ -31,5 +32,9 @@ public class EnemySpawner : MonoBehaviour
             offsety = Random.Range(-1f, 1f);
             GameObject.Instantiate(enemyPrefab, position + new Vector3(offsetx, offsety), new Quaternion());
         }
+    }
+    private void HandleEnemyReachedGate(GameObject enemy)
+    {
+        Destroy(enemy);
     }
 }

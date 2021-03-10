@@ -40,10 +40,6 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public void Start()
-    {
-    }
-
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))

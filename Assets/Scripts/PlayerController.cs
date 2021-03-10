@@ -23,6 +23,5 @@ public class PlayerController : MonoBehaviour
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         verticalMove = Input.GetAxisRaw("Vertical") * runSpeed;
         rb.MovePosition(new Vector2(transform.position.x + horizontalMove * runSpeed * Time.deltaTime, transform.position.y + verticalMove * runSpeed * Time.deltaTime));
-
     }
 }

@@ -11,10 +11,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public GameObject EntranceGate { get; private set; }
-    public GameObject ExitGate { get; private set; }
     public EnemySpawner EnemySpawner { get; private set; }
 
+    private GameObject exitGate;
 
     void OnEnable()
     {
@@ -24,19 +23,18 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Instance = this;
-        EntranceGate = GameObject.Find("Entrance");
-        ExitGate = GameObject.Find("Exit");
+        exitGate = GameObject.Find("Exit");
         EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
     }
 
     void Start()
     {
-        ExitGate.GetComponentInChildren<GateTrigger>().OnEnemyReachedGate += HandleEnemyReachedGate;
+        exitGate.GetComponentInChildren<GateTrigger>().OnEnemyReachedGate += HandleEnemyReachedGate;
     }
 
     //  todo: decrease health or something
     private void HandleEnemyReachedGate(GameObject enemy)
     {
-        print(enemy.name + " reached the gate");
+        Debug.Log("Should decrease health");
     }
 }
