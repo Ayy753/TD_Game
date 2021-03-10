@@ -8,35 +8,28 @@ public class EnemySpawner : MonoBehaviour
     GameObject enemyPrefab;
     GameObject entrance;
 
-    // Start is called before the first frame update
     void Start()
     {
-        entrance = GameObject.Find("Entrance");
+        entrance = GameManager.Instance.EntranceGate;
     }
 
     /// <summary>
+    /// A testing function that is accessible through unity's inspector
     /// Spawns random enemies at the entrance
     /// </summary>
     [ContextMenu("spawnEnemies")]
     public void SpawnEnemies()
     {
         Vector3 position;
-        if (entrance != null)
-        {
-            position = entrance.transform.position;
-            float offsetx;
-            float offsety;
+        position = entrance.transform.position;
+        float offsetx;
+        float offsety;
 
-            for (int i = 0; i < 10; i++)
-            {
-                offsetx = Random.Range(-1f, 1f);
-                offsety = Random.Range(-1f, 1f);
-                GameObject.Instantiate(enemyPrefab, position + new Vector3(offsetx, offsety), new Quaternion());
-            }
-        }
-        else
+        for (int i = 0; i < 10; i++)
         {
-            Debug.LogError("Entrance is null");
+            offsetx = Random.Range(-1f, 1f);
+            offsety = Random.Range(-1f, 1f);
+            GameObject.Instantiate(enemyPrefab, position + new Vector3(offsetx, offsety), new Quaternion());
         }
     }
 }
