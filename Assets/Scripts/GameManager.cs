@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public EnemySpawner EnemySpawner { get; private set; }
+    public MapManager MapManager { get; private set; }
 
     private GameObject exitGate;
 
@@ -25,10 +26,21 @@ public class GameManager : MonoBehaviour
         Instance = this;
         exitGate = GameObject.Find("Exit");
         EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
+        MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
+
+        if (EnemySpawner == null)
+        {
+            print("spawner is null");
+        }
+        else if (MapManager == null)
+        {
+            print("mapmanager is null");
+        }
     }
 
     void Start()
     {
+        Debug.Log("GameManager loaded");
         exitGate.GetComponentInChildren<GateTrigger>().OnEnemyReachedGate += HandleEnemyReachedGate;
     }
 

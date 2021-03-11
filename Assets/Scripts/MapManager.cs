@@ -40,6 +40,11 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Debug.Log("Map manager loaded");
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -71,7 +76,7 @@ public class MapManager : MonoBehaviour
     /// <param name="layer">Layer 0 = ground, 1 = decore, 2 = structure</param>
     /// <param name="position">A world point</param>
     /// <returns></returns>
-    private TileBase SelectTile(int layer, Vector2 position)
+    public TileBase SelectTile(int layer, Vector2 position)
     {
         Tilemap selectLayer;
 
@@ -92,6 +97,7 @@ public class MapManager : MonoBehaviour
 
         Vector3Int gridPosition = selectLayer.WorldToCell(position);
         TileBase tile = selectLayer.GetTile(gridPosition);
+        Debug.Log("Tile position: " + position);
         return tile;
     }
 
