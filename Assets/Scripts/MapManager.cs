@@ -10,8 +10,10 @@ public class MapManager : MonoBehaviour
 {
     [SerializeField]
     private Tilemap groundLayer;
+
     [SerializeField]
     private Tilemap decoreLayer;
+
     [SerializeField]
     private Tilemap structureLayer;
 
@@ -53,7 +55,7 @@ public class MapManager : MonoBehaviour
             TileBase tile;
             for (int i = 0; i <= 2; i++)
             {
-                tile = SelectTile(i, mouseposition);
+                tile = SelectTile((Layers)i, mouseposition);
                 if (tile != null)
                 {
                     print(string.Format("layer {0}:{1}", i, tile.name));
@@ -64,7 +66,7 @@ public class MapManager : MonoBehaviour
                 }
             }
 
-            tile = SelectTile((int)Layers.GroundLayer, mouseposition);
+            tile = SelectTile(Layers.GroundLayer, mouseposition);
             float walkspeed = dataFromTiles[tile].walkSpeed;
             print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
         }
@@ -76,19 +78,19 @@ public class MapManager : MonoBehaviour
     /// <param name="layer">Layer 0 = ground, 1 = decore, 2 = structure</param>
     /// <param name="position">A world point</param>
     /// <returns></returns>
-    public TileBase SelectTile(int layer, Vector2 position)
+    public TileBase SelectTile(Layers layer, Vector2 position)
     {
         Tilemap selectLayer;
 
         switch (layer)
         {
-            case 0:
+            case Layers.GroundLayer:
                 selectLayer = groundLayer;
                 break;
-            case 1:
+            case Layers.DecoreLayer:
                 selectLayer = decoreLayer;
                 break;
-            case 2:
+            case Layers.StructureLayer:
                 selectLayer = structureLayer;
                 break;
             default:
@@ -99,6 +101,39 @@ public class MapManager : MonoBehaviour
         TileBase tile = selectLayer.GetTile(gridPosition);
         Debug.Log("Tile position: " + position);
         return tile;
+    }
+
+    /// <summary>
+    /// Does a coordinate in specified layer contain a tile?
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public bool ContainsTileAt(Layers layer, Vector3Int position)
+    {
+        Tilemap selectLayer = groundLayer;
+
+        switch (layer)
+        {
+            case Layers.GroundLayer:
+                selectLayer = groundLayer;
+                break;
+            case Layers.DecoreLayer:
+                selectLayer = decoreLayer;
+                break;
+            case Layers.StructureLayer:
+                selectLayer = structureLayer;
+                break;
+        }
+
+        if (selectLayer.GetTile(position) != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public float GetTileWalkSpeed(Vector2 worldPosition)
@@ -113,5 +148,10 @@ public class MapManager : MonoBehaviour
 
         float walkSpeed = dataFromTiles[tile].walkSpeed;
         return walkSpeed;
+    }
+    
+    public TileData GetTileData(TileBase tile)
+    {
+        return dataFromTiles[tile];
     }
 }
