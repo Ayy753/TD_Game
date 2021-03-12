@@ -57,13 +57,9 @@ public class MapManager : MonoBehaviour
             {
                 tile = SelectTile((Layers)i, mouseposition);
                 if (tile != null)
-                {
                     print(string.Format("layer {0}:{1}", i, tile.name));
-                }
                 else
-                {
                     print(string.Format("Tile {0} is null", i));
-                }
             }
 
             tile = SelectTile(Layers.GroundLayer, mouseposition);
@@ -80,27 +76,21 @@ public class MapManager : MonoBehaviour
     /// <returns></returns>
     public TileBase SelectTile(Layers layer, Vector2 position)
     {
-        Tilemap selectLayer;
-
-        switch (layer)
-        {
-            case Layers.GroundLayer:
-                selectLayer = groundLayer;
-                break;
-            case Layers.DecoreLayer:
-                selectLayer = decoreLayer;
-                break;
-            case Layers.StructureLayer:
-                selectLayer = structureLayer;
-                break;
-            default:
-                throw new ArgumentException("Layer must be 0, 1, or 2");
-        }
-
+        Tilemap selectLayer = GetLayer(layer);
         Vector3Int gridPosition = selectLayer.WorldToCell(position);
-        TileBase tile = selectLayer.GetTile(gridPosition);
-        Debug.Log("Tile position: " + position);
-        return tile;
+        return selectLayer.GetTile(gridPosition);
+    }
+
+    /// <summary>
+    /// Select a tile from a specified layer
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public TileBase SelectTile(Layers layer, Vector3Int position)
+    {
+        Tilemap selectLayer = GetLayer(layer);
+        return selectLayer.GetTile(position);
     }
 
     /// <summary>
@@ -111,29 +101,45 @@ public class MapManager : MonoBehaviour
     /// <returns></returns>
     public bool ContainsTileAt(Layers layer, Vector3Int position)
     {
-        Tilemap selectLayer = groundLayer;
+        Tilemap selectLayer = GetLayer(layer);
+        if (selectLayer.GetTile(position) != null)
+            return true;
+        else
+            return false;
+    }
 
+    /// <summary>
+    /// Get TileMap corrisponding to Layers enum
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <returns></returns>
+    private Tilemap GetLayer(Layers layer)
+    {
+        Tilemap selectLayer = groundLayer;
         switch (layer)
         {
             case Layers.GroundLayer:
-                selectLayer = groundLayer;
-                break;
+                return groundLayer;
             case Layers.DecoreLayer:
-                selectLayer = decoreLayer;
-                break;
+                return decoreLayer;
             case Layers.StructureLayer:
-                selectLayer = structureLayer;
-                break;
+                return structureLayer;
+            default:
+                return null;
         }
+    }
 
-        if (selectLayer.GetTile(position) != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+    /// <summary>
+    /// Tints a tile 
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    /// <param name="color"></param>
+    public void TintTile(Layers layer, Vector3Int position, Color color)
+    {
+        Tilemap tileMap = GetLayer(layer);
+        tileMap.SetTileFlags(position, TileFlags.None);
+        tileMap.SetColor(position, color);
     }
 
     public float GetTileWalkSpeed(Vector2 worldPosition)
@@ -142,9 +148,7 @@ public class MapManager : MonoBehaviour
         TileBase tile = groundLayer.GetTile(gridPosition);
 
         if (tile == null)
-        {
             return 1f;
-        }
 
         float walkSpeed = dataFromTiles[tile].walkSpeed;
         return walkSpeed;

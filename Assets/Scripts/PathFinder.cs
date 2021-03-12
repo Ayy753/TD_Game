@@ -17,7 +17,6 @@ public class PathFinder : MonoBehaviour
     private MapManager mapManager;
     private Vector3Int exitCoordinate;
 
-
     List<PathStep> openList;
     List<PathStep> closedList;
 
@@ -28,8 +27,6 @@ public class PathFinder : MonoBehaviour
 
         mapManager = GameManager.Instance.MapManager;
 
-        openList = new List<PathStep>();
-        closedList = new List<PathStep>();
 
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
 
@@ -78,7 +75,16 @@ public class PathFinder : MonoBehaviour
 
         public override string ToString()
         {
-            return (string.Format("{0}{1}, FScore:{2}, HScore:{3}, GScore:{4}", Coordinate.x, Coordinate.y, FScore, HScore, GScore));
+            return (string.Format("{0},{1}, FScore:{2}, HScore:{3}, GScore:{4}", Coordinate.x, Coordinate.y, FScore, HScore, GScore));
+        }
+
+        public void PrintChain()
+        {
+            print(this.ToString());
+            if (Parent != null)
+            {
+                Parent.PrintChain();
+            }
         }
     }
 
@@ -90,23 +96,26 @@ public class PathFinder : MonoBehaviour
     /// <returns>A chain of path nodes, or null if there is no valid path</returns>
     private PathStep CalculateShortestPath(Vector3Int start, Vector3Int end)
     {
+        openList = new List<PathStep>();
+        closedList = new List<PathStep>();
+
         PathStep initialStep = new PathStep(start);
 
         //  a placeholder until I implement variable tile costs
         int tempTileCost = 1;
-        openList.Add(initialStep);
 
 
         //temp for debugging
         int maxItt = 1000;
         int counter = 0;
 
+        //  initialize with first item
+        openList.Add(initialStep);
+
         do
         {
-            //  initialize with first item
-            PathStep lowestF = openList[0];
-
             //  find the lowest F score in openList
+            PathStep lowestF = openList[0];
             foreach (PathStep node in openList)
             {
                 if (node.FScore < lowestF.FScore)
@@ -115,78 +124,80 @@ public class PathFinder : MonoBehaviour
                 }
             }
 
+            PathStep parent = lowestF;
+            //  remove lowest from openList
+            openList.Remove(parent);
+
             // Get adjacent tiles
-            for (int x = -1; x <= 1; x+=2)
+            for (int x = -1; x <= 1; x++)
             {
-                for (int y = -1; y <= 1; y+=2)
+                for (int y = -1; y <= 1; y++)
                 {
-                    Vector3Int tileCoordinate = lowestF.Coordinate + new Vector3Int(x, y, 0);
-                    int fScore = tempTileCost + lowestF.GScore;
-                    int hScore = ManhattanDistance(tileCoordinate, exitCoordinate);
-                    bool skipSuccessor = false;
+                    //  ignore diagonal tiles
+                    //if ((x == 0 && y != 0) || (x != 0 && y == 0))
+                    //{
+                        Vector3Int tileCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
+                        int gScore = tempTileCost + parent.GScore;
+                        int hScore = ManhattanDistance(tileCoordinate, exitCoordinate);
+                        int fScore = gScore + hScore;
+                        bool skipSuccessor = false;
 
-                    print(string.Format("checking tile {0},{1}", tileCoordinate.x, tileCoordinate.y));
+                        //  tint tile yellow to show which have been considered for debugging
+                        mapManager.TintTile(MapManager.Layers.GroundLayer, tileCoordinate, Color.yellow);
 
-
-                    //  if there is a open space at this position
-                    if (IsValidTile(tileCoordinate))
-                    {
-                        //  Return path chain if we found the exit tile
-                        if (tileCoordinate == exitCoordinate)
+                        //  if there is a open space at this position
+                        if (IsValidTile(tileCoordinate))
                         {
-                            print("found exit");
-                            return new PathStep(tileCoordinate, fScore, hScore, lowestF);
-                        }
-
-                        //  Otherwise search openlist to ensure there isn't a shorter f score in the same position
-                        foreach (PathStep openNode in openList)
-                        {
-                            if (openNode.Coordinate == tileCoordinate && openNode.FScore < fScore)
+                            //  Return path chain if we found the exit tile
+                            if (tileCoordinate == exitCoordinate)
                             {
-                                print("a shorter path was found in openlist");
-                                skipSuccessor = true;
-                                break;
+                                print("found exit");
+                                return new PathStep(tileCoordinate, fScore, hScore, parent);
                             }
-                        }
 
-                        //  search closed list to ensure there isn't a shorter f score in the same position
-                        if (!skipSuccessor)
-                        {
-                            foreach (PathStep closedNode in closedList)
+                            //  Otherwise search openlist to ensure there isn't a shorter f score in the same position
+                            foreach (PathStep openNode in openList)
                             {
-                                if (closedNode.Coordinate == tileCoordinate && closedNode.FScore < fScore)
+                                if (openNode.Coordinate == tileCoordinate && openNode.FScore < fScore)
                                 {
-                                    print("a shorter path was found in closedlist");
                                     skipSuccessor = true;
                                     break;
                                 }
                             }
-                        }
 
-                        if (!skipSuccessor)
-                        {
-                            //  otherwise add this successor to openList
-                            PathStep successor = new PathStep(tileCoordinate, fScore, hScore, lowestF);
-                            print("a successor was found: " + successor.ToString());
-                            openList.Add(successor);
-                        }
+                            //  search closed list to ensure there isn't a shorter f score in the same position
+                            if (!skipSuccessor)
+                            {
+                                foreach (PathStep closedNode in closedList)
+                                {
+                                    if (closedNode.Coordinate == tileCoordinate && closedNode.FScore < fScore)
+                                    {
+                                        skipSuccessor = true;
+                                        break;
+                                    }
+                                }
+                            }
 
-                    }
+                            if (!skipSuccessor)
+                            {
+                                //  otherwise add this successor to openList
+                                PathStep successor = new PathStep(tileCoordinate, fScore, hScore, parent);
+                                mapManager.TintTile(MapManager.Layers.GroundLayer, successor.Coordinate, Color.green);
+                                openList.Add(successor);
+                            }
+
+                        }
+                    //}
                 }
             }
 
             //  Add lowest to closedList
-            closedList.Add(lowestF);
-            print("Added " + lowestF.ToString() + " to closedlist");
-            //  remove lowest from openList
-            openList.RemoveAt(openList.IndexOf(lowestF));
-
-
-            print("openlist count: " + openList.Count);
-
+            closedList.Add(parent);
+            print("Printing chain");
+            parent.PrintChain();
+            mapManager.TintTile(MapManager.Layers.GroundLayer, parent.Coordinate, Color.red);
 
             counter++;
-            print(counter);
         } while (openList.Count > 0 && counter < maxItt);
 
         //  If no path is found, return null
