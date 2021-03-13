@@ -49,6 +49,7 @@ public class PathFinder : MonoBehaviour
     {
         //  This tiebreaker nudges the search algorithm towards the target slightly, improving calculation speed by a factor of 10
         //  by reducing the amount of exploration done
+        //  **Note the tiebreaker wasn't implemented properly but still works great somehow**
         //  https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
         private float TieBreaker = 0.001f;
         public float HScore { get; private set; }
@@ -102,10 +103,26 @@ public class PathFinder : MonoBehaviour
                 Parent.PrintChain();
             }
         }
+
+        public List<Vector3Int> GetPath()
+        {
+            List<Vector3Int> pathCoords = new List<Vector3Int>();
+            return GetPath(pathCoords);
+        }
+
+        private List<Vector3Int> GetPath(List<Vector3Int> pathCoords)
+        {
+            if (Parent != null)
+            {
+                pathCoords.Add(Coordinate);
+                Parent.GetPath(pathCoords);
+            }
+            return pathCoords;
+        }
     }
 
     /// <summary>
-    /// 
+    /// Calculate the shortest path between two points
     /// </summary>
     /// <param name="start"></param>
     /// <param name="end"></param>
@@ -138,9 +155,6 @@ public class PathFinder : MonoBehaviour
                 }
             }
 
-            //  Tint this tile green to visually indicate the algorithm went through it
-            mapManager.TintTile(MapManager.Layers.GroundLayer, lowestF.Coordinate, Color.green);
-
             //  Assign it as the parent to it's successors
             PathStep parent = lowestF;
 
@@ -158,7 +172,6 @@ public class PathFinder : MonoBehaviour
                     //  Ignore diagonal tiles (one of the coords must be zero and the other non-zero in order to be non-diagonal)
                     if ((x == 0 && y != 0) || (x != 0 && y == 0))
                     {
-
                         Vector3Int tileCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
                         bool skipSuccessor = false;
 
@@ -207,7 +220,6 @@ public class PathFinder : MonoBehaviour
                                 if (!skipSuccessor)
                                 {
                                     PathStep successor = new PathStep(tileCoordinate, gScore, hScore, parent);
-                                    mapManager.TintTile(MapManager.Layers.GroundLayer, successor.Coordinate, Color.green);
                                     openList.Add(successor);
                                 }
                             }
@@ -217,7 +229,6 @@ public class PathFinder : MonoBehaviour
                 }
             }
             counter++;
-            print("Step: " + counter);
         }
 
         //  If no path is found, return null
@@ -228,8 +239,13 @@ public class PathFinder : MonoBehaviour
     [ContextMenu("findPath")]
     private void FindPath()
     {
-        CalculateShortestPath(structureLayer.WorldToCell(entrance.transform.position), exitCoordinate);
+        PathStep bestPath = CalculateShortestPath(structureLayer.WorldToCell(entranceCoordinate), exitCoordinate);
+        List<Vector3Int> pathCoords = bestPath.GetPath();
+        print("Path size: " + pathCoords.Count);
+        mapManager.HighlightPath(pathCoords, Color.green);
     }
+
+
 
     /// <summary>
     /// A tile is valid if it doesn't contain a structure
@@ -245,6 +261,8 @@ public class PathFinder : MonoBehaviour
     {
         return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
     }
+
+
 
     // Update is called once per frame
     void Update()

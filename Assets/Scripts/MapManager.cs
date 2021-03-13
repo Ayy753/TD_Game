@@ -158,4 +158,16 @@ public class MapManager : MonoBehaviour
     {
         return dataFromTiles[tile];
     }
+
+    /// <summary>
+    /// Highlights the tiles in an array on the ground layer
+    /// </summary>
+    /// <param name="path"></param>
+    public void HighlightPath(List<Vector3Int> path, Color color)
+    {
+        foreach (Vector3Int tile in path)
+        {
+            TintTile(Layers.GroundLayer, tile, color);
+        }
+    }
 }
