@@ -20,13 +20,34 @@ public class MapManager : MonoBehaviour
     [SerializeField]
     private List<TileData> tileDatas;
 
+    //  Save from having to add redundant attributes to hundreds of instances of the same tile
+    //  https://gameprogrammingpatterns.com/flyweight.html
     private Dictionary<TileBase, TileData> dataFromTiles;
 
-    public enum Layers
+    //  Caching these tiles so it doesnt need to search each time
+    private TileBase wallTile;
+    private TileBase grassTile;
+    private TileBase pathTile;
+
+    /// <summary>
+    /// TileMap layer
+    /// </summary>
+    public enum Layer
     {
         GroundLayer,
         DecoreLayer,
         StructureLayer
+    }
+
+    public enum GroundTile
+    {
+        StonePath,
+        Grass
+    }
+
+    public enum StructureTile
+    {
+        Wall
     }
 
     private void Awake()
@@ -37,6 +58,21 @@ public class MapManager : MonoBehaviour
         {
             foreach (TileBase tile in tileData.tiles)
             {
+                //  Cache tiles (I dont like this solution will probably change later)
+                if (tile.name == "StonePathRandom")
+                {
+                    pathTile = tile;
+                }
+                else if (tile.name == "WallRuleTile")
+                {
+                    wallTile = tile;
+                }
+                else if (tile.name == "GrassRandom")
+                {
+                    grassTile = tile;
+                }
+
+                //  Actually link tile with attributes
                 dataFromTiles.Add(tile, tileData);
             }
         }
@@ -55,14 +91,14 @@ public class MapManager : MonoBehaviour
             TileBase tile;
             for (int i = 0; i <= 2; i++)
             {
-                tile = SelectTile((Layers)i, mouseposition);
+                tile = SelectTile((Layer)i, mouseposition);
                 if (tile != null)
                     print(string.Format("layer {0}:{1}", i, tile.name));
                 else
                     print(string.Format("Tile {0} is null", i));
             }
 
-            tile = SelectTile(Layers.GroundLayer, mouseposition);
+            tile = SelectTile(Layer.GroundLayer, mouseposition);
             float walkspeed = dataFromTiles[tile].walkSpeed;
             print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
         }
@@ -74,7 +110,7 @@ public class MapManager : MonoBehaviour
     /// <param name="layer">Layer 0 = ground, 1 = decore, 2 = structure</param>
     /// <param name="position">A world point</param>
     /// <returns></returns>
-    public TileBase SelectTile(Layers layer, Vector2 position)
+    public TileBase SelectTile(Layer layer, Vector2 position)
     {
         Tilemap selectLayer = GetLayer(layer);
         Vector3Int gridPosition = selectLayer.WorldToCell(position);
@@ -87,7 +123,7 @@ public class MapManager : MonoBehaviour
     /// <param name="layer"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    public TileBase SelectTile(Layers layer, Vector3Int position)
+    public TileBase SelectTile(Layer layer, Vector3Int position)
     {
         Tilemap selectLayer = GetLayer(layer);
         return selectLayer.GetTile(position);
@@ -99,7 +135,7 @@ public class MapManager : MonoBehaviour
     /// <param name="layer"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    public bool ContainsTileAt(Layers layer, Vector3Int position)
+    public bool ContainsTileAt(Layer layer, Vector3Int position)
     {
         Tilemap selectLayer = GetLayer(layer);
         if (selectLayer.GetTile(position) != null)
@@ -113,20 +149,57 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="layer"></param>
     /// <returns></returns>
-    private Tilemap GetLayer(Layers layer)
+    private Tilemap GetLayer(Layer layer)
     {
         Tilemap selectLayer = groundLayer;
         switch (layer)
         {
-            case Layers.GroundLayer:
+            case Layer.GroundLayer:
                 return groundLayer;
-            case Layers.DecoreLayer:
+            case Layer.DecoreLayer:
                 return decoreLayer;
-            case Layers.StructureLayer:
+            case Layer.StructureLayer:
                 return structureLayer;
             default:
                 return null;
         }
+    }
+
+    private TileBase GetTileBase(GroundTile groundTile)
+    {
+        switch (groundTile)
+        {
+            case GroundTile.StonePath:
+                return pathTile;
+            case GroundTile.Grass:
+                return grassTile;
+            default:
+                return null;
+        }
+    }
+    private TileBase GetTileBase(StructureTile structureTile)
+    {
+        switch (structureTile)
+        {
+            case StructureTile.Wall:
+                return wallTile;
+            default:
+                return null;
+        }
+    }
+
+    public void SetTile(Vector3Int position, GroundTile groundTile)
+    {
+        Tilemap tilemap = GetLayer(Layer.GroundLayer);
+        TileBase tileBase = GetTileBase(groundTile);
+        tilemap.SetTile(position, tileBase);
+    }
+
+    public void SetTile(Vector3Int position, StructureTile structureTile)
+    {
+        Tilemap tilemap = GetLayer(Layer.StructureLayer);
+        TileBase tileBase = GetTileBase(structureTile);
+        tilemap.SetTile(position, tileBase);
     }
 
     /// <summary>
@@ -135,7 +208,7 @@ public class MapManager : MonoBehaviour
     /// <param name="layer"></param>
     /// <param name="position"></param>
     /// <param name="color"></param>
-    public void TintTile(Layers layer, Vector3Int position, Color color)
+    public void TintTile(Layer layer, Vector3Int position, Color color)
     {
         Tilemap tileMap = GetLayer(layer);
         tileMap.SetTileFlags(position, TileFlags.None);
@@ -167,7 +240,7 @@ public class MapManager : MonoBehaviour
     {
         foreach (Vector3Int tile in path)
         {
-            TintTile(Layers.GroundLayer, tile, color);
+            TintTile(Layer.GroundLayer, tile, color);
         }
     }
 }

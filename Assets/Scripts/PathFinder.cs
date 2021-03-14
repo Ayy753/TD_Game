@@ -196,7 +196,7 @@ public class PathFinder : MonoBehaviour
                                 float fScore = gScore + hScore;
 
                                 //  Tint tile yellow to visualize that the algorithm has considered it
-                                mapManager.TintTile(MapManager.Layers.GroundLayer, tileCoordinate, Color.yellow);
+                                mapManager.TintTile(MapManager.Layer.GroundLayer, tileCoordinate, Color.yellow);
 
                                 //  Return path chain if we found the exit tile
                                 if (tileCoordinate == exitCoordinate)
@@ -239,7 +239,7 @@ public class PathFinder : MonoBehaviour
     [ContextMenu("findPath")]
     private void FindPath()
     {
-        PathStep bestPath = CalculateShortestPath(structureLayer.WorldToCell(entranceCoordinate), exitCoordinate);
+        PathStep bestPath = CalculateShortestPath(entranceCoordinate, exitCoordinate);
         List<Vector3Int> pathCoords = bestPath.GetPath();
         print("Path size: " + pathCoords.Count);
         mapManager.HighlightPath(pathCoords, Color.green);
@@ -254,7 +254,7 @@ public class PathFinder : MonoBehaviour
     /// <returns></returns>
     private bool IsValidTile(Vector3Int position)
     {
-        return mapManager.ContainsTileAt(MapManager.Layers.StructureLayer, position) != true;
+        return mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position) != true;
     }
 
     private int ManhattanDistance(Vector3Int start, Vector3Int finish)
