@@ -9,17 +9,22 @@ public class PathFinder : MonoBehaviour
     private Tilemap structureLayer;
 
     [SerializeField]
-    GameObject entrance;
+    private GameObject entrance;
 
     [SerializeField]
-    GameObject exit;
+    private GameObject exit;
 
     private MapManager mapManager;
     private Vector3Int exitCoordinate;
     private Vector3Int entranceCoordinate;
 
-    List<PathStep> openList;
-    List<PathStep> closedList;
+    List<PathNode> openList;
+    List<PathNode> closedList;
+
+    /// <summary>
+    /// The current path through the level
+    /// </summary>
+    public List<Vector3Int> Path { get; protected set; }
 
     // Start is called before the first frame update
     void Start()
@@ -30,31 +35,40 @@ public class PathFinder : MonoBehaviour
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
         entranceCoordinate = structureLayer.WorldToCell(entrance.transform.position);
 
+        //  Temporary debugging messages, used until unit testing is implemented 
         if (mapManager == null)
         {
-            print("mapmanager is null");
+            Debug.Log("mapmanager is null");
         }
         else if (entrance == null)
         {
-            print("exit is null");
+            Debug.Log("entrance is null");
+        }
+        else if (exit == null)
+        {
+            Debug.Log("exit is null");
         }
         else
         {
-            //CalculateShortestPath(structureLayer.WorldToCell(entrance.transform.position), exitCoordinate);
             print(string.Format("entrance position:{0}, exit position:{1}", entranceCoordinate, exitCoordinate));
+            FindPath(false);
         }
     }
 
-    protected class PathStep
+    /// <summary>
+    /// An object representing a node in a path chain
+    /// </summary>
+    protected class PathNode
     {
         //  This tiebreaker nudges the search algorithm towards the target slightly, improving calculation speed by a factor of 10
         //  by reducing the amount of exploration done
-        //  **Note the tiebreaker wasn't implemented properly but still works great somehow**
+        //  **Note the tiebreaker wasn't implemented properly but "it just works"**
+        //  **Attempts to implement it properly broke pathfinding**
         //  https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
         private float TieBreaker = 0.001f;
         public float HScore { get; private set; }
         public Vector3Int Coordinate { get; private set; }
-        public PathStep Parent { get; private set; }
+        public PathNode Parent { get; private set; }
         private float _gScore;
         public float GScore
         {
@@ -73,7 +87,7 @@ public class PathFinder : MonoBehaviour
             get { return GScore + HScore; }
         }
 
-        public PathStep(Vector3Int coordinate, float gScore, float hScore, PathStep parent)
+        public PathNode(Vector3Int coordinate, float gScore, float hScore, PathNode parent)
         {
             GScore = gScore;
             HScore = hScore;
@@ -82,7 +96,7 @@ public class PathFinder : MonoBehaviour
         }
 
         //  initialize starting position
-        public PathStep(Vector3Int startingPosition)
+        public PathNode(Vector3Int startingPosition)
         {
             GScore = 0;
             HScore = 0;
@@ -95,6 +109,9 @@ public class PathFinder : MonoBehaviour
             return (string.Format("{0},{1}, FScore:{2}, HScore:{3}, GScore:{4}", Coordinate.x, Coordinate.y, FScore, HScore, GScore));
         }
 
+        /// <summary>
+        /// Prints the ToString method of each node in the path chain
+        /// </summary>
         public void PrintChain()
         {
             print(this.ToString());
@@ -104,17 +121,28 @@ public class PathFinder : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// The start point to a recursive method that returns a list of tile coordinates representing a complete path
+        /// </summary>
+        /// <returns>List of path coordinates</returns>
         public List<Vector3Int> GetPath()
         {
+            //  This is where we initialize the list
             List<Vector3Int> pathCoords = new List<Vector3Int>();
             return GetPath(pathCoords);
         }
 
+        /// <summary>
+        /// A recursive method that passes a list to each parent in the chain for them to populate with their respective coordinates
+        /// </summary>
+        /// <param name="pathCoords"></param>
+        /// <returns></returns>
         private List<Vector3Int> GetPath(List<Vector3Int> pathCoords)
         {
+            pathCoords.Add(Coordinate);
+
             if (Parent != null)
             {
-                pathCoords.Add(Coordinate);
                 Parent.GetPath(pathCoords);
             }
             return pathCoords;
@@ -122,15 +150,16 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// Calculate the shortest path between two points
+    /// Estimates the shortest path between two points using a variation of the A* algorithm
     /// </summary>
     /// <param name="start"></param>
     /// <param name="end"></param>
+    /// <param name="highlightPath">Highlight tiles considered by pathfinder?</param>
     /// <returns>A chain of path nodes, or null if there is no valid path</returns>
-    private PathStep CalculateShortestPath(Vector3Int start, Vector3Int end)
+    private PathNode CalculateShortestPath(Vector3Int start, Vector3Int end, bool highlightPath = false)
     {
-        openList = new List<PathStep>();
-        closedList = new List<PathStep>();
+        openList = new List<PathNode>();
+        closedList = new List<PathNode>();
 
         //  a placeholder until I implement variable tile costs
         float tempTileCost = 1f;
@@ -140,14 +169,14 @@ public class PathFinder : MonoBehaviour
         int counter = 0;
 
         //  initialize with first item
-        PathStep initialStep = new PathStep(start);
+        PathNode initialStep = new PathNode(start);
         openList.Add(initialStep);
 
         while (openList.Count > 0 && counter < maxItt)
         {
             //  find the lowest F score in openList
-            PathStep lowestF = openList[0];
-            foreach (PathStep node in openList)
+            PathNode lowestF = openList[0];
+            foreach (PathNode node in openList)
             {
                 if (node.FScore < lowestF.FScore)
                 {
@@ -156,7 +185,7 @@ public class PathFinder : MonoBehaviour
             }
 
             //  Assign it as the parent to it's successors
-            PathStep parent = lowestF;
+            PathNode parent = lowestF;
 
             //  Remove parent from openList
             openList.Remove(lowestF);
@@ -179,7 +208,7 @@ public class PathFinder : MonoBehaviour
                         if (IsValidTile(tileCoordinate))
                         {
                             // Skip this tile if its already been considered
-                            foreach (PathStep node in closedList)
+                            foreach (PathNode node in closedList)
                             {
                                 if (node.Coordinate == tileCoordinate)
                                 {
@@ -195,19 +224,29 @@ public class PathFinder : MonoBehaviour
                                 float hScore = ManhattanDistance(tileCoordinate, exitCoordinate);
                                 float fScore = gScore + hScore;
 
-                                //  Tint tile yellow to visualize that the algorithm has considered it
-                                mapManager.TintTile(MapManager.Layer.GroundLayer, tileCoordinate, Color.yellow);
+                                if (highlightPath)
+                                {
+                                    //  Tint tile yellow to visualize that the algorithm has considered it
+                                    mapManager.TintTile(MapManager.Layer.GroundLayer, tileCoordinate, Color.yellow);
+                                }
 
                                 //  Return path chain if we found the exit tile
                                 if (tileCoordinate == exitCoordinate)
                                 {
-                                    print("found exit after " + counter + " iterations");
-                                    return new PathStep(tileCoordinate, gScore, hScore, parent);
+                                    Debug.Log("found exit after " + counter + " iterations");
+                                    PathNode foundPath = new PathNode(tileCoordinate, gScore, hScore, parent);
+                                    if (highlightPath == true)
+                                    {
+                                        List<Vector3Int> pathCoords = foundPath.GetPath();
+                                        mapManager.HighlightPath(pathCoords, Color.green);
+                                    }
+
+                                    return foundPath;
                                 }
 
                                 //  Check if openlist already contains a path to this tile
                                 //  If it has, and the other one has a smaller F score, skip it
-                                foreach (PathStep node in openList)
+                                foreach (PathNode node in openList)
                                 {
                                     if (node.Coordinate == tileCoordinate && node.FScore < fScore)
                                     {
@@ -219,7 +258,7 @@ public class PathFinder : MonoBehaviour
                                 //  Otherwise add this successor to openList
                                 if (!skipSuccessor)
                                 {
-                                    PathStep successor = new PathStep(tileCoordinate, gScore, hScore, parent);
+                                    PathNode successor = new PathNode(tileCoordinate, gScore, hScore, parent);
                                     openList.Add(successor);
                                 }
                             }
@@ -235,17 +274,25 @@ public class PathFinder : MonoBehaviour
         return null;
     }
 
-    //  temp for debugging
+    /// <summary>
+    /// Finds and highlights the path solution through the unity inspector
+    /// </summary>
     [ContextMenu("findPath")]
     private void FindPath()
     {
-        PathStep bestPath = CalculateShortestPath(entranceCoordinate, exitCoordinate);
-        List<Vector3Int> pathCoords = bestPath.GetPath();
-        print("Path size: " + pathCoords.Count);
-        mapManager.HighlightPath(pathCoords, Color.green);
+        FindPath(true);
+        Debug.Log("Path size: " + Path.Count);
     }
 
-
+    /// <summary>
+    /// Used to calculate/update the current path through the level from the entrance to exit gates
+    /// </summary>
+    /// <param name="highlightPath"></param>
+    private void FindPath(bool highlightPath)
+    {
+        PathNode bestPath = CalculateShortestPath(entranceCoordinate, exitCoordinate, highlightPath);
+        Path = bestPath.GetPath();
+    }
 
     /// <summary>
     /// A tile is valid if it doesn't contain a structure
@@ -257,16 +304,14 @@ public class PathFinder : MonoBehaviour
         return mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position) != true;
     }
 
+    /// <summary>
+    /// Used to estimate the heuristic value of a tile
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="finish"></param>
+    /// <returns></returns>
     private int ManhattanDistance(Vector3Int start, Vector3Int finish)
     {
         return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
-    }
-
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

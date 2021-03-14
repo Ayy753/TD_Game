@@ -39,12 +39,18 @@ public class MapManager : MonoBehaviour
         StructureLayer
     }
 
+    /// <summary>
+    /// Tiles belonging to the ground layer
+    /// </summary>
     public enum GroundTile
     {
         StonePath,
         Grass
     }
 
+    /// <summary>
+    /// Tile belonging to the structure layer
+    /// </summary>
     public enum StructureTile
     {
         Wall
@@ -107,7 +113,7 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// Select a tile from a specified layer
     /// </summary>
-    /// <param name="layer">Layer 0 = ground, 1 = decore, 2 = structure</param>
+    /// <param name="layer"></param>
     /// <param name="position">A world point</param>
     /// <returns></returns>
     public TileBase SelectTile(Layer layer, Vector2 position)
@@ -121,7 +127,7 @@ public class MapManager : MonoBehaviour
     /// Select a tile from a specified layer
     /// </summary>
     /// <param name="layer"></param>
-    /// <param name="position"></param>
+    /// <param name="position">A point TileMap point</param>
     /// <returns></returns>
     public TileBase SelectTile(Layer layer, Vector3Int position)
     {
@@ -165,6 +171,11 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get the TileBase object occupying this position on the ground layer
+    /// </summary>
+    /// <param name="groundTile"></param>
+    /// <returns></returns>
     private TileBase GetTileBase(GroundTile groundTile)
     {
         switch (groundTile)
@@ -177,6 +188,12 @@ public class MapManager : MonoBehaviour
                 return null;
         }
     }
+
+    /// <summary>
+    /// Get the TileBase object occupying this position on the structure layer
+    /// </summary>
+    /// <param name="structureTile"></param>
+    /// <returns></returns>
     private TileBase GetTileBase(StructureTile structureTile)
     {
         switch (structureTile)
@@ -188,6 +205,11 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set a ground tile
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="groundTile"></param>
     public void SetTile(Vector3Int position, GroundTile groundTile)
     {
         Tilemap tilemap = GetLayer(Layer.GroundLayer);
@@ -195,6 +217,11 @@ public class MapManager : MonoBehaviour
         tilemap.SetTile(position, tileBase);
     }
 
+    /// <summary>
+    /// Set a structure tile
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="structureTile"></param>
     public void SetTile(Vector3Int position, StructureTile structureTile)
     {
         Tilemap tilemap = GetLayer(Layer.StructureLayer);
@@ -215,6 +242,11 @@ public class MapManager : MonoBehaviour
         tileMap.SetColor(position, color);
     }
 
+    /// <summary>
+    /// Get the speed attribute of the ground tile occupying a world position
+    /// </summary>
+    /// <param name="worldPosition"></param>
+    /// <returns></returns>
     public float GetTileWalkSpeed(Vector2 worldPosition)
     {
         Vector3Int gridPosition = groundLayer.WorldToCell(worldPosition);
@@ -227,6 +259,11 @@ public class MapManager : MonoBehaviour
         return walkSpeed;
     }
     
+    /// <summary>
+    /// Get tile attributes describing a type of tile
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
     public TileData GetTileData(TileBase tile)
     {
         return dataFromTiles[tile];
