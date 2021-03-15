@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float Speed = 10f;
 
-    public  delegate void EnemyReachedExit(Enemy enemy);
+    public delegate void EnemyReachedExit(Enemy enemy);
     public static event EnemyReachedExit OnEnemyReachedGate;
 
     private void OnEnable()

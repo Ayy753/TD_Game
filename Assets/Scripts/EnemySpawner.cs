@@ -15,7 +15,7 @@ public class EnemySpawner : MonoBehaviour
         entrance = GameObject.Find("Entrance");
         enemyPool = new List<Enemy>();
 
-        StartCoroutine(PeriodicSpawner());
+        //StartCoroutine(PeriodicSpawner());
     }
 
     /// <summary>
@@ -35,6 +35,14 @@ public class EnemySpawner : MonoBehaviour
             offsety = Random.Range(-0.5f, 0.5f);
             SpawnEnemy(position + new Vector3(offsetx, offsetx));
         }
+    }
+
+    /// <summary>
+    /// Spawns a single enemy at the entrance
+    /// </summary>
+    public void SpawnEnemy()
+    {
+        SpawnEnemy(entrance.transform.position);
     }
 
     /// <summary>
@@ -75,6 +83,18 @@ public class EnemySpawner : MonoBehaviour
         {
             SpawnEnemy(entrance.transform.position);
             yield return new WaitForSeconds(5);
+        }
+    }
+
+    /// <summary>
+    /// A method intended for demoing and testing
+    /// </summary>
+    /// <param name="newSpeed"></param>
+    public void ChangeEnemySpeed(float newSpeed)
+    {
+        foreach (Enemy enemy in enemyPool)
+        {
+
         }
     }
 }

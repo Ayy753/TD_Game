@@ -29,6 +29,9 @@ public class MapManager : MonoBehaviour
     private TileBase grassTile;
     private TileBase pathTile;
 
+    //  Stores all the tiles that have been tinted
+    private List<(Layer, Vector3Int)> tintedtiles;
+
     /// <summary>
     /// TileMap layer
     /// </summary>
@@ -87,6 +90,7 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("Map manager loaded");
+        tintedtiles = new List<(Layer, Vector3Int)>();
     }
 
     private void Update()
@@ -105,8 +109,15 @@ public class MapManager : MonoBehaviour
             }
 
             tile = SelectTile(Layer.GroundLayer, mouseposition);
-            float walkspeed = dataFromTiles[tile].walkSpeed;
-            print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
+            if (dataFromTiles.ContainsKey(tile))
+            {
+                float walkspeed = dataFromTiles[tile].walkSpeed;
+                print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
+            }
+            else
+            {
+                print("There is no ground tile at this position");
+            }
         }
     }
 
@@ -240,6 +251,34 @@ public class MapManager : MonoBehaviour
         Tilemap tileMap = GetLayer(layer);
         tileMap.SetTileFlags(position, TileFlags.None);
         tileMap.SetColor(position, color);
+
+        //  Keep track of this tint for later undoing
+        tintedtiles.Add((layer, position));
+    }
+
+    /// <summary>
+    /// Removes the tint from a tile
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    public void UntintTile(Layer layer, Vector3Int position)
+    {
+        TintTile(layer, position, Color.clear);
+        if (tintedtiles.Contains((layer, position)))
+        {
+            tintedtiles.Remove((layer, position));
+        }
+    }
+
+    /// <summary>
+    /// Removes the tinting from all tiles
+    /// </summary>
+    public void ClearAllTints()
+    {
+        foreach ((Layer, Vector3Int) tile in tintedtiles)
+        {
+            UntintTile(tile.Item1, tile.Item2);
+        }
     }
 
     /// <summary>
