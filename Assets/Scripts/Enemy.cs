@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, path[currentPathIndex], Speed * Time.deltaTime);
 
                 //  Borrowed this code from https://www.youtube.com/watch?v=mKLp-2iseDc
-                //  Because I don't want to review trig right now 
+                //  Because I don't want to review trig right now, but will need to understand it when fixing the glitchy rotation later
                 Vector2 direction = path[currentPathIndex] - transform.position;
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);

@@ -12,7 +12,7 @@ using System.Linq;
 /// </summary>
 public class MazeMaker : MonoBehaviour
 {
-    private string path = "Assets/Resources/maze.txt";
+    private string path = "Assets/Resources/maze2.txt";
 
     [SerializeField]
     MapManager mapManager;
@@ -30,7 +30,7 @@ public class MazeMaker : MonoBehaviour
     private void GenerateMaze()
     {
         print("generating maze");
-        GenerateMaze(new Vector3Int(10, 10, 0));
+        GenerateMaze(new Vector3Int(0, 0, 0));
     }
 
     /// <summary>
