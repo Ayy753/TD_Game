@@ -4,22 +4,62 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private GameObject exitGate;
+    private PathFinder pathFinder;
+    private GameManager gameManager;
+    private List<Vector3Int> path;
+    private int currentPathIndex;
 
-    void Start()
+    [SerializeField]
+    private float Speed = 10f;
+
+    public  delegate void EnemyReachedExit(Enemy enemy);
+    public static event EnemyReachedExit OnEnemyReachedGate;
+
+    private void OnEnable()
     {
-        exitGate = GameObject.Find("Exit");
+        //Debug.Log("Enemy enable");
+        gameManager = GameManager.Instance;
+        pathFinder = gameManager.PathFinder;
+        path = pathFinder.Path;
+        currentPathIndex = 0;
     }
 
     /// <summary>
-    /// Just blindly moves towards exit gate
-    /// Pathfinding to come later
+    /// Moves through path towards exit
     /// </summary>
     void Update()
     {
-        if (exitGate != null)
+        if (currentPathIndex <= path.Count-1)
         {
-            transform.position = Vector3.MoveTowards(transform.position, exitGate.transform.position, 3f * Time.deltaTime);
+            if (transform.position != path[currentPathIndex])
+            {
+                transform.position = Vector3.MoveTowards(transform.position, path[currentPathIndex], Speed * Time.deltaTime);
+            }
+            else
+            {
+                currentPathIndex++;
+            }
         }
+        else
+        {
+            if (OnEnemyReachedGate != null)
+            {
+                OnEnemyReachedGate.Invoke(this);
+            }
+            Despawn();
+        }
+    }
+
+    public void Spawn(Vector3 position)
+    {
+        //Debug.Log("Enemy spawn");
+        transform.position = position;
+        gameObject.SetActive(true);
+    }
+
+    public void Despawn()
+    {
+        //Debug.Log("Enemy despawn");
+        gameObject.SetActive(false);
     }
 }

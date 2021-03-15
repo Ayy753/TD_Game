@@ -51,7 +51,7 @@ public class PathFinder : MonoBehaviour
         else
         {
             print(string.Format("entrance position:{0}, exit position:{1}", entranceCoordinate, exitCoordinate));
-            FindPath(false);
+            FindPath(true);
         }
     }
 
@@ -128,8 +128,12 @@ public class PathFinder : MonoBehaviour
         public List<Vector3Int> GetPath()
         {
             //  This is where we initialize the list
-            List<Vector3Int> pathCoords = new List<Vector3Int>();
-            return GetPath(pathCoords);
+            //List<Vector3Int> pathCoords = new List<Vector3Int>();
+            //return GetPath(pathCoords);
+
+            List<Vector3Int> pathCoords = GetPath(new List<Vector3Int>());
+            pathCoords.Reverse();
+            return pathCoords;
         }
 
         /// <summary>

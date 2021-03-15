@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2442519446100319274}
   - component: {fileID: 3512532644682264892}
   - component: {fileID: 8976905062206188722}
-  - component: {fileID: 7971528555409127971}
   m_Layer: 0
   m_Name: Entrance
   m_TagString: Untagged
@@ -48,6 +47,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -109,15 +109,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3, y: 0.26843977}
   m_EdgeRadius: 0
---- !u!114 &7971528555409127971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9142253885351269667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e8de7ca8e41953459e70d4055529a1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

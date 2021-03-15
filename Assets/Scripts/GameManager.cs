@@ -13,12 +13,14 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public EnemySpawner EnemySpawner { get; private set; }
     public MapManager MapManager { get; private set; }
+    public PathFinder PathFinder { get; private set; }
 
     private GameObject exitGate;
 
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
         exitGate = GameObject.Find("Exit");
         EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
+        PathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
 
         if (EnemySpawner == null)
         {
@@ -41,11 +44,11 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("GameManager loaded");
-        exitGate.GetComponentInChildren<GateTrigger>().OnEnemyReachedGate += HandleEnemyReachedGate;
+
     }
 
     //  todo: decrease health or something
-    private void HandleEnemyReachedGate(GameObject enemy)
+    private void HandleEnemyReachedGate(Enemy enemy)
     {
         Debug.Log("Should decrease health");
     }
