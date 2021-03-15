@@ -27,7 +27,7 @@ public class EnemySpawner : MonoBehaviour
         float offsetx;
         float offsety;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 1; i++)
         {
             offsetx = Random.Range(-0.5f, 0.5f);
             offsety = Random.Range(-0.5f, 0.5f);

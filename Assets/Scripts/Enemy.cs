@@ -34,6 +34,13 @@ public class Enemy : MonoBehaviour
             if (transform.position != path[currentPathIndex])
             {
                 transform.position = Vector3.MoveTowards(transform.position, path[currentPathIndex], Speed * Time.deltaTime);
+
+                //  Borrowed this code from https://www.youtube.com/watch?v=mKLp-2iseDc
+                //  Because I don't want to review trig right now 
+                Vector2 direction = path[currentPathIndex] - transform.position;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Speed * 3 * Time.deltaTime);
             }
             else
             {
