@@ -51,7 +51,7 @@ public class PathFinder : MonoBehaviour
         else
         {
             print(string.Format("entrance position:{0}, exit position:{1}", entranceCoordinate, exitCoordinate));
-            FindPath(true);
+            FindPath(false);
         }
     }
 

@@ -14,6 +14,8 @@ public class EnemySpawner : MonoBehaviour
     {
         entrance = GameObject.Find("Entrance");
         enemyPool = new List<Enemy>();
+
+        StartCoroutine(PeriodicSpawner());
     }
 
     /// <summary>
@@ -64,6 +66,15 @@ public class EnemySpawner : MonoBehaviour
             Enemy newEnemy = go.GetComponent<Enemy>();
             newEnemy.Spawn(position);
             enemyPool.Add(newEnemy);
+        }
+    }
+
+    private IEnumerator PeriodicSpawner()
+    {
+        while (true)
+        {
+            SpawnEnemy(entrance.transform.position);
+            yield return new WaitForSeconds(5);
         }
     }
 }
