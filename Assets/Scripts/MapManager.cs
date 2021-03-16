@@ -95,30 +95,30 @@ public class MapManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            TileBase tile;
-            for (int i = 0; i <= 2; i++)
-            {
-                tile = SelectTile((Layer)i, mouseposition);
-                if (tile != null)
-                    print(string.Format("layer {0}:{1}", i, tile.name));
-                else
-                    print(string.Format("Tile {0} is null", i));
-            }
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    TileBase tile;
+        //    for (int i = 0; i <= 2; i++)
+        //    {
+        //        tile = SelectTile((Layer)i, mouseposition);
+        //        if (tile != null)
+        //            print(string.Format("layer {0}:{1}", i, tile.name));
+        //        else
+        //            print(string.Format("Tile {0} is null", i));
+        //    }
 
-            tile = SelectTile(Layer.GroundLayer, mouseposition);
-            if (dataFromTiles.ContainsKey(tile))
-            {
-                float walkspeed = dataFromTiles[tile].walkSpeed;
-                print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
-            }
-            else
-            {
-                print("There is no ground tile at this position");
-            }
-        }
+        //    tile = SelectTile(Layer.GroundLayer, mouseposition);
+        //    if (tile != null)
+        //    {
+        //        float walkspeed = dataFromTiles[tile].walkSpeed;
+        //        print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
+        //    }
+        //    else
+        //    {
+        //        print("There is no ground tile at this position");
+        //    }
+        //}
     }
 
     /// <summary>
@@ -249,11 +249,20 @@ public class MapManager : MonoBehaviour
     public void TintTile(Layer layer, Vector3Int position, Color color)
     {
         Tilemap tileMap = GetLayer(layer);
-        tileMap.SetTileFlags(position, TileFlags.None);
-        tileMap.SetColor(position, color);
 
-        //  Keep track of this tint for later undoing
-        tintedtiles.Add((layer, position));
+        //  Check if there is a tile at this position
+        if (tileMap.GetTile(position) != null)
+        {
+            tileMap.SetTileFlags(position, TileFlags.None);
+            tileMap.SetColor(position, color);
+
+            //  Keep track of this tint for later undoing
+            tintedtiles.Add((layer, position));
+        }
+        else
+        {
+            Debug.Log("There is no tile at position " + position);
+        }
     }
 
     /// <summary>
@@ -263,10 +272,13 @@ public class MapManager : MonoBehaviour
     /// <param name="position"></param>
     public void UntintTile(Layer layer, Vector3Int position)
     {
-        TintTile(layer, position, Color.clear);
-        if (tintedtiles.Contains((layer, position)))
+        Tilemap tileMap = GetLayer(layer);
+        int tileIndex = tintedtiles.IndexOf((layer, position));
+        if (tileIndex != -1)
         {
-            tintedtiles.Remove((layer, position));
+            //Debug.Log("Removing tint from tile at   " + position);
+            tileMap.SetColor(position, Color.white);
+            tintedtiles.RemoveAt(tileIndex);
         }
     }
 
@@ -275,9 +287,13 @@ public class MapManager : MonoBehaviour
     /// </summary>
     public void ClearAllTints()
     {
-        foreach ((Layer, Vector3Int) tile in tintedtiles)
+        Debug.Log("number of tiles tinted:" + tintedtiles.Count);
+        //  Loop through each tinted tile and untint them
+        //  We unfortunantly cannot use a foreach loop for this one
+        //  because we're not allowed to remove from the collection while iterating through it
+        for (int i = 0; i < tintedtiles.Count; i++)
         {
-            UntintTile(tile.Item1, tile.Item2);
+            UntintTile(tintedtiles[0].Item1, tintedtiles[0].Item2);
         }
     }
 

@@ -12,6 +12,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float Speed = 10f;
 
+    //  To compensate for the 0.5 unit offset of the tilemap system
+    private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
+
     public delegate void EnemyReachedExit(Enemy enemy);
     public static event EnemyReachedExit OnEnemyReachedGate;
 
@@ -31,16 +34,17 @@ public class Enemy : MonoBehaviour
     {
         if (currentPathIndex <= path.Count-1)
         {
-            if (transform.position != path[currentPathIndex])
-            {
-                transform.position = Vector3.MoveTowards(transform.position, path[currentPathIndex], Speed * Time.deltaTime);
+            Vector3 target = path[currentPathIndex] + tilemapOffset;
 
+            if (transform.position != target)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target, Speed * Time.deltaTime);
                 //  Borrowed this code from https://www.youtube.com/watch?v=mKLp-2iseDc
                 //  Because I don't want to review trig right now, but will need to understand it when fixing the glitchy rotation later
-                Vector2 direction = path[currentPathIndex] - transform.position;
+                Vector2 direction = target - transform.position;
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Speed * 3 * Time.deltaTime);
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Speed * 3 * Time.deltaTime);
             }
             else
             {
@@ -57,6 +61,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spawn this enemy into the world
+    /// </summary>
+    /// <param name="position"></param>
     public void Spawn(Vector3 position)
     {
         //Debug.Log("Enemy spawn");
@@ -64,9 +72,21 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Despawn this enemy
+    /// </summary>
     public void Despawn()
     {
         //Debug.Log("Enemy despawn");
         gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Sets the unit's speed
+    /// </summary>
+    /// <param name="newSpeed"></param>
+    public void SetSpeed(float newSpeed)
+    {
+        Speed = newSpeed;
     }
 }

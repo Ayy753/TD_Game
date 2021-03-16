@@ -15,8 +15,43 @@ public class GUIController : MonoBehaviour
         pathFinder = gameManager.PathFinder;
     }
 
+    /// <summary>
+    /// Spawn a unit
+    /// </summary>
     public void SpawnEnemy()
     {
         spawner.SpawnEnemy();
+    }
+
+    /// <summary>
+    /// Change the speed of all units
+    /// </summary>
+    /// <param name="newSpeed"></param>
+    public void ChangeUnitSpeed(float newSpeed)
+    {
+        spawner.ChangeEnemySpeed(newSpeed);
+    }
+
+    /// <summary>
+    /// Toggle path highlighting
+    /// </summary>
+    /// <param name="showPath"></param>
+    public void TogglePathVisual(bool showPath)
+    {
+        if (showPath)
+        {
+            print("highlighting");
+            pathFinder.HighlightPath();
+        }
+        else
+        {
+            print("unhighlighting");
+            pathFinder.UnhighlightPath();
+        }
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

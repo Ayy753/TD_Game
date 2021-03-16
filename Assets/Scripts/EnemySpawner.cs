@@ -10,6 +10,9 @@ public class EnemySpawner : MonoBehaviour
 
     private List<Enemy> enemyPool;
 
+    //  Used to set the speed of all units for testing and demoing
+    private float unitSpeedOverride = 0;
+
     void Start()
     {
         entrance = GameObject.Find("Entrance");
@@ -72,6 +75,12 @@ public class EnemySpawner : MonoBehaviour
             //Debug.Log("Instantiating a new enemy");
             GameObject go = Instantiate(enemyPrefab, position, new Quaternion());
             Enemy newEnemy = go.GetComponent<Enemy>();
+
+            if (unitSpeedOverride != 0)
+            {
+                newEnemy.SetSpeed(unitSpeedOverride);
+            }
+
             newEnemy.Spawn(position);
             enemyPool.Add(newEnemy);
         }
@@ -92,9 +101,11 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="newSpeed"></param>
     public void ChangeEnemySpeed(float newSpeed)
     {
+        unitSpeedOverride = newSpeed;
+
         foreach (Enemy enemy in enemyPool)
         {
-
+            enemy.SetSpeed(newSpeed);
         }
     }
 }

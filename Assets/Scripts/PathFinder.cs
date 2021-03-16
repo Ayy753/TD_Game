@@ -299,6 +299,22 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
+    /// Highlights the path in green
+    /// </summary>
+    public void HighlightPath()
+    {
+        mapManager.HighlightPath(Path, Color.green);
+    }
+
+    /// <summary>
+    /// Remove the tinting from the tiles
+    /// </summary>
+    public void UnhighlightPath()
+    {
+        mapManager.ClearAllTints();
+    }
+
+    /// <summary>
     /// A tile is valid if it doesn't contain a structure
     /// </summary>
     /// <param name="position"></param>
