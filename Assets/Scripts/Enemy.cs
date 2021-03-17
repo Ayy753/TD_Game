@@ -39,16 +39,29 @@ public class Enemy : MonoBehaviour
             if (transform.position != target)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target, Speed * Time.deltaTime);
-                //  Borrowed this code from https://www.youtube.com/watch?v=mKLp-2iseDc
-                //  Because I don't want to review trig right now, but will need to understand it when fixing the glitchy rotation later
-                Vector2 direction = target - transform.position;
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Speed * 3 * Time.deltaTime);
             }
             else
             {
                 currentPathIndex++;
+
+                //  Rotate unit to face direction of next tile in path
+                Vector3 posNoOffset = transform.position - tilemapOffset;
+                if (path[currentPathIndex].x < posNoOffset.x)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 180);
+                }
+                else if (path[currentPathIndex].y < posNoOffset.y)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, -90);
+                }
+                else if (path[currentPathIndex].y > posNoOffset.y)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 90);
+                }
+                if (path[currentPathIndex].x > posNoOffset.x)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
             }
         }
         else
