@@ -30,7 +30,7 @@ public class MapManager : MonoBehaviour
     private TileBase pathTile;
 
     //  Stores all the tiles that have been tinted
-    private List<(Layer, Vector3Int)> tintedtiles;
+    private List<TintedTile> tintedtiles;
 
     /// <summary>
     /// TileMap layer
@@ -90,7 +90,7 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("Map manager loaded");
-        tintedtiles = new List<(Layer, Vector3Int)>();
+        tintedtiles = new List<TintedTile>();
     }
 
     private void Update()
@@ -119,6 +119,21 @@ public class MapManager : MonoBehaviour
         //        print("There is no ground tile at this position");
         //    }
         //}
+    }
+
+    /// <summary>
+    /// A class representing a tinted tile on the tilemap (because working with tuples is a pain)
+    /// </summary>
+    private class TintedTile
+    {
+        public Layer Layer { get; private set; }
+        public Vector3Int Position { get; private set; }
+
+        public TintedTile(Layer layer, Vector3Int position)
+        {
+            Layer = layer;
+            Position = position;
+        }
     }
 
     /// <summary>
@@ -251,13 +266,13 @@ public class MapManager : MonoBehaviour
         Tilemap tileMap = GetLayer(layer);
 
         //  Check if there is a tile at this position
-        if (tileMap.GetTile(position) != null)
+        if (tileMap.HasTile(position) == true)
         {
             tileMap.SetTileFlags(position, TileFlags.None);
             tileMap.SetColor(position, color);
 
             //  Keep track of this tint for later undoing
-            tintedtiles.Add((layer, position));
+            tintedtiles.Add(new TintedTile(layer, position));
         }
         else
         {
@@ -270,16 +285,13 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="layer"></param>
     /// <param name="position"></param>
-    public void UntintTile(Layer layer, Vector3Int position)
+    private void UntintTile(TintedTile  tintedTile)
     {
-        Tilemap tileMap = GetLayer(layer);
-        int tileIndex = tintedtiles.IndexOf((layer, position));
-        if (tileIndex != -1)
-        {
-            //Debug.Log("Removing tint from tile at   " + position);
-            tileMap.SetColor(position, Color.white);
-            tintedtiles.RemoveAt(tileIndex);
-        }
+        Tilemap tileMap = GetLayer(tintedTile.Layer);
+
+        //Debug.Log("Removing tint from tile at   " + position);
+        tileMap.SetColor(tintedTile.Position, Color.white);
+        tintedtiles.Remove(tintedTile);
     }
 
     /// <summary>
@@ -287,14 +299,14 @@ public class MapManager : MonoBehaviour
     /// </summary>
     public void ClearAllTints()
     {
-        Debug.Log("number of tiles tinted:" + tintedtiles.Count);
-        //  Loop through each tinted tile and untint them
-        //  We unfortunantly cannot use a foreach loop for this one
-        //  because we're not allowed to remove from the collection while iterating through it
-        for (int i = 0; i < tintedtiles.Count; i++)
+        Debug.Log("number of tiles tinted before clearing all tiles:" + tintedtiles.Count);
+
+        while (tintedtiles.Count > 0)
         {
-            UntintTile(tintedtiles[0].Item1, tintedtiles[0].Item2);
+            UntintTile(tintedtiles[0]);
         }
+
+        print("Items in tintedtiles after clearing all tiles: " + tintedtiles.Count);
     }
 
     /// <summary>
