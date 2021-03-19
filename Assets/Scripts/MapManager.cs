@@ -28,13 +28,21 @@ public class MapManager : MonoBehaviour
     private TileBase wallTile;
     private TileBase grassTile;
     private TileBase pathTile;
+    private TileBase towerTile;
+
+    [SerializeField]
+    private GameObject towerPrefab;
 
     //  Build mode stuff
-    private bool buildModeActive = false;
+    private BuildMode buildMode = BuildMode.None;
     private TintedTile lastTileHovered;
+    private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
 
     //  Stores all the tiles that have been tinted
     private List<TintedTile> tintedtiles;
+
+    //  Stores all the towers that have been built
+    private List<InstantiatedTower> instantiatedTowers;
 
     /// <summary>
     /// TileMap layer
@@ -60,7 +68,15 @@ public class MapManager : MonoBehaviour
     /// </summary>
     public enum StructureTile
     {
-        Wall
+        Wall,
+        TowerBase
+    }
+
+    public enum BuildMode
+    {
+        Build,
+        Demolish,
+        None
     }
 
     private void Awake()
@@ -84,6 +100,10 @@ public class MapManager : MonoBehaviour
                 {
                     grassTile = tile;
                 }
+                else if (tile.name == "TowerBase")
+                {
+                    towerTile = tile;
+                }
 
                 //  Actually link tile with attributes
                 dataFromTiles.Add(tile, tileData);
@@ -95,33 +115,98 @@ public class MapManager : MonoBehaviour
     {
         Debug.Log("Map manager loaded");
         tintedtiles = new List<TintedTile>();
+        instantiatedTowers = new List<InstantiatedTower>();
     }
 
     private void Update()
     {
-        if (buildModeActive == true)
+        if (buildMode == BuildMode.Build || buildMode == BuildMode.Demolish)
         {
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             mouseposition.z = 0;
 
-            if (lastTileHovered != null && lastTileHovered.Position != mouseposition)
+            if (lastTileHovered != null)
             {
-                UntintTile(lastTileHovered);
+                if (lastTileHovered.Position != mouseposition)
+                {
+                    UntintTile(lastTileHovered);
+                    lastTileHovered = HoverBuildTile(mouseposition, buildMode == BuildMode.Build ? BuildMode.Build : BuildMode.Demolish);
+                }
+            }
+            else
+            {
+                lastTileHovered = HoverBuildTile(mouseposition, buildMode == BuildMode.Build ? BuildMode.Build : BuildMode.Demolish);
             }
 
-            lastTileHovered = HoverBuildTile(mouseposition);
+            if (Input.GetMouseButtonDown(0) == true)
+            {
+                if (buildMode == BuildMode.Build)
+                {
+                    //  Build tower 
+                    if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == false)
+                    {
+                        //  Instantiate the prefab and add a tile below so the tilemap knows it exists
+                        GameObject towerGO = GameObject.Instantiate(towerPrefab, mouseposition + tilemapOffset, new Quaternion(0, 0, 0, 0));
+                        InstantiatedTower instantiatedTower = new InstantiatedTower(towerGO, mouseposition);
+                        instantiatedTowers.Add(instantiatedTower);
+                        GetLayer(Layer.StructureLayer).SetTile(mouseposition, towerTile);
+                    }
+                }
+                else if (buildMode  == BuildMode.Demolish)
+                {
+                    //  Demolish tower 
+                    if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == true)
+                    {
+                        //  uninstantiate prefab
+                        foreach (InstantiatedTower tower in instantiatedTowers)
+                        {
+                            if (tower.Position == mouseposition)
+                            {
+                                GameObject.Destroy(tower.TowerGameObject);
+                                instantiatedTowers.Remove(tower);
+                                RemoveTile(Layer.StructureLayer, mouseposition);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
+    /// <summary>
+    /// Start highlighting structure placement eligibility on tiles that are hovered over
+    /// </summary>
     public void EnterBuildMode()
     {
-        buildModeActive = true;
+        Debug.Log("Entering build mode");
+        Vector3Int origin = new Vector3Int(0, 0, 0);
+        if (GetLayer(Layer.GroundLayer).HasTile(origin) != true)
+        {
+            SetTile(origin, GroundTile.Grass);
+        }
+
+        lastTileHovered = HoverBuildTile(origin, BuildMode.Build);
+
+        //  I should start writing unit tests
+        if (lastTileHovered == null)
+        {
+            throw new Exception("Hovered tile is null");
+        }
+
+        buildMode = BuildMode.Build;
     }
 
-    public void ExitBuildMode() 
+    public void ExitEditMode()
     {
-        buildModeActive = false;
+        buildMode = BuildMode.None;
     }
+
+    public void EnterDemoishMode()
+    {
+        buildMode = BuildMode.Demolish;
+    }
+
 
     /// <summary>
     /// A class representing a tinted tile on the tilemap (because working with tuples is a pain)
@@ -134,6 +219,21 @@ public class MapManager : MonoBehaviour
         public TintedTile(Layer layer, Vector3Int position)
         {
             Layer = layer;
+            Position = position;
+        }
+    }
+
+    /// <summary>
+    /// Stores an instantiated tower and it's position
+    /// </summary>
+    private class InstantiatedTower
+    {
+        public GameObject TowerGameObject { get; set; }
+        public Vector3Int Position { get; set; }
+
+        public InstantiatedTower(GameObject towerGameObject, Vector3Int position)
+        {
+            TowerGameObject = towerGameObject;
             Position = position;
         }
     }
@@ -258,6 +358,17 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Removes a tile from a layer at a location
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    public void RemoveTile(Layer layer, Vector3Int position)
+    {
+        Tilemap tilemap = GetLayer(layer);
+        tilemap.SetTile(position, null);
+    }
+
+    /// <summary>
     /// Tints a tile 
     /// </summary>
     /// <param name="layer"></param>
@@ -302,7 +413,7 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    private TintedTile HoverBuildTile(Vector3Int position)
+    private TintedTile HoverBuildTile(Vector3Int position, BuildMode buildMode)
     {
         TintedTile hoveredTile = null;
         Tilemap structureLayer = GetLayer(Layer.StructureLayer);
@@ -311,16 +422,30 @@ public class MapManager : MonoBehaviour
         if (structureLayer.HasTile(position))
         {
             structureLayer.SetTileFlags(position, TileFlags.None);
-            structureLayer.SetColor(position, Color.red);
+            if (buildMode == BuildMode.Demolish)
+            {
+                structureLayer.SetColor(position, Color.red);
+            }
+            else
+            {
+                structureLayer.SetColor(position, Color.green);
+            }
             hoveredTile = new TintedTile(Layer.StructureLayer, position);
         }
         else if (groundLayer.HasTile(position))
         {
             groundLayer.SetTileFlags(position, TileFlags.None);
-            groundLayer.SetColor(position, Color.green);
+            if (buildMode == BuildMode.Demolish)
+            {
+                groundLayer.SetColor(position, Color.green);
+            }
+            else
+            {
+                groundLayer.SetColor(position, Color.red);
+            }
             hoveredTile = new TintedTile(Layer.GroundLayer, position);
         }
-        
+
         if (hoveredTile != null)
         {
             tintedtiles.Add(hoveredTile);
@@ -359,7 +484,7 @@ public class MapManager : MonoBehaviour
         float walkSpeed = dataFromTiles[tile].walkSpeed;
         return walkSpeed;
     }
-    
+
     /// <summary>
     /// Get tile attributes describing a type of tile
     /// </summary>

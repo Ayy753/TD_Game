@@ -26,9 +26,14 @@ public class GUIController : MonoBehaviour
         mapManager.EnterBuildMode();
     }
 
-    public void ExitBuildMode()
+    public void EnterDemolishMode()
     {
-        mapManager.ExitBuildMode();
+        mapManager.EnterDemoishMode();
+    }
+
+    public void ExitEditMode()
+    {
+        mapManager.ExitEditMode();
     }
 
     #region Demo Functions
