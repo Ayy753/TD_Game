@@ -29,6 +29,10 @@ public class MapManager : MonoBehaviour
     private TileBase grassTile;
     private TileBase pathTile;
 
+    //  Build mode stuff
+    private bool buildModeActive = false;
+    private TintedTile lastTileHovered;
+
     //  Stores all the tiles that have been tinted
     private List<TintedTile> tintedtiles;
 
@@ -95,30 +99,28 @@ public class MapManager : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    TileBase tile;
-        //    for (int i = 0; i <= 2; i++)
-        //    {
-        //        tile = SelectTile((Layer)i, mouseposition);
-        //        if (tile != null)
-        //            print(string.Format("layer {0}:{1}", i, tile.name));
-        //        else
-        //            print(string.Format("Tile {0} is null", i));
-        //    }
+        if (buildModeActive == true)
+        {
+            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            mouseposition.z = 0;
 
-        //    tile = SelectTile(Layer.GroundLayer, mouseposition);
-        //    if (tile != null)
-        //    {
-        //        float walkspeed = dataFromTiles[tile].walkSpeed;
-        //        print(string.Format("walk speed on: {0} is {1}", tile, walkspeed));
-        //    }
-        //    else
-        //    {
-        //        print("There is no ground tile at this position");
-        //    }
-        //}
+            if (lastTileHovered != null && lastTileHovered.Position != mouseposition)
+            {
+                UntintTile(lastTileHovered);
+            }
+
+            lastTileHovered = HoverBuildTile(mouseposition);
+        }
+    }
+
+    public void EnterBuildMode()
+    {
+        buildModeActive = true;
+    }
+
+    public void ExitBuildMode() 
+    {
+        buildModeActive = false;
     }
 
     /// <summary>
@@ -285,13 +287,45 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="layer"></param>
     /// <param name="position"></param>
-    private void UntintTile(TintedTile  tintedTile)
+    private void UntintTile(TintedTile tintedTile)
     {
         Tilemap tileMap = GetLayer(tintedTile.Layer);
 
         //Debug.Log("Removing tint from tile at   " + position);
         tileMap.SetColor(tintedTile.Position, Color.white);
         tintedtiles.Remove(tintedTile);
+    }
+
+    /// <summary>
+    /// If there is a structure at this position, highlight it red
+    /// If not, highlight it green
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private TintedTile HoverBuildTile(Vector3Int position)
+    {
+        TintedTile hoveredTile = null;
+        Tilemap structureLayer = GetLayer(Layer.StructureLayer);
+        Tilemap groundLayer = GetLayer(Layer.GroundLayer);
+
+        if (structureLayer.HasTile(position))
+        {
+            structureLayer.SetTileFlags(position, TileFlags.None);
+            structureLayer.SetColor(position, Color.red);
+            hoveredTile = new TintedTile(Layer.StructureLayer, position);
+        }
+        else if (groundLayer.HasTile(position))
+        {
+            groundLayer.SetTileFlags(position, TileFlags.None);
+            groundLayer.SetColor(position, Color.green);
+            hoveredTile = new TintedTile(Layer.GroundLayer, position);
+        }
+        
+        if (hoveredTile != null)
+        {
+            tintedtiles.Add(hoveredTile);
+        }
+        return hoveredTile;
     }
 
     /// <summary>

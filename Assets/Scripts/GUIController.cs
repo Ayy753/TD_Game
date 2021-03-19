@@ -7,14 +7,31 @@ public class GUIController : MonoBehaviour
     GameManager gameManager;
     EnemySpawner spawner;
     PathFinder pathFinder;
+    MapManager mapManager;
 
     void Start()
     {
         gameManager = GameManager.Instance;
         spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
+        mapManager = gameManager.MapManager;
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 
+    public void EnterBuildMode()
+    {
+        mapManager.EnterBuildMode();
+    }
+
+    public void ExitBuildMode()
+    {
+        mapManager.ExitBuildMode();
+    }
+
+    #region Demo Functions
     /// <summary>
     /// Spawn a unit
     /// </summary>
@@ -49,9 +66,5 @@ public class GUIController : MonoBehaviour
             pathFinder.UnhighlightPath();
         }
     }
-
-    public void ExitGame()
-    {
-        Application.Quit();
-    }
+    #endregion
 }
