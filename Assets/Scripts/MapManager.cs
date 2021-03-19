@@ -125,19 +125,21 @@ public class MapManager : MonoBehaviour
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             mouseposition.z = 0;
 
+            //  Handle hovering
             if (lastTileHovered != null)
             {
                 if (lastTileHovered.Position != mouseposition)
                 {
                     UntintTile(lastTileHovered);
-                    lastTileHovered = HoverBuildTile(mouseposition, buildMode == BuildMode.Build ? BuildMode.Build : BuildMode.Demolish);
+                    lastTileHovered = HoverBuildTile(mouseposition, buildMode);
                 }
             }
             else
             {
-                lastTileHovered = HoverBuildTile(mouseposition, buildMode == BuildMode.Build ? BuildMode.Build : BuildMode.Demolish);
+                lastTileHovered = HoverBuildTile(mouseposition, buildMode);
             }
 
+            //  Handle click
             if (Input.GetMouseButtonDown(0) == true)
             {
                 if (buildMode == BuildMode.Build)
@@ -145,10 +147,12 @@ public class MapManager : MonoBehaviour
                     //  Build tower 
                     if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == false)
                     {
-                        //  Instantiate the prefab and add a tile below so the tilemap knows it exists
+                        //  Instantiate the prefab 
                         GameObject towerGO = GameObject.Instantiate(towerPrefab, mouseposition + tilemapOffset, new Quaternion(0, 0, 0, 0));
+                        //  Keep track of tower's position
                         InstantiatedTower instantiatedTower = new InstantiatedTower(towerGO, mouseposition);
                         instantiatedTowers.Add(instantiatedTower);
+                        //  Add a tile below so the tilemap knows a structure exists
                         GetLayer(Layer.StructureLayer).SetTile(mouseposition, towerTile);
                     }
                 }
@@ -157,14 +161,15 @@ public class MapManager : MonoBehaviour
                     //  Demolish tower 
                     if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == true)
                     {
-                        //  uninstantiate prefab
+                        //  Search for tower GameObject based on position
                         foreach (InstantiatedTower tower in instantiatedTowers)
                         {
                             if (tower.Position == mouseposition)
                             {
+                                //  Destroy the tower Gameobject, remove the tile representing it, and stop keeping track of it
                                 GameObject.Destroy(tower.TowerGameObject);
-                                instantiatedTowers.Remove(tower);
                                 RemoveTile(Layer.StructureLayer, mouseposition);
+                                instantiatedTowers.Remove(tower);
                                 break;
                             }
                         }
@@ -174,9 +179,6 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Start highlighting structure placement eligibility on tiles that are hovered over
-    /// </summary>
     public void EnterBuildMode()
     {
         Debug.Log("Entering build mode");
@@ -206,7 +208,6 @@ public class MapManager : MonoBehaviour
     {
         buildMode = BuildMode.Demolish;
     }
-
 
     /// <summary>
     /// A class representing a tinted tile on the tilemap (because working with tuples is a pain)
@@ -408,48 +409,49 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// If there is a structure at this position, highlight it red
-    /// If not, highlight it green
+    /// Highlights a tile being hovered over in either red or green depending on the 
+    /// build/demolish mode and whether there is a structure present
     /// </summary>
     /// <param name="position"></param>
-    /// <returns></returns>
+    /// <returns>An object representing a tinted tile on a specific layer in a given location</returns>
     private TintedTile HoverBuildTile(Vector3Int position, BuildMode buildMode)
     {
         TintedTile hoveredTile = null;
         Tilemap structureLayer = GetLayer(Layer.StructureLayer);
         Tilemap groundLayer = GetLayer(Layer.GroundLayer);
 
+        //  If a structure is present
         if (structureLayer.HasTile(position))
         {
             structureLayer.SetTileFlags(position, TileFlags.None);
             if (buildMode == BuildMode.Demolish)
-            {
-                structureLayer.SetColor(position, Color.red);
-            }
-            else
-            {
                 structureLayer.SetColor(position, Color.green);
-            }
+            else
+                structureLayer.SetColor(position, Color.red);
             hoveredTile = new TintedTile(Layer.StructureLayer, position);
         }
+
+        //  Otherwise If there is a ground tile
         else if (groundLayer.HasTile(position))
         {
             groundLayer.SetTileFlags(position, TileFlags.None);
             if (buildMode == BuildMode.Demolish)
-            {
-                groundLayer.SetColor(position, Color.green);
-            }
-            else
-            {
                 groundLayer.SetColor(position, Color.red);
-            }
+            else
+                groundLayer.SetColor(position, Color.green);
             hoveredTile = new TintedTile(Layer.GroundLayer, position);
         }
+        else
+        {
+            Debug.Log("There is no tile present at " + position);
+        }
 
+        //  Keep track of this tinted tile for later untinting
         if (hoveredTile != null)
         {
             tintedtiles.Add(hoveredTile);
         }
+
         return hoveredTile;
     }
 
