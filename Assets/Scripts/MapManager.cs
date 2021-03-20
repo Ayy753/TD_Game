@@ -44,6 +44,9 @@ public class MapManager : MonoBehaviour
     //  Stores all the towers that have been built
     private List<InstantiatedTower> instantiatedTowers;
 
+    public delegate void StructureChanged();
+    public static event StructureChanged OnStructureChanged;
+
     /// <summary>
     /// TileMap layer
     /// </summary>
@@ -154,6 +157,10 @@ public class MapManager : MonoBehaviour
                         instantiatedTowers.Add(instantiatedTower);
                         //  Add a tile below so the tilemap knows a structure exists
                         GetLayer(Layer.StructureLayer).SetTile(mouseposition, towerTile);
+                        if (OnStructureChanged != null)
+                        {
+                            OnStructureChanged.Invoke();
+                        }
                     }
                 }
                 else if (buildMode == BuildMode.Demolish)
@@ -170,6 +177,10 @@ public class MapManager : MonoBehaviour
                                 GameObject.Destroy(tower.TowerGameObject);
                                 RemoveTile(Layer.StructureLayer, mouseposition);
                                 instantiatedTowers.Remove(tower);
+                                if (OnStructureChanged != null)
+                                {
+                                    OnStructureChanged.Invoke();
+                                }
                                 break;
                             }
                         }
@@ -567,4 +578,6 @@ public class MapManager : MonoBehaviour
             TintTile(Layer.GroundLayer, tile, color);
         }
     }
+
+
 }

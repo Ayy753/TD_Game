@@ -55,6 +55,15 @@ public class PathFinder : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        MapManager.OnStructureChanged += HandleStructureChanged;
+    }
+    private void OnDisable()
+    {
+        MapManager.OnStructureChanged -= HandleStructureChanged;
+    }
+
     /// <summary>
     /// An object representing a node in a path chain
     /// </summary>
@@ -171,6 +180,12 @@ public class PathFinder : MonoBehaviour
         //  To prevent infinte loops from freezing unitiy
         int maxItt = 10000;
         int counter = 0;
+
+        //  Remove previous path highlights
+        if (highlightPath == true)
+        {
+            mapManager.ClearAllTints();
+        }
 
         //  initialize with first item
         PathNode initialStep = new PathNode(start);
@@ -333,5 +348,10 @@ public class PathFinder : MonoBehaviour
     private int ManhattanDistance(Vector3Int start, Vector3Int finish)
     {
         return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
+    }
+
+    private void HandleStructureChanged()
+    {
+        Path = CalculateShortestPath(entranceCoordinate, exitCoordinate, true).GetPath();
     }
 }
