@@ -130,7 +130,7 @@ public class MapManager : MonoBehaviour
             {
                 if (lastTileHovered.Position != mouseposition)
                 {
-                    UntintTile(lastTileHovered);
+                    UnhoverBuildTile(lastTileHovered);
                     lastTileHovered = HoverBuildTile(mouseposition, buildMode);
                 }
             }
@@ -156,7 +156,7 @@ public class MapManager : MonoBehaviour
                         GetLayer(Layer.StructureLayer).SetTile(mouseposition, towerTile);
                     }
                 }
-                else if (buildMode  == BuildMode.Demolish)
+                else if (buildMode == BuildMode.Demolish)
                 {
                     //  Demolish tower 
                     if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == true)
@@ -216,11 +216,15 @@ public class MapManager : MonoBehaviour
     {
         public Layer Layer { get; private set; }
         public Vector3Int Position { get; private set; }
+        public Color Color { get; private set; }
 
-        public TintedTile(Layer layer, Vector3Int position)
+        public TintedTile PreviouslyTinted { get; private set; }
+        public TintedTile(Layer layer, Vector3Int position, Color color, TintedTile previouslyTinted = null)
         {
             Layer = layer;
             Position = position;
+            Color = color;
+            PreviouslyTinted = previouslyTinted;
         }
     }
 
@@ -382,11 +386,22 @@ public class MapManager : MonoBehaviour
         //  Check if there is a tile at this position
         if (tileMap.HasTile(position) == true)
         {
+
+            //  If this tile is already tinted, remove it from the collection
+            foreach (TintedTile tile in tintedtiles)
+            {
+                if (tile.Layer == layer && tile.Position == position)
+                {
+                    tintedtiles.Remove(tile);
+                    break;
+                }
+            }
+
             tileMap.SetTileFlags(position, TileFlags.None);
             tileMap.SetColor(position, color);
 
             //  Keep track of this tint for later undoing
-            tintedtiles.Add(new TintedTile(layer, position));
+            tintedtiles.Add(new TintedTile(layer, position, color));
         }
         else
         {
@@ -419,40 +434,84 @@ public class MapManager : MonoBehaviour
         TintedTile hoveredTile = null;
         Tilemap structureLayer = GetLayer(Layer.StructureLayer);
         Tilemap groundLayer = GetLayer(Layer.GroundLayer);
+        Color color;
 
         //  If a structure is present
         if (structureLayer.HasTile(position))
         {
             structureLayer.SetTileFlags(position, TileFlags.None);
             if (buildMode == BuildMode.Demolish)
-                structureLayer.SetColor(position, Color.green);
+            {
+                color = Color.green;
+                structureLayer.SetColor(position, color);
+            }
             else
-                structureLayer.SetColor(position, Color.red);
-            hoveredTile = new TintedTile(Layer.StructureLayer, position);
+            {
+                color = Color.red;
+                structureLayer.SetColor(position, color);
+            }
+            hoveredTile = new TintedTile(Layer.StructureLayer, position, color);
         }
 
         //  Otherwise If there is a ground tile
         else if (groundLayer.HasTile(position))
         {
+            //  Check if this ground tile is already tinted, so the new tint can be reversed to the old
+            //  For example: hovering over a highlighted path tile needs to be reverted back to the previous color after the cursor leaves the tile
+            TintedTile previousTile = null;
+            foreach (TintedTile tile in tintedtiles)
+            {
+                if (tile.Layer == Layer.GroundLayer && tile.Position == position)
+                {
+                    previousTile = tile;
+                    tintedtiles.Remove(tile);
+                    break;
+                }
+            }
+
             groundLayer.SetTileFlags(position, TileFlags.None);
             if (buildMode == BuildMode.Demolish)
+            {
+                color = Color.red;
                 groundLayer.SetColor(position, Color.red);
+            }
             else
+            {
+                color = Color.green;
                 groundLayer.SetColor(position, Color.green);
-            hoveredTile = new TintedTile(Layer.GroundLayer, position);
+            }
+            hoveredTile = new TintedTile(Layer.GroundLayer, position, color, previousTile);
         }
         else
         {
             Debug.Log("There is no tile present at " + position);
         }
 
-        //  Keep track of this tinted tile for later untinting
+        //  Keep track of this tinted tile
         if (hoveredTile != null)
         {
             tintedtiles.Add(hoveredTile);
         }
 
         return hoveredTile;
+    }
+
+    /// <summary>
+    /// Reverts tile to previous color or removes color if there was none
+    /// </summary>
+    /// <param name="tile"></param>
+    private void UnhoverBuildTile(TintedTile tile)
+    {
+        tintedtiles.Remove(tile);
+
+        if (tile.PreviouslyTinted != null)
+        {
+            TintTile(tile.Layer, tile.Position, tile.PreviouslyTinted.Color);
+        }
+        else
+        {
+            TintTile(tile.Layer, tile.Position, Color.white);
+        }
     }
 
     /// <summary>

@@ -242,7 +242,7 @@ public class PathFinder : MonoBehaviour
                                     if (highlightPath == true)
                                     {
                                         List<Vector3Int> pathCoords = foundPath.GetPath();
-                                        mapManager.HighlightPath(pathCoords, Color.green);
+                                        mapManager.HighlightPath(pathCoords, Color.cyan);
                                     }
 
                                     return foundPath;
@@ -299,11 +299,11 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// Highlights the path in green
+    /// Highlights the path in cyan
     /// </summary>
     public void HighlightPath()
     {
-        mapManager.HighlightPath(Path, Color.green);
+        mapManager.HighlightPath(Path, Color.cyan);
     }
 
     /// <summary>
