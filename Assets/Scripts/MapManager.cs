@@ -191,6 +191,15 @@ public class MapManager : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                throw new Exception("No valid structure is present");
+            }
+
+            if (OnStructureChanged != null)
+            {
+                OnStructureChanged.Invoke();
+            }
         }
     }
 
@@ -619,5 +628,16 @@ public class MapManager : MonoBehaviour
         {
             TintTile(Layer.GroundLayer, tile, color);
         }
+    }
+
+    /// <summary>
+    /// Intended for quickly clearing map in unity editor
+    /// </summary>
+    [ContextMenu("Clear all tiles")]
+    private void RemoveAllTiles()
+    {
+        groundLayer.ClearAllTiles();
+        structureLayer.ClearAllTiles();
+        decoreLayer.ClearAllTiles();
     }
 }

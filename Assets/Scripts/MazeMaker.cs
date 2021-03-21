@@ -22,7 +22,6 @@ public class MazeMaker : MonoBehaviour
         //GenerateMaze(new Vector3Int(0, 0, 0));
     }
 
-
     /// <summary>
     /// For use in unity inspector
     /// </summary>
@@ -46,20 +45,28 @@ public class MazeMaker : MonoBehaviour
 
         foreach (byte b in bytes)
         {
+            Vector3Int position = startPosition + new Vector3Int(column, row, 0);
             if (b == 'W')
             {
-                mapManager.SetTile(startPosition + new Vector3Int(column, row, 0), MapManager.GroundTile.StonePath);
+                mapManager.SetTile(position, MapManager.GroundTile.StonePath);
                 column++;
             }
             else if (b == 'B')
             {
-                mapManager.SetTile(startPosition + new Vector3Int(column, row, 0), MapManager.StructureTile.Wall);
+                //  Build floor under wall
+                mapManager.SetTile(position, MapManager.GroundTile.StonePath);
+                //  Build wall
+                mapManager.SetTile(position, MapManager.StructureTile.Wall);
                 column++;
             }
             else if (b == '\n')
             {
                 row++;
                 column = 0;
+            }
+            else
+            {
+                Debug.Log("Invalid char: " + b);
             }
         }
     }
