@@ -148,7 +148,7 @@ public class MapManager : MonoBehaviour
                 if (buildMode == BuildMode.Build)
                 {
                     //  Build tower 
-                    if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == false)
+                    if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == false && GetLayer(Layer.GroundLayer).HasTile(mouseposition) == true)
                     {
                         //  Instantiate the prefab 
                         GameObject towerGO = GameObject.Instantiate(towerPrefab, mouseposition + tilemapOffset, new Quaternion(0, 0, 0, 0));
@@ -188,6 +188,10 @@ public class MapManager : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            Debug.Log("not in build mode");
+        }
     }
 
     public void EnterBuildMode()
@@ -213,6 +217,7 @@ public class MapManager : MonoBehaviour
     public void ExitEditMode()
     {
         buildMode = BuildMode.None;
+        Debug.Log("Exited build mode");
     }
 
     public void EnterDemoishMode()
@@ -495,7 +500,7 @@ public class MapManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("There is no tile present at " + position);
+            //Debug.Log("There is no tile present at " + position);
         }
 
         //  Keep track of this tinted tile
