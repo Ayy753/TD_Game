@@ -21,9 +21,14 @@ public class GUIController : MonoBehaviour
         Application.Quit();
     }
 
-    public void EnterBuildMode()
+    public void EnterTowerBuildMode()
     {
-        mapManager.EnterBuildMode();
+        mapManager.EnterBuildMode(MapManager.StructureTile.TowerBase);
+    }
+    
+    public void EnterWallBuildMode()
+    {
+        mapManager.EnterBuildMode(MapManager.StructureTile.Wall);
     }
 
     public void EnterDemolishMode()

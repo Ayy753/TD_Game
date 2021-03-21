@@ -37,6 +37,7 @@ public class MapManager : MonoBehaviour
     private BuildMode buildMode = BuildMode.None;
     private TintedTile lastTileHovered;
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
+    private StructureTile selectedStructureType;
 
     //  Stores all the tiles that have been tinted
     private List<TintedTile> tintedtiles;
@@ -147,54 +148,89 @@ public class MapManager : MonoBehaviour
             {
                 if (buildMode == BuildMode.Build)
                 {
-                    //  Build tower 
-                    if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == false && GetLayer(Layer.GroundLayer).HasTile(mouseposition) == true)
+                    BuildStructure(mouseposition, selectedStructureType);
+                }
+                else if (buildMode == BuildMode.Demolish)
+                {
+                    DemolishStructure(mouseposition);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Demolish the structure at a given position
+    /// </summary>
+    /// <param name="position"></param>
+    private void DemolishStructure(Vector3Int position)
+    {
+        //  Demolish structure 
+        if (GetLayer(Layer.StructureLayer).HasTile(position) == true)
+        {
+            TileBase structureType = GetLayer(Layer.StructureLayer).GetTile(position);
+            if (structureType == wallTile)
+            {
+                RemoveTile(Layer.StructureLayer, position);
+            }
+            else if (structureType == towerTile)
+            {
+                foreach (InstantiatedTower tower in instantiatedTowers)
+                {
+                    //  Search for tower GameObject based on position
+                    if (tower.Position == position)
                     {
-                        //  Instantiate the prefab 
-                        GameObject towerGO = GameObject.Instantiate(towerPrefab, mouseposition + tilemapOffset, new Quaternion(0, 0, 0, 0));
-                        //  Keep track of tower's position
-                        InstantiatedTower instantiatedTower = new InstantiatedTower(towerGO, mouseposition);
-                        instantiatedTowers.Add(instantiatedTower);
-                        //  Add a tile below so the tilemap knows a structure exists
-                        GetLayer(Layer.StructureLayer).SetTile(mouseposition, towerTile);
+                        //  Destroy the tower Gameobject, remove the tile representing it, and stop keeping track of it
+                        GameObject.Destroy(tower.TowerGameObject);
+                        RemoveTile(Layer.StructureLayer, position);
+                        instantiatedTowers.Remove(tower);
                         if (OnStructureChanged != null)
                         {
                             OnStructureChanged.Invoke();
                         }
-                    }
-                }
-                else if (buildMode == BuildMode.Demolish)
-                {
-                    //  Demolish tower 
-                    if (GetLayer(Layer.StructureLayer).HasTile(mouseposition) == true)
-                    {
-                        //  Search for tower GameObject based on position
-                        foreach (InstantiatedTower tower in instantiatedTowers)
-                        {
-                            if (tower.Position == mouseposition)
-                            {
-                                //  Destroy the tower Gameobject, remove the tile representing it, and stop keeping track of it
-                                GameObject.Destroy(tower.TowerGameObject);
-                                RemoveTile(Layer.StructureLayer, mouseposition);
-                                instantiatedTowers.Remove(tower);
-                                if (OnStructureChanged != null)
-                                {
-                                    OnStructureChanged.Invoke();
-                                }
-                                break;
-                            }
-                        }
+                        break;
                     }
                 }
             }
         }
-        else
+    }
+
+    /// <summary>
+    /// Build a structure at a given position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="structureTile"></param>
+    private void BuildStructure(Vector3Int position, StructureTile structureTile)
+    {
+        //  Build tower 
+        if (GetLayer(Layer.StructureLayer).HasTile(position) == false && GetLayer(Layer.GroundLayer).HasTile(position) == true)
         {
-            Debug.Log("not in build mode");
+            if (structureTile == StructureTile.Wall)
+            {
+                GetLayer(Layer.StructureLayer).SetTile(position, GetTileBase(structureTile));
+            }
+            else if (structureTile == StructureTile.TowerBase)
+            {
+                //  Instantiate the prefab 
+                GameObject towerGO = GameObject.Instantiate(towerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
+                //  Keep track of tower's position
+                InstantiatedTower instantiatedTower = new InstantiatedTower(towerGO, position);
+                instantiatedTowers.Add(instantiatedTower);
+                //  Add a tile below so the tilemap knows a structure exists
+                GetLayer(Layer.StructureLayer).SetTile(position, towerTile);
+            }
+            else
+            {
+                throw new Exception("Invalid structure");
+            }
+
+            if (OnStructureChanged != null)
+            {
+                OnStructureChanged.Invoke();
+            }
         }
     }
 
-    public void EnterBuildMode()
+    public void EnterBuildMode(StructureTile structureType)
     {
         Debug.Log("Entering build mode");
         Vector3Int origin = new Vector3Int(0, 0, 0);
@@ -211,6 +247,7 @@ public class MapManager : MonoBehaviour
             throw new Exception("Hovered tile is null");
         }
 
+        selectedStructureType = structureType;
         buildMode = BuildMode.Build;
     }
 
@@ -583,6 +620,4 @@ public class MapManager : MonoBehaviour
             TintTile(Layer.GroundLayer, tile, color);
         }
     }
-
-
 }
