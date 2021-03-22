@@ -467,7 +467,7 @@ public class MapManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("There is no tile at position " + position);
+            //Debug.Log("There is no tile at position " + position);
         }
     }
 

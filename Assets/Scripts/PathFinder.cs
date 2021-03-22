@@ -50,8 +50,8 @@ public class PathFinder : MonoBehaviour
         }
         else
         {
-            print(string.Format("entrance position:{0}, exit position:{1}", entranceCoordinate, exitCoordinate));
-            FindPath(false);
+            //print(string.Format("entrance position:{0}, exit position:{1}", entranceCoordinate, exitCoordinate));
+            //FindPath(false);
         }
     }
 
@@ -69,32 +69,22 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     protected class PathNode
     {
-        //  This tiebreaker nudges the search algorithm towards the target slightly, improving calculation speed by a factor of 10
-        //  by reducing the amount of exploration done
-        //  **Note the tiebreaker wasn't implemented properly but "it just works"**
-        //  **Attempts to implement it properly broke pathfinding**
         //  https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
-        private float TieBreaker = 0.001f;
+        
+        //  Estimated distance from end node
         public float HScore { get; private set; }
-        public Vector3Int Coordinate { get; private set; }
-        public PathNode Parent { get; private set; }
-        private float _gScore;
-        public float GScore
-        {
-            get
-            {
-                return _gScore * TieBreaker;
-            }
-            private set
-            {
-                _gScore = value;
-            }
-        }
 
+        //  Distance from start node
+        public float GScore { get; private set; }
+
+        //  Combined distances
         public float FScore
         {
             get { return GScore + HScore; }
+            set {; }
         }
+        public Vector3Int Coordinate { get; private set; }
+        public PathNode Parent { get; set; }
 
         public PathNode(Vector3Int coordinate, float gScore, float hScore, PathNode parent)
         {
@@ -137,9 +127,6 @@ public class PathFinder : MonoBehaviour
         public List<Vector3Int> GetPath()
         {
             //  This is where we initialize the list
-            //List<Vector3Int> pathCoords = new List<Vector3Int>();
-            //return GetPath(pathCoords);
-
             List<Vector3Int> pathCoords = GetPath(new List<Vector3Int>());
             pathCoords.Reverse();
             return pathCoords;
@@ -193,26 +180,40 @@ public class PathFinder : MonoBehaviour
 
         while (openList.Count > 0 && counter < maxItt)
         {
-            //  find the lowest F score in openList
-            PathNode lowestF = openList[0];
+            //  find the lowest F cost in openList
+            PathNode currentNode = openList[0];
             foreach (PathNode node in openList)
             {
-                if (node.FScore < lowestF.FScore)
+                if (node.FScore < currentNode.FScore)
                 {
-                    lowestF = node;
+                    currentNode = node;
                 }
             }
 
             //  Assign it as the parent to it's successors
-            PathNode parent = lowestF;
+            PathNode parent = currentNode;
 
             //  Remove parent from openList
-            openList.Remove(lowestF);
+            openList.Remove(currentNode);
 
             //  Add parent to closedList
-            closedList.Add(lowestF);
+            closedList.Add(currentNode);
 
-            //  Get adjacent tiles
+            //  Return path chain if we found the exit tile
+            if (currentNode.Coordinate == exitCoordinate)
+            {
+                Debug.Log("found exit after " + counter + " iterations");
+                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.FScore, currentNode.GScore, parent);
+                if (highlightPath == true)
+                {
+                    List<Vector3Int> pathCoords = foundPath.GetPath();
+                    mapManager.HighlightPath(pathCoords, Color.cyan);
+                }
+
+                return foundPath;
+            }
+
+            //  Process neighbouring tiles
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
@@ -220,16 +221,16 @@ public class PathFinder : MonoBehaviour
                     //  Ignore diagonal tiles (one of the coords must be zero and the other non-zero in order to be non-diagonal)
                     if ((x == 0 && y != 0) || (x != 0 && y == 0))
                     {
-                        Vector3Int tileCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
+                        Vector3Int neighbourCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
                         bool skipSuccessor = false;
 
                         //  Proceed if there is an open space at this position
-                        if (IsValidTile(tileCoordinate))
+                        if (IsValidTile(neighbourCoordinate))
                         {
                             // Skip this tile if its already been considered
                             foreach (PathNode node in closedList)
                             {
-                                if (node.Coordinate == tileCoordinate)
+                                if (node.Coordinate == neighbourCoordinate)
                                 {
                                     skipSuccessor = true;
                                     break;
@@ -237,51 +238,41 @@ public class PathFinder : MonoBehaviour
                             }
 
                             //  Otherwise, process this tile 
-                            if (!skipSuccessor)
+                            if (skipSuccessor == false)
                             {
-                                float gScore = tempTileCost + parent.GScore;
-                                float hScore = ManhattanDistance(tileCoordinate, exitCoordinate);
-                                float fScore = gScore + hScore;
+                                float neighGCost = tempTileCost + parent.GScore;
+                                float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
+                                float neighFCost = neighGCost + neighHCost;
 
                                 if (highlightPath)
                                 {
                                     //  Tint tile yellow to visualize that the algorithm has considered it
-                                    mapManager.TintTile(MapManager.Layer.GroundLayer, tileCoordinate, Color.yellow);
-                                }
-
-                                //  Return path chain if we found the exit tile
-                                if (tileCoordinate == exitCoordinate)
-                                {
-                                    Debug.Log("found exit after " + counter + " iterations");
-                                    PathNode foundPath = new PathNode(tileCoordinate, gScore, hScore, parent);
-                                    if (highlightPath == true)
-                                    {
-                                        List<Vector3Int> pathCoords = foundPath.GetPath();
-                                        mapManager.HighlightPath(pathCoords, Color.cyan);
-                                    }
-
-                                    return foundPath;
+                                    mapManager.TintTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
                                 }
 
                                 //  Check if openlist already contains a path to this tile
-                                //  If it has, and the other one has a smaller F score, skip it
+                                //  If it has, and the other one has a smaller F cost, update cost and parent
                                 foreach (PathNode node in openList)
                                 {
-                                    if (node.Coordinate == tileCoordinate && node.FScore < fScore)
+                                    if (node.Coordinate == neighbourCoordinate)
                                     {
+                                        if (node.FScore < neighFCost)
+                                        {
+                                            node.FScore = neighFCost;
+                                            node.Parent = parent;
+                                        }
                                         skipSuccessor = true;
                                         break;
                                     }
                                 }
 
                                 //  Otherwise add this successor to openList
-                                if (!skipSuccessor)
+                                if (skipSuccessor == false)
                                 {
-                                    PathNode successor = new PathNode(tileCoordinate, gScore, hScore, parent);
+                                    PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
                                     openList.Add(successor);
                                 }
                             }
-
                         }
                     }
                 }
