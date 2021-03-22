@@ -35,24 +35,7 @@ public class PathFinder : MonoBehaviour
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
         entranceCoordinate = structureLayer.WorldToCell(entrance.transform.position);
 
-        //  Temporary debugging messages, used until unit testing is implemented 
-        if (mapManager == null)
-        {
-            Debug.Log("mapmanager is null");
-        }
-        else if (entrance == null)
-        {
-            Debug.Log("entrance is null");
-        }
-        else if (exit == null)
-        {
-            Debug.Log("exit is null");
-        }
-        else
-        {
-            //print(string.Format("entrance position:{0}, exit position:{1}", entranceCoordinate, exitCoordinate));
-            //FindPath(false);
-        }
+        FindPath(true);
     }
 
     private void OnEnable()
@@ -70,7 +53,7 @@ public class PathFinder : MonoBehaviour
     protected class PathNode
     {
         //  https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
-        
+
         //  Estimated distance from end node
         public float HScore { get; private set; }
 
@@ -207,7 +190,7 @@ public class PathFinder : MonoBehaviour
                 if (highlightPath == true)
                 {
                     List<Vector3Int> pathCoords = foundPath.GetPath();
-                    mapManager.HighlightPath(pathCoords, Color.cyan);
+                    mapManager.HighlightPath(foundPath.GetPath(), Color.cyan);
                 }
 
                 return foundPath;
@@ -321,13 +304,21 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// A tile is valid if it doesn't contain a structure
+    /// A tile is valid(walkable) if it doesn't contain a structure, but contains a ground tile
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
     private bool IsValidTile(Vector3Int position)
     {
-        return mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position) != true;
+        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position) != true &&
+            mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position) == true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>
