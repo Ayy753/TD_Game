@@ -133,41 +133,49 @@ public class MapManager : MonoBehaviour
         //  Mouse cursor logic
         if (buildMode == BuildMode.Build || buildMode == BuildMode.Demolish)
         {
-            //  Ignore mouse if its over a UI element, and unhighlight last tile
-            if (EventSystem.current.IsPointerOverGameObject() == true)
+            //  Exit build/demolish mode if escape key is pressed
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                UnhoverBuildTile(lastTileHovered);
+                ExitEditMode();
             }
-            //  Otherwise handle mouse
             else
             {
-                Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                mouseposition.z = 0;
-
-                //  Handle mouse hovering
-                if (lastTileHovered != null)
+                //  Ignore mouse if its over a UI element, and unhighlight last tile
+                if (EventSystem.current.IsPointerOverGameObject() == true)
                 {
-                    if (lastTileHovered.Position != mouseposition)
-                    {
-                        UnhoverBuildTile(lastTileHovered);
-                        lastTileHovered = HoverBuildTile(mouseposition, buildMode);
-                    }
+                    UnhoverBuildTile(lastTileHovered);
                 }
+                //  Otherwise handle mouse
                 else
                 {
-                    lastTileHovered = HoverBuildTile(mouseposition, buildMode);
-                }
+                    Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                    mouseposition.z = 0;
 
-                //  Handle left click
-                if (Input.GetMouseButtonDown(0) == true)
-                {
-                    if (buildMode == BuildMode.Build)
+                    //  Handle mouse hovering
+                    if (lastTileHovered != null)
                     {
-                        BuildStructure(mouseposition, selectedStructureType);
+                        if (lastTileHovered.Position != mouseposition)
+                        {
+                            UnhoverBuildTile(lastTileHovered);
+                            lastTileHovered = HoverBuildTile(mouseposition, buildMode);
+                        }
                     }
-                    else if (buildMode == BuildMode.Demolish)
+                    else
                     {
-                        DemolishStructure(mouseposition);
+                        lastTileHovered = HoverBuildTile(mouseposition, buildMode);
+                    }
+
+                    //  Handle left click
+                    if (Input.GetMouseButtonDown(0) == true)
+                    {
+                        if (buildMode == BuildMode.Build)
+                        {
+                            BuildStructure(mouseposition, selectedStructureType);
+                        }
+                        else if (buildMode == BuildMode.Demolish)
+                        {
+                            DemolishStructure(mouseposition);
+                        }
                     }
                 }
             }
@@ -190,28 +198,27 @@ public class MapManager : MonoBehaviour
             }
             else if (structureType == towerTile)
             {
+                //  Search for tower GameObject based on position
                 foreach (InstantiatedTower tower in instantiatedTowers)
                 {
-                    //  Search for tower GameObject based on position
                     if (tower.Position == position)
                     {
-                        //  Destroy the tower Gameobject, remove the tile representing it, and stop keeping track of it
+                        // Destroy the tower Gameobject
                         GameObject.Destroy(tower.TowerGameObject);
-                        RemoveTile(Layer.StructureLayer, position);
+                        // Stop keeping track of it
                         instantiatedTowers.Remove(tower);
-                        if (OnStructureChanged != null)
-                        {
-                            OnStructureChanged.Invoke();
-                        }
                         break;
                     }
                 }
+                //  Remove the structure tile representing it
+                RemoveTile(Layer.StructureLayer, position);
             }
             else
             {
                 throw new Exception("No valid structure is present");
             }
 
+            //  Alert other classes that structure map changed
             if (OnStructureChanged != null)
             {
                 OnStructureChanged.Invoke();
@@ -275,6 +282,7 @@ public class MapManager : MonoBehaviour
     {
         buildMode = BuildMode.None;
         Debug.Log("Exited build mode");
+        UnhoverBuildTile(lastTileHovered);
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
 
@@ -310,7 +318,6 @@ public class MapManager : MonoBehaviour
     {
         public GameObject TowerGameObject { get; set; }
         public Vector3Int Position { get; set; }
-
         public InstantiatedTower(GameObject towerGameObject, Vector3Int position)
         {
             TowerGameObject = towerGameObject;
@@ -380,7 +387,7 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Get the TileBase object occupying this position on the ground layer
+    /// Get the Ground layer TileBase object represented by an enumerator
     /// </summary>
     /// <param name="groundTile"></param>
     /// <returns></returns>
@@ -393,12 +400,12 @@ public class MapManager : MonoBehaviour
             case GroundTile.Grass:
                 return grassTile;
             default:
-                return null;
+                throw new Exception("Could not find a ground layer TileBase object associated with this enum");
         }
     }
 
     /// <summary>
-    /// Get the TileBase object occupying this position on the structure layer
+    /// Get the Structure layer TileBase object represented by an enumerator
     /// </summary>
     /// <param name="structureTile"></param>
     /// <returns></returns>
@@ -408,8 +415,10 @@ public class MapManager : MonoBehaviour
         {
             case StructureTile.Wall:
                 return wallTile;
+            case StructureTile.TowerBase:
+                return towerTile;
             default:
-                return null;
+                throw new Exception("Could not find a structure layer TileBase object associated with this enum");
         }
     }
 
@@ -514,17 +523,31 @@ public class MapManager : MonoBehaviour
         //  If a structure is present
         if (structureLayer.HasTile(position))
         {
-            structureLayer.SetTileFlags(position, TileFlags.None);
             if (buildMode == BuildMode.Demolish)
             {
                 color = Color.green;
-                structureLayer.SetColor(position, color);
             }
             else
             {
                 color = Color.red;
-                structureLayer.SetColor(position, color);
             }
+
+            //  If this is a tower highlight the gameobject
+            if (structureLayer.GetTile(position) == GetTileBase(StructureTile.TowerBase))
+            {
+                foreach (InstantiatedTower tower in instantiatedTowers)
+                {
+                    if (tower.Position == position)
+                    {
+                        SpriteRenderer[] towerSprites = tower.TowerGameObject.GetComponentsInChildren<SpriteRenderer>();
+                        towerSprites[0].material.color = color;
+                        towerSprites[1].material.color = color;
+                        break;
+                    }
+                }
+            }
+
+            structureLayer.SetColor(position, color);
             hoveredTile = new TintedTile(Layer.StructureLayer, position, color);
         }
 
@@ -546,7 +569,7 @@ public class MapManager : MonoBehaviour
 
             groundLayer.SetTileFlags(position, TileFlags.None);
             if (buildMode == BuildMode.Demolish)
-            {
+            {   
                 color = Color.red;
                 groundLayer.SetColor(position, Color.red);
             }
@@ -578,6 +601,21 @@ public class MapManager : MonoBehaviour
     private void UnhoverBuildTile(TintedTile tile)
     {
         tintedtiles.Remove(tile);
+
+        //  If this tile is a tower, unhighlight the gameobject
+        if (structureLayer.GetTile(tile.Position) == towerTile)
+        {
+            foreach (InstantiatedTower tower in instantiatedTowers)
+            {
+                if (tower.Position == tile.Position)
+                {
+                    SpriteRenderer[] towerSprites = tower.TowerGameObject.GetComponentsInChildren<SpriteRenderer>();
+                    towerSprites[0].material.color = Color.white;
+                    towerSprites[1].material.color = Color.white;
+                    break;
+                }
+            }
+        }
 
         if (tile.PreviouslyTinted != null)
         {
