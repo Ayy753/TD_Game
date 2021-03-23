@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.EventSystems;
 
 public class MapManager : MonoBehaviour
 {
@@ -47,6 +48,11 @@ public class MapManager : MonoBehaviour
 
     public delegate void StructureChanged();
     public static event StructureChanged OnStructureChanged;
+
+    [SerializeField]
+    private Texture2D buildCursor;
+    [SerializeField]
+    private Texture2D demolishCursor;
 
     /// <summary>
     /// TileMap layer
@@ -124,35 +130,45 @@ public class MapManager : MonoBehaviour
 
     private void Update()
     {
+        //  Mouse cursor logic
         if (buildMode == BuildMode.Build || buildMode == BuildMode.Demolish)
         {
-            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            mouseposition.z = 0;
-
-            //  Handle hovering
-            if (lastTileHovered != null)
+            //  Ignore mouse if its over a UI element, and unhighlight last tile
+            if (EventSystem.current.IsPointerOverGameObject() == true)
             {
-                if (lastTileHovered.Position != mouseposition)
-                {
-                    UnhoverBuildTile(lastTileHovered);
-                    lastTileHovered = HoverBuildTile(mouseposition, buildMode);
-                }
+                UnhoverBuildTile(lastTileHovered);
             }
+            //  Otherwise handle mouse
             else
             {
-                lastTileHovered = HoverBuildTile(mouseposition, buildMode);
-            }
+                Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                mouseposition.z = 0;
 
-            //  Handle click
-            if (Input.GetMouseButtonDown(0) == true)
-            {
-                if (buildMode == BuildMode.Build)
+                //  Handle mouse hovering
+                if (lastTileHovered != null)
                 {
-                    BuildStructure(mouseposition, selectedStructureType);
+                    if (lastTileHovered.Position != mouseposition)
+                    {
+                        UnhoverBuildTile(lastTileHovered);
+                        lastTileHovered = HoverBuildTile(mouseposition, buildMode);
+                    }
                 }
-                else if (buildMode == BuildMode.Demolish)
+                else
                 {
-                    DemolishStructure(mouseposition);
+                    lastTileHovered = HoverBuildTile(mouseposition, buildMode);
+                }
+
+                //  Handle left click
+                if (Input.GetMouseButtonDown(0) == true)
+                {
+                    if (buildMode == BuildMode.Build)
+                    {
+                        BuildStructure(mouseposition, selectedStructureType);
+                    }
+                    else if (buildMode == BuildMode.Demolish)
+                    {
+                        DemolishStructure(mouseposition);
+                    }
                 }
             }
         }
@@ -250,25 +266,22 @@ public class MapManager : MonoBehaviour
 
         lastTileHovered = HoverBuildTile(origin, BuildMode.Build);
 
-        //  I should start writing unit tests
-        if (lastTileHovered == null)
-        {
-            throw new Exception("Hovered tile is null");
-        }
-
         selectedStructureType = structureType;
         buildMode = BuildMode.Build;
+        Cursor.SetCursor(buildCursor, Vector2.zero, CursorMode.Auto);
     }
 
     public void ExitEditMode()
     {
         buildMode = BuildMode.None;
         Debug.Log("Exited build mode");
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
 
     public void EnterDemoishMode()
     {
         buildMode = BuildMode.Demolish;
+        Cursor.SetCursor(demolishCursor, Vector2.zero, CursorMode.Auto);
     }
 
     /// <summary>
