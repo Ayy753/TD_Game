@@ -32,13 +32,21 @@ public class MapManager : MonoBehaviour
     private TileBase towerTile;
 
     [SerializeField]
-    private GameObject towerPrefab;
+    private GameObject redTowerPrefab;
+    [SerializeField]
+    private GameObject blueTowerPrefab;
+    [SerializeField]
+    private GameObject greenTowerPrefab;
 
-    //  Build mode stuff
+    #region Build Mode variables    
     private BuildMode buildMode = BuildMode.None;
     private TintedTile lastTileHovered;
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
-    private StructureTile selectedStructureType;
+    private StructureClass selectedStructureClass;
+
+    //  Keeps track of what type of structure each class of structure is
+    //  Example: RedTower class is of type Tower
+    Dictionary<StructureClass, StructureType> StructureClassToType;
 
     //  Stores all the tiles that have been tinted
     private List<TintedTile> tintedtiles;
@@ -53,6 +61,7 @@ public class MapManager : MonoBehaviour
     private Texture2D buildCursor;
     [SerializeField]
     private Texture2D demolishCursor;
+    #endregion
 
     /// <summary>
     /// TileMap layer
@@ -76,10 +85,21 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// Tile belonging to the structure layer
     /// </summary>
-    public enum StructureTile
+    public enum StructureType
     {
         Wall,
         TowerBase
+    }
+
+    /// <summary>
+    /// Specific class of structure
+    /// </summary>
+    public enum StructureClass
+    {
+        Wall,
+        RedTower,
+        BlueTower,
+        GreenTower
     }
 
     public enum BuildMode
@@ -126,11 +146,18 @@ public class MapManager : MonoBehaviour
         Debug.Log("Map manager loaded");
         tintedtiles = new List<TintedTile>();
         instantiatedTowers = new List<InstantiatedTower>();
+
+        StructureClassToType = new Dictionary<MapManager.StructureClass, StructureType>();
+        StructureClassToType.Add(StructureClass.RedTower, StructureType.TowerBase);
+        StructureClassToType.Add(StructureClass.GreenTower, StructureType.TowerBase);
+        StructureClassToType.Add(StructureClass.BlueTower, StructureType.TowerBase);
+        StructureClassToType.Add(StructureClass.Wall, StructureType.Wall);
+
     }
 
     private void Update()
     {
-        //  Mouse cursor logic
+        //  Build Mode logic
         if (buildMode == BuildMode.Build || buildMode == BuildMode.Demolish)
         {
             //  Exit build/demolish mode if escape key is pressed
@@ -170,13 +197,14 @@ public class MapManager : MonoBehaviour
                     {
                         if (buildMode == BuildMode.Build)
                         {
-                            BuildStructure(mouseposition, selectedStructureType);
+                            BuildStructure(mouseposition, selectedStructureClass);
                         }
                         else if (buildMode == BuildMode.Demolish)
                         {
                             DemolishStructure(mouseposition);
                         }
                     }
+
                 }
             }
         }
@@ -230,18 +258,36 @@ public class MapManager : MonoBehaviour
     /// Build a structure at a given position
     /// </summary>
     /// <param name="position"></param>
-    /// <param name="structureTile"></param>
-    private void BuildStructure(Vector3Int position, StructureTile structureTile)
+    /// <param name="structureClass"></param>
+    private void BuildStructure(Vector3Int position, StructureClass structureClass)
     {
         //  Build tower 
         if (GetLayer(Layer.StructureLayer).HasTile(position) == false && GetLayer(Layer.GroundLayer).HasTile(position) == true)
         {
-            if (structureTile == StructureTile.Wall)
+            StructureType structureType = StructureClassToType[structureClass];
+
+            if (structureClass == StructureClass.Wall)
             {
-                GetLayer(Layer.StructureLayer).SetTile(position, GetTileBase(structureTile));
+                GetLayer(Layer.StructureLayer).SetTile(position, GetTileBase(structureType));
             }
-            else if (structureTile == StructureTile.TowerBase)
+            else if (StructureClassToType[structureClass] == StructureType.TowerBase)
             {
+                GameObject towerPrefab;
+                switch (structureClass)
+                {
+                    case StructureClass.RedTower:
+                        towerPrefab = redTowerPrefab;
+                        break;
+                    case StructureClass.BlueTower:
+                        towerPrefab = blueTowerPrefab;
+                        break;
+                    case StructureClass.GreenTower:
+                        towerPrefab = greenTowerPrefab;
+                        break;
+                    default:
+                        throw new Exception("Structure class being built is not implemented");
+                }
+
                 //  Instantiate the prefab 
                 GameObject towerGO = GameObject.Instantiate(towerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
                 //  Keep track of tower's position
@@ -262,7 +308,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public void EnterBuildMode(StructureTile structureType)
+    public void EnterBuildMode(StructureClass structureClass)
     {
         Debug.Log("Entering build mode");
         Vector3Int origin = new Vector3Int(0, 0, 0);
@@ -273,7 +319,7 @@ public class MapManager : MonoBehaviour
 
         lastTileHovered = HoverBuildTile(origin, BuildMode.Build);
 
-        selectedStructureType = structureType;
+        selectedStructureClass = structureClass;
         buildMode = BuildMode.Build;
         Cursor.SetCursor(buildCursor, Vector2.zero, CursorMode.Auto);
     }
@@ -409,13 +455,13 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="structureTile"></param>
     /// <returns></returns>
-    private TileBase GetTileBase(StructureTile structureTile)
+    private TileBase GetTileBase(StructureType structureTile)
     {
         switch (structureTile)
         {
-            case StructureTile.Wall:
+            case StructureType.Wall:
                 return wallTile;
-            case StructureTile.TowerBase:
+            case StructureType.TowerBase:
                 return towerTile;
             default:
                 throw new Exception("Could not find a structure layer TileBase object associated with this enum");
@@ -439,7 +485,7 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="position"></param>
     /// <param name="structureTile"></param>
-    public void SetTile(Vector3Int position, StructureTile structureTile)
+    public void SetTile(Vector3Int position, StructureType structureTile)
     {
         Tilemap tilemap = GetLayer(Layer.StructureLayer);
         TileBase tileBase = GetTileBase(structureTile);
@@ -533,7 +579,7 @@ public class MapManager : MonoBehaviour
             }
 
             //  If this is a tower highlight the gameobject
-            if (structureLayer.GetTile(position) == GetTileBase(StructureTile.TowerBase))
+            if (structureLayer.GetTile(position) == GetTileBase(StructureType.TowerBase))
             {
                 foreach (InstantiatedTower tower in instantiatedTowers)
                 {

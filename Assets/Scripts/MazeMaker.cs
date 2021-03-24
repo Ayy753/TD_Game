@@ -56,7 +56,7 @@ public class MazeMaker : MonoBehaviour
                 //  Build floor under wall
                 mapManager.SetTile(position, MapManager.GroundTile.StonePath);
                 //  Build wall
-                mapManager.SetTile(position, MapManager.StructureTile.Wall);
+                mapManager.SetTile(position, MapManager.StructureType.Wall);
                 column++;
             }
             else if (b == '\n')
