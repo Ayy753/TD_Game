@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public EnemySpawner EnemySpawner { get; private set; }
     public MapManager MapManager { get; private set; }
     public PathFinder PathFinder { get; private set; }
+    public GUIController GUIController { get; private set; }
 
     private GameObject exitGate;
 
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
         EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
         PathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
+        GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
 
         if (EnemySpawner == null)
         {

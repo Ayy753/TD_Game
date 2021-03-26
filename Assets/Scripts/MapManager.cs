@@ -168,7 +168,7 @@ public class MapManager : MonoBehaviour
             else
             {
                 //  Ignore mouse if its over a UI element, and unhighlight last tile
-                if (EventSystem.current.IsPointerOverGameObject() == true)
+                if (EventSystem.current.IsPointerOverGameObject() == true && lastTileHovered != null)
                 {
                     UnhoverBuildTile(lastTileHovered);
                 }
@@ -324,6 +324,7 @@ public class MapManager : MonoBehaviour
         lastTileHovered = HoverBuildTile(origin, BuildMode.Build);
 
         selectedStructureClass = structureClass;
+        Debug.Log("Build mode structure changed to " + structureClass.ToString());
         buildMode = BuildMode.Build;
         Cursor.SetCursor(buildCursor, Vector2.zero, CursorMode.Auto);
     }
@@ -682,14 +683,12 @@ public class MapManager : MonoBehaviour
     /// </summary>
     public void ClearAllTints()
     {
-        Debug.Log("number of tiles tinted before clearing all tiles:" + tintedtiles.Count);
+        //Debug.Log("number of tiles tinted before clearing all tiles:" + tintedtiles.Count);
 
         while (tintedtiles.Count > 0)
         {
             UntintTile(tintedtiles[0]);
         }
-
-        print("Items in tintedtiles after clearing all tiles: " + tintedtiles.Count);
     }
 
     /// <summary>

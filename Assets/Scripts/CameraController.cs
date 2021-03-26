@@ -23,25 +23,46 @@ public class CameraController : MonoBehaviour
     {
         Vector3 mousePos = Input.mousePosition;
 
-        if ((mousePos.x < panLeft && mousePos.x > 0) || Input.GetAxis("Horizontal") < 0)
+        //if ((mousePos.x < panLeft && mousePos.x > 0) || Input.GetAxis("Horizontal") < 0)
+        //{
+        //    transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.left, PanSpeed*Time.deltaTime);
+
+        //}
+        //else if ((mousePos.x > panRight && mousePos.x < Screen.width) || Input.GetAxis("Horizontal") > 0)
+        //{
+        //    transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right, PanSpeed * Time.deltaTime);
+        //}
+
+        //if ((mousePos.y < panDown && mousePos.y > 0 )|| Input.GetAxis("Vertical") < 0)
+        //{
+        //    transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.down, PanSpeed * Time.deltaTime);
+        //}
+        //else if ((mousePos.y > panUp && mousePos.y < Screen.height) || Input.GetAxis("Vertical") > 0)
+        //{
+        //    transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.up, PanSpeed * Time.deltaTime);
+        //}
+
+
+        if (Input.GetAxis("Horizontal") < 0)
         {
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.left, PanSpeed*Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.left, PanSpeed * Time.deltaTime);
 
         }
-        else if ((mousePos.x > panRight && mousePos.x < Screen.width) || Input.GetAxis("Horizontal") > 0)
+        else if (Input.GetAxis("Horizontal") > 0)
         {
             transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right, PanSpeed * Time.deltaTime);
         }
 
-        if ((mousePos.y < panDown && mousePos.y > 0 )|| Input.GetAxis("Vertical") < 0)
+        if (Input.GetAxis("Vertical") < 0)
         {
             transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.down, PanSpeed * Time.deltaTime);
         }
-        else if ((mousePos.y > panUp && mousePos.y < Screen.height) || Input.GetAxis("Vertical") > 0)
+        else if (Input.GetAxis("Vertical") > 0)
         {
             transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.up, PanSpeed * Time.deltaTime);
         }
 
+        //  Scroll wheel zoom
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + Input.mouseScrollDelta.y * -5f, 5, 75);
     }
 }

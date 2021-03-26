@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,29 +34,14 @@ public class GUIController : MonoBehaviour
         Application.Quit();
     }
 
-    public void BuildRedTower()
+    public void BuildStructure(StructureData structureData)
     {
-        mapManager.EnterBuildMode(MapManager.StructureClass.RedTower);
+        mapManager.EnterBuildMode(structureData.structureClass);
     }
-    public void BuildBlueTower()
-    {
-        mapManager.EnterBuildMode(MapManager.StructureClass.BlueTower);
-    }
-    public void BuildGreenTower()
-    {
-        mapManager.EnterBuildMode(MapManager.StructureClass.GreenTower);
-    }
-
-    public void BuildWall()
-    {
-        mapManager.EnterBuildMode(MapManager.StructureClass.Wall);
-    }
-
     public void EnterDemolishMode()
     {
         mapManager.EnterDemoishMode();
     }
-
     public void ExitEditMode()
     {
         mapManager.ExitEditMode();
@@ -107,9 +93,14 @@ public class GUIController : MonoBehaviour
         foreach (StructureData structure in structureDatas)
         {
             GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
+            newButton.transform.SetParent(scrollViewContentBox.transform);
             newButton.GetComponent<Image>().sprite = structure.icon;
             newButton.name = structure.name;
-            newButton.transform.SetParent(scrollViewContentBox.transform);
+
+            //  Not sure why but the scale gets messed up, so this is a fix
+            newButton.transform.localScale = new Vector3(1, 1, 1);
+
+            newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
 
             print("added a button");
         }

@@ -15,3 +15,4 @@ MonoBehaviour:
   name: Green Tower
   description: A green tower
   icon: {fileID: 21300000, guid: 742568104319ba74ab40a6dd713ee9f3, type: 3}
+  structureClass: 3
