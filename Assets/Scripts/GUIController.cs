@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GUIController : MonoBehaviour
 {
@@ -9,12 +10,23 @@ public class GUIController : MonoBehaviour
     PathFinder pathFinder;
     MapManager mapManager;
 
+    [SerializeField]
+    private GameObject scrollViewContentBox;
+
+    [SerializeField]
+    private List<StructureData> structureDatas;
+
+    [SerializeField]
+    private GameObject structureBuildBtnPrefab;
+
     void Start()
     {
         gameManager = GameManager.Instance;
         spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
         mapManager = gameManager.MapManager;
+
+        PopulateScrollView();
     }
     public void ExitGame()
     {
@@ -85,4 +97,21 @@ public class GUIController : MonoBehaviour
         }
     }
     #endregion
+
+    /// <summary>
+    /// Programmically adds a build menu button for each type of structure to the scrollview
+    /// </summary>
+    private void PopulateScrollView()
+    {
+        print(structureDatas.Count);
+        foreach (StructureData structure in structureDatas)
+        {
+            GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
+            newButton.GetComponent<Image>().sprite = structure.icon;
+            newButton.name = structure.name;
+            newButton.transform.SetParent(scrollViewContentBox.transform);
+
+            print("added a button");
+        }
+    }
 }

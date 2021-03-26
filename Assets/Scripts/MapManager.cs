@@ -308,6 +308,10 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Enter build mode with a structure selected
+    /// </summary>
+    /// <param name="structureClass">The class of structure the player wants to build</param>
     public void EnterBuildMode(StructureClass structureClass)
     {
         Debug.Log("Entering build mode");
