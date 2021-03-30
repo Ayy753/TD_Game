@@ -91980,6 +91980,51 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1527237779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1527237781}
+  - component: {fileID: 1527237780}
+  m_Layer: 0
+  m_Name: BuildManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1527237780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527237779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f756137e0fa2254489a9d525fba36d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grassTile: {fileID: 0}
+  wallTile: {fileID: 11400000, guid: 3b2c73c71c6e0fe4bbe376fbba227645, type: 2}
+--- !u!4 &1527237781
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527237779}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 160.248, y: 219.08635, z: -299.4181}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1601462267
 GameObject:
   m_ObjectHideFlags: 0
@@ -92011,9 +92056,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollViewContentBox: {fileID: 10653319}
   structureDatas:
-  - {fileID: 11400000, guid: 08205ee161159bc4e990c35f2294d29f, type: 2}
-  - {fileID: 11400000, guid: 0ec9db4a1e9a96e4c9766095bd236f0e, type: 2}
-  - {fileID: 11400000, guid: 6499a70727eec3e469b1ed33f95d8a18, type: 2}
+  - {fileID: 11400000, guid: 7ad11fcc236bb2640bce50be41f1326a, type: 2}
+  - {fileID: 11400000, guid: eabc4f62921ced2408cd704009c5a753, type: 2}
+  - {fileID: 11400000, guid: 8ff7a121dc28b274c8115e104793c0df, type: 2}
+  - {fileID: 11400000, guid: 3b2c73c71c6e0fe4bbe376fbba227645, type: 2}
   structureBuildBtnPrefab: {fileID: 942114833596911159, guid: 688cf1098c1ad9e4989a8c0d408710cd,
     type: 3}
 --- !u!4 &1601462269
@@ -92560,10 +92606,10 @@ MonoBehaviour:
   decoreLayer: {fileID: 7290289}
   structureLayer: {fileID: 479069626}
   tileDatas:
-  - {fileID: 11400000, guid: 787e73a24d03ec742bb53daf6c207512, type: 2}
-  - {fileID: 11400000, guid: 5dc3249d0986bf34cb66ca359460a1bd, type: 2}
-  - {fileID: 11400000, guid: dd588c7c983b99d468c2de6420055abd, type: 2}
-  - {fileID: 11400000, guid: cdbb4888c879c114fb125eaec3d9a98d, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   redTowerPrefab: {fileID: 5345949471958930777, guid: 6d747ff39adb1a04599890244abd31b9,
     type: 3}
   blueTowerPrefab: {fileID: 2567355637282414980, guid: bb01d4725b055024aab3727c9df826c4,

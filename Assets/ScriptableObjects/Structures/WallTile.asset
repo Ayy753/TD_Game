@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66fc62f2f9d8e0e419dc9f111620edf3, type: 3}
-  m_Name: TowerBaseData
+  m_Script: {fileID: 11500000, guid: 53c44a57ba3b2b142a36053b8666f7bc, type: 3}
+  m_Name: WallTile
   m_EditorClassIdentifier: 
-  tiles:
-  - {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7, type: 2}
-  walkSpeed: 0
+  <Name>k__BackingField: Wall Tile
+  <Description>k__BackingField: A wall
+  <Icon>k__BackingField: {fileID: -4736528836439802678, guid: fc61c99e0466d7544ac9f303f902b5fc,
+    type: 3}

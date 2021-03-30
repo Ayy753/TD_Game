@@ -1,11 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class StructureData : ScriptableObject
+public abstract class StructureData : TileData
 {
-    public new string name;
-    public string description;
-    public Sprite icon;
-    public MapManager.StructureClass structureClass;
+    public override MapManager.Layer Layer { get; protected set; } = MapManager.Layer.StructureLayer;
 }

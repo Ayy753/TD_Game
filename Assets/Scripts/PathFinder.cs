@@ -154,7 +154,7 @@ public class PathFinder : MonoBehaviour
         //  Remove previous path highlights
         if (highlightPath == true)
         {
-            mapManager.ClearAllTints();
+            //mapManager.ClearAllTints();
         }
 
         //  initialize with first item
@@ -190,7 +190,7 @@ public class PathFinder : MonoBehaviour
                 if (highlightPath == true)
                 {
                     List<Vector3Int> pathCoords = foundPath.GetPath();
-                    mapManager.HighlightPath(foundPath.GetPath(), Color.cyan);
+                    //mapManager.HighlightPath(foundPath.GetPath(), Color.cyan);
                 }
 
                 return foundPath;
@@ -230,7 +230,7 @@ public class PathFinder : MonoBehaviour
                                 if (highlightPath)
                                 {
                                     //  Tint tile yellow to visualize that the algorithm has considered it
-                                    mapManager.TintTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
+                                    //mapManager.TintTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
                                 }
 
                                 //  Check if openlist already contains a path to this tile
@@ -292,7 +292,7 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     public void HighlightPath()
     {
-        mapManager.HighlightPath(Path, Color.cyan);
+        //mapManager.HighlightPath(Path, Color.cyan);
     }
 
     /// <summary>
@@ -300,7 +300,7 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     public void UnhighlightPath()
     {
-        mapManager.ClearAllTints();
+        //mapManager.ClearAllTints();
     }
 
     /// <summary>

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 /// <summary>
@@ -11,10 +9,11 @@ using UnityEngine.Tilemaps;
 /// https://docs.unity3d.com/ScriptReference/ScriptableObject.html
 /// </summary>
 [CreateAssetMenu]
-public class TileData : ScriptableObject
+public abstract class TileData : ScriptableObject
 {
-    //  The tiles this data applies to
-    public TileBase[] tiles;
-    public float walkSpeed = 1;
-    internal float walkspeed;
+    public abstract string Name { get; protected set; }
+    public abstract string Description { get; protected set; }
+    public abstract Sprite Icon { get; protected set; }
+    public abstract MapManager.Layer Layer { get; protected set; }
+    public abstract TileBase TileBase { get; protected set; }
 }

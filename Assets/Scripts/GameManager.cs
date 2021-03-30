@@ -15,8 +15,7 @@ public class GameManager : MonoBehaviour
     public MapManager MapManager { get; private set; }
     public PathFinder PathFinder { get; private set; }
     public GUIController GUIController { get; private set; }
-
-    private GameObject exitGate;
+    public BuildManager BuildManager { get; private set; }
 
     void OnEnable()
     {
@@ -27,11 +26,11 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Instance = this;
-        exitGate = GameObject.Find("Exit");
         EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
         PathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
         GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
+        BuildManager = GameObject.Find("BuildManager").GetComponent<BuildManager>();
 
         if (EnemySpawner == null)
         {

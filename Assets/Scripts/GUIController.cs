@@ -9,7 +9,7 @@ public class GUIController : MonoBehaviour
     GameManager gameManager;
     EnemySpawner spawner;
     PathFinder pathFinder;
-    MapManager mapManager;
+    BuildManager buildManager;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -25,7 +25,7 @@ public class GUIController : MonoBehaviour
         gameManager = GameManager.Instance;
         spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
-        mapManager = gameManager.MapManager;
+        buildManager = gameManager.BuildManager;
 
         PopulateScrollView();
     }
@@ -36,15 +36,15 @@ public class GUIController : MonoBehaviour
 
     public void BuildStructure(StructureData structureData)
     {
-        mapManager.EnterBuildMode(structureData.structureClass);
+        buildManager.EnterBuildMode(structureData);
     }
     public void EnterDemolishMode()
     {
-        mapManager.EnterDemoishMode();
+        buildManager.EnterDemolishMode();
     }
     public void ExitEditMode()
     {
-        mapManager.ExitEditMode();
+        buildManager.ExitBuildMode();
     }
 
     #region Demo Functions
@@ -94,7 +94,7 @@ public class GUIController : MonoBehaviour
         {
             GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
             newButton.transform.SetParent(scrollViewContentBox.transform);
-            newButton.GetComponent<Image>().sprite = structure.icon;
+            newButton.GetComponent<Image>().sprite = structure.Icon;
             newButton.name = structure.name;
 
             //  Not sure why but the scale gets messed up, so this is a fix
