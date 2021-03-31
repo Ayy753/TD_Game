@@ -11,6 +11,9 @@ public class GUIController : MonoBehaviour
     PathFinder pathFinder;
     BuildManager buildManager;
 
+    private Image selectedIcon;
+    private Text selectedDetails;
+
     [SerializeField]
     private GameObject scrollViewContentBox;
 
@@ -28,7 +31,8 @@ public class GUIController : MonoBehaviour
         spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
         buildManager = gameManager.BuildManager;
-
+        selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
+        selectedDetails = GameObject.Find("txtCurrentlySelectedDetails").GetComponent<Text>();
         PopulateScrollView();
     }
 
@@ -46,14 +50,20 @@ public class GUIController : MonoBehaviour
 
     public void BuildStructure(StructureData structureData)
     {
+        selectedIcon.sprite = structureData.Icon;
+        selectedDetails.text = structureData.ToString();
         buildManager.EnterBuildMode(structureData);
     }
     public void EnterDemolishMode()
     {
+        selectedIcon.sprite = null;
+        selectedDetails.text = string.Empty;
         buildManager.EnterDemolishMode();
     }
     public void ExitEditMode()
     {
+        selectedIcon.sprite = null;
+        selectedDetails.text = string.Empty;
         buildManager.ExitBuildMode();
     }
 
@@ -110,6 +120,7 @@ public class GUIController : MonoBehaviour
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
             newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
+            Debug.Log("created build button");
         }
     }
 }

@@ -2,10 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ToolTip : MonoBehaviour
 {
-    TileData currentStructure;
-    Text tooltipText;
+    private Text tooltipText;
     private RectTransform background;
-    // Start is called before the first frame update
+    
     void Start()
     {
         tooltipText = transform.Find("Text").GetComponent<Text>();
@@ -13,7 +12,6 @@ public class ToolTip : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.position = Input.mousePosition;
@@ -23,7 +21,6 @@ public class ToolTip : MonoBehaviour
 
     public void SetCurrentTile(TileData tile)
     {
-        currentStructure = tile;
         tooltipText.text = tile.ToString();
     }
 }
