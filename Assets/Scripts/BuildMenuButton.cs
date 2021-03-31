@@ -8,6 +8,13 @@ public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClic
     private GUIController GUIController;
     private StructureData StructureData;
 
+    private GameObject toolTip;
+
+    private void Awake()
+    {
+        toolTip = GameObject.Find("ToolTip");
+    }
+
     private void Start()
     {
         GUIController = GameManager.Instance.GUIController;
@@ -15,14 +22,13 @@ public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClic
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //  todo: tooltip
-        //Debug.Log("pointer entered button");
+        toolTip.SetActive(true);
+        toolTip.GetComponent<ToolTip>().SetCurrentTile(StructureData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //  todo: tooltip
-        //Debug.Log("pointer exited button");
+        toolTip.SetActive(false);
     }
 
     public void OnPointerClick(PointerEventData eventData)

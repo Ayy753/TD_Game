@@ -16,4 +16,9 @@ public abstract class TileData : ScriptableObject
     public abstract Sprite Icon { get; protected set; }
     public abstract MapManager.Layer Layer { get; protected set; }
     public abstract TileBase TileBase { get; protected set; }
+
+    public override string ToString()
+    {
+        return string.Format("Name: {0}\nDescription: {1}", Name, Description);
+    }
 }

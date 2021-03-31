@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,4 +13,9 @@ public class WallData : StructureData
     public override Sprite Icon { get; protected set; }
     [field: SerializeField]
     public override TileBase TileBase { get; protected set; }
+
+    public override string ToString()
+    {
+        return string.Format("Name: {0}\nDescription:{1}", Name, Description);
+    }
 }

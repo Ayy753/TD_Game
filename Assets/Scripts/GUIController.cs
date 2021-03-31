@@ -17,6 +17,8 @@ public class GUIController : MonoBehaviour
     [SerializeField]
     private List<StructureData> structureDatas;
 
+    //  Used to dynamically create buttons for each type of structure
+    //  at runtime
     [SerializeField]
     private GameObject structureBuildBtnPrefab;
 
@@ -28,6 +30,14 @@ public class GUIController : MonoBehaviour
         buildManager = gameManager.BuildManager;
 
         PopulateScrollView();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitEditMode();
+        }
     }
     public void ExitGame()
     {

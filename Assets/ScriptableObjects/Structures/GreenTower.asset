@@ -19,5 +19,6 @@ MonoBehaviour:
   <Prefab>k__BackingField: {fileID: 1079728213048591739, guid: 32a804d2afb1d5e4890c313fa5a6759a,
     type: 3}
   <Damage>k__BackingField: 10
+  <Range>k__BackingField: 10
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
