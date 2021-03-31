@@ -16,3 +16,5 @@ MonoBehaviour:
   <Description>k__BackingField: A wall
   <Icon>k__BackingField: {fileID: -4736528836439802678, guid: fc61c99e0466d7544ac9f303f902b5fc,
     type: 3}
+  <TileBase>k__BackingField: {fileID: 11400000, guid: d9ca2c05f89579b4ea287574fe5a8a0c,
+    type: 2}

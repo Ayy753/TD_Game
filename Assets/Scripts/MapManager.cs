@@ -63,95 +63,70 @@ public class MapManager : MonoBehaviour
         TowerBase
     }
 
-    /// <summary>
-    /// Specific class of structure
-    /// </summary>
-    public enum StructureClass
+    private void Awake()
     {
-        Wall,
-        RedTower,
-        BlueTower,
-        GreenTower
+        dataFromTiles = new Dictionary<TileBase, TileData>();
+
+        foreach (TileData tileData in tileDatas)
+        {
+            //  Cache tiles (I dont like this solution will probably change later)
+            if (tileData.name == "StonePathRandom")
+            {
+                pathTile = tileData.TileBase;
+            }
+            else if (tileData.name == "WallRuleTile")
+            {
+                wallTile = tileData.TileBase;
+            }
+            else if (tileData.name == "GrassRandom")
+            {
+                grassTile = tileData.TileBase;
+            }
+            else if (tileData.name == "TowerBase")
+            {
+                towerTile = tileData.TileBase;
+            }
+
+            //  Link TileBase objects to TileData 
+            //  Since towers share the same tower base we need to ensure they dont get added twice
+            if (dataFromTiles.ContainsKey(tileData.TileBase) != true)
+            {
+                Debug.Log(string.Format("Adding: tile name:{0} tilebase:{1}", tileData.name, tileData.TileBase.name));
+                dataFromTiles.Add(tileData.TileBase, tileData);
+            }
+        }
     }
-
-    public enum BuildMode
-    {
-        Build,
-        Demolish,
-        None
-    }
-
-
-
-    //private void Awake()
-    //{
-    //    //  Link each tile type to their respective shared data attributes
-    //    dataFromTiles = new Dictionary<TileBase, TileData>();
-    //    foreach (TileData tileData in tileDatas)
-    //    {
-    //        foreach (TileBase tile in tileData.tiles)
-    //        {
-    //            //  Cache tiles (I dont like this solution will probably change later)
-    //            if (tile.name == "StonePathRandom")
-    //            {
-    //                pathTile = tile;
-    //            }
-    //            else if (tile.name == "WallRuleTile")
-    //            {
-    //                wallTile = tile;
-    //            }
-    //            else if (tile.name == "GrassRandom")
-    //            {
-    //                grassTile = tile;
-    //            }
-    //            else if (tile.name == "TowerBase")
-    //            {
-    //                towerTile = tile;
-    //            }
-
-    //            //  Actually link tile with attributes
-    //            dataFromTiles.Add(tile, tileData);
-    //        }
-    //    }
-    //}
 
     private void Start()
     {
         Debug.Log("Map manager loaded");
         highlightedTiles = new List<HighlightedTile>();
-
-        dataFromTiles = new Dictionary<TileBase, TileData>();
-        foreach (TileData tileData in tileDatas)
-        {
-            dataFromTiles.Add(tileData.TileBase, tileData);
-        }
-
     }
 
-    /// <summary>
-    /// Select a tile from a specified layer
-    /// </summary>
-    /// <param name="layer"></param>
-    /// <param name="position">A world point</param>
-    /// <returns></returns>
-    public TileBase SelectTile(Layer layer, Vector2 position)
-    {
-        Tilemap selectLayer = GetLayer(layer);
-        Vector3Int gridPosition = selectLayer.WorldToCell(position);
-        return selectLayer.GetTile(gridPosition);
-    }
+    ///// <summary>
+    ///// Select a tile from a specified layer
+    ///// </summary>
+    ///// <param name="layer"></param>
+    ///// <param name="position">A world point</param>
+    ///// <returns></returns>
+    //public TileBase SelectTile(Layer layer, Vector2 position)
+    //{
+    //    Tilemap selectLayer = GetLayer(layer);
+    //    Vector3Int gridPosition = selectLayer.WorldToCell(position);
+    //    return selectLayer.GetTile(gridPosition);
+    //}
 
-    /// <summary>
-    /// Select a tile from a specified layer
-    /// </summary>
-    /// <param name="layer"></param>
-    /// <param name="position">A point TileMap point</param>
-    /// <returns></returns>
-    public TileBase SelectTile(Layer layer, Vector3Int position)
-    {
-        Tilemap selectLayer = GetLayer(layer);
-        return selectLayer.GetTile(position);
-    }
+    ///// <summary>
+    ///// Select a tile from a specified layer
+    ///// </summary>
+    ///// <param name="layer"></param>
+    ///// <param name="position">A point TileMap point</param>
+    ///// <returns></returns>
+    //public TileBase SelectTile(Layer layer, Vector3Int position)
+    //{
+    //    Tilemap selectLayer = GetLayer(layer);
+    //    return selectLayer.GetTile(position);
+    //}
 
     /// <summary>
     /// Does a coordinate in specified layer contain a tile?
@@ -194,7 +169,7 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="groundTile"></param>
     /// <returns></returns>
-    private TileBase GetTileBase(GroundTile groundTile)
+    public TileBase GetTileBase(GroundTile groundTile)
     {
         switch (groundTile)
         {
@@ -212,7 +187,7 @@ public class MapManager : MonoBehaviour
     /// </summary>
     /// <param name="structureTile"></param>
     /// <returns></returns>
-    private TileBase GetTileBase(StructureType structureTile)
+    public TileBase GetTileBase(StructureType structureTile)
     {
         switch (structureTile)
         {
@@ -235,6 +210,16 @@ public class MapManager : MonoBehaviour
         Tilemap tilemap = GetLayer(Layer.GroundLayer);
         TileBase tileBase = GetTileBase(groundTile);
         tilemap.SetTile(position, tileBase);
+    }
+
+    /// <summary>
+    /// Sets a tile based on a tileData object
+    /// </summary>
+    /// <param name="position">Tile position</param>
+    /// <param name="tileData">TileData object</param>
+    public void SetTile(Vector3Int position, TileData tileData)
+    {
+        GetLayer(tileData.Layer).SetTile(position, tileData.TileBase);
     }
 
     /// <summary>
@@ -292,7 +277,9 @@ public class MapManager : MonoBehaviour
         {
             if (layer == tile.Layer && position == tile.Position)
             {
+                Debug.Log(string.Format("Reversing highlight at {0}, {1}", layer, position));
                 HighlightTile(layer, position, tile.PreviousColor);
+                break;
             }
         }
     }
@@ -348,6 +335,7 @@ public class MapManager : MonoBehaviour
         TileBase tile = GetLayer(layer).GetTile(position);
         if (tile != null)
         {
+            //Debug.Log("Hovered over: " + tile.name);
             return dataFromTiles[tile];
         }
         return null;

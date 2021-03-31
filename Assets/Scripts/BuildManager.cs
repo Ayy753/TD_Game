@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class BuildManager : MonoBehaviour
 {
@@ -12,11 +13,10 @@ public class BuildManager : MonoBehaviour
 
     private Vector3Int lastHoveredPosition;
     private List<GameObject> instantiatedTowers;
-    private GameObject[] towerPrefabs;
-    private StructureData[] structureDatas;
-    private BuildMode currentBuildMode;
+    private BuildMode currentBuildMode = BuildMode.None;
     private StructureData currentlySelectedStructure;
 
+    //  An offset for GameObjects to align properly with the tilemap
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
 
     //  References to other primary classes
@@ -29,39 +29,58 @@ public class BuildManager : MonoBehaviour
         mapManager = gameManager.MapManager;
 
         instantiatedTowers = new List<GameObject>();
+
+        //  Adding a ground tile to origin if there is nothing there
+        //  Because the last hovered tile gets initialized at origin when entering build/demolish mode
+        if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, Vector3Int.zero) == false)
+        {
+            mapManager.SetTile(lastHoveredPosition, MapManager.GroundTile.Grass);
+            Debug.Log("Added grass tile to origin");
+        }
     }
 
     public void Update()
     {
         HandleHoverLogic();
+        //  Prevent clicking through GUI elements
+        if (EventSystem.current.IsPointerOverGameObject() == false)
+        {
+            HandleClickLogic();
+        }
     }
 
     public void EnterBuildMode(StructureData selectedStructure)
     {
         currentlySelectedStructure = selectedStructure;
         currentBuildMode = BuildMode.Build;
+        lastHoveredPosition = Vector3Int.zero;
+        HoverTile(lastHoveredPosition);
+        Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
     }
 
     public void EnterDemolishMode()
     {
         currentBuildMode = BuildMode.Demolish;
+        lastHoveredPosition = Vector3Int.zero;
+        HoverTile(lastHoveredPosition);
+        Debug.Log("Entered demolish mode");
     }
 
     public void ExitBuildMode()
     {
         currentlySelectedStructure = null;
         currentBuildMode = BuildMode.None;
+        UnhoverTile(lastHoveredPosition);
+        Debug.Log("Exited build mode");
     }
 
+    /// <summary>
+    /// Handles tile highlighting under cursor while in build/demolish mode
+    /// </summary>
     private void HandleHoverLogic()
     {
         if (currentBuildMode != BuildMode.None)
         {
-            if (lastHoveredPosition == null)
-            {
-                lastHoveredPosition = new Vector3Int(0, 0, 0);
-            }
-
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             mouseposition.z = 0;
 
@@ -72,12 +91,164 @@ public class BuildManager : MonoBehaviour
                     UnhoverTile(lastHoveredPosition);
                     HoverTile(mouseposition);
                 }
-
-                //  build logic
             }
         }
     }
 
+    /// <summary>
+    /// Handles build mode click logic
+    /// </summary>
+    private void HandleClickLogic()
+    {
+        if (currentBuildMode != BuildMode.None && Input.GetMouseButtonDown(0))
+        {
+            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            mouseposition.z = 0;
+
+            if (currentBuildMode == BuildMode.Build)
+            {
+                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
+                {
+                    BuildStructure(currentlySelectedStructure, mouseposition);
+                }
+            }
+            else if (currentBuildMode == BuildMode.Demolish)
+            {
+                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition))
+                {
+                    DemolishStructure(mouseposition);
+                }
+            }
+            else
+            {
+                throw new System.Exception("This build mode is not implemented");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Builds a structure
+    /// </summary>
+    /// <param name="structure"></param>
+    /// <param name="position"></param>
+    private void BuildStructure(StructureData structure, Vector3Int position)
+    {
+        if (structure.GetType() == typeof(TowerData))
+        {
+            GameObject tower = GameObject.Instantiate(((TowerData)structure).Prefab, position + tilemapOffset, new Quaternion(0,0,0,0));
+            instantiatedTowers.Add(tower);
+            mapManager.SetTile(position, structure);
+        }
+        else if (structure.GetType() == typeof(WallData))
+        {
+            mapManager.SetTile(position, structure);
+        }
+        else
+        {
+            throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+        }
+    }
+
+    /// <summary>
+    /// Demolishes a structure
+    /// </summary>
+    /// <param name="position"></param>
+    private void DemolishStructure(Vector3Int position)
+    {
+        TileData structure = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+        if (structure.GetType() == typeof(TowerData))
+        {
+            //  Find and remove tower at this position
+            foreach (GameObject tower in instantiatedTowers)
+            {
+                if (tower.transform.position == position + tilemapOffset)
+                {
+                    instantiatedTowers.Remove(tower);
+                    GameObject.Destroy(tower);
+                    mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
+                    break;
+                }
+            }
+        }
+        else if (structure.GetType() == typeof(WallData))
+        {
+            mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
+        }
+        else
+        {
+            throw new System.Exception("Stucture type " + structure.GetType() + " not implemented");
+        }
+    }
+
+    /// <summary>
+    /// Highlights the tile being hovered over
+    /// </summary>
+    /// <param name="position">Mouse cursor position</param>
+    private void HoverTile(Vector3Int position)
+    {
+        MapManager.Layer tileLayer;
+        Color tileColor;
+
+        if (currentBuildMode == BuildMode.Build)
+        {
+            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            {
+                StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+
+                if (tile.GetType() == typeof(TowerData))
+                {
+                    ChangeTowerTint(position, Color.red);
+                }
+                else
+                {
+                    tileLayer = MapManager.Layer.StructureLayer;
+                    tileColor = Color.red;
+                    mapManager.HighlightTile(tileLayer, position, tileColor);
+                }
+            }
+            else
+            {
+                tileLayer = MapManager.Layer.GroundLayer;
+                tileColor = Color.green;
+                mapManager.HighlightTile(tileLayer, position, tileColor);
+            }
+        }
+        else if (currentBuildMode == BuildMode.Demolish)
+        {
+            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            {
+                StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+
+                if (tile.GetType() == typeof(TowerData))
+                {
+                    ChangeTowerTint(position, Color.green);
+                }
+                else
+                {
+                    tileLayer = MapManager.Layer.StructureLayer;
+                    tileColor = Color.green;
+                    mapManager.HighlightTile(tileLayer, position, tileColor);
+                }
+            }
+            else
+            {
+                tileLayer = MapManager.Layer.GroundLayer;
+                tileColor = Color.red;
+                mapManager.HighlightTile(tileLayer, position, tileColor);
+            }
+        }
+        else
+        {
+            throw new System.Exception("This build mode is not implemented");
+        }
+
+        lastHoveredPosition = position;
+    }
+
+    /// <summary>
+    /// Unhighlights a tile
+    /// </summary>
+    /// <param name="position"></param>
     private void UnhoverTile(Vector3Int position)
     {
         if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
@@ -90,68 +261,38 @@ public class BuildManager : MonoBehaviour
             }
             else if (tile.GetType() == typeof(TowerData))
             {
-                //  Remove sprite tint from tower Game Object
-                foreach (GameObject tower in instantiatedTowers)
-                {
-                    if (tower.transform.position == position + tilemapOffset)
-                    {
-                        tower.GetComponentsInChildren<SpriteRenderer>()[0].color = Color.white;
-                        tower.GetComponentsInChildren<SpriteRenderer>()[1].color = Color.white;
-                        break;
-                    }
-                }
+                //  Add previous tower color property to tower script?
+                //  So far nothing else can highlight structures so we would never need to revert it
+                ChangeTowerTint(position, Color.white);
             }
             else
             {
                 throw new System.Exception("Structure type not implemented");
             }
         }
+        else
+        {
+            mapManager.UnhighlightTile(MapManager.Layer.GroundLayer, position);
+        }
+
+        Debug.Log("Unhovered tile at " + position);
     }
 
     /// <summary>
-    /// Highlights the tile being overed over
+    /// "Highlights" a tower game object at a tilemap position
     /// </summary>
-    /// <param name="position">Mouse cursor position</param>
-    private void HoverTile(Vector3Int position)
+    /// <param name="position">Tilemap position (without offset)</param>
+    /// <param name="color">Color to change tint to</param>
+    private void ChangeTowerTint(Vector3Int position, Color color)
     {
-        MapManager.Layer tileLayer;
-        Color tileColor;
-
-        if (currentBuildMode == BuildMode.Build)
+        foreach (GameObject tower in instantiatedTowers)
         {
-            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            if (tower.transform.position == position + tilemapOffset)
             {
-                tileLayer = MapManager.Layer.StructureLayer;
-                tileColor = Color.red;
-            }
-            else
-            {
-                tileLayer = MapManager.Layer.GroundLayer;
-                tileColor = Color.green;
+                tower.GetComponentsInChildren<SpriteRenderer>()[0].color = color;
+                tower.GetComponentsInChildren<SpriteRenderer>()[1].color = color;
+                break;
             }
         }
-        else if (currentBuildMode == BuildMode.Demolish)
-        {
-            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
-            {
-                tileLayer = MapManager.Layer.StructureLayer;
-                tileColor = Color.green;
-            }
-            else
-            {
-                tileLayer = MapManager.Layer.GroundLayer;
-                tileColor = Color.red;
-            }
-        }
-        else
-        {
-            throw new System.Exception("This build mode is not implemented");
-        }
-
-        mapManager.HighlightTile(tileLayer, position, tileColor);
-        lastHoveredPosition = position;
     }
-
-
-
 }

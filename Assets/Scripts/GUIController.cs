@@ -89,7 +89,6 @@ public class GUIController : MonoBehaviour
     /// </summary>
     private void PopulateScrollView()
     {
-        print(structureDatas.Count);
         foreach (StructureData structure in structureDatas)
         {
             GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
@@ -101,8 +100,6 @@ public class GUIController : MonoBehaviour
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
             newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
-
-            print("added a button");
         }
     }
 }
