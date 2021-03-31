@@ -11,7 +11,8 @@ public class BuildManager : MonoBehaviour
         None
     }
 
-    private Vector3Int lastHoveredPosition;
+    //  We will user Vector3Int.down to indicate no tile is being hovered over
+    private Vector3Int lastHoveredPosition = Vector3Int.down;
     private List<GameObject> instantiatedTowers;
     private BuildMode currentBuildMode = BuildMode.None;
     private StructureData currentlySelectedStructure;
@@ -41,11 +42,15 @@ public class BuildManager : MonoBehaviour
 
     public void Update()
     {
-        HandleHoverLogic();
         //  Prevent clicking through GUI elements
         if (EventSystem.current.IsPointerOverGameObject() == false)
         {
+            HandleHoverLogic();
             HandleClickLogic();
+        }
+        else
+        {
+            PauseHighlighting();
         }
     }
 
@@ -53,16 +58,12 @@ public class BuildManager : MonoBehaviour
     {
         currentlySelectedStructure = selectedStructure;
         currentBuildMode = BuildMode.Build;
-        lastHoveredPosition = Vector3Int.zero;
-        HoverTile(lastHoveredPosition);
         Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
     }
 
     public void EnterDemolishMode()
     {
         currentBuildMode = BuildMode.Demolish;
-        lastHoveredPosition = Vector3Int.zero;
-        HoverTile(lastHoveredPosition);
         Debug.Log("Entered demolish mode");
     }
 
@@ -70,7 +71,7 @@ public class BuildManager : MonoBehaviour
     {
         currentlySelectedStructure = null;
         currentBuildMode = BuildMode.None;
-        UnhoverTile(lastHoveredPosition);
+        PauseHighlighting();
         Debug.Log("Exited build mode");
     }
 
@@ -88,11 +89,28 @@ public class BuildManager : MonoBehaviour
             {
                 if (mouseposition != lastHoveredPosition)
                 {
-                    UnhoverTile(lastHoveredPosition);
+                    if (IsATileCurrentlyHovered())
+                    {
+                        UnhoverTile(lastHoveredPosition);
+                    }
                     HoverTile(mouseposition);
                 }
             }
+            else
+            {
+                PauseHighlighting();
+            }
         }
+    }
+
+    /// <summary>
+    /// Used when cursor hovers over GUI elements or empty space
+    /// or when user exits build/demolish mode
+    /// </summary>
+    private void PauseHighlighting()
+    {
+        UnhoverTile(lastHoveredPosition);
+        lastHoveredPosition = Vector3Int.down;
     }
 
     /// <summary>
@@ -127,25 +145,29 @@ public class BuildManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Builds a structure
+    /// Builds a structure over a ground tile
     /// </summary>
     /// <param name="structure"></param>
     /// <param name="position"></param>
     private void BuildStructure(StructureData structure, Vector3Int position)
     {
-        if (structure.GetType() == typeof(TowerData))
+        //  Ensure there is a ground to be built upon
+        if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position))
         {
-            GameObject tower = GameObject.Instantiate(((TowerData)structure).Prefab, position + tilemapOffset, new Quaternion(0,0,0,0));
-            instantiatedTowers.Add(tower);
-            mapManager.SetTile(position, structure);
-        }
-        else if (structure.GetType() == typeof(WallData))
-        {
-            mapManager.SetTile(position, structure);
-        }
-        else
-        {
-            throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+            if (structure.GetType() == typeof(TowerData))
+            {
+                GameObject tower = GameObject.Instantiate(((TowerData)structure).Prefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
+                instantiatedTowers.Add(tower);
+                mapManager.SetTile(position, structure);
+            }
+            else if (structure.GetType() == typeof(WallData))
+            {
+                mapManager.SetTile(position, structure);
+            }
+            else
+            {
+                throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+            }
         }
     }
 
@@ -272,10 +294,8 @@ public class BuildManager : MonoBehaviour
         }
         else
         {
-            mapManager.UnhighlightTile(MapManager.Layer.GroundLayer, position);
+            mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
         }
-
-        Debug.Log("Unhovered tile at " + position);
     }
 
     /// <summary>
@@ -294,5 +314,18 @@ public class BuildManager : MonoBehaviour
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// Indicates whether a tile is being hovered or not
+    /// </summary>
+    /// <returns></returns>
+    private bool IsATileCurrentlyHovered()
+    {
+        if (lastHoveredPosition != Vector3Int.down)
+        {
+            return true;
+        }
+        return false;
     }
 }

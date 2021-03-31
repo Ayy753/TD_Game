@@ -263,7 +263,6 @@ public class MapManager : MonoBehaviour
                     break;
                 }
             }
-
             tileMapLayer.SetTileFlags(position, TileFlags.None);
             tileMapLayer.SetColor(position, color);
 
@@ -277,7 +276,6 @@ public class MapManager : MonoBehaviour
         {
             if (layer == tile.Layer && position == tile.Position)
             {
-                Debug.Log(string.Format("Reversing highlight at {0}, {1}", layer, position));
                 HighlightTile(layer, position, tile.PreviousColor);
                 break;
             }
@@ -305,8 +303,6 @@ public class MapManager : MonoBehaviour
     private void UntintTile(HighlightedTile tintedTile)
     {
         Tilemap tileMap = GetLayer(tintedTile.Layer);
-
-        //Debug.Log("Removing tint from tile at   " + position);
         tileMap.SetColor(tintedTile.Position, Color.white);
         highlightedTiles.Remove(tintedTile);
     }
@@ -317,7 +313,6 @@ public class MapManager : MonoBehaviour
     public void ClearAllTints()
     {
         //Debug.Log("number of tiles tinted before clearing all tiles:" + tintedtiles.Count);
-
         while (highlightedTiles.Count > 0)
         {
             UntintTile(highlightedTiles[0]);
