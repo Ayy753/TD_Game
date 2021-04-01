@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+/// <summary>
+/// Responsible for all pathfinding operations
+/// Currently in prototype phase
+/// </summary>
 public class PathFinder : MonoBehaviour
 {
     [SerializeField]
@@ -35,7 +39,8 @@ public class PathFinder : MonoBehaviour
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
         entranceCoordinate = structureLayer.WorldToCell(entrance.transform.position);
 
-        FindPath(true);
+        //FindPath(true);
+        StartCoroutine("CalculateShortestPath");
     }
 
     private void OnEnable()
@@ -139,7 +144,7 @@ public class PathFinder : MonoBehaviour
     /// <param name="end"></param>
     /// <param name="highlightPath">Highlight tiles considered by pathfinder?</param>
     /// <returns>A chain of path nodes, or null if there is no valid path</returns>
-    private PathNode CalculateShortestPath(Vector3Int start, Vector3Int end, bool highlightPath = false)
+    private IEnumerator CalculateShortestPath()
     {
         openList = new List<PathNode>();
         closedList = new List<PathNode>();
@@ -151,14 +156,10 @@ public class PathFinder : MonoBehaviour
         int maxItt = 10000;
         int counter = 0;
 
-        //  Remove previous path highlights
-        if (highlightPath == true)
-        {
-            mapManager.ClearAllTints();
-        }
+        mapManager.ClearAllTints();
 
         //  initialize with first item
-        PathNode initialStep = new PathNode(start);
+        PathNode initialStep = new PathNode(entranceCoordinate);
         openList.Add(initialStep);
 
         while (openList.Count > 0 && counter < maxItt)
@@ -183,17 +184,14 @@ public class PathFinder : MonoBehaviour
             closedList.Add(currentNode);
 
             //  Return path chain if we found the exit tile
-            if (currentNode.Coordinate == end)
+            if (currentNode.Coordinate == exitCoordinate)
             {
                 Debug.Log("found exit after " + counter + " iterations");
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.FScore, currentNode.GScore, parent);
-                if (highlightPath == true)
-                {
-                    List<Vector3Int> pathCoords = foundPath.GetPath();
-                    mapManager.HighlightPath(foundPath.GetPath(), Color.cyan);
-                }
-
-                return foundPath;
+                
+                Path = foundPath.GetPath();
+                mapManager.HighlightPath(Path, Color.cyan);
+                yield break;
             }
 
             //  Process neighbouring tiles
@@ -224,14 +222,10 @@ public class PathFinder : MonoBehaviour
                             if (skipSuccessor == false)
                             {
                                 float neighGCost = tempTileCost + parent.GScore;
-                                float neighHCost = ManhattanDistance(neighbourCoordinate, end);
+                                float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
                                 float neighFCost = neighGCost + neighHCost;
 
-                                if (highlightPath)
-                                {
-                                    //  Tint tile yellow to visualize that the algorithm has considered it
-                                    mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
-                                }
+                                mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
 
                                 //  Check if openlist already contains a path to this tile
                                 //  If it has, and the other one has a smaller F cost, update cost and parent
@@ -261,30 +255,12 @@ public class PathFinder : MonoBehaviour
                 }
             }
             counter++;
+            //  Pause coroutine every 45th iteration to allow other processes to run in the meantime
+            if (counter % 45 == 0)
+            {
+                yield return null;
+            }
         }
-
-        //  If no path is found, return null
-        return null;
-    }
-
-    /// <summary>
-    /// Finds and highlights the path solution through the unity inspector
-    /// </summary>
-    [ContextMenu("findPath")]
-    private void FindPath()
-    {
-        FindPath(true);
-        Debug.Log("Path size: " + Path.Count);
-    }
-
-    /// <summary>
-    /// Used to calculate/update the current path through the level from the entrance to exit gates
-    /// </summary>
-    /// <param name="highlightPath"></param>
-    private void FindPath(bool highlightPath)
-    {
-        PathNode bestPath = CalculateShortestPath(entranceCoordinate, exitCoordinate, highlightPath);
-        Path = bestPath.GetPath();
     }
 
     /// <summary>
@@ -334,6 +310,7 @@ public class PathFinder : MonoBehaviour
 
     private void HandleStructureChanged()
     {
-        Path = CalculateShortestPath(entranceCoordinate, exitCoordinate, true).GetPath();
+        StopCoroutine("CalculateShortestPath");
+        StartCoroutine("CalculateShortestPath");
     }
 }
