@@ -154,7 +154,7 @@ public class PathFinder : MonoBehaviour
         //  Remove previous path highlights
         if (highlightPath == true)
         {
-            //mapManager.ClearAllTints();
+            mapManager.ClearAllTints();
         }
 
         //  initialize with first item
@@ -183,14 +183,14 @@ public class PathFinder : MonoBehaviour
             closedList.Add(currentNode);
 
             //  Return path chain if we found the exit tile
-            if (currentNode.Coordinate == exitCoordinate)
+            if (currentNode.Coordinate == end)
             {
                 Debug.Log("found exit after " + counter + " iterations");
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.FScore, currentNode.GScore, parent);
                 if (highlightPath == true)
                 {
                     List<Vector3Int> pathCoords = foundPath.GetPath();
-                    //mapManager.HighlightPath(foundPath.GetPath(), Color.cyan);
+                    mapManager.HighlightPath(foundPath.GetPath(), Color.cyan);
                 }
 
                 return foundPath;
@@ -224,13 +224,13 @@ public class PathFinder : MonoBehaviour
                             if (skipSuccessor == false)
                             {
                                 float neighGCost = tempTileCost + parent.GScore;
-                                float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
+                                float neighHCost = ManhattanDistance(neighbourCoordinate, end);
                                 float neighFCost = neighGCost + neighHCost;
 
                                 if (highlightPath)
                                 {
                                     //  Tint tile yellow to visualize that the algorithm has considered it
-                                    //mapManager.TintTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
+                                    mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
                                 }
 
                                 //  Check if openlist already contains a path to this tile
@@ -292,7 +292,7 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     public void HighlightPath()
     {
-        //mapManager.HighlightPath(Path, Color.cyan);
+        mapManager.HighlightPath(Path, Color.cyan);
     }
 
     /// <summary>
@@ -300,7 +300,7 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     public void UnhighlightPath()
     {
-        //mapManager.ClearAllTints();
+        mapManager.ClearAllTints();
     }
 
     /// <summary>

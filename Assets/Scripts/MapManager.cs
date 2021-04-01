@@ -220,6 +220,10 @@ public class MapManager : MonoBehaviour
     public void SetTile(Vector3Int position, TileData tileData)
     {
         GetLayer(tileData.Layer).SetTile(position, tileData.TileBase);
+        if (tileData.Layer == Layer.StructureLayer)
+        {
+            OnStructureChanged.Invoke();
+        }
     }
 
     /// <summary>
@@ -232,6 +236,7 @@ public class MapManager : MonoBehaviour
         Tilemap tilemap = GetLayer(Layer.StructureLayer);
         TileBase tileBase = GetTileBase(structureTile);
         tilemap.SetTile(position, tileBase);
+        OnStructureChanged.Invoke();
     }
 
     /// <summary>
@@ -243,6 +248,13 @@ public class MapManager : MonoBehaviour
     {
         Tilemap tilemap = GetLayer(layer);
         tilemap.SetTile(position, null);
+
+        if (layer == Layer.StructureLayer)
+        {
+            //  in case this tile was highlighted
+            UnhighlightTile(layer, position);
+            OnStructureChanged.Invoke();
+        }
     }
 
     public void HighlightTile(Layer layer, Vector3Int position, Color color)
