@@ -35,7 +35,7 @@ public class BuildManager : MonoBehaviour
         //  Because the last hovered tile gets initialized at origin when entering build/demolish mode
         if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, Vector3Int.zero) == false)
         {
-            mapManager.SetTile(lastHoveredPosition, MapManager.GroundTile.Grass);
+            mapManager.SetTile(Vector3Int.zero, MapManager.GroundTile.Grass);
             Debug.Log("Added grass tile to origin");
         }
     }
@@ -57,12 +57,14 @@ public class BuildManager : MonoBehaviour
     public void EnterBuildMode(StructureData selectedStructure)
     {
         currentlySelectedStructure = selectedStructure;
+        lastHoveredPosition = Vector3Int.zero;
         currentBuildMode = BuildMode.Build;
         Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
     }
 
     public void EnterDemolishMode()
     {
+        lastHoveredPosition = Vector3Int.zero;
         currentBuildMode = BuildMode.Demolish;
         Debug.Log("Entered demolish mode");
     }
@@ -89,10 +91,7 @@ public class BuildManager : MonoBehaviour
             {
                 if (mouseposition != lastHoveredPosition)
                 {
-                    if (IsATileCurrentlyHovered())
-                    {
-                        UnhoverTile(lastHoveredPosition);
-                    }
+                    UnhoverTile(lastHoveredPosition);
                     HoverTile(mouseposition);
                 }
             }
@@ -325,18 +324,5 @@ public class BuildManager : MonoBehaviour
         GameObject tower = GameObject.Instantiate(towerData.Prefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
         tower.GetComponent<Tower>().SetTowerData(towerData);
         instantiatedTowers.Add(tower);
-    }
-
-    /// <summary>
-    /// Indicates whether a tile is being hovered or not
-    /// </summary>
-    /// <returns></returns>
-    private bool IsATileCurrentlyHovered()
-    {
-        if (lastHoveredPosition != Vector3Int.down)
-        {
-            return true;
-        }
-        return false;
     }
 }

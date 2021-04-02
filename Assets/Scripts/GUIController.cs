@@ -70,7 +70,7 @@ public class GUIController : MonoBehaviour
     }
     public void SetCurrentTileData(StructureData structureData)
     {
-        
+        toolTip.SetCurrentTileData(structureData);
     }
 
     public void ShowToolTip()

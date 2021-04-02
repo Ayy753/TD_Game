@@ -289,8 +289,8 @@ public class MapManager : MonoBehaviour
         {
             if (layer == tile.Layer && position == tile.Position)
             {
-                GetLayer(layer).SetColor(position, Color.white);
                 highlightedTiles.Remove(tile);
+                GetLayer(layer).SetColor(position, Color.white);
                 break;
             }
         }
