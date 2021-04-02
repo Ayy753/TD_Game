@@ -1,11 +1,9 @@
 ﻿//  https://www.youtube.com/watch?v=XIqtZnqutGg
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.EventSystems;
 
 public class MapManager : MonoBehaviour
 {
@@ -102,31 +100,6 @@ public class MapManager : MonoBehaviour
         Debug.Log("Map manager loaded");
         highlightedTiles = new List<HighlightedTile>();
     }
-
-    ///// <summary>
-    ///// Select a tile from a specified layer
-    ///// </summary>
-    ///// <param name="layer"></param>
-    ///// <param name="position">A world point</param>
-    ///// <returns></returns>
-    //public TileBase SelectTile(Layer layer, Vector2 position)
-    //{
-    //    Tilemap selectLayer = GetLayer(layer);
-    //    Vector3Int gridPosition = selectLayer.WorldToCell(position);
-    //    return selectLayer.GetTile(gridPosition);
-    //}
-
-    ///// <summary>
-    ///// Select a tile from a specified layer
-    ///// </summary>
-    ///// <param name="layer"></param>
-    ///// <param name="position">A point TileMap point</param>
-    ///// <returns></returns>
-    //public TileBase SelectTile(Layer layer, Vector3Int position)
-    //{
-    //    Tilemap selectLayer = GetLayer(layer);
-    //    return selectLayer.GetTile(position);
-    //}
 
     /// <summary>
     /// Does a coordinate in specified layer contain a tile?
@@ -257,6 +230,12 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Highlights a tile
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    /// <param name="color"></param>
     public void HighlightTile(Layer layer, Vector3Int position, Color color)
     {
         Tilemap tileMapLayer = GetLayer(layer);
@@ -282,6 +261,11 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Reverts tile to previous highlight color
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
     public void ReverseHighlight(Layer layer, Vector3Int position)
     {
         foreach (HighlightedTile tile in highlightedTiles)
@@ -294,6 +278,11 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes tile highlight
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
     public void UnhighlightTile(Layer layer, Vector3Int position)
     {
         foreach (HighlightedTile tile in highlightedTiles)

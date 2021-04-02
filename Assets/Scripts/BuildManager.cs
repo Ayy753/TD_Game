@@ -156,8 +156,7 @@ public class BuildManager : MonoBehaviour
         {
             if (structure.GetType() == typeof(TowerData))
             {
-                GameObject tower = GameObject.Instantiate(((TowerData)structure).Prefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
-                instantiatedTowers.Add(tower);
+                InstantiateTower((TowerData)structure, position);
                 mapManager.SetTile(position, structure);
             }
             else if (structure.GetType() == typeof(WallData))
@@ -314,6 +313,18 @@ public class BuildManager : MonoBehaviour
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// Instantiates and initializes a tower game object and adds it to list
+    /// </summary>
+    /// <param name="towerData"></param>
+    /// <param name="position"></param>
+    private void InstantiateTower(TowerData towerData, Vector3Int position)
+    {
+        GameObject tower = GameObject.Instantiate(towerData.Prefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
+        tower.GetComponent<Tower>().SetTowerData(towerData);
+        instantiatedTowers.Add(tower);
     }
 
     /// <summary>

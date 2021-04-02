@@ -10,6 +10,7 @@ public class GUIController : MonoBehaviour
     EnemySpawner spawner;
     PathFinder pathFinder;
     BuildManager buildManager;
+    ToolTip toolTip;
 
     private Image selectedIcon;
     private Text selectedDetails;
@@ -33,6 +34,7 @@ public class GUIController : MonoBehaviour
         buildManager = gameManager.BuildManager;
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
         selectedDetails = GameObject.Find("txtCurrentlySelectedDetails").GetComponent<Text>();
+        toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         PopulateScrollView();
     }
 
@@ -65,6 +67,20 @@ public class GUIController : MonoBehaviour
         selectedIcon.sprite = null;
         selectedDetails.text = string.Empty;
         buildManager.ExitBuildMode();
+    }
+    public void SetCurrentTileData(StructureData structureData)
+    {
+        
+    }
+
+    public void ShowToolTip()
+    {
+        toolTip.ShowToolTip();
+    }
+
+    public void HideToolTip() 
+    {
+        toolTip.HideToolTip();
     }
 
     #region Demo Functions
@@ -114,7 +130,7 @@ public class GUIController : MonoBehaviour
             GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
             newButton.transform.SetParent(scrollViewContentBox.transform);
             newButton.GetComponent<Image>().sprite = structure.Icon;
-            newButton.name = structure.name;
+            newButton.name = structure.Name;
 
             //  Not sure why but the scale gets messed up, so this is a fix
             newButton.transform.localScale = new Vector3(1, 1, 1);

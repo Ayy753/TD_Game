@@ -22,8 +22,8 @@ public class PathFinder : MonoBehaviour
     private Vector3Int exitCoordinate;
     private Vector3Int entranceCoordinate;
 
-    List<PathNode> openList;
-    List<PathNode> closedList;
+    private List<PathNode> openList;
+    private List<PathNode> closedList;
 
     /// <summary>
     /// The current path through the level
@@ -39,7 +39,6 @@ public class PathFinder : MonoBehaviour
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
         entranceCoordinate = structureLayer.WorldToCell(entrance.transform.position);
 
-        //FindPath(true);
         StartCoroutine("CalculateShortestPath");
     }
 

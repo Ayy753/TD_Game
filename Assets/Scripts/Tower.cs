@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    [SerializeField]
-    public float Range { get; private set; }
-    [SerializeField]
-    public int Damage { get; private set; }
+    //  Contains this tower's attributes
+    TileData TowerData;
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void SetTowerData(TowerData towerData)
+    {
+        TowerData = towerData;
     }
 }
