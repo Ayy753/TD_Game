@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -24,6 +25,10 @@ public class PathFinder : MonoBehaviour
 
     private List<PathNode> openList;
     private List<PathNode> closedList;
+
+
+    public delegate void PathRecalculated(List<Vector3Int> newPath);
+    public static PathRecalculated OnPathRecalculated;
 
     /// <summary>
     /// The current path through the level
@@ -190,6 +195,10 @@ public class PathFinder : MonoBehaviour
                 
                 Path = foundPath.GetPath();
                 mapManager.HighlightPath(Path, Color.cyan);
+                if (OnPathRecalculated != null)
+                {
+                    OnPathRecalculated.Invoke(Path);
+                }
                 yield break;
             }
 

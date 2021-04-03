@@ -18,7 +18,7 @@ public class EnemySpawner : MonoBehaviour
         entrance = GameObject.Find("Entrance");
         enemyPool = new List<Enemy>();
 
-        //StartCoroutine(PeriodicSpawner());
+        StartCoroutine(PeriodicSpawner());
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 //Debug.Log("Found an inactive enemy");
                 foundAvailible = true;
-                enemy.Spawn(position);
+                enemy.Spawn(position, 20f);
                 break;
             }
         }
@@ -81,17 +81,17 @@ public class EnemySpawner : MonoBehaviour
                 newEnemy.SetSpeed(unitSpeedOverride);
             }
 
-            newEnemy.Spawn(position);
+            newEnemy.Spawn(position, 20f);
             enemyPool.Add(newEnemy);
         }
     }
 
-    private IEnumerator PeriodicSpawner()
+    private IEnumerator PeriodicSpawner()   
     {
         while (true)
         {
             SpawnEnemy(entrance.transform.position);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(1);
         }
     }
 
@@ -107,5 +107,10 @@ public class EnemySpawner : MonoBehaviour
         {
             enemy.SetSpeed(newSpeed);
         }
+    }
+
+    public List<Enemy> GetEnemies()
+    {
+        return enemyPool;
     }
 }

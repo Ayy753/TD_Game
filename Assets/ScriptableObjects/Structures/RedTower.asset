@@ -20,5 +20,6 @@ MonoBehaviour:
     type: 3}
   <Damage>k__BackingField: 5
   <Range>k__BackingField: 15
+  <ReloadTime>k__BackingField: 5
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
