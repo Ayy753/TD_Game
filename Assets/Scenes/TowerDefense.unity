@@ -612,8 +612,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2057229067}
   m_HandleRect: {fileID: 2057229066}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -27469,7 +27469,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1195016052}
   m_HandleRect: {fileID: 1195016051}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -93077,7 +93077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033921f9d5788ef4e8a7b9b0f01597c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 104851725730112777, guid: 55d41ff03b05b284ebd98a730de79219,
+  enemyPrefab: {fileID: 8672801003913250982, guid: 1b0b2b327f09edb4c8077db638a85990,
     type: 3}
 --- !u!4 &1987680581
 Transform:

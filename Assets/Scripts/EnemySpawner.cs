@@ -74,7 +74,7 @@ public class EnemySpawner : MonoBehaviour
         {
             //Debug.Log("Instantiating a new enemy");
             GameObject go = Instantiate(enemyPrefab, position, new Quaternion());
-            Enemy newEnemy = go.GetComponent<Enemy>();
+            Enemy newEnemy = go.GetComponentInChildren<Enemy>();
 
             if (unitSpeedOverride != 0)
             {

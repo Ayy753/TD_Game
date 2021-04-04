@@ -30,7 +30,7 @@ public class Projectile : MonoBehaviour
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.DealDamage(Damage);
+            enemy.TakeDamage(Damage);
         }
         Destroy(gameObject);
     }

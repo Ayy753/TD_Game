@@ -10,7 +10,6 @@ public class Tower : MonoBehaviour
     GameObject projectilePrefab;
     EnemySpawner enemySpawner;
 
-    public float damage { get; set; } = 5f;
     void Start()
     {
         enemySpawner = GameManager.Instance.EnemySpawner;

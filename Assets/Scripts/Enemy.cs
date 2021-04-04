@@ -10,6 +10,11 @@ public class Enemy : MonoBehaviour
     private List<Vector3Int> path;
     private int currentPathIndex;
 
+    [SerializeField]
+    private SpriteRenderer healthBarBackground;
+    [SerializeField]
+    private SpriteRenderer healthBarForeground;
+
     public float MaxHealth { get; set; }
     public float CurrentHealth { get; set; }
 
@@ -52,9 +57,9 @@ public class Enemy : MonoBehaviour
         {
             Vector3 target = path[currentPathIndex] + tilemapOffset;
 
-            if (transform.position != target)
+            if (transform.parent.position != target)
             {
-                transform.position = Vector3.MoveTowards(transform.position, target, Speed * Time.deltaTime);
+                transform.parent.position = Vector3.MoveTowards(transform.parent.position, target, Speed * Time.deltaTime);
             }
             else
             {
@@ -81,8 +86,6 @@ public class Enemy : MonoBehaviour
                         transform.rotation = Quaternion.Euler(0, 0, 0);
                     }
                 }
-
-
             }
         }
         else
@@ -102,11 +105,10 @@ public class Enemy : MonoBehaviour
     /// <param name="position"></param>
     public void Spawn(Vector3 position, float maxHealth)
     {
-        //Debug.Log("Enemy spawn");
-        transform.position = position;
+        transform.parent.position = position;
         MaxHealth = maxHealth;
         CurrentHealth = maxHealth;
-        gameObject.SetActive(true);
+        transform.parent.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -115,7 +117,8 @@ public class Enemy : MonoBehaviour
     public void Despawn()
     {
         //Debug.Log("Enemy despawn");
-        gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(false);
+        healthBarForeground.gameObject.transform.localScale = new Vector3(1, 0.25f, 1);
     }
 
     /// <summary>
@@ -132,12 +135,20 @@ public class Enemy : MonoBehaviour
     /// </summary>
     /// <param name="damage"></param>
     /// <returns></returns>
-    public void DealDamage(float damage)
+    public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
+        float healthPercent = CurrentHealth / MaxHealth;
+        Debug.Log("Took " + damage + " damage");
+
         if (CurrentHealth <= 0)
         {
             Despawn();
         }
+        else
+        {
+            healthBarForeground.gameObject.transform.localScale = new Vector3(healthPercent, 0.25f, 1);
+        }
+
     }
 }
