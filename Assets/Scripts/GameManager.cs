@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,10 +18,20 @@ public class GameManager : MonoBehaviour
     public GUIController GUIController { get; private set; }
     public BuildManager BuildManager { get; private set; }
 
+    public int Lives { get; private set; } = 25;
+    public int Gold { get; private set; } = 250;
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
+        Enemy.OnEnemyDied += HandleEnemyDied;
+    }
+
+    private void OnDisable()
+    {
+        Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
+        Enemy.OnEnemyDied -= HandleEnemyDied;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -40,6 +51,12 @@ public class GameManager : MonoBehaviour
         {
             print("mapmanager is null");
         }
+
+    }
+
+    private void LateUpdate()
+    {
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
     void Start()
@@ -50,6 +67,15 @@ public class GameManager : MonoBehaviour
     //  todo: decrease health or something
     private void HandleEnemyReachedGate(Enemy enemy)
     {
-        Debug.Log("Should decrease health");
+        Lives -= 1;
+        print("Lives: " + Lives);
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
+    }
+
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        Gold += enemy.Value;
+        print("Gold: " + Gold);
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 }

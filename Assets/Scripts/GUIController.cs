@@ -15,6 +15,9 @@ public class GUIController : MonoBehaviour
     private Image selectedIcon;
     private Text selectedDetails;
 
+    private Text livesLabel;
+    private Text goldLabel;
+
     [SerializeField]
     private GameObject scrollViewContentBox;
 
@@ -35,6 +38,10 @@ public class GUIController : MonoBehaviour
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
         selectedDetails = GameObject.Find("txtCurrentlySelectedDetails").GetComponent<Text>();
         toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
+
+        livesLabel = GameObject.Find("lblLives").GetComponent<Text>();
+        goldLabel = GameObject.Find("lblGold").GetComponent<Text>();
+
         PopulateScrollView();
     }
 
@@ -81,6 +88,17 @@ public class GUIController : MonoBehaviour
     public void HideToolTip() 
     {
         toolTip.HideToolTip();
+    }
+
+    /// <summary>
+    /// Used to update player's gold and lives
+    /// </summary>
+    /// <param name="lives"></param>
+    /// <param name="gold"></param>
+    public void UpdateGameVariableDisplay(int lives, int gold)
+    {
+        livesLabel.text = "Lives: " + lives;
+        goldLabel.text = "Gold: " + gold;
     }
 
     #region Demo Functions

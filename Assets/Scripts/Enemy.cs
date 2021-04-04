@@ -15,8 +15,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private SpriteRenderer healthBarForeground;
 
-    public float MaxHealth { get; set; }
-    public float CurrentHealth { get; set; }
+    public float MaxHealth { get; private set; }
+    public float CurrentHealth { get; private set; }
+    public int Value { get; private set; } = 5;
 
     [SerializeField]
     private float Speed = 10f;
@@ -25,7 +26,10 @@ public class Enemy : MonoBehaviour
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
 
     public delegate void EnemyReachedExit(Enemy enemy);
+    public delegate void EnemyDied(Enemy enemy);
+
     public static event EnemyReachedExit OnEnemyReachedGate;
+    public static event EnemyDied OnEnemyDied;
 
     private void OnEnable()
     {
@@ -53,49 +57,52 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Update()
     {
-        if (path != null && currentPathIndex <= path.Count-1)
+        if (path != null)
         {
-            Vector3 target = path[currentPathIndex] + tilemapOffset;
-
-            if (transform.parent.position != target)
+            if (currentPathIndex <= path.Count-1)
             {
-                transform.parent.position = Vector3.MoveTowards(transform.parent.position, target, Speed * Time.deltaTime);
-            }
-            else
-            {
-                currentPathIndex++;
+                Vector3 target = path[currentPathIndex] + tilemapOffset;
 
-                if (currentPathIndex < path.Count)
+                if (transform.parent.position != target)
                 {
-                    //  Rotate unit to face direction of next tile in path
-                    Vector3 posNoOffset = transform.position - tilemapOffset;
-                    if (path[currentPathIndex].x < posNoOffset.x)
+                    transform.parent.position = Vector3.MoveTowards(transform.parent.position, target, Speed * Time.deltaTime);
+                }
+                else
+                {
+                    currentPathIndex++;
+
+                    if (currentPathIndex < path.Count)
                     {
-                        transform.rotation = Quaternion.Euler(0, 0, 180);
-                    }
-                    else if (path[currentPathIndex].y < posNoOffset.y)
-                    {
-                        transform.rotation = Quaternion.Euler(0, 0, -90);
-                    }
-                    else if (path[currentPathIndex].y > posNoOffset.y)
-                    {
-                        transform.rotation = Quaternion.Euler(0, 0, 90);
-                    }
-                    if (path[currentPathIndex].x > posNoOffset.x)
-                    {
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                        //  Rotate unit to face direction of next tile in path
+                        Vector3 posNoOffset = transform.position - tilemapOffset;
+                        if (path[currentPathIndex].x < posNoOffset.x)
+                        {
+                            transform.rotation = Quaternion.Euler(0, 0, 180);
+                        }
+                        else if (path[currentPathIndex].y < posNoOffset.y)
+                        {
+                            transform.rotation = Quaternion.Euler(0, 0, -90);
+                        }
+                        else if (path[currentPathIndex].y > posNoOffset.y)
+                        {
+                            transform.rotation = Quaternion.Euler(0, 0, 90);
+                        }
+                        if (path[currentPathIndex].x > posNoOffset.x)
+                        {
+                            transform.rotation = Quaternion.Euler(0, 0, 0);
+                        }
                     }
                 }
             }
-        }
-        else
-        {
-            if (OnEnemyReachedGate != null)
+            else
             {
-                OnEnemyReachedGate.Invoke(this);
-            }
+                if (OnEnemyReachedGate != null)
+                {
+                    OnEnemyReachedGate.Invoke(this);
+                }
 
-            Despawn();
+                Despawn();
+            }
         }
     }
 
@@ -116,9 +123,14 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void Despawn()
     {
-        //Debug.Log("Enemy despawn");
         transform.parent.gameObject.SetActive(false);
+        //  Reset healthbar
         healthBarForeground.gameObject.transform.localScale = new Vector3(1, 0.25f, 1);
+
+        if (OnEnemyDied != null)
+        {
+            OnEnemyDied.Invoke(this);
+        }
     }
 
     /// <summary>
