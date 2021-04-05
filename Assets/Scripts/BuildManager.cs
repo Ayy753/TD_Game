@@ -4,12 +4,8 @@ using UnityEngine.EventSystems;
 
 public class BuildManager : MonoBehaviour
 {
-    public enum BuildMode
-    {
-        Build,
-        Demolish,
-        None
-    }
+    private GameManager gameManager;
+    private MapManager mapManager;
 
     //  We will user Vector3Int.down to indicate no tile is being hovered over
     private Vector3Int lastHoveredPosition = Vector3Int.down;
@@ -20,9 +16,12 @@ public class BuildManager : MonoBehaviour
     //  An offset for GameObjects to align properly with the tilemap
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
 
-    //  References to other primary classes
-    private GameManager gameManager;
-    private MapManager mapManager;
+    public enum BuildMode
+    {
+        Build,
+        Demolish,
+        None
+    }
 
     public void Start()
     {
@@ -30,14 +29,6 @@ public class BuildManager : MonoBehaviour
         mapManager = gameManager.MapManager;
 
         instantiatedTowers = new List<GameObject>();
-
-        //  Adding a ground tile to origin if there is nothing there
-        //  Because the last hovered tile gets initialized at origin when entering build/demolish mode
-        if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, Vector3Int.zero) == false)
-        {
-            mapManager.SetTile(Vector3Int.zero, MapManager.GroundTile.Grass);
-            Debug.Log("Added grass tile to origin");
-        }
     }
 
     public void Update()

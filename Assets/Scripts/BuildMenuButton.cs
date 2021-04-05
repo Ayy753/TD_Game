@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
@@ -16,7 +14,7 @@ public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClic
     public void OnPointerEnter(PointerEventData eventData)
     {
         GUIController.ShowToolTip();
-        GUIController.SetCurrentTileData(StructureData);
+        GUIController.SetCurrentStructureData(StructureData);
     }
 
     public void OnPointerExit(PointerEventData eventData)

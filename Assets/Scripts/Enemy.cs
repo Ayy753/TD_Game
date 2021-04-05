@@ -3,25 +3,21 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private PathFinder pathFinder;
+    #region Variables
     private GameManager gameManager;
-    private List<Vector3Int> path;
-    private int currentPathIndex;
+    private PathFinder pathFinder;
 
     [SerializeField]
     private SpriteRenderer healthBarBackground;
     [SerializeField]
     private SpriteRenderer healthBarForeground;
 
-    public float MaxHealth { get; private set; }
-    public float CurrentHealth { get; private set; }
-    public int Value { get; private set; } = 5;
-
-    [SerializeField]
-    private float Speed = 10f;
+    private List<Vector3Int> path;
+    private int currentPathIndex;
 
     //  To compensate for the 0.5 unit offset of the tilemap system
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
+    #endregion
 
     public delegate void EnemyReachedExit(Enemy enemy);
     public delegate void EnemyDied(Enemy enemy);
@@ -29,13 +25,23 @@ public class Enemy : MonoBehaviour
     public static event EnemyReachedExit OnEnemyReachedGate;
     public static event EnemyDied OnEnemyDied;
 
+    #region Properties
+    public float MaxHealth { get; private set; }
+    public float CurrentHealth { get; private set; }
+    public int Value { get; private set; } = 5;
+
+    [SerializeField]
+    private float Speed { get; set; } = 10f;
+    #endregion
+
+    #region Methods
     private void OnEnable()
     {
         //Debug.Log("Enemy enable");
         gameManager = GameManager.Instance;
         pathFinder = gameManager.PathFinder;
         currentPathIndex = 0;
-        path = pathFinder.Path;
+        path = pathFinder.PathCoordinates;
 
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
     }
@@ -45,19 +51,11 @@ public class Enemy : MonoBehaviour
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
     }
 
-    private void HandlePathRecalculated(List<Vector3Int> newPath)
-    {
-        path = newPath;
-    }
-
-    /// <summary>
-    /// Moves through path towards exit
-    /// </summary>
-    void Update()
+    private void Update()
     {
         if (path != null)
         {
-            if (currentPathIndex <= path.Count-1)
+            if (currentPathIndex <= path.Count - 1)
             {
                 Vector3 target = path[currentPathIndex] + tilemapOffset;
 
@@ -102,6 +100,15 @@ public class Enemy : MonoBehaviour
                 Despawn();
             }
         }
+    }
+
+    /// <summary>
+    /// Responds to path change event
+    /// </summary>
+    /// <param name="newPath"></param>
+    private void HandlePathRecalculated(List<Vector3Int> newPath)
+    {
+        path = newPath;
     }
 
     /// <summary>
@@ -162,4 +169,5 @@ public class Enemy : MonoBehaviour
         }
 
     }
+    #endregion
 }

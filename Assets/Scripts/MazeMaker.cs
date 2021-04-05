@@ -14,6 +14,9 @@ public class MazeMaker : MonoBehaviour
 {
     private string path = "Assets/Resources/maze2.txt";
 
+    WallData wallData;
+    GroundData stonePathData;
+
     [SerializeField]
     MapManager mapManager;
 
@@ -48,15 +51,15 @@ public class MazeMaker : MonoBehaviour
             Vector3Int position = startPosition + new Vector3Int(column, row, 0);
             if (b == 'W')
             {
-                mapManager.SetTile(position, MapManager.GroundTile.StonePath);
+                mapManager.SetTile(position, stonePathData);
                 column++;
             }
             else if (b == 'B')
             {
                 //  Build floor under wall
-                mapManager.SetTile(position, MapManager.GroundTile.StonePath);
+                mapManager.SetTile(position, stonePathData);
                 //  Build wall
-                mapManager.SetTile(position, MapManager.StructureType.Wall);
+                mapManager.SetTile(position, wallData);
                 column++;
             }
             else if (b == '\n')

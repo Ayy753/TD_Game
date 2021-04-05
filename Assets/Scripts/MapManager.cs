@@ -21,12 +21,6 @@ public class MapManager : MonoBehaviour
 
     private Dictionary<TileBase, TileData> dataFromTiles;
 
-    //  Caching these tiles so it doesnt need to search each time
-    private TileBase wallTile;
-    private TileBase grassTile;
-    private TileBase pathTile;
-    private TileBase towerTile;
-
     //  Stores all the tiles that have been tinted
     private List<HighlightedTile> highlightedTiles;
 
@@ -43,48 +37,12 @@ public class MapManager : MonoBehaviour
         StructureLayer
     }
 
-    /// <summary>
-    /// Tiles belonging to the ground layer
-    /// </summary>
-    public enum GroundTile
-    {
-        StonePath,
-        Grass
-    }
-
-    /// <summary>
-    /// Tile belonging to the structure layer
-    /// </summary>
-    public enum StructureType
-    {
-        Wall,
-        TowerBase
-    }
-
     private void Awake()
     {
         dataFromTiles = new Dictionary<TileBase, TileData>();
 
         foreach (TileData tileData in tileDatas)
         {
-            //  Cache tiles (I dont like this solution will probably change later)
-            if (tileData.name == "StonePathRandom")
-            {
-                pathTile = tileData.TileBase;
-            }
-            else if (tileData.name == "WallRuleTile")
-            {
-                wallTile = tileData.TileBase;
-            }
-            else if (tileData.name == "GrassRandom")
-            {
-                grassTile = tileData.TileBase;
-            }
-            else if (tileData.name == "TowerBase")
-            {
-                towerTile = tileData.TileBase;
-            }
-
             //  Link TileBase objects to TileData 
             //  Since towers share the same tower base we need to ensure they dont get added twice
             if (dataFromTiles.ContainsKey(tileData.TileBase) != true)
@@ -94,7 +52,7 @@ public class MapManager : MonoBehaviour
             }
         }
     }
-
+        
     private void Start()
     {
         Debug.Log("Map manager loaded");
@@ -138,54 +96,6 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Get the Ground layer TileBase object represented by an enumerator
-    /// </summary>
-    /// <param name="groundTile"></param>
-    /// <returns></returns>
-    public TileBase GetTileBase(GroundTile groundTile)
-    {
-        switch (groundTile)
-        {
-            case GroundTile.StonePath:
-                return pathTile;
-            case GroundTile.Grass:
-                return grassTile;
-            default:
-                throw new Exception("Could not find a ground layer TileBase object associated with this enum");
-        }
-    }
-
-    /// <summary>
-    /// Get the Structure layer TileBase object represented by an enumerator
-    /// </summary>
-    /// <param name="structureTile"></param>
-    /// <returns></returns>
-    public TileBase GetTileBase(StructureType structureTile)
-    {
-        switch (structureTile)
-        {
-            case StructureType.Wall:
-                return wallTile;
-            case StructureType.TowerBase:
-                return towerTile;
-            default:
-                throw new Exception("Could not find a structure layer TileBase object associated with this enum");
-        }
-    }
-
-    /// <summary>
-    /// Set a ground tile
-    /// </summary>
-    /// <param name="position"></param>
-    /// <param name="groundTile"></param>
-    public void SetTile(Vector3Int position, GroundTile groundTile)
-    {
-        Tilemap tilemap = GetLayer(Layer.GroundLayer);
-        TileBase tileBase = GetTileBase(groundTile);
-        tilemap.SetTile(position, tileBase);
-    }
-
-    /// <summary>
     /// Sets a tile based on a tileData object
     /// </summary>
     /// <param name="position">Tile position</param>
@@ -197,19 +107,6 @@ public class MapManager : MonoBehaviour
         {
             OnStructureChanged.Invoke();
         }
-    }
-
-    /// <summary>
-    /// Set a structure tile
-    /// </summary>
-    /// <param name="position"></param>
-    /// <param name="structureTile"></param>
-    public void SetTile(Vector3Int position, StructureType structureTile)
-    {
-        Tilemap tilemap = GetLayer(Layer.StructureLayer);
-        TileBase tileBase = GetTileBase(structureTile);
-        tilemap.SetTile(position, tileBase);
-        OnStructureChanged.Invoke();
     }
 
     /// <summary>
@@ -297,26 +194,13 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Removes the tint from a tile
-    /// </summary>
-    /// <param name="layer"></param>
-    /// <param name="position"></param>
-    private void UntintTile(HighlightedTile tintedTile)
-    {
-        Tilemap tileMap = GetLayer(tintedTile.Layer);
-        tileMap.SetColor(tintedTile.Position, Color.white);
-        highlightedTiles.Remove(tintedTile);
-    }
-
-    /// <summary>
     /// Removes the tinting from all tiles
     /// </summary>
-    public void ClearAllTints()
+    public void UnhighlightAll()
     {
-        //Debug.Log("number of tiles tinted before clearing all tiles:" + tintedtiles.Count);
         while (highlightedTiles.Count > 0)
         {
-            UntintTile(highlightedTiles[0]);
+            UnhighlightTile(highlightedTiles[0].Layer, highlightedTiles[0].Position);
         }
     }
 

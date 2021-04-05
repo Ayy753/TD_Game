@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
+    private EnemySpawner enemySpawner;
     //  Contains this tower's attributes
-    TowerData TowerData;
+    private TowerData TowerData;
     [SerializeField]
-    GameObject projectilePrefab;
-    EnemySpawner enemySpawner;
+    private GameObject projectilePrefab;
 
-    void Start()
+    private void Start()
     {
         enemySpawner = GameManager.Instance.EnemySpawner;
         StartCoroutine(Shoot());

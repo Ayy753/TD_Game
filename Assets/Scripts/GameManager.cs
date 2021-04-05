@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Unpauses the game
     /// </summary>
-    private void UnpauseGame()
+    private void ResumeGame()
     {
         Time.timeScale = 1;
     }

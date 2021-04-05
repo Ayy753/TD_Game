@@ -39,14 +39,6 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Spawns a single enemy at the entrance
-    /// </summary>
-    public void SpawnEnemy()
-    {
-        SpawnEnemy(entrance.transform.position);
-    }
-
-    /// <summary>
     /// Spawns an enemy at a specified position using the object pool
     /// </summary>
     /// <param name="position"></param>
@@ -84,6 +76,10 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Periodically spawns enemies
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator PeriodicSpawner()   
     {
         while (true)
@@ -117,6 +113,10 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get a list of enemies
+    /// </summary>
+    /// <returns></returns>
     public List<Enemy> GetEnemies()
     {
         return enemyPool;

@@ -10,6 +10,8 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class PathFinder : MonoBehaviour
 {
+    private MapManager mapManager;
+
     [SerializeField]
     private Tilemap structureLayer;
 
@@ -19,23 +21,20 @@ public class PathFinder : MonoBehaviour
     [SerializeField]
     private GameObject exit;
 
-    private MapManager mapManager;
     private Vector3Int exitCoordinate;
     private Vector3Int entranceCoordinate;
 
     private List<PathNode> openList;
     private List<PathNode> closedList;
 
-
     public delegate void PathRecalculated(List<Vector3Int> newPath);
     public static PathRecalculated OnPathRecalculated;
 
     /// <summary>
-    /// The current path through the level
+    /// The current path through the map
     /// </summary>
-    public List<Vector3Int> Path { get; protected set; }
+    public List<Vector3Int> PathCoordinates { get; protected set; }
 
-    // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Path Finder loaded");
@@ -51,6 +50,7 @@ public class PathFinder : MonoBehaviour
     {
         MapManager.OnStructureChanged += HandleStructureChanged;
     }
+
     private void OnDisable()
     {
         MapManager.OnStructureChanged -= HandleStructureChanged;
@@ -64,40 +64,40 @@ public class PathFinder : MonoBehaviour
         //  https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
 
         //  Estimated distance from end node
-        public float HScore { get; private set; }
+        public float Hcost { get; private set; }
 
         //  Distance from start node
-        public float GScore { get; private set; }
+        public float Gcost { get; private set; }
 
         //  Combined distances
-        public float FScore
+        public float Fcost
         {
-            get { return GScore + HScore; }
+            get { return Gcost + Hcost; }
             set {; }
         }
         public Vector3Int Coordinate { get; private set; }
-        public PathNode Parent { get; set; }
+        public PathNode ParentNode { get; set; }
 
         public PathNode(Vector3Int coordinate, float gScore, float hScore, PathNode parent)
         {
-            GScore = gScore;
-            HScore = hScore;
+            Gcost = gScore;
+            Hcost = hScore;
             Coordinate = coordinate;
-            Parent = parent;
+            ParentNode = parent;
         }
 
         //  initialize starting position
         public PathNode(Vector3Int startingPosition)
         {
-            GScore = 0;
-            HScore = 0;
+            Gcost = 0;
+            Hcost = 0;
             Coordinate = startingPosition;
-            Parent = null;
+            ParentNode = null;
         }
 
         public override string ToString()
         {
-            return (string.Format("{0},{1}, FScore:{2}, HScore:{3}, GScore:{4}", Coordinate.x, Coordinate.y, FScore, HScore, GScore));
+            return (string.Format("{0},{1}, FScore:{2}, HScore:{3}, GScore:{4}", Coordinate.x, Coordinate.y, Fcost, Hcost, Gcost));
         }
 
         /// <summary>
@@ -106,9 +106,9 @@ public class PathFinder : MonoBehaviour
         public void PrintChain()
         {
             print(this.ToString());
-            if (Parent != null)
+            if (ParentNode != null)
             {
-                Parent.PrintChain();
+                ParentNode.PrintChain();
             }
         }
 
@@ -133,9 +133,9 @@ public class PathFinder : MonoBehaviour
         {
             pathCoords.Add(Coordinate);
 
-            if (Parent != null)
+            if (ParentNode != null)
             {
-                Parent.GetPath(pathCoords);
+                ParentNode.GetPath(pathCoords);
             }
             return pathCoords;
         }
@@ -160,7 +160,7 @@ public class PathFinder : MonoBehaviour
         int maxItt = 10000;
         int counter = 0;
 
-        mapManager.ClearAllTints();
+        mapManager.UnhighlightAll();
 
         //  initialize with first item
         PathNode initialStep = new PathNode(entranceCoordinate);
@@ -172,7 +172,7 @@ public class PathFinder : MonoBehaviour
             PathNode currentNode = openList[0];
             foreach (PathNode node in openList)
             {
-                if (node.FScore < currentNode.FScore)
+                if (node.Fcost < currentNode.Fcost)
                 {
                     currentNode = node;
                 }
@@ -191,13 +191,13 @@ public class PathFinder : MonoBehaviour
             if (currentNode.Coordinate == exitCoordinate)
             {
                 Debug.Log("found exit after " + counter + " iterations");
-                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.FScore, currentNode.GScore, parent);
+                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Fcost, currentNode.Gcost, parent);
                 
-                Path = foundPath.GetPath();
-                mapManager.HighlightPath(Path, Color.cyan);
+                PathCoordinates = foundPath.GetPath();
+                mapManager.HighlightPath(PathCoordinates, Color.cyan);
                 if (OnPathRecalculated != null)
                 {
-                    OnPathRecalculated.Invoke(Path);
+                    OnPathRecalculated.Invoke(PathCoordinates);
                 }
                 yield break;
             }
@@ -229,7 +229,7 @@ public class PathFinder : MonoBehaviour
                             //  Otherwise, process this tile 
                             if (skipSuccessor == false)
                             {
-                                float neighGCost = tempTileCost + parent.GScore;
+                                float neighGCost = tempTileCost + parent.Gcost;
                                 float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
                                 float neighFCost = neighGCost + neighHCost;
 
@@ -241,10 +241,10 @@ public class PathFinder : MonoBehaviour
                                 {
                                     if (node.Coordinate == neighbourCoordinate)
                                     {
-                                        if (node.FScore < neighFCost)
+                                        if (node.Fcost < neighFCost)
                                         {
-                                            node.FScore = neighFCost;
-                                            node.Parent = parent;
+                                            node.Fcost = neighFCost;
+                                            node.ParentNode = parent;
                                         }
                                         skipSuccessor = true;
                                         break;
@@ -269,22 +269,6 @@ public class PathFinder : MonoBehaviour
                 yield return null;
             }
         }
-    }
-
-    /// <summary>
-    /// Highlights the path in cyan
-    /// </summary>
-    public void HighlightPath()
-    {
-        mapManager.HighlightPath(Path, Color.cyan);
-    }
-
-    /// <summary>
-    /// Remove the tinting from the tiles
-    /// </summary>
-    public void UnhighlightPath()
-    {
-        mapManager.ClearAllTints();
     }
 
     /// <summary>
@@ -320,5 +304,21 @@ public class PathFinder : MonoBehaviour
     {
         StopCoroutine("CalculateShortestPath");
         StartCoroutine("CalculateShortestPath");
+    }
+
+    /// <summary>
+    /// Highlights the path in cyan
+    /// </summary>
+    public void HighlightPath()
+    {
+        mapManager.HighlightPath(PathCoordinates, Color.cyan);
+    }
+
+    /// <summary>
+    /// Remove the tinting from the tiles
+    /// </summary>
+    public void UnhighlightPath()
+    {
+        mapManager.UnhighlightAll();
     }
 }

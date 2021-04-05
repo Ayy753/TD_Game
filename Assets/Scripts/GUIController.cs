@@ -47,12 +47,32 @@ public class GUIController : MonoBehaviour
         PopulateScrollView();
     }
 
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ExitEditMode();
+        }
+    }
+
+
+    /// <summary>
+    /// Programmically adds a build menu button for each type of structure to the scrollview
+    /// </summary>
+    private void PopulateScrollView()
+    {
+        foreach (StructureData structure in structureDatas)
+        {
+            GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
+            newButton.transform.SetParent(scrollViewContentBox.transform);
+            newButton.GetComponent<Image>().sprite = structure.Icon;
+            newButton.name = structure.Name;
+
+            //  Not sure why but the scale gets messed up, so this is a fix
+            newButton.transform.localScale = new Vector3(1, 1, 1);
+
+            newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
+            Debug.Log("created build button");
         }
     }
 
@@ -82,7 +102,7 @@ public class GUIController : MonoBehaviour
         buildManager.ExitBuildMode();
     }
 
-    public void SetCurrentTileData(StructureData structureData)
+    public void SetCurrentStructureData(StructureData structureData)
     {
         toolTip.SetCurrentTileData(structureData);
     }
@@ -108,14 +128,18 @@ public class GUIController : MonoBehaviour
         goldLabel.text = "Gold: " + gold;
     }
 
-    #region Demo Functions
-    /// <summary>
-    /// Spawn a unit
-    /// </summary>
-    public void SpawnEnemy()
+
+    public void ShowGameOverPanel()
     {
-        spawner.SpawnEnemy();
+        gameOverPanel.SetActive(true);
     }
+
+    public void HideGameOverPanel()
+    {
+        gameOverPanel.SetActive(false);
+    }
+
+    #region Demo Functions
 
     /// <summary>
     /// Change the speed of all units
@@ -145,33 +169,5 @@ public class GUIController : MonoBehaviour
     }
     #endregion
 
-    /// <summary>
-    /// Programmically adds a build menu button for each type of structure to the scrollview
-    /// </summary>
-    private void PopulateScrollView()
-    {
-        foreach (StructureData structure in structureDatas)
-        {
-            GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
-            newButton.transform.SetParent(scrollViewContentBox.transform);
-            newButton.GetComponent<Image>().sprite = structure.Icon;
-            newButton.name = structure.Name;
 
-            //  Not sure why but the scale gets messed up, so this is a fix
-            newButton.transform.localScale = new Vector3(1, 1, 1);
-
-            newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
-            Debug.Log("created build button");
-        }
-    }
-
-    public void ShowGameOverPanel()
-    {
-        gameOverPanel.SetActive(true);
-    }
-
-    private void HideGameOverPanel()
-    {
-        gameOverPanel.SetActive(false);
-    }
 }
