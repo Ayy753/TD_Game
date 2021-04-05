@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,7 +19,7 @@ public class GameManager : MonoBehaviour
     public int Lives { get; private set; } = 25;
     public int Gold { get; private set; } = 250;
 
-    void OnEnable()
+    private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
@@ -33,7 +31,7 @@ public class GameManager : MonoBehaviour
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
         Enemy.OnEnemyDied -= HandleEnemyDied;
     }
-
+    
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Instance = this;
@@ -43,20 +41,7 @@ public class GameManager : MonoBehaviour
         GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
         BuildManager = GameObject.Find("BuildManager").GetComponent<BuildManager>();
 
-        if (EnemySpawner == null)
-        {
-            print("spawner is null");
-        }
-        else if (MapManager == null)
-        {
-            print("mapmanager is null");
-        }
-
-    }
-
-    private void LateUpdate()
-    {
-        GUIController.UpdateGameVariableDisplay(Lives, Gold);
+        StartCoroutine(InitializeGame());
     }
 
     void Start()
@@ -64,18 +49,87 @@ public class GameManager : MonoBehaviour
         Debug.Log("GameManager loaded");
     }
 
-    //  todo: decrease health or something
-    private void HandleEnemyReachedGate(Enemy enemy)
+    /// <summary>
+    /// Used to fix script execution order issues
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator InitializeGame()
     {
-        Lives -= 1;
-        print("Lives: " + Lives);
+        yield return new WaitForSeconds(2f);
+
+        EnemySpawner.StartSpawning();
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
+    /// <summary>
+    /// Handles enemy reached gate event
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyReachedGate(Enemy enemy)
+    {
+        Lives -= 1;
+
+        if (Lives <= 0 )
+        {
+            EnemySpawner.StopSpawning();
+            Lives = 0;
+            GUIController.ShowGameOverPanel();
+            PauseGame();
+        }
+
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
+    }
+
+    /// <summary>
+    /// Handles enemy died event
+    /// </summary>
+    /// <param name="enemy"></param>
     private void HandleEnemyDied(Enemy enemy)
     {
         Gold += enemy.Value;
         print("Gold: " + Gold);
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
+    }
+
+    /// <summary>
+    /// Check if 
+    /// </summary>
+    /// <param name="price"></param>
+    /// <returns></returns>
+    public bool CanAfford(int price)
+    {
+        if (Gold - price >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Spends gold
+    /// </summary>
+    /// <param name="price"></param>
+    public void SpendGold(int price)
+    {
+        Gold -= price;
+    }
+
+    /// <summary>
+    /// Pauses the game
+    /// </summary>
+    private void PauseGame()
+    {
+        Time.timeScale = 0;
+    }
+
+    /// <summary>
+    /// Unpauses the game
+    /// </summary>
+    private void UnpauseGame()
+    {
+        Time.timeScale = 1;
     }
 }

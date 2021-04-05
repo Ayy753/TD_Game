@@ -17,8 +17,6 @@ public class EnemySpawner : MonoBehaviour
     {
         entrance = GameObject.Find("Entrance");
         enemyPool = new List<Enemy>();
-
-        StartCoroutine(PeriodicSpawner());
     }
 
     /// <summary>
@@ -32,7 +30,7 @@ public class EnemySpawner : MonoBehaviour
         float offsetx;
         float offsety;
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 25 ; i++)
         {
             offsetx = Random.Range(-0.5f, 0.5f);
             offsety = Random.Range(-0.5f, 0.5f);
@@ -93,6 +91,16 @@ public class EnemySpawner : MonoBehaviour
             SpawnEnemy(entrance.transform.position);
             yield return new WaitForSeconds(1);
         }
+    }
+
+    public void StartSpawning()
+    {
+        StartCoroutine(PeriodicSpawner());
+    }
+
+    public void StopSpawning()
+    {
+        StopCoroutine(PeriodicSpawner());
     }
 
     /// <summary>

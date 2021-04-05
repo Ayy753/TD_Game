@@ -23,3 +23,4 @@ MonoBehaviour:
   <ReloadTime>k__BackingField: 5
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
+  <Cost>k__BackingField: 50

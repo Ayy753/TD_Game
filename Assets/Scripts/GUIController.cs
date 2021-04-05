@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,13 +9,13 @@ public class GUIController : MonoBehaviour
     EnemySpawner spawner;
     PathFinder pathFinder;
     BuildManager buildManager;
-    ToolTip toolTip;
-
+    
+    private ToolTip toolTip;
     private Image selectedIcon;
     private Text selectedDetails;
-
     private Text livesLabel;
     private Text goldLabel;
+    private GameObject gameOverPanel;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -35,15 +34,19 @@ public class GUIController : MonoBehaviour
         spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
         buildManager = gameManager.BuildManager;
+
+        toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
         selectedDetails = GameObject.Find("txtCurrentlySelectedDetails").GetComponent<Text>();
-        toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
-
         livesLabel = GameObject.Find("lblLives").GetComponent<Text>();
         goldLabel = GameObject.Find("lblGold").GetComponent<Text>();
+        gameOverPanel = GameObject.Find("pnlGameOver");
+
+        HideGameOverPanel();    
 
         PopulateScrollView();
     }
+
 
     private void Update()
     {
@@ -52,6 +55,7 @@ public class GUIController : MonoBehaviour
             ExitEditMode();
         }
     }
+
     public void ExitGame()
     {
         Application.Quit();
@@ -63,18 +67,21 @@ public class GUIController : MonoBehaviour
         selectedDetails.text = structureData.ToString();
         buildManager.EnterBuildMode(structureData);
     }
+
     public void EnterDemolishMode()
     {
         selectedIcon.sprite = null;
         selectedDetails.text = string.Empty;
         buildManager.EnterDemolishMode();
     }
+
     public void ExitEditMode()
     {
         selectedIcon.sprite = null;
         selectedDetails.text = string.Empty;
         buildManager.ExitBuildMode();
     }
+
     public void SetCurrentTileData(StructureData structureData)
     {
         toolTip.SetCurrentTileData(structureData);
@@ -156,5 +163,15 @@ public class GUIController : MonoBehaviour
             newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
             Debug.Log("created build button");
         }
+    }
+
+    public void ShowGameOverPanel()
+    {
+        gameOverPanel.SetActive(true);
+    }
+
+    private void HideGameOverPanel()
+    {
+        gameOverPanel.SetActive(false);
     }
 }

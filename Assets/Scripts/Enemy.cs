@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -126,11 +124,6 @@ public class Enemy : MonoBehaviour
         transform.parent.gameObject.SetActive(false);
         //  Reset healthbar
         healthBarForeground.gameObject.transform.localScale = new Vector3(1, 0.25f, 1);
-
-        if (OnEnemyDied != null)
-        {
-            OnEnemyDied.Invoke(this);
-        }
     }
 
     /// <summary>
@@ -153,8 +146,14 @@ public class Enemy : MonoBehaviour
         float healthPercent = CurrentHealth / MaxHealth;
         Debug.Log("Took " + damage + " damage");
 
+        //  Check if hit was a killing blow
         if (CurrentHealth <= 0)
         {
+            if (OnEnemyDied != null)
+            {
+                OnEnemyDied.Invoke(this);
+            }
+
             Despawn();
         }
         else

@@ -20,9 +20,11 @@ public class TowerData : StructureData
     public float ReloadTime { get; set; }
     [field: SerializeField]
     public override TileBase TileBase { get; protected set; }
+    [field: SerializeField]
+    public override int Cost { get; protected set; }
 
     public override string ToString()
     {
-        return base.ToString() + string.Format("\nDamage: {0}\nRange: {1}", Damage, Range);
+        return base.ToString() + string.Format("\nDamage: {0}\nRange: {1}\nCost: {2}", Damage, Range, Cost);
     }
 }

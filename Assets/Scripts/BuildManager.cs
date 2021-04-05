@@ -153,19 +153,25 @@ public class BuildManager : MonoBehaviour
         //  Ensure there is a ground to be built upon
         if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position))
         {
-            if (structure.GetType() == typeof(TowerData))
+            if (gameManager.CanAfford(structure.Cost))
             {
-                InstantiateTower((TowerData)structure, position);
-                mapManager.SetTile(position, structure);
+                if (structure.GetType() == typeof(TowerData))
+                {
+                    InstantiateTower((TowerData)structure, position);
+                    mapManager.SetTile(position, structure);
+                }
+                else if (structure.GetType() == typeof(WallData))
+                {
+                    mapManager.SetTile(position, structure);
+                }
+                else
+                {
+                    throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+                }
+
+                gameManager.SpendGold(structure.Cost);
             }
-            else if (structure.GetType() == typeof(WallData))
-            {
-                mapManager.SetTile(position, structure);
-            }
-            else
-            {
-                throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
-            }
+
         }
     }
 

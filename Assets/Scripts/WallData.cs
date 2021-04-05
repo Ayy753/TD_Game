@@ -13,9 +13,11 @@ public class WallData : StructureData
     public override Sprite Icon { get; protected set; }
     [field: SerializeField]
     public override TileBase TileBase { get; protected set; }
+    [field: SerializeField]
+    public override int Cost { get; protected set; }
 
     public override string ToString()
     {
-        return string.Format("Name: {0}\nDescription:{1}", Name, Description);
+        return string.Format("Name: {0}\nDescription:{1}\nCost: {2}", Name, Description, Cost);
     }
 }
