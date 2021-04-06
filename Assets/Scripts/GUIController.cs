@@ -1,6 +1,8 @@
+using Assets.Scripts;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GUIController : MonoBehaviour
@@ -53,12 +55,47 @@ public class GUIController : MonoBehaviour
         {
             ExitEditMode();
         }
+
+        Vector3 ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(ray, Vector2.zero, Mathf.Infinity);
+
+        IDisplayable display = null;
+
+        if (hit.collider != null)
+        {
+            display = hit.collider.GetComponent<IDisplayable>();
+        }
+        else
+        {
+            PointerEventData pointerEvent = new PointerEventData(EventSystem.current);
+            pointerEvent.position = Input.mousePosition;
+
+            List<RaycastResult> result = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerEvent, result);
+
+            foreach (var item in result)
+            {
+                display = item.gameObject.GetComponent<IDisplayable>();
+
+                if (display != null)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (display != null)
+        {
+            toolTip.ShowToolTip();
+            toolTip.SetCurrentString(display.GetDisplayText());
+        }
+        else
+        {
+            toolTip.HideToolTip();
+        }
     }
 
 
-    /// <summary>
-    /// Programmically adds a build menu button for each type of structure to the scrollview
-    /// </summary>
     private void PopulateScrollView()
     {
         foreach (StructureData structure in structureDatas)

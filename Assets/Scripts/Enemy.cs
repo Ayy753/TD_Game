@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDisplayable
 {
     #region Variables
     private GameManager gameManager;
@@ -29,6 +30,7 @@ public class Enemy : MonoBehaviour
     public float MaxHealth { get; private set; }
     public float CurrentHealth { get; private set; }
     public int Value { get; private set; } = 5;
+    public string Name { get; private set; } = "Enemy";
 
     [SerializeField]
     private float Speed { get; set; } = 5f;
@@ -151,7 +153,6 @@ public class Enemy : MonoBehaviour
     {
         CurrentHealth -= damage;
         float healthPercent = CurrentHealth / MaxHealth;
-        Debug.Log("Took " + damage + " damage");
 
         //  Check if hit was a killing blow
         if (CurrentHealth <= 0)
@@ -168,6 +169,11 @@ public class Enemy : MonoBehaviour
             healthBarForeground.gameObject.transform.localScale = new Vector3(healthPercent, 0.25f, 1);
         }
 
+    }
+
+    public string GetDisplayText()
+    {
+        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", Name, CurrentHealth, MaxHealth, Value);
     }
     #endregion
 }

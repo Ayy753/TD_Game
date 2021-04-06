@@ -1,12 +1,13 @@
+using Assets.Scripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : MonoBehaviour
+public class Tower : MonoBehaviour, IDisplayable
 {
     private EnemySpawner enemySpawner;
-    //  Contains this tower's attributes
+    [SerializeField]
     private TowerData TowerData;
     [SerializeField]
     private GameObject projectilePrefab;
@@ -16,9 +17,6 @@ public class Tower : MonoBehaviour
     private void Start()
     {
         enemySpawner = GameManager.Instance.EnemySpawner;
-
-
-        Debug.Log(Distance(Vector3.zero, new Vector3(10, 10, 0)));
     }
 
     private void Update()
@@ -49,7 +47,6 @@ public class Tower : MonoBehaviour
 
             if (closestEnemy != null && shortestDistance <= TowerData.Range)
             {
-                Debug.Log("Shortest distance: " + shortestDistance);
                 Projectile projectile = GameObject.Instantiate(projectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
                 projectile.Initialize(closestEnemy.gameObject.transform, TowerData.Damage, 6f);
                 TimeSinceLastShot = DateTime.Now;
@@ -62,8 +59,8 @@ public class Tower : MonoBehaviour
         return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));
     }
 
-    public void SetTowerData(TowerData towerData)
+    public string GetDisplayText()
     {
-        TowerData = towerData;
+        return TowerData.ToString();
     }
 }

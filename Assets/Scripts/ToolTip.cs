@@ -4,7 +4,6 @@ public class ToolTip : MonoBehaviour
 {
     private Text tooltipText;
     private RectTransform background;
-    
     void Start()
     {
         tooltipText = transform.Find("Text").GetComponent<Text>();
@@ -44,5 +43,11 @@ public class ToolTip : MonoBehaviour
     public void SetCurrentTileData(StructureData tile)
     {
         tooltipText.text = tile.ToString();
+    }
+
+
+    public void SetCurrentString(string data)
+    {
+        tooltipText.text = data;
     }
 }

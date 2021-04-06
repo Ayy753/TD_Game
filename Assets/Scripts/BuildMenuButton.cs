@@ -1,7 +1,8 @@
+using Assets.Scripts;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
+public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable
 {
     private GUIController GUIController;
     private StructureData StructureData;
@@ -9,17 +10,6 @@ public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClic
     private void Start()
     {
         GUIController = GameManager.Instance.GUIController;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        GUIController.ShowToolTip();
-        GUIController.SetCurrentStructureData(StructureData);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        GUIController.HideToolTip();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -41,5 +31,10 @@ public class BuildMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerClic
     public void SetStructureData(StructureData structureData)
     {
         StructureData = structureData;
+    }
+
+    public string GetDisplayText()
+    {
+        return string.Format(StructureData.ToString());
     }
 }
