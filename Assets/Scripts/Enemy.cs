@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     public int Value { get; private set; } = 5;
 
     [SerializeField]
-    private float Speed { get; set; } = 10f;
+    private float Speed { get; set; } = 5f;
     #endregion
 
     #region Methods

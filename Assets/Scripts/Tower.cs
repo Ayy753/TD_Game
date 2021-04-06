@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,15 +11,24 @@ public class Tower : MonoBehaviour
     [SerializeField]
     private GameObject projectilePrefab;
 
+    DateTime TimeSinceLastShot = DateTime.MinValue;
+
     private void Start()
     {
         enemySpawner = GameManager.Instance.EnemySpawner;
-        StartCoroutine(Shoot());
+
+
+        Debug.Log(Distance(Vector3.zero, new Vector3(10, 10, 0)));
     }
 
-    private IEnumerator Shoot()
+    private void Update()
     {
-        while (true)
+        ShootLogic();
+    }
+
+    private void ShootLogic()
+    {
+        if (DateTime.Now >= TimeSinceLastShot.AddSeconds(TowerData.ReloadTime) )
         {
             List<Enemy> enemies = enemySpawner.GetEnemies();
             Enemy closestEnemy = null;
@@ -39,17 +49,17 @@ public class Tower : MonoBehaviour
 
             if (closestEnemy != null && shortestDistance <= TowerData.Range)
             {
+                Debug.Log("Shortest distance: " + shortestDistance);
                 Projectile projectile = GameObject.Instantiate(projectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
-                projectile.Initialize(closestEnemy.gameObject.transform, TowerData.Damage, 12f);
+                projectile.Initialize(closestEnemy.gameObject.transform, TowerData.Damage, 6f);
+                TimeSinceLastShot = DateTime.Now;
             }
-
-            yield return new WaitForSeconds(0.5f);
         }
     }
 
     private float Distance(Vector3 start, Vector3 finish)
     {
-        return Mathf.Sqrt(Mathf.Pow(start.x - finish.x, 2) - Mathf.Pow(start.y - finish.y, 2));
+        return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));
     }
 
     public void SetTowerData(TowerData towerData)

@@ -37,6 +37,11 @@ public class EnemySpawner : MonoBehaviour
             SpawnEnemy(position + new Vector3(offsetx, offsetx));
         }
     }
+    [ContextMenu("spawnOneEnemy")]
+    public void SpawnOneEnemy()
+    {
+        SpawnEnemy(entrance.transform.position);
+    }
 
     /// <summary>
     /// Spawns an enemy at a specified position using the object pool
