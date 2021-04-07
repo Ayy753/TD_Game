@@ -9,8 +9,6 @@ public class Tower : MonoBehaviour, IDisplayable
     private EnemySpawner enemySpawner;
     [SerializeField]
     private TowerData TowerData;
-    [SerializeField]
-    private GameObject projectilePrefab;
 
     DateTime TimeSinceLastShot = DateTime.MinValue;
 
@@ -47,7 +45,7 @@ public class Tower : MonoBehaviour, IDisplayable
 
             if (closestEnemy != null && shortestDistance <= TowerData.Range)
             {
-                Projectile projectile = GameObject.Instantiate(projectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
+                Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
                 projectile.Initialize(closestEnemy.gameObject.transform, TowerData.Damage, 6f);
                 TimeSinceLastShot = DateTime.Now;
             }

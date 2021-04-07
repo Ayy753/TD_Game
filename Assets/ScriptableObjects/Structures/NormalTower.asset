@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74dbf4b14ba866f45871afc2590c1384, type: 3}
-  m_Name: RedTower
+  m_Name: NormalTower
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Red Tower
-  <Description>k__BackingField: A Red Tower
-  <Icon>k__BackingField: {fileID: 21300000, guid: aad74aacff08e7847a60d3fdf59b206f,
+  <Name>k__BackingField: Normal Tower
+  <Description>k__BackingField: A regular tower
+  <Icon>k__BackingField: {fileID: 21300000, guid: b7aa3d489191a8a48af9404d23289bf7,
     type: 3}
-  <Prefab>k__BackingField: {fileID: 5345949471958930777, guid: 6d747ff39adb1a04599890244abd31b9,
+  <TowerPrefab>k__BackingField: {fileID: 2567355637282414980, guid: bb01d4725b055024aab3727c9df826c4,
     type: 3}
-  <Damage>k__BackingField: 5
-  <Range>k__BackingField: 15
+  <Damage>k__BackingField: 15
+  <Range>k__BackingField: 5
   <ReloadTime>k__BackingField: 1
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 50
+  <ProjectilePrefab>k__BackingField: {fileID: 1511556566754288140, guid: 4e5894fe90d810a41a96994e1c4a0157,
+    type: 3}

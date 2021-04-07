@@ -16,7 +16,7 @@ MonoBehaviour:
   <Description>k__BackingField: A Green Tower
   <Icon>k__BackingField: {fileID: 21300000, guid: 742568104319ba74ab40a6dd713ee9f3,
     type: 3}
-  <Prefab>k__BackingField: {fileID: 1079728213048591739, guid: 32a804d2afb1d5e4890c313fa5a6759a,
+  <TowerPrefab>k__BackingField: {fileID: 1079728213048591739, guid: 32a804d2afb1d5e4890c313fa5a6759a,
     type: 3}
   <Damage>k__BackingField: 10
   <Range>k__BackingField: 10
@@ -24,3 +24,5 @@ MonoBehaviour:
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 50
+  <ProjectilePrefab>k__BackingField: {fileID: 1511556566754288140, guid: 4e5894fe90d810a41a96994e1c4a0157,
+    type: 3}

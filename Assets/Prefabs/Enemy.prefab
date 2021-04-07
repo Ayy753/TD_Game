@@ -343,4 +343,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBarBackground: {fileID: 8956341498943807227}
   healthBarForeground: {fileID: 8956341497556018571}
-  Speed: 10

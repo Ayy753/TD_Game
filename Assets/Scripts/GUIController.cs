@@ -139,11 +139,6 @@ public class GUIController : MonoBehaviour
         buildManager.ExitBuildMode();
     }
 
-    public void SetCurrentStructureData(StructureData structureData)
-    {
-        toolTip.SetCurrentTileData(structureData);
-    }
-
     public void ShowToolTip()
     {
         toolTip.ShowToolTip();

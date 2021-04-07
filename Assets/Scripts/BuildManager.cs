@@ -318,7 +318,7 @@ public class BuildManager : MonoBehaviour
     /// <param name="position"></param>
     private void InstantiateTower(TowerData towerData, Vector3Int position)
     {
-        GameObject tower = GameObject.Instantiate(towerData.Prefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
+        GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
         instantiatedTowers.Add(tower);
     }
 }

@@ -3,11 +3,11 @@ using UnityEngine.UI;
 public class ToolTip : MonoBehaviour
 {
     private Text tooltipText;
-    private RectTransform background;
+    private RectTransform tooltipBackground;
     void Start()
     {
         tooltipText = transform.Find("Text").GetComponent<Text>();
-        background = transform.Find("Background").GetComponent<RectTransform>();
+        tooltipBackground = transform.Find("Background").GetComponent<RectTransform>();
         gameObject.SetActive(false);
     }
 
@@ -33,18 +33,8 @@ public class ToolTip : MonoBehaviour
     {
         transform.position = Input.mousePosition;
         float textPadding = 4f;
-        background.sizeDelta = new Vector2(tooltipText.preferredWidth + textPadding * 2f, tooltipText.preferredHeight + textPadding * 2f);
+        tooltipBackground.sizeDelta = new Vector2(tooltipText.preferredWidth + textPadding * 2f, tooltipText.preferredHeight + textPadding * 2f);
     }
-
-    /// <summary>
-    /// Set the targetted tiledata containing the structure's attributes
-    /// </summary>
-    /// <param name="tile"></param>
-    public void SetCurrentTileData(StructureData tile)
-    {
-        tooltipText.text = tile.ToString();
-    }
-
 
     public void SetCurrentString(string data)
     {

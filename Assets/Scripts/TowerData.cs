@@ -11,7 +11,7 @@ public class TowerData : StructureData
     [field: SerializeField]
     public override Sprite Icon { get; protected set; }
     [field: SerializeField]
-    public GameObject Prefab { get; private set; }
+    public GameObject TowerPrefab { get; private set; }
     [field: SerializeField]
     public float Damage { get; private set; }
     [field: SerializeField]
@@ -22,6 +22,8 @@ public class TowerData : StructureData
     public override TileBase TileBase { get; protected set; }
     [field: SerializeField]
     public override int Cost { get; protected set; }
+    [field: SerializeField]
+    public GameObject ProjectilePrefab { get; protected set; }
 
     public override string ToString()
     {
