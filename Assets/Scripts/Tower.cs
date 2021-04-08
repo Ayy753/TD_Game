@@ -6,19 +6,17 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour, IDisplayable
 {
-    private EnemySpawner enemySpawner;
     [SerializeField]
-    private TowerData TowerData;
+    public TowerData TowerData;
 
     DateTime TimeSinceLastShot = DateTime.MinValue;
     Transform radiusIndicator;
+    List<Enemy> enemiesInRange;
 
     private void Start()
     {
-        enemySpawner = GameManager.Instance.EnemySpawner;
         radiusIndicator = transform.Find("RadiusIndicator");
-
-        print(radiusIndicator == null);
+        enemiesInRange = new List<Enemy>();
     }
 
     private void Update()
@@ -30,11 +28,10 @@ public class Tower : MonoBehaviour, IDisplayable
     {
         if (DateTime.Now >= TimeSinceLastShot.AddSeconds(TowerData.ReloadTime))
         {
-            List<Enemy> enemies = enemySpawner.GetEnemies();
             Enemy closestEnemy = null;
             float shortestDistance = float.MaxValue;
 
-            foreach (Enemy enemy in enemies)
+            foreach (Enemy enemy in enemiesInRange)
             {
                 if (enemy.isActiveAndEnabled)
                 {
@@ -66,16 +63,38 @@ public class Tower : MonoBehaviour, IDisplayable
         return TowerData.ToString();
     }
 
+    /// <summary>
+    /// Show the radius indicator
+    /// </summary>
     private void OnMouseEnter()
     {
-        print("enable");
         radiusIndicator.gameObject.SetActive(true);
-        radiusIndicator.localScale = new Vector3(TowerData.Range*2, TowerData.Range*2, 0);
+        radiusIndicator.localScale = new Vector3(TowerData.Range * 2, TowerData.Range * 2, 0);
     }
 
+    /// <summary>
+    /// Hide the radius indicator
+    /// </summary>
     private void OnMouseExit()
     {
-        print("disable");
         radiusIndicator.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Used by range detector 
+    /// </summary>
+    /// <param name="enemy"></param>
+    public void EnemyEnteredRange(Enemy enemy)
+    {
+        enemiesInRange.Add(enemy);   
+    }
+
+    /// <summary>
+    /// Used by range detector
+    /// </summary>
+    /// <param name="enemy"></param>
+    public void EnemyLeftRange(Enemy enemy)
+    {
+        enemiesInRange.Remove(enemy);
     }
 }
