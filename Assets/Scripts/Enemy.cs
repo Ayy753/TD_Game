@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     public string Name { get; private set; } = "Enemy";
 
     [SerializeField]
-    private float Speed { get; set; } = 5f;
+    private float Speed { get; set; } = 1f;
     #endregion
 
     #region Methods

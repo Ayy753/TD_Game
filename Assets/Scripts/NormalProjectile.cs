@@ -7,7 +7,9 @@ public class NormalProjectile : Projectile
     public override Transform Target { get; set; }
     public override float Damage { get; set; }
     public override float Speed { get; set; }
-    
+
+    private bool alreadyHit = false;
+
     private void Update()
     {
         TrackEnemy();
@@ -22,13 +24,14 @@ public class NormalProjectile : Projectile
 
     private void TrackEnemy()
     {
-        if (Target != null && Target.gameObject.activeInHierarchy )
+        if (Target == null || Target.gameObject.activeInHierarchy == false )
         {
-            transform.position = Vector3.MoveTowards(transform.position, Target.position, Speed * Time.deltaTime);
+            Destroy(gameObject);
         }
+        transform.position = Vector3.MoveTowards(transform.position, Target.position, Speed * Time.deltaTime);
     }
 
-    public override void DealDamage(Enemy enemy)
+    protected override void DealDamage(Enemy enemy)
     {
         enemy.TakeDamage(Damage);
     }
@@ -37,9 +40,12 @@ public class NormalProjectile : Projectile
     {
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
 
-        if (enemy != null)
+        if (enemy != null && alreadyHit == false)
         {
             DealDamage(enemy);
+
+            //  Prevent multiple enemies from taking damage before the projectile gets destroyed
+            alreadyHit = true;
         }
 
         Destroy(gameObject);

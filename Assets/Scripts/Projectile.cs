@@ -8,7 +8,7 @@ public abstract class Projectile : MonoBehaviour
 
     public abstract void Initialize(Transform target, float damage, float speed);
 
-    public abstract void DealDamage(Enemy enemy);
+    protected abstract void DealDamage(Enemy enemy);
 
     //private void OnTriggerEnter2D(Collider2D other)
     //{
