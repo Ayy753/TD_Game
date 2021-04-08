@@ -56,45 +56,8 @@ public class GUIController : MonoBehaviour
             ExitEditMode();
         }
 
-        Vector3 ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(ray, Vector2.zero, Mathf.Infinity);
-
-        IDisplayable display = null;
-
-        if (hit.collider != null)
-        {
-            display = hit.collider.GetComponent<IDisplayable>();
-        }
-        else
-        {
-            PointerEventData pointerEvent = new PointerEventData(EventSystem.current);
-            pointerEvent.position = Input.mousePosition;
-
-            List<RaycastResult> result = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerEvent, result);
-
-            foreach (var item in result)
-            {
-                display = item.gameObject.GetComponent<IDisplayable>();
-
-                if (display != null)
-                {
-                    break;
-                }
-            }
-        }
-
-        if (display != null)
-        {
-            toolTip.ShowToolTip();
-            toolTip.SetCurrentString(display.GetDisplayText());
-        }
-        else
-        {
-            toolTip.HideToolTip();
-        }
+        HandleToolTipLogic();
     }
-
 
     private void PopulateScrollView()
     {
@@ -110,6 +73,52 @@ public class GUIController : MonoBehaviour
 
             newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
             Debug.Log("created build button");
+        }
+    }
+
+    private void HandleToolTipLogic()
+    {
+        Vector3 ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(ray, Vector2.zero, Mathf.Infinity);
+
+        IDisplayable display = null;
+
+        //  If physics collider hit a gameobject
+        if (hit.collider != null)
+        {
+            display = hit.collider.GetComponent<IDisplayable>();
+        }
+
+        //  Otherwise perform GUI raycast
+        else
+        {
+            PointerEventData pointerEvent = new PointerEventData(EventSystem.current);
+            pointerEvent.position = Input.mousePosition;
+
+            List<RaycastResult> result = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerEvent, result);
+
+            //  Check each GUI object hit by ray for an IDisplayable object
+            foreach (var item in result)
+            {
+                display = item.gameObject.GetComponent<IDisplayable>();
+
+                if (display != null)
+                {
+                    break;
+                }
+            }
+        }
+
+        //  If either rays hit an item with display information, show tooltip
+        if (display != null)
+        {
+            toolTip.ShowToolTip();
+            toolTip.SetCurrentString(display.GetDisplayText());
+        }
+        else
+        {
+            toolTip.HideToolTip();
         }
     }
 
@@ -160,7 +169,6 @@ public class GUIController : MonoBehaviour
         goldLabel.text = "Gold: " + gold;
     }
 
-
     public void ShowGameOverPanel()
     {
         gameOverPanel.SetActive(true);
@@ -172,7 +180,6 @@ public class GUIController : MonoBehaviour
     }
 
     #region Demo Functions
-
     /// <summary>
     /// Change the speed of all units
     /// </summary>
@@ -200,6 +207,4 @@ public class GUIController : MonoBehaviour
         }
     }
     #endregion
-
-
 }

@@ -11,10 +11,14 @@ public class Tower : MonoBehaviour, IDisplayable
     private TowerData TowerData;
 
     DateTime TimeSinceLastShot = DateTime.MinValue;
+    Transform radiusIndicator;
 
     private void Start()
     {
         enemySpawner = GameManager.Instance.EnemySpawner;
+        radiusIndicator = transform.Find("RadiusIndicator");
+
+        print(radiusIndicator == null);
     }
 
     private void Update()
@@ -24,7 +28,7 @@ public class Tower : MonoBehaviour, IDisplayable
 
     private void ShootLogic()
     {
-        if (DateTime.Now >= TimeSinceLastShot.AddSeconds(TowerData.ReloadTime) )
+        if (DateTime.Now >= TimeSinceLastShot.AddSeconds(TowerData.ReloadTime))
         {
             List<Enemy> enemies = enemySpawner.GetEnemies();
             Enemy closestEnemy = null;
@@ -60,5 +64,18 @@ public class Tower : MonoBehaviour, IDisplayable
     public string GetDisplayText()
     {
         return TowerData.ToString();
+    }
+
+    private void OnMouseEnter()
+    {
+        print("enable");
+        radiusIndicator.gameObject.SetActive(true);
+        radiusIndicator.localScale = new Vector3(TowerData.Range*2, TowerData.Range*2, 0);
+    }
+
+    private void OnMouseExit()
+    {
+        print("disable");
+        radiusIndicator.gameObject.SetActive(false);
     }
 }

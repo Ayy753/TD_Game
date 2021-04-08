@@ -95,7 +95,7 @@ public class SplashProjectile : Projectile
 
         if (distance <= radius)
         {
-        float damageDealt = damageDealt = ((radius - distance) / radius) * Damage;
+            float damageDealt = damageDealt = ((radius - distance) / radius) * Damage;
             enemy.TakeDamage(damageDealt);
         }
     }
