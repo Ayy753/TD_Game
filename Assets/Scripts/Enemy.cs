@@ -8,10 +8,8 @@ public class Enemy : MonoBehaviour, IDisplayable
     private GameManager gameManager;
     private PathFinder pathFinder;
 
-    [SerializeField]
-    private SpriteRenderer healthBarBackground;
-    [SerializeField]
     private SpriteRenderer healthBarForeground;
+    private Sprite Icon;
 
     private List<Vector3Int> path;
     private int currentPathIndex;
@@ -35,6 +33,12 @@ public class Enemy : MonoBehaviour, IDisplayable
     [SerializeField]
     private float Speed { get; set; } = 1f;
     #endregion
+
+    private void Start()
+    {
+        healthBarForeground = transform.parent.Find("HealthbarFront").GetComponent<SpriteRenderer>();
+        Icon = gameObject.GetComponent<SpriteRenderer>().sprite;
+    }
 
     #region Methods
     private void OnEnable()
@@ -175,5 +179,6 @@ public class Enemy : MonoBehaviour, IDisplayable
     {
         return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", Name, CurrentHealth, MaxHealth, Value);
     }
+
     #endregion
 }

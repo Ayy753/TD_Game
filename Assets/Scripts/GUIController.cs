@@ -18,6 +18,14 @@ public class GUIController : MonoBehaviour
     private Text livesLabel;
     private Text goldLabel;
     private GameObject gameOverPanel;
+    private Tower targettedTower;
+    private Image targetIcon;
+
+    private Button btnTargetFurthest;
+    private Button btnTargetClosest;
+    private Button btnTargetHighest;
+    private Button btnTargetLowest;
+    private Button btnTargetRandom;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -43,13 +51,19 @@ public class GUIController : MonoBehaviour
         livesLabel = GameObject.Find("lblLives").GetComponent<Text>();
         goldLabel = GameObject.Find("lblGold").GetComponent<Text>();
         gameOverPanel = GameObject.Find("pnlGameOver");
+        targetIcon = GameObject.Find("targetIcon").GetComponent<Image>();
+
+        btnTargetFurthest = GameObject.Find("btnFurthest").GetComponent<Button>();
+        btnTargetClosest = GameObject.Find("btnClosest").GetComponent<Button>();
+        btnTargetHighest = GameObject.Find("btnMaxHP").GetComponent<Button>();
+        btnTargetLowest = GameObject.Find("btnMinHP").GetComponent<Button>();
+        btnTargetRandom = GameObject.Find("btnRandom").GetComponent<Button>();
 
         HideGameOverPanel();    
-
         PopulateScrollView();
-    }
+}
 
-    private void Update()
+private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -177,6 +191,78 @@ public class GUIController : MonoBehaviour
     public void HideGameOverPanel()
     {
         gameOverPanel.SetActive(false);
+    }
+
+    public void TargetTower(Tower tower)
+    {
+        targettedTower = tower;
+        targetIcon.sprite = targettedTower.TowerData.Icon;
+
+        switch (tower.SelectedTargetMode)
+        {
+            case Tower.TargetMode.Closest:
+                btnTargetClosest.Select();
+                break;
+            case Tower.TargetMode.Furthest:
+                btnTargetFurthest.Select();
+                break;
+            case Tower.TargetMode.Random:
+                btnTargetRandom.Select();
+                break;
+            case Tower.TargetMode.LowestHealth:
+                btnTargetLowest.Select();
+                break;
+            case Tower.TargetMode.HighestHealth:
+                btnTargetHighest.Select();
+                break;
+            default:
+                throw new Exception("Target mode invalid");
+        }
+    }
+
+    public void TargetNearest()
+    {
+        if (targettedTower != null)
+        {
+            targettedTower.SelectTargetMode(Tower.TargetMode.Closest);
+            btnTargetClosest.Select();
+        }
+    }
+
+    public void TargetFurthest()
+    {
+        if (targettedTower != null)
+        {
+            targettedTower.SelectTargetMode(Tower.TargetMode.Furthest);
+            btnTargetFurthest.Select();
+        }
+    }
+
+    public void TargetMinHP()
+    {
+        if (targettedTower != null)
+        {
+            targettedTower.SelectTargetMode(Tower.TargetMode.LowestHealth);
+            btnTargetLowest.Select();
+        }
+    }
+
+    public void TargetMaxHP()
+    {
+        if (targettedTower != null)
+        {
+            targettedTower.SelectTargetMode(Tower.TargetMode.HighestHealth);
+            btnTargetHighest.Select();
+        }
+    }
+
+    public void TargetRandom()
+    {
+        if (targettedTower != null)
+        {
+            targettedTower.SelectTargetMode(Tower.TargetMode.Random);
+            btnTargetRandom.Select();
+        }
     }
 
     #region Demo Functions
