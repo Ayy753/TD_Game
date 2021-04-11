@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class SplashProjectile : Projectile
 {
-    public override Transform Target { get; set; }
-    public override float Damage { get; set; }
-    public override float Speed { get; set; }
     public float SplashRadius { get; private set; } = 3f;
     public float ExplodeDuration { get; private set; } = 0.5f;
 
@@ -29,14 +26,11 @@ public class SplashProjectile : Projectile
 
     public override void Initialize(Transform target, float damage, float speed)
     {
-        Target = target;
-        Damage = damage;
-        Speed = speed;
-
+        base.Initialize(target, damage, speed);
         landingPositon = target.position;
     }
     
-    private void MoveTowardsTarget()
+    protected override void MoveTowardsTarget()
     {
         if (triggered == false)
         {
@@ -100,7 +94,7 @@ public class SplashProjectile : Projectile
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
         if (enemy != null)

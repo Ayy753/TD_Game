@@ -4,31 +4,30 @@ using UnityEngine;
 
 public class NormalProjectile : Projectile
 {
-    public override Transform Target { get; set; }
-    public override float Damage { get; set; }
-    public override float Speed { get; set; }
-
     private bool alreadyHit = false;
+    private Vector3 lastTargetPosition;
 
     private void Update()
     {
-        TrackEnemy();
+        MoveTowardsTarget();
     }
 
-    public override void Initialize(Transform target, float damage, float speed)
+    protected override void MoveTowardsTarget()
     {
-        Target = target;
-        Damage = damage;
-        Speed = speed;
-    }
+        //  Keep track of target's last position in case target dies before 
+        //  projectile reaches it
+        if (Target.gameObject.activeInHierarchy == true )
+        {
+            lastTargetPosition = Target.position;
+        }
 
-    private void TrackEnemy()
-    {
-        if (Target == null || Target.gameObject.activeInHierarchy == false )
+        transform.position = Vector3.MoveTowards(transform.position, lastTargetPosition, Speed * Time.deltaTime);
+
+        //  If target is dead and projectile reaches the target's last position
+        if (transform.position == lastTargetPosition)
         {
             Destroy(gameObject);
         }
-        transform.position = Vector3.MoveTowards(transform.position, Target.position, Speed * Time.deltaTime);
     }
 
     protected override void DealDamage(Enemy enemy)
@@ -36,18 +35,20 @@ public class NormalProjectile : Projectile
         enemy.TakeDamage(Damage);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
 
         if (enemy != null && alreadyHit == false)
         {
-            DealDamage(enemy);
-
-            //  Prevent multiple enemies from taking damage before the projectile gets destroyed
-            alreadyHit = true;
+            //  Prevent projectile from hitting another enemy while target is still alive
+            if ((Target.gameObject.activeInHierarchy == true && collision.transform == Target) || Target == null)
+            {
+                DealDamage(enemy);
+                //  Prevent multiple enemies from taking damage before the projectile gets destroyed
+                alreadyHit = true;
+                Destroy(gameObject);
+            }
         }
-
-        Destroy(gameObject);
     }
 }
