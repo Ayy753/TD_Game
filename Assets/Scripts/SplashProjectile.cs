@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class SplashProjectile : Projectile
 {
-    public float SplashRadius { get; private set; } = 3f;
-    public float ExplodeDuration { get; private set; } = 0.5f;
-
+    private float SplashRadius { get; set; } = 3f;
+    private float ExplodeDuration { get; set; } = 0.5f;
     private bool triggered = false;
     private CircleCollider2D circleCollider;
     private ParticleSystem particle;
-
     private Vector3 landingPositon;
 
     private void Start()
@@ -19,30 +17,9 @@ public class SplashProjectile : Projectile
         particle = transform.GetChild(0).GetComponent<ParticleSystem>();
     }
 
-    void Update()
+    private void Update()
     {
         MoveTowardsTarget();
-    }   
-
-    public override void Initialize(Transform target, float damage, float speed)
-    {
-        base.Initialize(target, damage, speed);
-        landingPositon = target.position;
-    }
-    
-    protected override void MoveTowardsTarget()
-    {
-        if (triggered == false)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, landingPositon, Speed * Time.deltaTime);
-
-            if (transform.position == landingPositon)
-            {
-                circleCollider.enabled = true;
-                StartCoroutine(ApplySlashDamage());
-                triggered = true;
-            }
-        }
     }
 
     /// <summary>
@@ -76,6 +53,21 @@ public class SplashProjectile : Projectile
         //  Destroy this projectile
         Destroy(gameObject);
     }
+    
+    protected override void MoveTowardsTarget()
+    {
+        if (triggered == false)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, landingPositon, Speed * Time.deltaTime);
+
+            if (transform.position == landingPositon)
+            {
+                circleCollider.enabled = true;
+                StartCoroutine(ApplySlashDamage());
+                triggered = true;
+            }
+        }
+    }
 
     /// <summary>
     /// Deals damage based on the distance from the explosion's center
@@ -101,5 +93,11 @@ public class SplashProjectile : Projectile
         {
             DealDamage(enemy);
         }
+    }
+    
+    public override void Initialize(Transform target, float damage, float speed)
+    {
+        base.Initialize(target, damage, speed);
+        landingPositon = target.position;
     }
 }
