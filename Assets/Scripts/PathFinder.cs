@@ -257,16 +257,17 @@ public class PathFinder : MonoBehaviour
                                 }
                             }
                         }
+
+                        counter++;
+
+                        //  Pause coroutine every 45th iteration to allow other processes to run in the meantime
+                        if (counter > 45)
+                        {
+                            counter = 0;
+                            yield return null;
+                        }
                     }
                 }
-            }
-            counter++;
-
-            //  Pause coroutine every 45th iteration to allow other processes to run in the meantime
-            if (counter > 45)
-            {
-                counter = 0;
-                yield return null;
             }
         }
     }
