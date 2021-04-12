@@ -13,6 +13,7 @@ public class Tower : MonoBehaviour, IDisplayable
     Transform radiusIndicator;
     List<Enemy> enemiesInRange;
     Enemy Target;
+    private Transform Turret;
 
     public TargetMode SelectedTargetMode { get; private set; } = TargetMode.Closest;
     public enum TargetMode
@@ -28,6 +29,9 @@ public class Tower : MonoBehaviour, IDisplayable
     {
         radiusIndicator = transform.Find("RadiusIndicator");
         enemiesInRange = new List<Enemy>();
+        Turret = transform.Find("Turret");
+
+        StartCoroutine(TurretTracking());
     }
 
     private void Update()
@@ -42,12 +46,16 @@ public class Tower : MonoBehaviour, IDisplayable
 
     private void ShootLogic()
     {
+        Target = FindTarget();
+
         if (DateTime.Now >= TimeSinceLastShot.AddSeconds(TowerData.ReloadTime))
         {
-            Target = FindTarget();
-
             if (Target != null)
             {
+                //  Ensure turret aligns with projectile when it fires
+                FaceTarget(Target.transform);
+
+                //  Fire projectile
                 Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
                 projectile.Initialize(Target.gameObject.transform, TowerData.Damage, 6f);
                 TimeSinceLastShot = DateTime.Now;
@@ -55,6 +63,33 @@ public class Tower : MonoBehaviour, IDisplayable
         }
     }
 
+    /// <summary>
+    /// Rotates turret to face target
+    /// </summary>
+    /// <param name="target"></param>
+    private void FaceTarget(Transform target)
+    {
+        Vector3 vectorDiff = target.transform.position - transform.position;
+        float angle = Mathf.Atan2(vectorDiff.y, vectorDiff.x) * Mathf.Rad2Deg;
+        Turret.transform.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    /// <summary>
+    /// Rotates the turrent to face current target every 100ms
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator TurretTracking()
+    {
+        while (true)
+        {
+            if (Target != null)
+            {
+                FaceTarget(Target.transform);
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
     public void SelectTargetMode(TargetMode targetMode)
     {
         SelectedTargetMode = targetMode;

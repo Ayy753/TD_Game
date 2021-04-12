@@ -90,7 +90,7 @@ public class EnemySpawner : MonoBehaviour
         while (true)
         {
             SpawnEnemy(entrance.transform.position);
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(1f);
         }
     }
 

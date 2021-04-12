@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 9114494097024419411}
   - component: {fileID: 1248194844730843692}
   m_Layer: 0
-  m_Name: RedTowerTop
+  m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

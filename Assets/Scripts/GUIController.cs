@@ -150,8 +150,6 @@ private void Update()
                 ClearTarget();
             }
         }
-
-
     }
 
     public void ExitGame()
@@ -221,7 +219,7 @@ private void Update()
         switch (tower.SelectedTargetMode)
         {
             case Tower.TargetMode.Closest:
-                btnTargetClosest.image.color = Color.cyan; ;
+                btnTargetClosest.image.color = Color.cyan;
                 break;
             case Tower.TargetMode.Furthest:
                 btnTargetFurthest.image.color = Color.cyan;
