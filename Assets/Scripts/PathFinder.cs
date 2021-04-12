@@ -156,8 +156,6 @@ public class PathFinder : MonoBehaviour
         //  a placeholder until I implement variable tile costs
         float tempTileCost = 1f;
 
-        //  To prevent infinte loops from freezing unitiy
-        int maxItt = 10000;
         int counter = 0;
 
         mapManager.UnhighlightAll();
@@ -166,7 +164,7 @@ public class PathFinder : MonoBehaviour
         PathNode initialStep = new PathNode(entranceCoordinate);
         openList.Add(initialStep);
 
-        while (openList.Count > 0 && counter < maxItt)
+        while (openList.Count > 0)
         {
             //  find the lowest F cost in openList
             PathNode currentNode = openList[0];
@@ -263,9 +261,11 @@ public class PathFinder : MonoBehaviour
                 }
             }
             counter++;
+
             //  Pause coroutine every 45th iteration to allow other processes to run in the meantime
-            if (counter % 45 == 0)
+            if (counter > 45)
             {
+                counter = 0;
                 yield return null;
             }
         }
