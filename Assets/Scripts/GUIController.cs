@@ -26,6 +26,10 @@ public class GUIController : MonoBehaviour
     private Button btnTargetHighest;
     private Button btnTargetLowest;
     private Button btnTargetRandom;
+    private Text txtTargetDescription;
+    private GameObject pnlTarget;
+
+    private List<Button> towerTargetButtons;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -51,16 +55,21 @@ public class GUIController : MonoBehaviour
         livesLabel = GameObject.Find("lblLives").GetComponent<Text>();
         goldLabel = GameObject.Find("lblGold").GetComponent<Text>();
         gameOverPanel = GameObject.Find("pnlGameOver");
-        targetIcon = GameObject.Find("targetIcon").GetComponent<Image>();
 
+        //  Targetting panel UI
+        targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
         btnTargetFurthest = GameObject.Find("btnFurthest").GetComponent<Button>();
         btnTargetClosest = GameObject.Find("btnClosest").GetComponent<Button>();
         btnTargetHighest = GameObject.Find("btnMaxHP").GetComponent<Button>();
         btnTargetLowest = GameObject.Find("btnMinHP").GetComponent<Button>();
         btnTargetRandom = GameObject.Find("btnRandom").GetComponent<Button>();
+        txtTargetDescription = GameObject.Find("txtDescription").GetComponent<Text>();
+        towerTargetButtons = new List<Button>() { btnTargetFurthest, btnTargetClosest, btnTargetHighest, btnTargetLowest, btnTargetRandom };
+        pnlTarget = GameObject.Find("pnlTarget");
 
         HideGameOverPanel();    
         PopulateScrollView();
+        pnlTarget.SetActive(false);
 }
 
 private void Update()
@@ -68,6 +77,7 @@ private void Update()
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ExitEditMode();
+            ClearTarget();
         }
 
         HandleToolTipLogic();
@@ -133,7 +143,15 @@ private void Update()
         else
         {
             toolTip.HideToolTip();
+
+            //  If mouse isnt hovering over anything targettable or GUI and mouse button is pressed
+            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
+            {
+                ClearTarget();
+            }
         }
+
+
     }
 
     public void ExitGame()
@@ -198,25 +216,44 @@ private void Update()
         targettedTower = tower;
         targetIcon.sprite = targettedTower.TowerData.Icon;
 
+        UnhighlightTowerButtons();
+
         switch (tower.SelectedTargetMode)
         {
             case Tower.TargetMode.Closest:
-                btnTargetClosest.Select();
+                btnTargetClosest.image.color = Color.cyan; ;
                 break;
             case Tower.TargetMode.Furthest:
-                btnTargetFurthest.Select();
+                btnTargetFurthest.image.color = Color.cyan;
                 break;
             case Tower.TargetMode.Random:
-                btnTargetRandom.Select();
+                btnTargetRandom.image.color = Color.cyan;
                 break;
             case Tower.TargetMode.LowestHealth:
-                btnTargetLowest.Select();
+                btnTargetLowest.image.color = Color.cyan;
                 break;
             case Tower.TargetMode.HighestHealth:
-                btnTargetHighest.Select();
+                btnTargetHighest.image.color = Color.cyan;
                 break;
             default:
                 throw new Exception("Target mode invalid");
+        }
+
+        txtTargetDescription.text = tower.GetDisplayText();
+        pnlTarget.SetActive(true);
+    }
+
+    private void ClearTarget()
+    {
+        pnlTarget.SetActive(false);
+        targettedTower = null;
+    }
+
+    public void UnhighlightTowerButtons()
+    {
+        foreach (Button button in towerTargetButtons)
+        {
+            button.image.color = Color.white;
         }
     }
 
@@ -224,8 +261,9 @@ private void Update()
     {
         if (targettedTower != null)
         {
+            UnhighlightTowerButtons();
             targettedTower.SelectTargetMode(Tower.TargetMode.Closest);
-            btnTargetClosest.Select();
+            btnTargetClosest.image.color = Color.cyan;
         }
     }
 
@@ -233,8 +271,9 @@ private void Update()
     {
         if (targettedTower != null)
         {
+            UnhighlightTowerButtons();
             targettedTower.SelectTargetMode(Tower.TargetMode.Furthest);
-            btnTargetFurthest.Select();
+            btnTargetFurthest.image.color = Color.cyan;
         }
     }
 
@@ -242,8 +281,9 @@ private void Update()
     {
         if (targettedTower != null)
         {
+            UnhighlightTowerButtons();
             targettedTower.SelectTargetMode(Tower.TargetMode.LowestHealth);
-            btnTargetLowest.Select();
+            btnTargetLowest.image.color = Color.cyan;
         }
     }
 
@@ -251,8 +291,9 @@ private void Update()
     {
         if (targettedTower != null)
         {
+            UnhighlightTowerButtons();
             targettedTower.SelectTargetMode(Tower.TargetMode.HighestHealth);
-            btnTargetHighest.Select();
+            btnTargetHighest.image.color = Color.cyan;
         }
     }
 
@@ -260,8 +301,9 @@ private void Update()
     {
         if (targettedTower != null)
         {
+            UnhighlightTowerButtons();
             targettedTower.SelectTargetMode(Tower.TargetMode.Random);
-            btnTargetRandom.Select();
+            btnTargetRandom.image.color = Color.cyan;
         }
     }
 

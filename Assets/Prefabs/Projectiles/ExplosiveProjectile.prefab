@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 809695654054733839}
   - component: {fileID: 3716832038006987537}
   - component: {fileID: 6733431973699256700}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ExplosiveProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,6 +214,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Explosion
+      objectReference: {fileID: 0}
+    - target: {fileID: 8805896199119426499, guid: 1ca3654f6fbac614c978fb5abfbb7ad6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8805896199119426499, guid: 1ca3654f6fbac614c978fb5abfbb7ad6,
         type: 3}
