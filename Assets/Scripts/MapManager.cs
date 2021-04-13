@@ -24,7 +24,7 @@ public class MapManager : MonoBehaviour
     //  Stores all the tiles that have been tinted
     private List<HighlightedTile> highlightedTiles;
 
-    public delegate void StructureChanged();
+    public delegate void StructureChanged(bool demolish);
     public static event StructureChanged OnStructureChanged;
 
     /// <summary>
@@ -105,7 +105,7 @@ public class MapManager : MonoBehaviour
         GetLayer(tileData.Layer).SetTile(position, tileData.TileBase);
         if (tileData.Layer == Layer.StructureLayer)
         {
-            OnStructureChanged.Invoke();
+            OnStructureChanged.Invoke(false);
         }
     }
 
@@ -123,7 +123,7 @@ public class MapManager : MonoBehaviour
         {
             //  in case this tile was highlighted
             UnhighlightTile(layer, position);
-            OnStructureChanged.Invoke();
+            OnStructureChanged.Invoke(true);
         }
     }
 

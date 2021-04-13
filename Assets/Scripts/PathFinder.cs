@@ -33,7 +33,8 @@ public class PathFinder : MonoBehaviour
     /// <summary>
     /// The current path through the map
     /// </summary>
-    public List<Vector3Int> PathCoordinates { get; protected set; }
+    public List<Vector3Int> CurrentPath { get; protected set; }
+    public List<Vector3Int> PreviousPath { get; protected set; }
 
     void Start()
     {
@@ -188,14 +189,14 @@ public class PathFinder : MonoBehaviour
             //  Return path chain if we found the exit tile
             if (currentNode.Coordinate == exitCoordinate)
             {
-                Debug.Log("found exit after " + counter + " iterations");
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Fcost, currentNode.Gcost, parent);
                 
-                PathCoordinates = foundPath.GetPath();
-                mapManager.HighlightPath(PathCoordinates, Color.cyan);
+                CurrentPath = foundPath.GetPath();
+                mapManager.HighlightPath(CurrentPath, Color.cyan);
                 if (OnPathRecalculated != null)
                 {
-                    OnPathRecalculated.Invoke(PathCoordinates);
+                    FindPathDivergence();
+                    OnPathRecalculated.Invoke(CurrentPath);
                 }
                 yield break;
             }
@@ -273,6 +274,24 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
+    /// A test function
+    /// </summary>
+    private void FindPathDivergence()
+    {
+        if (PreviousPath != null)
+        {
+            for (int index = 0; index < PreviousPath.Count; index++)
+            {
+                if (PreviousPath[index] != CurrentPath[index])
+                {
+                    print("New and old paths diverge at index " + index);
+                    break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// A tile is valid(walkable) if it doesn't contain a structure, but contains a ground tile
     /// </summary>
     /// <param name="position"></param>
@@ -301,10 +320,42 @@ public class PathFinder : MonoBehaviour
         return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
     }
 
-    private void HandleStructureChanged()
+    private void HandleStructureChanged(bool demolish)
     {
-        StopCoroutine("CalculateShortestPath");
-        StartCoroutine("CalculateShortestPath");
+        //  if a structure was built
+        if (demolish == false)
+        {
+            //  and if structure blocked one of the path coords
+            if (CurrentPathBlocked() == true)
+            {
+                StopCoroutine("CalculateShortestPath");
+                PreviousPath = CurrentPath;
+                StartCoroutine("CalculateShortestPath");
+            }
+        }
+
+        else
+        {
+            StopCoroutine("CalculateShortestPath");
+            PreviousPath = CurrentPath;
+            StartCoroutine("CalculateShortestPath");
+        }
+    }
+
+    /// <summary>
+    /// Check if any tile in the current path is blocked
+    /// </summary>
+    /// <returns></returns>
+    private bool CurrentPathBlocked()
+    {
+        foreach (Vector3Int node in CurrentPath)
+        {
+            if (IsValidTile(node) == false)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>
@@ -312,7 +363,7 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     public void HighlightPath()
     {
-        mapManager.HighlightPath(PathCoordinates, Color.cyan);
+        mapManager.HighlightPath(CurrentPath, Color.cyan);
     }
 
     /// <summary>

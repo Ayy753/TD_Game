@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         gameManager = GameManager.Instance;
         pathFinder = gameManager.PathFinder;
         currentPathIndex = 0;
-        path = pathFinder.PathCoordinates;
+        path = pathFinder.CurrentPath;
 
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
     }
