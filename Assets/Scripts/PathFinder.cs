@@ -27,7 +27,7 @@ public class PathFinder : MonoBehaviour
     private List<PathNode> openList;
     private List<PathNode> closedList;
 
-    public delegate void PathRecalculated(List<Vector3Int> newPath);
+    public delegate void PathRecalculated(List<Vector3Int> newPath, int indexDivergence);
     public static PathRecalculated OnPathRecalculated;
 
     /// <summary>
@@ -193,11 +193,16 @@ public class PathFinder : MonoBehaviour
                 
                 CurrentPath = foundPath.GetPath();
                 mapManager.HighlightPath(CurrentPath, Color.cyan);
-                if (OnPathRecalculated != null)
+
+                if (PreviousPath != null && OnPathRecalculated != null)
                 {
-                    FindPathDivergence();
-                    OnPathRecalculated.Invoke(CurrentPath);
+                    int index = PointOfDivergence();
+                    print("index of divergence: " + index);
+                    OnPathRecalculated.Invoke(CurrentPath, index);
                 }
+
+                //  Unpause game
+                Time.timeScale = 1;
                 yield break;
             }
 
@@ -255,6 +260,18 @@ public class PathFinder : MonoBehaviour
                                 {
                                     PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
                                     openList.Add(successor);
+
+                                    //if (PreviousPath != null )
+                                    //{
+                                    //    if (PreviousPath.Contains(successor.Coordinate))
+                                    //    {
+                                    //        //print("new node intercepts with old path at " + successor.Coordinate);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        print("There is no intercept at " + successor.Coordinate);
+                                    //    }
+                                    //}
                                 }
                             }
                         }
@@ -276,19 +293,25 @@ public class PathFinder : MonoBehaviour
     /// <summary>
     /// A test function
     /// </summary>
-    private void FindPathDivergence()
+    private int PointOfDivergence()
     {
         if (PreviousPath != null)
         {
+            bool diverged = false;
+            int divergeIndex = 0;
+
             for (int index = 0; index < PreviousPath.Count; index++)
             {
-                if (PreviousPath[index] != CurrentPath[index])
+                if (diverged == false && PreviousPath[index] != CurrentPath[index])
                 {
-                    print("New and old paths diverge at index " + index);
-                    break;
+                    divergeIndex = index;
+                    diverged = true;
                 }
             }
+
+            return divergeIndex;
         }
+        return -1;
     }
 
     /// <summary>
@@ -320,6 +343,10 @@ public class PathFinder : MonoBehaviour
         return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
     }
 
+    /// <summary>
+    /// Handle pathfinding when a structure is built or demolished
+    /// </summary>
+    /// <param name="demolish"></param>
     private void HandleStructureChanged(bool demolish)
     {
         //  if a structure was built
@@ -330,14 +357,18 @@ public class PathFinder : MonoBehaviour
             {
                 StopCoroutine("CalculateShortestPath");
                 PreviousPath = CurrentPath;
+                //  Pause game
+                Time.timeScale = 0;
                 StartCoroutine("CalculateShortestPath");
             }
         }
-
+        // if a structure was demolished
         else
         {
             StopCoroutine("CalculateShortestPath");
             PreviousPath = CurrentPath;
+            //  Pause game
+            Time.timeScale = 0;
             StartCoroutine("CalculateShortestPath");
         }
     }

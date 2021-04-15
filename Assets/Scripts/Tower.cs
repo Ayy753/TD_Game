@@ -9,7 +9,7 @@ public class Tower : MonoBehaviour, IDisplayable
     [SerializeField]
     public TowerData TowerData;
 
-    DateTime TimeSinceLastShot = DateTime.MinValue;
+    float TimeSinceLastShot = float.MaxValue;
     Transform radiusIndicator;
     List<Enemy> enemiesInRange;
     Enemy Target;
@@ -47,10 +47,11 @@ public class Tower : MonoBehaviour, IDisplayable
     private void ShootLogic()
     {
         Target = FindTarget();
+        TimeSinceLastShot += Time.deltaTime;
 
-        if (DateTime.Now >= TimeSinceLastShot.AddSeconds(TowerData.ReloadTime))
-        {
-            if (Target != null)
+        if (TimeSinceLastShot >= TowerData.ReloadTime && Target != null)
+        { 
+           if (Target != null)
             {
                 //  Ensure turret aligns with projectile when it fires
                 FaceTarget(Target.transform);
@@ -58,7 +59,8 @@ public class Tower : MonoBehaviour, IDisplayable
                 //  Fire projectile
                 Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
                 projectile.Initialize(Target.gameObject.transform, TowerData.Damage, 6f);
-                TimeSinceLastShot = DateTime.Now;
+                //TimeSinceLastShot = DateTime.Now;
+                TimeSinceLastShot = 0;
             }
         }
     }

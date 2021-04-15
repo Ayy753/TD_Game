@@ -56,9 +56,15 @@ public class GameManager : MonoBehaviour
     private IEnumerator InitializeGame()
     {
         yield return new WaitForSeconds(2f);
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
+
+        while (PathFinder.CurrentPath == null)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
 
         EnemySpawner.StartSpawning();
-        GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
     /// <summary>

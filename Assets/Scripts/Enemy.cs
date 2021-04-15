@@ -112,7 +112,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     /// Responds to path change event
     /// </summary>
     /// <param name="newPath"></param>
-    private void HandlePathRecalculated(List<Vector3Int> newPath)
+    private void HandlePathRecalculated(List<Vector3Int> newPath, int indexDivergence)
     {
         path = newPath;
     }
