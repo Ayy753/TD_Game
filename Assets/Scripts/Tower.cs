@@ -31,11 +31,13 @@ public class Tower : MonoBehaviour, IDisplayable
         enemiesInRange = new List<Enemy>();
         Turret = transform.Find("Turret");
 
+        StartCoroutine(TargetFinder());
         StartCoroutine(TurretTracking());
     }
 
     private void Update()
     {
+        TimeSinceLastShot += Time.deltaTime;
         ShootLogic();
     }
 
@@ -46,22 +48,15 @@ public class Tower : MonoBehaviour, IDisplayable
 
     private void ShootLogic()
     {
-        Target = FindTarget();
-        TimeSinceLastShot += Time.deltaTime;
-
-        if (TimeSinceLastShot >= TowerData.ReloadTime && Target != null)
+        if (Target != null && TimeSinceLastShot >= TowerData.ReloadTime)
         { 
-           if (Target != null)
-            {
-                //  Ensure turret aligns with projectile when it fires
-                FaceTarget(Target.transform);
+            //  Ensure turret aligns with projectile when it fires
+            FaceTarget(Target.transform);
 
-                //  Fire projectile
-                Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
-                projectile.Initialize(Target.gameObject.transform, TowerData.Damage, 6f);
-                //TimeSinceLastShot = DateTime.Now;
-                TimeSinceLastShot = 0;
-            }
+            //  Fire projectile
+            Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
+            projectile.Initialize(Target.gameObject.transform, TowerData.Damage, 6f);
+            TimeSinceLastShot = 0;
         }
     }
 
@@ -92,6 +87,16 @@ public class Tower : MonoBehaviour, IDisplayable
             yield return new WaitForSeconds(0.1f);
         }
     }
+
+    private IEnumerator TargetFinder()
+    {
+        while (true)
+        {
+            Target = FindTarget();
+            yield return new WaitForSeconds(0.33f);
+        }
+    }
+
     public void SelectTargetMode(TargetMode targetMode)
     {
         SelectedTargetMode = targetMode;
