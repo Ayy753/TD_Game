@@ -291,27 +291,24 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// A test function
+    /// Finds the point in which the new and old paths diverge
     /// </summary>
     private int PointOfDivergence()
     {
+        int divergeIndex = 0;
+
         if (PreviousPath != null)
         {
-            bool diverged = false;
-            int divergeIndex = 0;
-
             for (int index = 0; index < PreviousPath.Count; index++)
             {
-                if (diverged == false && PreviousPath[index] != CurrentPath[index])
+                if (PreviousPath[index] != CurrentPath[index])
                 {
-                    divergeIndex = index;
-                    diverged = true;
+                    divergeIndex = index - 1;
+                    break;
                 }
             }
-
-            return divergeIndex;
         }
-        return -1;
+        return divergeIndex;
     }
 
     /// <summary>
@@ -349,21 +346,10 @@ public class PathFinder : MonoBehaviour
     /// <param name="demolish"></param>
     private void HandleStructureChanged(bool demolish)
     {
-        //  if a structure was built
-        if (demolish == false)
-        {
-            //  and if structure blocked one of the path coords
-            if (CurrentPathBlocked() == true)
-            {
-                StopCoroutine("CalculateShortestPath");
-                PreviousPath = CurrentPath;
-                //  Pause game
-                Time.timeScale = 0;
-                StartCoroutine("CalculateShortestPath");
-            }
-        }
-        // if a structure was demolished
-        else
+        //  If a structure demolished
+        //  or a structure was built that blocks the current path
+        //  Recalculate path
+        if (demolish == true || PathBlocked(CurrentPath) == true)
         {
             StopCoroutine("CalculateShortestPath");
             PreviousPath = CurrentPath;
@@ -377,9 +363,9 @@ public class PathFinder : MonoBehaviour
     /// Check if any tile in the current path is blocked
     /// </summary>
     /// <returns></returns>
-    private bool CurrentPathBlocked()
+    public bool PathBlocked(List<Vector3Int> path)
     {
-        foreach (Vector3Int node in CurrentPath)
+        foreach (Vector3Int node in path)
         {
             if (IsValidTile(node) == false)
             {
