@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     private SpriteRenderer healthBarForeground;
     private Sprite Icon;
 
-    private List<Vector3Int> path;
+    private List<Vector3Int> currentPath;
     private int currentPathIndex;
 
     //  To compensate for the 0.5 unit offset of the tilemap system
@@ -51,7 +51,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         gameManager = GameManager.Instance;
         pathFinder = gameManager.PathFinder;
         currentPathIndex = 0;
-        path = pathFinder.CurrentPath;
+        currentPath = pathFinder.CurrentPath;
 
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
     }
@@ -63,11 +63,11 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     private void Update()
     {
-        if (path != null)
+        if (currentPath != null)
         {
-            if (currentPathIndex <= path.Count - 1)
+            if (currentPathIndex <= currentPath.Count - 1)
             {
-                Vector3 target = path[currentPathIndex] + tilemapOffset;
+                Vector3 target = currentPath[currentPathIndex] + tilemapOffset;
 
                 if (transform.parent.position != target)
                 {
@@ -81,34 +81,34 @@ public class Enemy : MonoBehaviour, IDisplayable
                     }
                     else
                     {
+                        currentPathIndex--;
+
                         //  If we reached point of divergence, stop moving backwards
                         //  and obtain the new path
                         if (currentPathIndex == currentDivergenceIndex)
                         {
-                            path = pathFinder.CurrentPath;
+                            currentPath = pathFinder.CurrentPath;
                             backtrack = false;
                         }
-
-                        currentPathIndex--;
                     }
 
-                    if (currentPathIndex < path.Count)
+                    if (currentPathIndex < currentPath.Count)
                     {
                         //  Rotate unit to face direction of next tile in path
                         Vector3 posNoOffset = transform.position - tilemapOffset;
-                        if (path[currentPathIndex].x < posNoOffset.x)
+                        if (currentPath[currentPathIndex].x < posNoOffset.x)
                         {
                             transform.rotation = Quaternion.Euler(0, 0, 180);
                         }
-                        else if (path[currentPathIndex].y < posNoOffset.y)
+                        else if (currentPath[currentPathIndex].y < posNoOffset.y)
                         {
                             transform.rotation = Quaternion.Euler(0, 0, -90);
                         }
-                        else if (path[currentPathIndex].y > posNoOffset.y)
+                        else if (currentPath[currentPathIndex].y > posNoOffset.y)
                         {
                             transform.rotation = Quaternion.Euler(0, 0, 90);
                         }
-                        if (path[currentPathIndex].x > posNoOffset.x)
+                        if (currentPath[currentPathIndex].x > posNoOffset.x)
                         {
                             transform.rotation = Quaternion.Euler(0, 0, 0);
                         }
@@ -126,21 +126,28 @@ public class Enemy : MonoBehaviour, IDisplayable
             }
         }
     }
-
+        
     /// <summary>
     /// Responds to path change event
     /// </summary>
     /// <param name="newPath"></param>
     private void HandlePathRecalculated(List<Vector3Int> newPath, int indexDivergence)
     {
+        //  If enemy already passed point of divergence
         if (currentPathIndex > indexDivergence)
         {
-            currentDivergenceIndex = indexDivergence;
-            backtrack = true;
+            //  Backtrack if current path is blocked
+            //  or the cost of backtracking to new path is worth it
+            int backTrackCost = currentPathIndex - indexDivergence;
+            if (pathFinder.PathBlockedAfter(currentPath, currentPathIndex) || backTrackCost + newPath.Count < currentPath.Count)
+            {
+                currentDivergenceIndex = indexDivergence;
+                backtrack = true;
+            }
         }
         else
         {
-            path = newPath;
+            currentPath = newPath;
         }
     }
 

@@ -201,8 +201,7 @@ public class PathFinder : MonoBehaviour
                     OnPathRecalculated.Invoke(CurrentPath, index);
                 }
 
-                //  Unpause game
-                Time.timeScale = 1;
+                GameManager.Instance.ResumeGame();
                 yield break;
             }
 
@@ -354,7 +353,7 @@ public class PathFinder : MonoBehaviour
             StopCoroutine("CalculateShortestPath");
             PreviousPath = CurrentPath;
             //  Pause game
-            Time.timeScale = 0;
+            GameManager.Instance.PauseGame();
             StartCoroutine("CalculateShortestPath");
         }
     }
@@ -373,6 +372,58 @@ public class PathFinder : MonoBehaviour
             }
         }
         return false;
+    }
+
+    /// <summary>
+    /// Checks if path was blocked before a point
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public bool PathBlockedBefore(List<Vector3Int> path, int index)
+    {
+        if (index >= path.Count)
+        {
+            throw new ArgumentOutOfRangeException("Index exceeds path length");
+        }
+
+        for (int i = 0; i < index; i++)
+        {
+            if (IsValidTile(path[i]) == false)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if path was blocked after a point
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public bool PathBlockedAfter(List<Vector3Int> path, int index)
+    {
+        if (index + 1 >= path.Count)
+        {
+            throw new ArgumentOutOfRangeException("Index exceeds path length");
+        }
+
+        for (int i = index + 1; i < path.Count; i++)
+        {
+            if (IsValidTile(path[i]) == false)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public bool PathBlockedAt(List<Vector3Int> path, int index)
+    {
+        return IsValidTile(path[index]) == false;
     }
 
     /// <summary>
