@@ -20,6 +20,7 @@ public class GUIController : MonoBehaviour
     private GameObject gameOverPanel;
     private Tower targettedTower;
     private Image targetIcon;
+    private GameObject btnExitEditMode;
 
     private Button btnTargetFurthest;
     private Button btnTargetClosest;
@@ -28,6 +29,7 @@ public class GUIController : MonoBehaviour
     private Button btnTargetRandom;
     private Text txtTargetDescription;
     private GameObject pnlTarget;
+    private GameObject pnlStructureInfo;
 
     private List<Button> towerTargetButtons;
 
@@ -55,6 +57,8 @@ public class GUIController : MonoBehaviour
         livesLabel = GameObject.Find("lblLives").GetComponent<Text>();
         goldLabel = GameObject.Find("lblGold").GetComponent<Text>();
         gameOverPanel = GameObject.Find("pnlGameOver");
+        pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
+        btnExitEditMode = GameObject.Find("btnExit");
 
         //  Targetting panel UI
         targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
@@ -70,9 +74,11 @@ public class GUIController : MonoBehaviour
         HideGameOverPanel();    
         PopulateScrollView();
         pnlTarget.SetActive(false);
-}
+        pnlStructureInfo.SetActive(false);
+        btnExitEditMode.SetActive(false);
+    }
 
-private void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -100,6 +106,10 @@ private void Update()
         }
     }
 
+    /// <summary>
+    /// Prototype tooltip logic
+    /// will be redesigned in future
+    /// </summary>
     private void HandleToolTipLogic()
     {
         Vector3 ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -157,24 +167,38 @@ private void Update()
         Application.Quit();
     }
 
-    public void BuildStructure(StructureData structureData)
+    /// <summary>
+    /// Selects a buildable structure and enters build mode
+    /// </summary>
+    /// <param name="structureData"></param>
+    public void EnterBuildMode(StructureData structureData)
     {
+        pnlStructureInfo.SetActive(true);
+        pnlTarget.SetActive(false);
+        btnExitEditMode.SetActive(true);
         selectedIcon.sprite = structureData.Icon;
         selectedDetails.text = structureData.ToString();
         buildManager.EnterBuildMode(structureData);
     }
 
+    /// <summary>
+    /// Enters demolish mode
+    /// </summary>
     public void EnterDemolishMode()
     {
-        selectedIcon.sprite = null;
-        selectedDetails.text = string.Empty;
+        pnlStructureInfo.SetActive(false);
+        pnlTarget.SetActive(false);
+        btnExitEditMode.SetActive(true);
         buildManager.EnterDemolishMode();
     }
 
+    /// <summary>
+    /// Exits build mode
+    /// </summary>
     public void ExitEditMode()
     {
-        selectedIcon.sprite = null;
-        selectedDetails.text = string.Empty;
+        pnlStructureInfo.SetActive(false);
+        btnExitEditMode.SetActive(false);
         buildManager.ExitBuildMode();
     }
 

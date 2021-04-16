@@ -16,7 +16,7 @@ public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable
     {
         if (StructureData != null)
         {
-            GUIController.BuildStructure(StructureData);
+            GUIController.EnterBuildMode(StructureData);
         }
         else
         {
