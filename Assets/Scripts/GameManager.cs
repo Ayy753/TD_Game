@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
     public void SpendGold(int price)
     {
         Gold -= price;
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
     /// <summary>
