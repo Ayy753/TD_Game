@@ -34,6 +34,11 @@ public class Enemy : MonoBehaviour, IDisplayable
     private float Speed { get; set; } = 1f;
     #endregion
 
+    //  Go backwards in path
+    private bool backtrack = false;
+    //  Index where new path diverges from old
+    private int currentDivergenceIndex;
+
     private void Start()
     {
         healthBarForeground = transform.parent.Find("HealthbarFront").GetComponent<SpriteRenderer>();
@@ -43,7 +48,6 @@ public class Enemy : MonoBehaviour, IDisplayable
     #region Methods
     private void OnEnable()
     {
-        //Debug.Log("Enemy enable");
         gameManager = GameManager.Instance;
         pathFinder = gameManager.PathFinder;
         currentPathIndex = 0;
@@ -71,7 +75,22 @@ public class Enemy : MonoBehaviour, IDisplayable
                 }
                 else
                 {
-                    currentPathIndex++;
+                    if (backtrack == false)
+                    {
+                        currentPathIndex++;
+                    }
+                    else
+                    {
+                        //  If we reached point of divergence, stop moving backwards
+                        //  and obtain the new path
+                        if (currentPathIndex == currentDivergenceIndex)
+                        {
+                            path = pathFinder.CurrentPath;
+                            backtrack = false;
+                        }
+
+                        currentPathIndex--;
+                    }
 
                     if (currentPathIndex < path.Count)
                     {
@@ -114,7 +133,15 @@ public class Enemy : MonoBehaviour, IDisplayable
     /// <param name="newPath"></param>
     private void HandlePathRecalculated(List<Vector3Int> newPath, int indexDivergence)
     {
-        path = newPath;
+        if (currentPathIndex > indexDivergence)
+        {
+            currentDivergenceIndex = indexDivergence;
+            backtrack = true;
+        }
+        else
+        {
+            path = newPath;
+        }
     }
 
     /// <summary>
