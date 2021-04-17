@@ -277,10 +277,10 @@ public class PathFinder : MonoBehaviour
                             }
                         }
 
+                        //  Pause coroutine every 75th tile processed to allow other processes to run in the meantime
+                        //  Using a resetting counter is probably a lot faster than the modulus operator 
                         counter++;
-
-                        //  Pause coroutine every 45th iteration to allow other processes to run in the meantime
-                        if (counter > 45)
+                        if (counter > 75)
                         {
                             counter = 0;
                             yield return null;

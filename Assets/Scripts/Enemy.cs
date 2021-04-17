@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         pathFinder = gameManager.PathFinder;
         currentPathIndex = 0;
         currentPath = pathFinder.CurrentPath;
-
+        FaceNextNode();
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
     }
 
@@ -94,24 +94,8 @@ public class Enemy : MonoBehaviour, IDisplayable
 
                     if (currentPathIndex < currentPath.Count)
                     {
-                        //  Rotate unit to face direction of next tile in path
-                        Vector3 posNoOffset = transform.position - tilemapOffset;
-                        if (currentPath[currentPathIndex].x < posNoOffset.x)
-                        {
-                            transform.rotation = Quaternion.Euler(0, 0, 180);
-                        }
-                        else if (currentPath[currentPathIndex].y < posNoOffset.y)
-                        {
-                            transform.rotation = Quaternion.Euler(0, 0, -90);
-                        }
-                        else if (currentPath[currentPathIndex].y > posNoOffset.y)
-                        {
-                            transform.rotation = Quaternion.Euler(0, 0, 90);
-                        }
-                        if (currentPath[currentPathIndex].x > posNoOffset.x)
-                        {
-                            transform.rotation = Quaternion.Euler(0, 0, 0);
-                        }
+
+                        FaceNextNode();
                     }
                 }
             }
@@ -124,6 +108,31 @@ public class Enemy : MonoBehaviour, IDisplayable
 
                 Despawn();
             }
+        }
+    }
+
+    /// <summary>
+    /// Faces next path node
+    /// </summary>
+    private void FaceNextNode()
+    {
+        //  Rotate unit to face direction of next tile in path
+        Vector3 posNoOffset = transform.position - tilemapOffset;
+        if (currentPath[currentPathIndex].x < posNoOffset.x)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 180);
+        }
+        else if (currentPath[currentPathIndex].y < posNoOffset.y)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, -90);
+        }
+        else if (currentPath[currentPathIndex].y > posNoOffset.y)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 90);
+        }
+        if (currentPath[currentPathIndex].x > posNoOffset.x)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
         
@@ -211,7 +220,7 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     public string GetDisplayText()
     {
-        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", Name, CurrentHealth, MaxHealth, Value);
+        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", Name, Mathf.RoundToInt(CurrentHealth), MaxHealth, Value);
     }
 
     #endregion
