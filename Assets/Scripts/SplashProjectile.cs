@@ -9,7 +9,6 @@ public class SplashProjectile : Projectile
     private bool triggered = false;
     private CircleCollider2D circleCollider;
     private ParticleSystem particle;
-    private Vector3 landingPositon;
 
     private void Start()
     {
@@ -58,9 +57,9 @@ public class SplashProjectile : Projectile
     {
         if (triggered == false)
         {
-            transform.position = Vector3.MoveTowards(transform.position, landingPositon, Speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Speed * Time.deltaTime);
 
-            if (transform.position == landingPositon)
+            if (transform.position == LastTargetPosition)
             {
                 circleCollider.enabled = true;
                 StartCoroutine(ApplySlashDamage());
@@ -98,6 +97,5 @@ public class SplashProjectile : Projectile
     public override void Initialize(Transform target, float damage, float speed)
     {
         base.Initialize(target, damage, speed);
-        landingPositon = target.position;
     }
 }

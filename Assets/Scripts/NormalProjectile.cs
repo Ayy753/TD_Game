@@ -5,26 +5,34 @@ using UnityEngine;
 public class NormalProjectile : Projectile
 {
     private bool alreadyHit = false;
-    private Vector3 lastTargetPosition;
+    private bool targetDead = false;
 
     private void Update()
     {
         MoveTowardsTarget();
     }
 
+    private void OnEnable()
+    {
+        Enemy.OnEnemyDied += HandleEnemyDied;
+    }
+    private void OnDisable()
+    {
+        Enemy.OnEnemyDied -= HandleEnemyDied;
+    }
+
     protected override void MoveTowardsTarget()
     {
-        //  Keep track of target's last position in case target dies before 
-        //  projectile reaches it
-        if (Target.gameObject.activeInHierarchy == true )
+        //  Prevent projectile from targetting a dead enemy that got respawned
+        if (targetDead == false)
         {
-            lastTargetPosition = Target.position;
+            LastTargetPosition = Target.position;
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, lastTargetPosition, Speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Speed * Time.deltaTime);
 
         //  If target is dead and projectile reaches the target's last position
-        if (transform.position == lastTargetPosition)
+        if (transform.position == LastTargetPosition)
         {
             Destroy(gameObject);
         }
@@ -42,13 +50,25 @@ public class NormalProjectile : Projectile
         if (enemy != null && alreadyHit == false)
         {
             //  Prevent projectile from hitting another enemy while target is still alive
-            if ((Target.gameObject.activeInHierarchy == true && collision.transform == Target) || Target == null)
+            if ((targetDead == false && collision.transform == Target) || targetDead == true)
             {
                 DealDamage(enemy);
                 //  Prevent multiple enemies from taking damage before the projectile gets destroyed
                 alreadyHit = true;
                 Destroy(gameObject);
             }
+        }
+    }
+
+    /// <summary>
+    /// Check if it was target that died
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        if (enemy.transform == Target)
+        {
+            targetDead = true;
         }
     }
 }
