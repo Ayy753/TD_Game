@@ -31,6 +31,7 @@ public class GUIController : MonoBehaviour
     private Text txtTargetDescription;
     private GameObject pnlTarget;
     private GameObject pnlStructureInfo;
+    private Button btnSellStructure;
 
     private List<Button> towerTargetButtons;
 
@@ -60,6 +61,8 @@ public class GUIController : MonoBehaviour
         gameOverPanel = GameObject.Find("pnlGameOver");
         pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
         btnExitEditMode = GameObject.Find("btnExit");
+        pnlPathRecalculating = GameObject.Find("pnlPathRecalculating");
+        btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
 
         //  Targetting panel UI
         targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
@@ -71,7 +74,6 @@ public class GUIController : MonoBehaviour
         txtTargetDescription = GameObject.Find("txtDescription").GetComponent<Text>();
         towerTargetButtons = new List<Button>() { btnTargetFurthest, btnTargetClosest, btnTargetHighest, btnTargetLowest, btnTargetRandom };
         pnlTarget = GameObject.Find("pnlTarget");
-        pnlPathRecalculating = GameObject.Find("pnlPathRecalculating");
 
         HideGameOverPanel();    
         PopulateScrollView();
@@ -285,7 +287,16 @@ public class GUIController : MonoBehaviour
         }
 
         txtTargetDescription.text = tower.GetDisplayText();
+        float value = Mathf.Round(tower.TowerData.Cost * 0.66f);
+        btnSellStructure.GetComponentInChildren<Text>().text = "Sell for " + value.ToString() + " Gold";
+        pnlStructureInfo.SetActive(false);
         pnlTarget.SetActive(true);
+    }
+
+    public void SellTower()
+    {
+        buildManager.DemolishStructure(Vector3Int.FloorToInt(targettedTower.transform.position));
+        pnlTarget.SetActive(false);
     }
 
     private void ClearTarget()

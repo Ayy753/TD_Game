@@ -170,7 +170,7 @@ public class BuildManager : MonoBehaviour
     /// Demolishes a structure
     /// </summary>
     /// <param name="position"></param>
-    private void DemolishStructure(Vector3Int position)
+    public void DemolishStructure(Vector3Int position)
     {
         TileData structure = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
         if (structure.GetType() == typeof(TowerData))
@@ -180,6 +180,8 @@ public class BuildManager : MonoBehaviour
             {
                 if (tower.transform.position == position + tilemapOffset)
                 {
+                    int value = Mathf.RoundToInt(((TowerData)structure).Cost * 0.66f);
+                    gameManager.GainGold(value);
                     instantiatedTowers.Remove(tower);
                     GameObject.Destroy(tower);
                     mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);

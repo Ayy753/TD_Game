@@ -123,6 +123,12 @@ public class GameManager : MonoBehaviour
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
+    public void GainGold(int amount)
+    {
+        Gold += amount;
+        GUIController.UpdateGameVariableDisplay(Lives, Gold);
+    }
+
     /// <summary>
     /// Pauses the game
     /// </summary>
