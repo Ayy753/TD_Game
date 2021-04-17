@@ -21,7 +21,7 @@ public class GUIController : MonoBehaviour
     private Tower targettedTower;
     private Image targetIcon;
     private GameObject btnExitEditMode;
-    private GameObject pnlPathRecalculating;
+    private GameObject txtPathRecalculating;
 
     private Button btnTargetFurthest;
     private Button btnTargetClosest;
@@ -61,7 +61,7 @@ public class GUIController : MonoBehaviour
         gameOverPanel = GameObject.Find("pnlGameOver");
         pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
         btnExitEditMode = GameObject.Find("btnExit");
-        pnlPathRecalculating = GameObject.Find("pnlPathRecalculating");
+        txtPathRecalculating = GameObject.Find("txtPathRecalculating");
         btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
 
         //  Targetting panel UI
@@ -80,7 +80,7 @@ public class GUIController : MonoBehaviour
         pnlTarget.SetActive(false);
         pnlStructureInfo.SetActive(false);
         btnExitEditMode.SetActive(false);
-        pnlPathRecalculating.SetActive(false);
+        txtPathRecalculating.SetActive(false);
     }
 
     private void Update()
@@ -187,7 +187,7 @@ public class GUIController : MonoBehaviour
     /// </summary>
     private void HandlePathRecalculating() 
     {
-        pnlPathRecalculating.SetActive(true);
+        txtPathRecalculating.SetActive(true);
     }
 
     /// <summary>
@@ -197,7 +197,7 @@ public class GUIController : MonoBehaviour
     /// <param name="index"></param>
     private void HandlePathRecalculated(List<Vector3Int> path, int index) 
     {
-        pnlPathRecalculating.SetActive(false);
+        txtPathRecalculating.SetActive(false);
     }
 
     /// <summary>
@@ -332,6 +332,7 @@ public class GUIController : MonoBehaviour
         btnSellStructure.GetComponentInChildren<Text>().text = "Sell for " + value.ToString() + " Gold";
         pnlStructureInfo.SetActive(false);
         pnlTarget.SetActive(true);
+        ExitEditMode();
     }
 
     /// <summary>

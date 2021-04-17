@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/PathfindingDemo.unity
     guid: 0e78935bf52cb2049a193ae4fd73cb42
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/BuildingDemo.unity
     guid: 39e7603fac034f94cabd6a7655f23378
+  - enabled: 1
+    path: Assets/Scenes/TowerDefenseDemo.unity
+    guid: 6144e0623520cfd4fa7e189af6755a22
   m_configObjects: {}
