@@ -94,11 +94,17 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Start spawning enemies
+    /// </summary>
     public void StartSpawning()
     {
         StartCoroutine(PeriodicSpawner());
     }
 
+    /// <summary>
+    /// Stop spawning enemies
+    /// </summary>
     public void StopSpawning()
     {
         StopCoroutine(PeriodicSpawner());
@@ -116,14 +122,5 @@ public class EnemySpawner : MonoBehaviour
         {
             enemy.SetSpeed(newSpeed);
         }
-    }
-
-    /// <summary>
-    /// Get a list of enemies
-    /// </summary>
-    /// <returns></returns>
-    public List<Enemy> GetEnemies()
-    {
-        return enemyPool;
     }
 }

@@ -16,6 +16,11 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     //  To compensate for the 0.5 unit offset of the tilemap system
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
+
+    //  Go backwards in path
+    private bool backtrack = false;
+    //  Index where new path diverges from old
+    private int currentDivergenceIndex;
     #endregion
 
     public delegate void EnemyReachedExit(Enemy enemy);
@@ -33,11 +38,6 @@ public class Enemy : MonoBehaviour, IDisplayable
     [SerializeField]
     private float Speed { get; set; } = 1f;
     #endregion
-
-    //  Go backwards in path
-    private bool backtrack = false;
-    //  Index where new path diverges from old
-    private int currentDivergenceIndex;
 
     private void Start()
     {

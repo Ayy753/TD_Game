@@ -60,21 +60,6 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Does a coordinate in specified layer contain a tile?
-    /// </summary>
-    /// <param name="layer"></param>
-    /// <param name="position"></param>
-    /// <returns></returns>
-    public bool ContainsTileAt(Layer layer, Vector3Int position)
-    {
-        Tilemap selectLayer = GetLayer(layer);
-        if (selectLayer.GetTile(position) != null)
-            return true;
-        else
-            return false;
-    }
-
-    /// <summary>
     /// Get TileMap corrisponding to Layers enum
     /// </summary>
     /// <param name="layer"></param>
@@ -93,6 +78,20 @@ public class MapManager : MonoBehaviour
             default:
                 return null;
         }
+    }
+    /// <summary>
+    /// Does a coordinate in specified layer contain a tile?
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public bool ContainsTileAt(Layer layer, Vector3Int position)
+    {
+        Tilemap selectLayer = GetLayer(layer);
+        if (selectLayer.GetTile(position) != null)
+            return true;
+        else
+            return false;
     }
 
     /// <summary>

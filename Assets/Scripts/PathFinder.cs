@@ -261,18 +261,6 @@ public class PathFinder : MonoBehaviour
                                 {
                                     PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
                                     openList.Add(successor);
-
-                                    //if (PreviousPath != null )
-                                    //{
-                                    //    if (PreviousPath.Contains(successor.Coordinate))
-                                    //    {
-                                    //        //print("new node intercepts with old path at " + successor.Coordinate);
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        print("There is no intercept at " + successor.Coordinate);
-                                    //    }
-                                    //}
                                 }
                             }
                         }
@@ -378,29 +366,6 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if path was blocked before a point
-    /// </summary>
-    /// <param name="path"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    public bool PathBlockedBefore(List<Vector3Int> path, int index)
-    {
-        if (index >= path.Count)
-        {
-            throw new ArgumentOutOfRangeException("Index exceeds path length");
-        }
-
-        for (int i = 0; i < index; i++)
-        {
-            if (IsValidTile(path[i]) == false)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
     /// Checks if path was blocked after a point
     /// </summary>
     /// <param name="path"></param>
@@ -421,12 +386,6 @@ public class PathFinder : MonoBehaviour
             }
         }
         return false;
-    }
-
-
-    public bool PathBlockedAt(List<Vector3Int> path, int index)
-    {
-        return IsValidTile(path[index]) == false;
     }
 
     /// <summary>

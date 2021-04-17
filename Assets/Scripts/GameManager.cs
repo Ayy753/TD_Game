@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
         Enemy.OnEnemyDied -= HandleEnemyDied;
     }
     
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Instance = this;
         EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
@@ -123,6 +123,10 @@ public class GameManager : MonoBehaviour
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
+    /// <summary>
+    /// Adds gold
+    /// </summary>
+    /// <param name="amount"></param>
     public void GainGold(int amount)
     {
         Gold += amount;

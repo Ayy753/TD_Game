@@ -105,6 +105,10 @@ public class GUIController : MonoBehaviour
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
         PathFinder.OnPathRecalculating -= HandlePathRecalculating;
     }
+    
+    /// <summary>
+    /// Populates build menu with structure buttons
+    /// </summary>
     private void PopulateScrollView()
     {
         foreach (StructureData structure in structureDatas)
@@ -178,15 +182,36 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Alerts the user that the path is being recalculated
+    /// </summary>
     private void HandlePathRecalculating() 
     {
         pnlPathRecalculating.SetActive(true);
     }
+
+    /// <summary>
+    /// Removes path recalculated message
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="index"></param>
     private void HandlePathRecalculated(List<Vector3Int> path, int index) 
     {
         pnlPathRecalculating.SetActive(false);
     }
 
+    /// <summary>
+    /// Unselects the targetted tower
+    /// </summary>
+    private void ClearTarget()
+    {
+        pnlTarget.SetActive(false);
+        targettedTower = null;
+    }
+
+    /// <summary>
+    /// Exits the game
+    /// </summary>
     public void ExitGame()
     {
         Application.Quit();
@@ -227,11 +252,17 @@ public class GUIController : MonoBehaviour
         buildManager.ExitBuildMode();
     }
 
+    /// <summary>
+    /// Enables the tooltip
+    /// </summary>
     public void ShowToolTip()
     {
         toolTip.ShowToolTip();
     }
 
+    /// <summary>
+    /// Disables the tooltip
+    /// </summary>
     public void HideToolTip() 
     {
         toolTip.HideToolTip();
@@ -248,16 +279,26 @@ public class GUIController : MonoBehaviour
         goldLabel.text = "Gold: " + gold;
     }
 
+    /// <summary>
+    /// Shows a panel telling the user the game is over
+    /// </summary>
     public void ShowGameOverPanel()
     {
         gameOverPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides game over panel
+    /// </summary>
     public void HideGameOverPanel()
     {
         gameOverPanel.SetActive(false);
     }
 
+    /// <summary>
+    /// Populate target window with selected tower's info
+    /// </summary>
+    /// <param name="tower"></param>
     public void TargetTower(Tower tower)
     {
         targettedTower = tower;
@@ -293,18 +334,18 @@ public class GUIController : MonoBehaviour
         pnlTarget.SetActive(true);
     }
 
+    /// <summary>
+    /// Sells the targetted tower
+    /// </summary>
     public void SellTower()
     {
         buildManager.DemolishStructure(Vector3Int.FloorToInt(targettedTower.transform.position));
         pnlTarget.SetActive(false);
     }
 
-    private void ClearTarget()
-    {
-        pnlTarget.SetActive(false);
-        targettedTower = null;
-    }
-
+    /// <summary>
+    /// Clears the highlighted target mode button
+    /// </summary>
     public void UnhighlightTowerButtons()
     {
         foreach (Button button in towerTargetButtons)
@@ -313,6 +354,9 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tower targets nearest enemy
+    /// </summary>
     public void TargetNearest()
     {
         if (targettedTower != null)
@@ -323,6 +367,9 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tower targets nearest enemy
+    /// </summary>
     public void TargetFurthest()
     {
         if (targettedTower != null)
@@ -333,6 +380,9 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tower targets enemy with lowest health
+    /// </summary>
     public void TargetMinHP()
     {
         if (targettedTower != null)
@@ -343,6 +393,9 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tower targets enemy with highest health
+    /// </summary>
     public void TargetMaxHP()
     {
         if (targettedTower != null)
@@ -353,6 +406,9 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tower targets random enemy within range
+    /// </summary>
     public void TargetRandom()
     {
         if (targettedTower != null)

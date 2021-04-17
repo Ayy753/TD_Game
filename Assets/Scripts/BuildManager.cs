@@ -23,7 +23,7 @@ public class BuildManager : MonoBehaviour
         None
     }
 
-    public void Start()
+    private void Start()
     {
         gameManager = GameManager.Instance;
         mapManager = gameManager.MapManager;
@@ -31,7 +31,7 @@ public class BuildManager : MonoBehaviour
         instantiatedTowers = new List<GameObject>();
     }
 
-    public void Update()
+    private void Update()
     {
         //  Prevent clicking through GUI elements
         if (EventSystem.current.IsPointerOverGameObject() == false)
@@ -43,29 +43,6 @@ public class BuildManager : MonoBehaviour
         {
             PauseHighlighting();
         }
-    }
-
-    public void EnterBuildMode(StructureData selectedStructure)
-    {
-        currentlySelectedStructure = selectedStructure;
-        lastHoveredPosition = Vector3Int.zero;
-        currentBuildMode = BuildMode.Build;
-        Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
-    }
-
-    public void EnterDemolishMode()
-    {
-        lastHoveredPosition = Vector3Int.zero;
-        currentBuildMode = BuildMode.Demolish;
-        Debug.Log("Entered demolish mode");
-    }
-
-    public void ExitBuildMode()
-    {
-        currentlySelectedStructure = null;
-        currentBuildMode = BuildMode.None;
-        PauseHighlighting();
-        Debug.Log("Exited build mode");
     }
 
     /// <summary>
@@ -162,40 +139,6 @@ public class BuildManager : MonoBehaviour
 
                 gameManager.SpendGold(structure.Cost);
             }
-
-        }
-    }
-
-    /// <summary>
-    /// Demolishes a structure
-    /// </summary>
-    /// <param name="position"></param>
-    public void DemolishStructure(Vector3Int position)
-    {
-        TileData structure = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
-        if (structure.GetType() == typeof(TowerData))
-        {
-            //  Find and remove tower at this position
-            foreach (GameObject tower in instantiatedTowers)
-            {
-                if (tower.transform.position == position + tilemapOffset)
-                {
-                    int value = Mathf.RoundToInt(((TowerData)structure).Cost * 0.66f);
-                    gameManager.GainGold(value);
-                    instantiatedTowers.Remove(tower);
-                    GameObject.Destroy(tower);
-                    mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
-                    break;
-                }
-            }
-        }
-        else if (structure.GetType() == typeof(WallData))
-        {
-            mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
-        }
-        else
-        {
-            throw new System.Exception("Stucture type " + structure.GetType() + " not implemented");
         }
     }
 
@@ -322,5 +265,70 @@ public class BuildManager : MonoBehaviour
     {
         GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
         instantiatedTowers.Add(tower);
+    }
+    /// <summary>
+    /// Demolishes a structure
+    /// </summary>
+    /// <param name="position"></param>
+    public void DemolishStructure(Vector3Int position)
+    {
+        TileData structure = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+        if (structure.GetType() == typeof(TowerData))
+        {
+            //  Find and remove tower at this position
+            foreach (GameObject tower in instantiatedTowers)
+            {
+                if (tower.transform.position == position + tilemapOffset)
+                {
+                    int value = Mathf.RoundToInt(((TowerData)structure).Cost * 0.66f);
+                    gameManager.GainGold(value);
+                    instantiatedTowers.Remove(tower);
+                    GameObject.Destroy(tower);
+                    mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
+                    break;
+                }
+            }
+        }
+        else if (structure.GetType() == typeof(WallData))
+        {
+            mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
+        }
+        else
+        {
+            throw new System.Exception("Stucture type " + structure.GetType() + " not implemented");
+        }
+    }
+
+    /// <summary>
+    /// Enters build mode
+    /// </summary>
+    /// <param name="selectedStructure"></param>
+    public void EnterBuildMode(StructureData selectedStructure)
+    {
+        currentlySelectedStructure = selectedStructure;
+        lastHoveredPosition = Vector3Int.zero;
+        currentBuildMode = BuildMode.Build;
+        Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
+    }
+
+    /// <summary>
+    /// Enters demolish mode
+    /// </summary>
+    public void EnterDemolishMode()
+    {
+        lastHoveredPosition = Vector3Int.zero;
+        currentBuildMode = BuildMode.Demolish;
+        Debug.Log("Entered demolish mode");
+    }
+
+    /// <summary>
+    /// Exits build/demolish mode
+    /// </summary>
+    public void ExitBuildMode()
+    {
+        currentlySelectedStructure = null;
+        currentBuildMode = BuildMode.None;
+        PauseHighlighting();
+        Debug.Log("Exited build mode");
     }
 }
