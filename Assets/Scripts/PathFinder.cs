@@ -28,7 +28,9 @@ public class PathFinder : MonoBehaviour
     private List<PathNode> closedList;
 
     public delegate void PathRecalculated(List<Vector3Int> newPath, int indexDivergence);
+    public delegate void PathRecalculating();
     public static PathRecalculated OnPathRecalculated;
+    public static PathRecalculating OnPathRecalculating;
 
     /// <summary>
     /// The current path through the map
@@ -355,6 +357,7 @@ public class PathFinder : MonoBehaviour
             //  Pause game
             GameManager.Instance.PauseGame();
             StartCoroutine("CalculateShortestPath");
+            OnPathRecalculating.Invoke();
         }
     }
 

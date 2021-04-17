@@ -21,6 +21,7 @@ public class GUIController : MonoBehaviour
     private Tower targettedTower;
     private Image targetIcon;
     private GameObject btnExitEditMode;
+    private GameObject pnlPathRecalculating;
 
     private Button btnTargetFurthest;
     private Button btnTargetClosest;
@@ -70,12 +71,14 @@ public class GUIController : MonoBehaviour
         txtTargetDescription = GameObject.Find("txtDescription").GetComponent<Text>();
         towerTargetButtons = new List<Button>() { btnTargetFurthest, btnTargetClosest, btnTargetHighest, btnTargetLowest, btnTargetRandom };
         pnlTarget = GameObject.Find("pnlTarget");
+        pnlPathRecalculating = GameObject.Find("pnlPathRecalculating");
 
         HideGameOverPanel();    
         PopulateScrollView();
         pnlTarget.SetActive(false);
         pnlStructureInfo.SetActive(false);
         btnExitEditMode.SetActive(false);
+        pnlPathRecalculating.SetActive(false);
     }
 
     private void Update()
@@ -89,6 +92,17 @@ public class GUIController : MonoBehaviour
         HandleToolTipLogic();
     }
 
+    private void OnEnable()
+    {
+        PathFinder.OnPathRecalculated += HandlePathRecalculated;
+        PathFinder.OnPathRecalculating += HandlePathRecalculating;
+    }
+    
+    private void OnDisable()
+    {
+        PathFinder.OnPathRecalculated -= HandlePathRecalculated;
+        PathFinder.OnPathRecalculating -= HandlePathRecalculating;
+    }
     private void PopulateScrollView()
     {
         foreach (StructureData structure in structureDatas)
@@ -160,6 +174,15 @@ public class GUIController : MonoBehaviour
                 ClearTarget();
             }
         }
+    }
+
+    private void HandlePathRecalculating() 
+    {
+        pnlPathRecalculating.SetActive(true);
+    }
+    private void HandlePathRecalculated(List<Vector3Int> path, int index) 
+    {
+        pnlPathRecalculating.SetActive(false);
     }
 
     public void ExitGame()
