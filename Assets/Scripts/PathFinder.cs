@@ -196,10 +196,15 @@ public class PathFinder : MonoBehaviour
                 CurrentPath = foundPath.GetPath();
                 mapManager.HighlightPath(CurrentPath, Color.cyan);
 
+                //  temp
+                RouteToPath(new Vector3Int(11, 11, 0));
+
                 if (PreviousPath != null && OnPathRecalculated != null)
                 {
                     int index = PointOfDivergence();
                     print("index of divergence: " + index);
+
+
                     OnPathRecalculated.Invoke(CurrentPath, index);
                 }
 
@@ -277,6 +282,104 @@ public class PathFinder : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Searches for the shortest route to the main path
+    /// </summary>
+    private List<Vector3Int> RouteToPath(Vector3Int startingPos)
+    {
+        List<PathNode> closedList = new List<PathNode>();
+        List<PathNode> openList = new List<PathNode>();
+
+        PathNode parentNode = new PathNode(startingPos);
+        openList.Add(parentNode);
+
+        int tileCost = 1; //    temp until I implement different tile costs
+        int counter = 0;
+        int maxItt = 1000;
+    
+        while (openList.Count > 0 && counter < maxItt)
+        {
+            parentNode = openList[0];
+
+            //  Select the lowest cost from the starting position in the openlist
+            foreach (PathNode node in openList)
+            {
+                if (node.Fcost < parentNode.Fcost)
+                {
+                    parentNode = node;
+                }
+            }
+
+            openList.Remove(parentNode);
+            closedList.Add(parentNode);
+
+            //  Check if this node is part of the main path
+            foreach (Vector3Int coordinate in CurrentPath)
+            {
+                //  If it is we found the shortest route to the main path
+                if (coordinate == parentNode.Coordinate)
+                {
+                    Debug.Log("Found the shortest route to the path: " + coordinate);
+                    List<Vector3Int> path = parentNode.GetPath();
+
+                    mapManager.HighlightPath(path, Color.grey);
+                    return path;
+                }
+            }
+
+            //  Examine the neighbours
+            for (int y = -1; y <= 1; y++)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    if ((x == 0 && y != 0) || (x != 0 && y == 0))
+                    {
+                        Vector3Int neighbourCoordinate = parentNode.Coordinate + new Vector3Int(x, y, 0);
+                        bool inClosedList = false;
+                        bool inOpenList = false;
+
+                        foreach (PathNode node in closedList)
+                        {
+                            if (node.Coordinate == neighbourCoordinate)
+                            {
+                                inClosedList = true;
+                                break;
+                            }
+                        }
+
+                        if (inClosedList == false && IsValidTile(neighbourCoordinate))
+                        {
+                            //  Might add some kind of heristic value later for tiebreaking
+                            float fScore = parentNode.Fcost + tileCost;
+
+                            foreach (PathNode node in openList)
+                            {
+                                if (node.Coordinate == neighbourCoordinate)
+                                {
+                                    inOpenList = true;
+
+                                    if (fScore < node.Fcost)
+                                    {
+                                        node.Fcost = fScore;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            if (inOpenList == false)
+                            {
+                                openList.Add(new PathNode(neighbourCoordinate, fScore, 0, parentNode));
+                            }
+                        }
+                    }
+                }
+            }
+            counter++;
+        }
+        Debug.Log("Did not find route to path");
+        return null;
     }
 
     /// <summary>
