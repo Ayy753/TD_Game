@@ -332,7 +332,6 @@ public class GUIController : MonoBehaviour
         btnSellStructure.GetComponentInChildren<Text>().text = "Sell for " + value.ToString() + " Gold";
         pnlStructureInfo.SetActive(false);
         pnlTarget.SetActive(true);
-        ExitEditMode();
     }
 
     /// <summary>
