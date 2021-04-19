@@ -27,7 +27,7 @@ public class PathFinder : MonoBehaviour
     private List<PathNode> openList;
     private List<PathNode> closedList;
 
-    public delegate void PathRecalculated(List<Vector3Int> newPath, int indexDivergence);
+    public delegate void PathRecalculated(List<Vector3Int> newPath);
     public delegate void PathRecalculating();
     public static PathRecalculated OnPathRecalculated;
     public static PathRecalculating OnPathRecalculating;
@@ -196,16 +196,9 @@ public class PathFinder : MonoBehaviour
                 CurrentPath = foundPath.GetPath();
                 mapManager.HighlightPath(CurrentPath, Color.cyan);
 
-                //  temp
-                RouteToPath(new Vector3Int(11, 11, 0));
-
                 if (PreviousPath != null && OnPathRecalculated != null)
                 {
-                    int index = PointOfDivergence();
-                    print("index of divergence: " + index);
-
-
-                    OnPathRecalculated.Invoke(CurrentPath, index);
+                    OnPathRecalculated.Invoke(CurrentPath);
                 }
 
                 GameManager.Instance.ResumeGame();
@@ -287,7 +280,7 @@ public class PathFinder : MonoBehaviour
     /// <summary>
     /// Searches for the shortest route to the main path
     /// </summary>
-    private List<Vector3Int> RouteToPath(Vector3Int startingPos)
+    public (List<Vector3Int>, int) RouteToPath(Vector3Int startingPos)
     {
         List<PathNode> closedList = new List<PathNode>();
         List<PathNode> openList = new List<PathNode>();
@@ -315,17 +308,15 @@ public class PathFinder : MonoBehaviour
             openList.Remove(parentNode);
             closedList.Add(parentNode);
 
-            //  Check if this node is part of the main path
-            foreach (Vector3Int coordinate in CurrentPath)
+            for (int i = 0; i < CurrentPath.Count; i++)
             {
                 //  If it is we found the shortest route to the main path
-                if (coordinate == parentNode.Coordinate)
+                if (CurrentPath[i] == parentNode.Coordinate)
                 {
-                    Debug.Log("Found the shortest route to the path: " + coordinate);
                     List<Vector3Int> path = parentNode.GetPath();
 
-                    mapManager.HighlightPath(path, Color.grey);
-                    return path;
+                    //mapManager.HighlightPath(path, Color.grey);
+                    return (path, i);
                 }
             }
 
@@ -371,6 +362,7 @@ public class PathFinder : MonoBehaviour
                             if (inOpenList == false)
                             {
                                 openList.Add(new PathNode(neighbourCoordinate, fScore, 0, parentNode));
+                                //mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
                             }
                         }
                     }
@@ -379,28 +371,7 @@ public class PathFinder : MonoBehaviour
             counter++;
         }
         Debug.Log("Did not find route to path");
-        return null;
-    }
-
-    /// <summary>
-    /// Finds the point in which the new and old paths diverge
-    /// </summary>
-    private int PointOfDivergence()
-    {
-        int divergeIndex = 0;
-
-        if (PreviousPath != null)
-        {
-            for (int index = 0; index < PreviousPath.Count; index++)
-            {
-                if (PreviousPath[index] != CurrentPath[index])
-                {
-                    divergeIndex = index - 1;
-                    break;
-                }
-            }
-        }
-        return divergeIndex;
+        return (null, -1);
     }
 
     /// <summary>
@@ -484,6 +455,18 @@ public class PathFinder : MonoBehaviour
         for (int i = index + 1; i < path.Count; i++)
         {
             if (IsValidTile(path[i]) == false)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool PointOnPath(Vector3Int point)
+    {
+        foreach (Vector3Int node in CurrentPath)
+        {
+            if (node == point)
             {
                 return true;
             }

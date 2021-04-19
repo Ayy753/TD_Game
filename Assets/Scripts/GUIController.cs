@@ -195,7 +195,7 @@ public class GUIController : MonoBehaviour
     /// </summary>
     /// <param name="path"></param>
     /// <param name="index"></param>
-    private void HandlePathRecalculated(List<Vector3Int> path, int index) 
+    private void HandlePathRecalculated(List<Vector3Int> path) 
     {
         txtPathRecalculating.SetActive(false);
     }

@@ -14,13 +14,12 @@ public class Enemy : MonoBehaviour, IDisplayable
     private List<Vector3Int> currentPath;
     private int currentPathIndex;
 
+    private bool onMainPath = true;
+    private List<Vector3Int> routeToPath;
+    private int routeIndex;
+
     //  To compensate for the 0.5 unit offset of the tilemap system
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
-
-    //  Go backwards in path
-    private bool backtrack = false;
-    //  Index where new path diverges from old
-    private int currentDivergenceIndex;
     #endregion
 
     public delegate void EnemyReachedExit(Enemy enemy);
@@ -52,7 +51,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         pathFinder = gameManager.PathFinder;
         currentPathIndex = 0;
         currentPath = pathFinder.CurrentPath;
-        FaceNextNode();
+        FaceNextNode(currentPath[currentPathIndex]);
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
     }
 
@@ -63,50 +62,37 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     private void Update()
     {
-        if (currentPath != null)
+        if (onMainPath)
         {
-            if (currentPathIndex <= currentPath.Count - 1)
+            transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, Speed * Time.deltaTime);
+            if (currentPath[currentPathIndex] + tilemapOffset == transform.position)
             {
-                Vector3 target = currentPath[currentPathIndex] + tilemapOffset;
-
-                if (transform.parent.position != target)
+                currentPathIndex++;
+                if (currentPathIndex == currentPath.Count)
                 {
-                    transform.parent.position = Vector3.MoveTowards(transform.parent.position, target, Speed * Time.deltaTime);
+                    OnEnemyReachedGate.Invoke(this);
+                    Despawn();
                 }
                 else
                 {
-                    if (backtrack == false)
-                    {
-                        currentPathIndex++;
-                    }
-                    else
-                    {
-                        currentPathIndex--;
-
-                        //  If we reached point of divergence, stop moving backwards
-                        //  and obtain the new path
-                        if (currentPathIndex == currentDivergenceIndex)
-                        {
-                            currentPath = pathFinder.CurrentPath;
-                            backtrack = false;
-                        }
-                    }
-
-                    if (currentPathIndex < currentPath.Count)
-                    {
-
-                        FaceNextNode();
-                    }
+                    FaceNextNode(currentPath[currentPathIndex]);
                 }
             }
-            else
+        }
+        else
+        {
+            transform.parent.position = Vector3.MoveTowards(transform.position, routeToPath[routeIndex] + tilemapOffset, Speed * Time.deltaTime);
+            if (routeToPath[routeIndex] + tilemapOffset == transform.position)
             {
-                if (OnEnemyReachedGate != null)
+                routeIndex++;
+                if (routeIndex == routeToPath.Count)
                 {
-                    OnEnemyReachedGate.Invoke(this);
+                    onMainPath = true;
                 }
-
-                Despawn();
+                else
+                {
+                    FaceNextNode(routeToPath[routeIndex]);
+                }
             }
         }
     }
@@ -114,23 +100,23 @@ public class Enemy : MonoBehaviour, IDisplayable
     /// <summary>
     /// Faces next path node
     /// </summary>
-    private void FaceNextNode()
+    private void FaceNextNode(Vector3Int nextNodePos)
     {
         //  Rotate unit to face direction of next tile in path
         Vector3 posNoOffset = transform.position - tilemapOffset;
-        if (currentPath[currentPathIndex].x < posNoOffset.x)
+        if (nextNodePos.x < posNoOffset.x)
         {
             transform.rotation = Quaternion.Euler(0, 0, 180);
         }
-        else if (currentPath[currentPathIndex].y < posNoOffset.y)
+        else if (nextNodePos.y < posNoOffset.y)
         {
             transform.rotation = Quaternion.Euler(0, 0, -90);
         }
-        else if (currentPath[currentPathIndex].y > posNoOffset.y)
+        else if (nextNodePos.y > posNoOffset.y)
         {
             transform.rotation = Quaternion.Euler(0, 0, 90);
         }
-        if (currentPath[currentPathIndex].x > posNoOffset.x)
+        if (nextNodePos.x > posNoOffset.x)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
@@ -140,24 +126,21 @@ public class Enemy : MonoBehaviour, IDisplayable
     /// Responds to path change event
     /// </summary>
     /// <param name="newPath"></param>
-    private void HandlePathRecalculated(List<Vector3Int> newPath, int indexDivergence)
+    private void HandlePathRecalculated(List<Vector3Int> newPath)
     {
-        //  If enemy already passed point of divergence
-        if (currentPathIndex > indexDivergence)
-        {
-            //  Backtrack if current path is blocked
-            //  or the cost of backtracking to new path is worth it
-            int backTrackCost = currentPathIndex - indexDivergence;
-            if (pathFinder.PathBlockedAfter(currentPath, currentPathIndex) || backTrackCost + newPath.Count < currentPath.Count)
-            {
-                currentDivergenceIndex = indexDivergence;
-                backtrack = true;
-            }
-        }
-        else
-        {
-            currentPath = newPath;
-        }
+        currentPath = newPath;
+        (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
+        
+        //  Route to new path
+        routeToPath = result.Item1;
+        
+        //  Current index in route to path
+        routeIndex = 0;
+        
+        //  Where enemy will be when it joins main path
+        currentPathIndex = result.Item2;
+
+        onMainPath = false;
     }
 
     /// <summary>
