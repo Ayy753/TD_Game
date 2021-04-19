@@ -55,7 +55,7 @@ public class Tower : MonoBehaviour, IDisplayable
 
             //  Fire projectile
             Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
-            projectile.Initialize(Target.gameObject.transform, TowerData.Damage, 6f);
+            projectile.Initialize(Target.transform, TowerData.Damage, 6f);
             TimeSinceLastShot = 0;
         }
     }

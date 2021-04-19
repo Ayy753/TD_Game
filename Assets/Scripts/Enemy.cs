@@ -48,14 +48,19 @@ public class Enemy : MonoBehaviour, IDisplayable
     #region Methods
     private void OnEnable()
     {
-        gameManager = GameManager.Instance;
-        pathFinder = gameManager.PathFinder;
+        onMainPath = true;
         currentPathIndex = 0;
-        currentPath = pathFinder.CurrentPath;
+
+        if (gameManager == null)
+        {
+            gameManager = GameManager.Instance;
+            pathFinder = gameManager.PathFinder;
+            currentPath = pathFinder.CurrentPath;
+        }
+
         FaceNextNode(currentPath[currentPathIndex]);
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
         MapManager.OnStructureChanged += HandleStructureChanged;
-        onMainPath = true;
     }
 
     private void OnDisable()
@@ -229,7 +234,6 @@ public class Enemy : MonoBehaviour, IDisplayable
         {
             healthBarForeground.gameObject.transform.localScale = new Vector3(healthPercent, 0.25f, 1);
         }
-
     }
 
     public string GetDisplayText()
