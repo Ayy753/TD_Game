@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -53,11 +54,40 @@ public class Enemy : MonoBehaviour, IDisplayable
         currentPath = pathFinder.CurrentPath;
         FaceNextNode(currentPath[currentPathIndex]);
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
+        MapManager.OnStructureChanged += HandleStructureChanged;
+        onMainPath = true;
     }
 
     private void OnDisable()
     {
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
+        MapManager.OnStructureChanged -= HandleStructureChanged;
+    }
+
+    /// <summary>
+    /// Individually handle the case where the sturcture map changes, but the
+    /// main path doesnt need to be recalculated, and the enemy's path towards 
+    /// the main path got blocked
+    /// </summary>
+    /// <param name="demolish"></param>
+    private void HandleStructureChanged(bool demolish)
+    {
+        if (onMainPath == false)
+        {
+            if (pathFinder.PathBlocked(routeToPath))
+            {
+                (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
+
+                //  Route to new path
+                routeToPath = result.Item1;
+
+                //  Current index in route to path
+                routeIndex = 0;
+
+                //  Where enemy will be when it joins main path
+                currentPathIndex = result.Item2;
+            }
+        }
     }
 
     private void Update()
@@ -129,14 +159,15 @@ public class Enemy : MonoBehaviour, IDisplayable
     private void HandlePathRecalculated(List<Vector3Int> newPath)
     {
         currentPath = newPath;
+
         (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
-        
+
         //  Route to new path
         routeToPath = result.Item1;
-        
+
         //  Current index in route to path
         routeIndex = 0;
-        
+
         //  Where enemy will be when it joins main path
         currentPathIndex = result.Item2;
 
