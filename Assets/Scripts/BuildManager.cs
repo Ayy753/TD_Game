@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Assets.Scripts;
+using System;
 
 public class BuildManager : MonoBehaviour
 {
@@ -31,42 +33,26 @@ public class BuildManager : MonoBehaviour
         instantiatedTowers = new List<GameObject>();
     }
 
+    private void OnEnable()
+    {
+        HoverManager.OnHoveredNewTile += HandleNewTileHovered;
+    }
+
+    private void OnDisable()
+    {
+        HoverManager.OnHoveredNewTile -= HandleNewTileHovered;
+    }
+
     private void Update()
     {
         //  Prevent clicking through GUI elements
         if (EventSystem.current.IsPointerOverGameObject() == false)
         {
-            HandleHoverLogic();
             HandleClickLogic();
         }
         else
         {
             PauseHighlighting();
-        }
-    }
-
-    /// <summary>
-    /// Handles tile highlighting under cursor while in build/demolish mode
-    /// </summary>
-    private void HandleHoverLogic()
-    {
-        if (currentBuildMode != BuildMode.None)
-        {
-            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            mouseposition.z = 0;
-
-            if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, mouseposition))
-            {
-                if (mouseposition != lastHoveredPosition)
-                {
-                    UnhoverTile(lastHoveredPosition);
-                    HoverTile(mouseposition);
-                }
-            }
-            else
-            {
-                PauseHighlighting();
-            }
         }
     }
 
@@ -266,6 +252,23 @@ public class BuildManager : MonoBehaviour
         GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
         instantiatedTowers.Add(tower);
     }
+
+    /// <summary>
+    /// Handles logic when a new tile is hovered
+    /// </summary>
+    /// <param name="tileCoords"></param>
+    private void HandleNewTileHovered(Vector3Int tileCoords)
+    {
+        if (currentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
+        {
+            if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords))
+            {
+                UnhoverTile(lastHoveredPosition);
+                HoverTile(tileCoords);
+            }
+        }
+    }
+
     /// <summary>
     /// Demolishes a structure
     /// </summary>

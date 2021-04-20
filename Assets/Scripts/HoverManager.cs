@@ -45,7 +45,7 @@ namespace Assets.Scripts
                     lastTileHovered = mousePos;
                     OnHoveredNewTile.Invoke(mousePos);
                 }
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.025f);
             }
         }
     }
