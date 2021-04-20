@@ -11,6 +11,7 @@ public class GUIController : MonoBehaviour
     EnemySpawner spawner;
     PathFinder pathFinder;
     BuildManager buildManager;
+    MapManager mapManager;
     
     private ToolTip toolTip;
     private Image selectedIcon;
@@ -22,6 +23,7 @@ public class GUIController : MonoBehaviour
     private Image targetIcon;
     private GameObject btnExitEditMode;
     private GameObject txtPathRecalculating;
+    private Text txtTileInfo;
 
     private Button btnTargetFurthest;
     private Button btnTargetClosest;
@@ -52,6 +54,8 @@ public class GUIController : MonoBehaviour
         spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
         buildManager = gameManager.BuildManager;
+        mapManager = gameManager.MapManager;
+
 
         toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
@@ -63,6 +67,8 @@ public class GUIController : MonoBehaviour
         btnExitEditMode = GameObject.Find("btnExit");
         txtPathRecalculating = GameObject.Find("txtPathRecalculating");
         btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
+        txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
+
 
         //  Targetting panel UI
         targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
@@ -98,14 +104,16 @@ public class GUIController : MonoBehaviour
     {
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
         PathFinder.OnPathRecalculating += HandlePathRecalculating;
+        HoverManager.OnHoveredNewTile += HandleHoveredNewTile;
     }
-    
+
     private void OnDisable()
     {
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
         PathFinder.OnPathRecalculating -= HandlePathRecalculating;
+        HoverManager.OnHoveredNewTile -= HandleHoveredNewTile;
     }
-    
+
     /// <summary>
     /// Populates build menu with structure buttons
     /// </summary>
@@ -207,6 +215,27 @@ public class GUIController : MonoBehaviour
     {
         pnlTarget.SetActive(false);
         targettedTower = null;
+    }
+
+    /// <summary>
+    /// Updates tile info box
+    /// </summary>
+    /// <param name="tileCoords"></param>
+    private void HandleHoveredNewTile(Vector3Int tileCoords)
+    {
+        if (mapManager != null)
+        {
+            GroundData groundData = (GroundData)mapManager.GetTileData(MapManager.Layer.GroundLayer, tileCoords);
+
+            if (groundData != null)
+            {
+                txtTileInfo.text = groundData.GetDisplayText();
+            }
+            else
+            {
+                txtTileInfo.text = string.Empty;
+            }
+        }
     }
 
     /// <summary>
