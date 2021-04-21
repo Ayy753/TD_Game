@@ -48,6 +48,8 @@ public class GUIController : MonoBehaviour
     [SerializeField]
     private GameObject structureBuildBtnPrefab;
 
+    bool hoveringOverGameObject = false;
+
     void Start()
     {
         gameManager = GameManager.Instance;
@@ -97,7 +99,12 @@ public class GUIController : MonoBehaviour
             ClearTarget();
         }
 
-        HandleToolTipLogic();
+        //  Clear target if user clicks on empty ground
+        if (EventSystem.current.IsPointerOverGameObject() == false && 
+            hoveringOverGameObject == false && Input.GetMouseButton(0) == true)
+        {
+           ClearTarget();
+        }
     }
 
     private void OnEnable()
@@ -105,6 +112,8 @@ public class GUIController : MonoBehaviour
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
         PathFinder.OnPathRecalculating += HandlePathRecalculating;
         HoverManager.OnHoveredNewTile += HandleHoveredNewTile;
+        HoverManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
+        HoverManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
     }
 
     private void OnDisable()
@@ -112,6 +121,8 @@ public class GUIController : MonoBehaviour
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
         PathFinder.OnPathRecalculating -= HandlePathRecalculating;
         HoverManager.OnHoveredNewTile -= HandleHoveredNewTile;
+        HoverManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
+        HoverManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
     }
 
     /// <summary>
@@ -131,62 +142,6 @@ public class GUIController : MonoBehaviour
 
             newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
             Debug.Log("created build button");
-        }
-    }
-
-    /// <summary>
-    /// Prototype tooltip logic
-    /// will be redesigned in future
-    /// </summary>
-    private void HandleToolTipLogic()
-    {
-        Vector3 ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(ray, Vector2.zero, Mathf.Infinity);
-
-        IDisplayable display = null;
-
-        //  If physics collider hit a gameobject
-        if (hit.collider != null)
-        {
-            display = hit.collider.GetComponent<IDisplayable>();
-        }
-
-        //  Otherwise perform GUI raycast
-        else
-        {
-            PointerEventData pointerEvent = new PointerEventData(EventSystem.current);
-            pointerEvent.position = Input.mousePosition;
-
-            List<RaycastResult> result = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerEvent, result);
-
-            //  Check each GUI object hit by ray for an IDisplayable object
-            foreach (var item in result)
-            {
-                display = item.gameObject.GetComponent<IDisplayable>();
-
-                if (display != null)
-                {
-                    break;
-                }
-            }
-        }
-
-        //  If either rays hit an item with display information, show tooltip
-        if (display != null)
-        {
-            toolTip.ShowToolTip();
-            toolTip.SetCurrentString(display.GetDisplayText());
-        }
-        else
-        {
-            toolTip.HideToolTip();
-
-            //  If mouse isnt hovering over anything targettable or GUI and mouse button is pressed
-            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
-            {
-                ClearTarget();
-            }
         }
     }
 
@@ -239,6 +194,31 @@ public class GUIController : MonoBehaviour
     }
 
     /// <summary>
+    /// Shows tooltip if object hovered over implements IDisplayable
+    /// </summary>
+    /// <param name="gameObject"></param>
+    private void HandleHoveredNewGameObject(GameObject gameObject)
+    {
+        IDisplayable displayable = gameObject.GetComponent<IDisplayable>();
+
+        if (displayable != null)
+        {
+            toolTip.SetCurrentString(displayable.GetDisplayText());
+            ShowToolTip();
+        }
+        hoveringOverGameObject = true;
+    }
+
+    /// <summary>
+    /// Hides the tooltip
+    /// </summary>
+    private void HandleUnhoveredGameObject()
+    {
+        HideToolTip();
+        hoveringOverGameObject = false;
+    }
+
+    /// <summary>
     /// Exits the game
     /// </summary>
     public void ExitGame()
@@ -286,6 +266,7 @@ public class GUIController : MonoBehaviour
     /// </summary>
     public void ShowToolTip()
     {
+        toolTip.transform.position = Input.mousePosition;
         toolTip.ShowToolTip();
     }
 
