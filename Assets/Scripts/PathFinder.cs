@@ -24,9 +24,6 @@ public class PathFinder : MonoBehaviour
     private Vector3Int exitCoordinate;
     private Vector3Int entranceCoordinate;
 
-    private List<PathNode> openList;
-    private List<PathNode> closedList;
-
     public delegate void PathRecalculated(List<Vector3Int> newPath);
     public delegate void PathRecalculating();
     public static PathRecalculated OnPathRecalculated;
@@ -153,11 +150,8 @@ public class PathFinder : MonoBehaviour
     /// <returns>A chain of path nodes, or null if there is no valid path</returns>
     private IEnumerator CalculateShortestPath()
     {
-        openList = new List<PathNode>();
-        closedList = new List<PathNode>();
-
-        //  a placeholder until I implement variable tile costs
-        float tempTileCost = 1f;
+        List<PathNode> openList = new List<PathNode>();
+        List<PathNode> closedList = new List<PathNode>();
 
         int counter = 0;
 
@@ -191,7 +185,7 @@ public class PathFinder : MonoBehaviour
             //  Return path chain if we found the exit tile
             if (currentNode.Coordinate == exitCoordinate)
             {
-                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Fcost, currentNode.Gcost, parent);
+                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
                 
                 CurrentPath = foundPath.GetPath();
                 mapManager.HighlightPath(CurrentPath, Color.cyan);
@@ -200,7 +194,7 @@ public class PathFinder : MonoBehaviour
                 {
                     OnPathRecalculated.Invoke(CurrentPath);
                 }
-
+                //foundPath.PrintChain();
                 GameManager.Instance.ResumeGame();
                 yield break;
             }
@@ -232,7 +226,8 @@ public class PathFinder : MonoBehaviour
                             //  Otherwise, process this tile 
                             if (skipSuccessor == false)
                             {
-                                float neighGCost = tempTileCost + parent.Gcost;
+                                float tileCost = mapManager.GetTileCost(neighbourCoordinate);
+                                float neighGCost = tileCost + parent.Gcost;
                                 float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
                                 float neighFCost = neighGCost + neighHCost;
 
@@ -278,7 +273,7 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// Searches for the shortest route to the main path
+    /// Performs a flood search for the shortest route to the main path
     /// </summary>
     public (List<Vector3Int>, int) RouteToPath(Vector3Int startingPos)
     {
@@ -288,7 +283,6 @@ public class PathFinder : MonoBehaviour
         PathNode parentNode = new PathNode(startingPos);
         openList.Add(parentNode);
 
-        int tileCost = 1; //    temp until I implement different tile costs
         int counter = 0;
         int maxItt = 1000;
     
@@ -325,44 +319,49 @@ public class PathFinder : MonoBehaviour
             {
                 for (int x = -1; x <= 1; x++)
                 {
+                    //  Ignore diagonal tiles
                     if ((x == 0 && y != 0) || (x != 0 && y == 0))
                     {
                         Vector3Int neighbourCoordinate = parentNode.Coordinate + new Vector3Int(x, y, 0);
-                        bool inClosedList = false;
-                        bool inOpenList = false;
-
-                        foreach (PathNode node in closedList)
+                        if (IsValidTile(neighbourCoordinate))
                         {
-                            if (node.Coordinate == neighbourCoordinate)
-                            {
-                                inClosedList = true;
-                                break;
-                            }
-                        }
+                            float tileCost = ((GroundData)(mapManager.GetTileData(MapManager.Layer.GroundLayer, neighbourCoordinate))).WalkCost;
+                            bool inClosedList = false;
+                            bool inOpenList = false;
 
-                        if (inClosedList == false && IsValidTile(neighbourCoordinate))
-                        {
-                            //  Might add some kind of heristic value later for tiebreaking
-                            float fScore = parentNode.Fcost + tileCost;
-
-                            foreach (PathNode node in openList)
+                            foreach (PathNode node in closedList)
                             {
                                 if (node.Coordinate == neighbourCoordinate)
                                 {
-                                    inOpenList = true;
-
-                                    if (fScore < node.Fcost)
-                                    {
-                                        node.Fcost = fScore;
-                                    }
+                                    inClosedList = true;
                                     break;
                                 }
                             }
 
-                            if (inOpenList == false)
+                            if (inClosedList == false)
                             {
-                                openList.Add(new PathNode(neighbourCoordinate, fScore, 0, parentNode));
-                                //mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
+                                //  Might add some kind of heristic value later for tiebreaking
+                                float fScore = parentNode.Fcost + tileCost;
+
+                                foreach (PathNode node in openList)
+                                {
+                                    if (node.Coordinate == neighbourCoordinate)
+                                    {
+                                        inOpenList = true;
+
+                                        if (fScore < node.Fcost)
+                                        {
+                                            node.Fcost = fScore;
+                                        }
+                                        break;
+                                    }
+                                }
+
+                                if (inOpenList == false)
+                                {
+                                    openList.Add(new PathNode(neighbourCoordinate, fScore, 0, parentNode));
+                                    //mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
+                                }
                             }
                         }
                     }

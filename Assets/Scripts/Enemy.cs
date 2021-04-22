@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     #region Variables
     private GameManager gameManager;
     private PathFinder pathFinder;
+    private MapManager mapManager;
 
     private SpriteRenderer healthBarForeground;
     private Sprite Icon;
@@ -21,6 +22,10 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     //  To compensate for the 0.5 unit offset of the tilemap system
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
+    //  The last tile walked on
+    private Vector3Int lastTile = Vector3Int.down;
+    //  Walk speed on current tile type
+    private float walkSpeed;
     #endregion
 
     public delegate void EnemyReachedExit(Enemy enemy);
@@ -55,6 +60,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         {
             gameManager = GameManager.Instance;
             pathFinder = gameManager.PathFinder;
+            mapManager = gameManager.MapManager;
             currentPath = pathFinder.CurrentPath;
         }
 
@@ -97,9 +103,15 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     private void Update()
     {
+        if (Vector3Int.FloorToInt(transform.position) != lastTile)
+        {
+            lastTile = Vector3Int.FloorToInt(transform.position);
+            walkSpeed = Speed - mapManager.GetTileCost(lastTile) / 5;
+        }
+
         if (onMainPath)
         {
-            transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, Speed * Time.deltaTime);
+            transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, walkSpeed * Time.deltaTime);
             if (currentPath[currentPathIndex] + tilemapOffset == transform.position)
             {
                 currentPathIndex++;
@@ -116,7 +128,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         }
         else
         {
-            transform.parent.position = Vector3.MoveTowards(transform.position, routeToPath[routeIndex] + tilemapOffset, Speed * Time.deltaTime);
+            transform.parent.position = Vector3.MoveTowards(transform.position, routeToPath[routeIndex] + tilemapOffset, walkSpeed * Time.deltaTime);
             if (routeToPath[routeIndex] + tilemapOffset == transform.position)
             {
                 routeIndex++;

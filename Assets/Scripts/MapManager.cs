@@ -221,6 +221,16 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets tilecost of ground tiles
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public float GetTileCost(Vector3Int position)
+    {
+        return ((GroundData)GetTileData(Layer.GroundLayer, position)).WalkCost;
+    }
+
+    /// <summary>
     /// Highlights the tiles in an array on the ground layer
     /// </summary>
     /// <param name="path"></param>
