@@ -106,7 +106,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         if (Vector3Int.FloorToInt(transform.position) != lastTile)
         {
             lastTile = Vector3Int.FloorToInt(transform.position);
-            walkSpeed = Speed - mapManager.GetTileCost(lastTile) / 5;
+            walkSpeed = Speed - mapManager.GetTileCost(lastTile) / 15;
         }
 
         if (onMainPath)

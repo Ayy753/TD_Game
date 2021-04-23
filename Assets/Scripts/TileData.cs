@@ -8,7 +8,6 @@ using UnityEngine.Tilemaps;
 /// ScriptableObject don't need to be instantiated and are used to store data
 /// https://docs.unity3d.com/ScriptReference/ScriptableObject.html
 /// </summary>
-[CreateAssetMenu]
 public abstract class TileData : ScriptableObject
 {
     public abstract string Name { get; protected set; }
