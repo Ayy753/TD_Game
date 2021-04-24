@@ -431,15 +431,6 @@ public class GUIController : MonoBehaviour
 
     #region Demo Functions
     /// <summary>
-    /// Change the speed of all units
-    /// </summary>
-    /// <param name="newSpeed"></param>
-    public void ChangeUnitSpeed(float newSpeed)
-    {
-        spawner.ChangeEnemySpeed(newSpeed);
-    }
-
-    /// <summary>
     /// Toggle path highlighting
     /// </summary>
     /// <param name="showPath"></param>

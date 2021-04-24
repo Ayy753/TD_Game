@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
     /// <param name="enemy"></param>
     private void HandleEnemyDied(Enemy enemy)
     {
-        Gold += enemy.Value;
+        Gold += enemy.EnemyData.Value;
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 

@@ -1,7 +1,4 @@
-﻿namespace Assets.Scripts
+﻿public interface IDisplayable
 {
-    public interface IDisplayable
-    {
-        string GetDisplayText();
-    }
+    string GetDisplayText();
 }

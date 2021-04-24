@@ -1,6 +1,4 @@
-﻿using Assets.Scripts;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDisplayable
@@ -9,19 +7,18 @@ public class Enemy : MonoBehaviour, IDisplayable
     private GameManager gameManager;
     private PathFinder pathFinder;
     private MapManager mapManager;
-
     private SpriteRenderer healthBarForeground;
     private Sprite Icon;
 
     private List<Vector3Int> currentPath;
     private int currentPathIndex;
-
     private bool onMainPath = true;
     private List<Vector3Int> routeToPath;
     private int routeIndex;
 
     //  To compensate for the 0.5 unit offset of the tilemap system
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
+
     //  The last tile walked on
     private Vector3Int lastTile = Vector3Int.down;
     //  Walk speed on current tile type
@@ -35,13 +32,9 @@ public class Enemy : MonoBehaviour, IDisplayable
     public static event EnemyDied OnEnemyDied;
 
     #region Properties
-    public float MaxHealth { get; private set; }
     public float CurrentHealth { get; private set; }
-    public int Value { get; private set; } = 5;
-    public string Name { get; private set; } = "Enemy";
-
     [SerializeField]
-    private float Speed { get; set; } = 1f;
+    public EnemyData EnemyData;
     #endregion
 
     private void Start()
@@ -106,7 +99,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         if (Vector3Int.FloorToInt(transform.position) != lastTile)
         {
             lastTile = Vector3Int.FloorToInt(transform.position);
-            walkSpeed = Speed - mapManager.GetTileCost(lastTile) / 15;
+            walkSpeed = EnemyData.Speed - mapManager.GetTileCost(lastTile) / 15;
         }
 
         if (onMainPath)
@@ -198,7 +191,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     public void Spawn(Vector3 position, float maxHealth)
     {
         transform.parent.position = position;
-        MaxHealth = maxHealth;
+        //MaxHealth = maxHealth;
         CurrentHealth = maxHealth;
         transform.parent.gameObject.SetActive(true);
     }
@@ -214,15 +207,6 @@ public class Enemy : MonoBehaviour, IDisplayable
     }
 
     /// <summary>
-    /// Sets the unit's speed
-    /// </summary>
-    /// <param name="newSpeed"></param>
-    public void SetSpeed(float newSpeed)
-    {
-        Speed = newSpeed;
-    }
-
-    /// <summary>
     /// Used to deal damage to this enemy
     /// </summary>
     /// <param name="damage"></param>
@@ -230,7 +214,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
-        float healthPercent = CurrentHealth / MaxHealth;
+        float healthPercent = CurrentHealth / EnemyData.MaxHealth;
 
         //  Check if hit was a killing blow
         if (CurrentHealth <= 0)
@@ -250,7 +234,7 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     public string GetDisplayText()
     {
-        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", Name, Mathf.RoundToInt(CurrentHealth), MaxHealth, Value);
+        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", EnemyData.Name, Mathf.RoundToInt(CurrentHealth), EnemyData.MaxHealth, EnemyData.Value);
     }
 
     #endregion
