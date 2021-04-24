@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField]
-    GameObject enemyPrefab;
+    List<GameObject> enemyPrefabs;
     GameObject entrance;
 
     private List<Enemy> enemyPool;
@@ -31,32 +31,38 @@ public class EnemySpawner : MonoBehaviour
         {
             offsetx = Random.Range(-0.5f, 0.5f);
             offsety = Random.Range(-0.5f, 0.5f);
-            SpawnEnemy(position + new Vector3(offsetx, offsetx));
+
+            SpawnRandomEnemyType(position + new Vector3(offsetx, offsetx));
         }
     }
     [ContextMenu("spawnOneEnemy")]
     public void SpawnOneEnemy()
     {
-        SpawnEnemy(entrance.transform.position);
+        SpawnRandomEnemyType(entrance.transform.position);
+    }
+
+    public void SpawnRandomEnemyType(Vector3 position)
+    {
+        GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
+        SpawnEnemy(position, enemyPrefab);
     }
 
     /// <summary>
     /// Spawns an enemy at a specified position using the object pool
     /// </summary>
     /// <param name="position"></param>
-    private void SpawnEnemy(Vector3 position)
+    private void SpawnEnemy(Vector3 position, GameObject desiredEnemyPrefab)
     {
         bool foundAvailible = false;
-        //Debug.Log("Existing enemy pool size: " + enemyPool.Count);
+        EnemyData desiredEnemyData = desiredEnemyPrefab.GetComponentInChildren<Enemy>().EnemyData;
 
         //  Search for an inactive instance in the pool
         foreach (Enemy enemy in enemyPool)
         {
-            if (enemy.gameObject.activeInHierarchy == false)
+            if (enemy.gameObject.activeInHierarchy == false && enemy.EnemyData == desiredEnemyData)
             {
-                //Debug.Log("Found an inactive enemy");
                 foundAvailible = true;
-                enemy.Spawn(position, 20f);
+                enemy.Spawn(position);
                 break;
             }
         }
@@ -64,12 +70,18 @@ public class EnemySpawner : MonoBehaviour
         //  Instantiate a new enemy and add to pool if no inactive enemies exist
         if (foundAvailible == false)
         {
-            //Debug.Log("Instantiating a new enemy");
-            GameObject go = Instantiate(enemyPrefab, position, new Quaternion());
-            Enemy newEnemy = go.GetComponentInChildren<Enemy>();
-
-            newEnemy.Spawn(position, 20f);
-            enemyPool.Add(newEnemy);
+            foreach (GameObject enemyPrefab in enemyPrefabs)
+            {
+                //EnemyData prefabEnemyData = enemyPrefab.GetComponent<Enemy>().EnemyData;
+                if (enemyPrefab == desiredEnemyPrefab)
+                {
+                    GameObject go = Instantiate(enemyPrefab, position, new Quaternion());
+                    Enemy newEnemy = go.GetComponentInChildren<Enemy>();
+                    newEnemy.Spawn(position);
+                    enemyPool.Add(newEnemy);
+                    break;
+                }
+            }
         }
     }
 
@@ -81,7 +93,7 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
-            SpawnEnemy(entrance.transform.position);
+            SpawnRandomEnemyType(entrance.transform.position);
             yield return new WaitForSeconds(1f);
         }
     }

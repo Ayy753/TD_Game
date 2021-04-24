@@ -12,4 +12,6 @@ public class EnemyData : ScriptableObject
     public string Name { get; private set; }
     [field: SerializeField]
     public float Speed { get; private set; }
+    [field: SerializeField]
+    public string Description { get; set; }
 }

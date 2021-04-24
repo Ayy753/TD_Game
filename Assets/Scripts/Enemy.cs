@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     private int routeIndex;
 
     //  To compensate for the 0.5 unit offset of the tilemap system
-    private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
+    private static Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
 
     //  The last tile walked on
     private Vector3Int lastTile = Vector3Int.down;
@@ -188,11 +188,10 @@ public class Enemy : MonoBehaviour, IDisplayable
     /// Spawn this enemy into the world
     /// </summary>
     /// <param name="position"></param>
-    public void Spawn(Vector3 position, float maxHealth)
+    public void Spawn(Vector3 position)
     {
         transform.parent.position = position;
-        //MaxHealth = maxHealth;
-        CurrentHealth = maxHealth;
+        CurrentHealth = EnemyData.MaxHealth;
         transform.parent.gameObject.SetActive(true);
     }
 
@@ -234,7 +233,7 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     public string GetDisplayText()
     {
-        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}", EnemyData.Name, Mathf.RoundToInt(CurrentHealth), EnemyData.MaxHealth, EnemyData.Value);
+        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}\nDescription:{4}", EnemyData.Name, Mathf.RoundToInt(CurrentHealth), EnemyData.MaxHealth, EnemyData.Value, EnemyData.Description);
     }
 
     #endregion
