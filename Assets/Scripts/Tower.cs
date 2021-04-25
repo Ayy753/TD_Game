@@ -35,6 +35,16 @@ public class Tower : MonoBehaviour, IDisplayable
         StartCoroutine(TurretTracking());
     }
 
+    private void OnEnable()
+    {
+        Enemy.OnEnemyDied += HandleEnemyDied;
+    }
+
+    private void OnDisable()
+    {
+        Enemy.OnEnemyDied -= HandleEnemyDied;
+    }
+
     private void Update()
     {
         TimeSinceLastShot += Time.deltaTime;
@@ -49,7 +59,7 @@ public class Tower : MonoBehaviour, IDisplayable
     private void ShootLogic()
     {
         if (Target != null && TimeSinceLastShot >= TowerData.ReloadTime)
-        { 
+        {
             //  Ensure turret aligns with projectile when it fires
             FaceTarget(Target.transform);
 
@@ -241,6 +251,24 @@ public class Tower : MonoBehaviour, IDisplayable
         radiusIndicator.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// If target dies, remove it from list of enemies in range and untarget
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        if (enemy == Target)
+        {
+            enemiesInRange.Remove(enemy);
+            Target = null;
+            Debug.Log("Removed dead target from list");
+        }
+    }
+    
+    /// <summary>
+    /// Gets tower's information string
+    /// </summary>
+    /// <returns></returns>
     public string GetDisplayText()
     {
         return TowerData.ToString();
