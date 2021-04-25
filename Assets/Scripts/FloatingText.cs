@@ -5,39 +5,38 @@ using UnityEngine.UI;
 
 public class FloatingText : MonoBehaviour
 {
-    public Text Text { get; private set; }
-    RectTransform canvasRect;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    private TextMesh textMesh;
 
     private void OnEnable()
     {
-        canvasRect = GameObject.Find("Canvas").GetComponent<RectTransform>();
-        Text  = gameObject.GetComponent<Text>();
+        //  Move render order on top of sprites
+        gameObject.GetComponent<MeshRenderer>().sortingOrder = 5;
+        textMesh = GetComponent<TextMesh>();
     }
 
+    /// <summary>
+    /// Initialize the floating text
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="text"></param>
+    /// <param name="color"></param>
     public void Initialize(Vector3 position, string text, Color color)
     {
-        Vector2 viewportPos = Camera.main.WorldToViewportPoint(position);
-        Vector2 worldPosition = new Vector2((viewportPos.x * canvasRect.sizeDelta.x - canvasRect.sizeDelta.x * 0.5f),
-            (viewportPos.y * canvasRect.sizeDelta.y - canvasRect.sizeDelta.y * 0.5f));
-
-        Text.rectTransform.anchoredPosition = worldPosition;
-        Text.text = text; 
-        Text.color = color;
+        transform.position = position;
+        textMesh.text = text;
+        textMesh.color = color;
         StartCoroutine(FloatUp());
     }
 
     private IEnumerator FloatUp()
     {
-        for (int i = 100; i > 0; i--)
+        for (int i = 50; i > 0; i--)
         {
-            transform.position = transform.position += Vector3.up;
-            Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, Text.color.a - 0.01f);
-            yield return new WaitForSeconds(0.025f);
+            //  Float up
+            transform.position = transform.position += new Vector3(0, 0.2f, 0);
+            //  Fade out
+            textMesh.color = new Color(textMesh.color.r, textMesh.color.g, textMesh.color.b, textMesh.color.a - 0.02f);
+            yield return new WaitForSeconds(0.05f);
         }
         Destroy(this.gameObject);
     }

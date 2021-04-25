@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class GUIController : MonoBehaviour
 {
     GameManager gameManager;
-    EnemySpawner spawner;
     PathFinder pathFinder;
     BuildManager buildManager;
     MapManager mapManager;
@@ -24,7 +23,6 @@ public class GUIController : MonoBehaviour
     private GameObject btnExitEditMode;
     private GameObject txtPathRecalculating;
     private Text txtTileInfo;
-    private GameObject canvas;
 
     private Button btnTargetFurthest;
     private Button btnTargetClosest;
@@ -49,19 +47,18 @@ public class GUIController : MonoBehaviour
     [SerializeField]
     private GameObject structureBuildBtnPrefab;
 
+    //[SerializeField]
+    //private GameObject txtFloatingText;
     [SerializeField]
-    private GameObject txtFloatingText;
-
+    GameObject floatingTextGO;
     bool hoveringOverGameObject = false;
 
     void Start()
     {
         gameManager = GameManager.Instance;
-        spawner = gameManager.EnemySpawner;
         pathFinder = gameManager.PathFinder;
         buildManager = gameManager.BuildManager;
         mapManager = gameManager.MapManager;
-
 
         toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
@@ -74,7 +71,6 @@ public class GUIController : MonoBehaviour
         txtPathRecalculating = GameObject.Find("txtPathRecalculating");
         btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
         txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
-        canvas = GameObject.Find("Canvas");
 
         //  Targetting panel UI
         targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
@@ -463,8 +459,7 @@ public class GUIController : MonoBehaviour
 
     public void SpawnFloatingText(Vector3 position, string message, Color color)
     {
-        GameObject floatingTextGO = GameObject.Instantiate(txtFloatingText, canvas.transform) ;
-        FloatingText floatingText = floatingTextGO.GetComponent<FloatingText>();
+        FloatingText floatingText = GameObject.Instantiate(floatingTextGO).GetComponent<FloatingText>();
         floatingText.Initialize(position, message, color);
     }
     #endregion
