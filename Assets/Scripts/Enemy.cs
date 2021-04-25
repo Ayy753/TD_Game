@@ -27,9 +27,11 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     public delegate void EnemyReachedExit(Enemy enemy);
     public delegate void EnemyDied(Enemy enemy);
+    public delegate void EnemyHit(Enemy enemy, float damage);
 
     public static event EnemyReachedExit OnEnemyReachedGate;
     public static event EnemyDied OnEnemyDied;
+    public static event EnemyHit OnEnemyHit;
 
     #region Properties
     public float CurrentHealth { get; private set; }
@@ -214,6 +216,11 @@ public class Enemy : MonoBehaviour, IDisplayable
     {
         CurrentHealth -= damage;
         float healthPercent = CurrentHealth / EnemyData.MaxHealth;
+
+        if (OnEnemyHit != null)
+        {
+            OnEnemyHit.Invoke(this, damage);
+        }
 
         //  Check if hit was a killing blow
         if (CurrentHealth <= 0)

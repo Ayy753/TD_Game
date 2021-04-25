@@ -20,9 +20,10 @@ public class FloatingText : MonoBehaviour
     /// <param name="position"></param>
     /// <param name="text"></param>
     /// <param name="color"></param>
-    public void Initialize(Vector3 position, string text, Color color)
+    public void Initialize(Vector3 position, string text, Color color, float textSize = 0.5f)
     {
         transform.position = position;
+        textMesh.characterSize = textSize;
         textMesh.text = text;
         textMesh.color = color;
         StartCoroutine(FloatUp());

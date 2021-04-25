@@ -114,13 +114,8 @@ public class GUIController : MonoBehaviour
         HoverManager.OnHoveredNewTile += HandleHoveredNewTile;
         HoverManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
         HoverManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
-
         Enemy.OnEnemyDied += HandleEnemyDied;
-    }
-
-    private void HandleEnemyDied(Enemy enemy)
-    {
-        SpawnFloatingText(enemy.transform.position, string.Format("+{0} gold", enemy.EnemyData.Value), Color.yellow);
+        Enemy.OnEnemyHit += HandleEnemyHit;
     }
 
     private void OnDisable()
@@ -130,8 +125,8 @@ public class GUIController : MonoBehaviour
         HoverManager.OnHoveredNewTile -= HandleHoveredNewTile;
         HoverManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
         HoverManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
-
         Enemy.OnEnemyDied -= HandleEnemyDied;
+        Enemy.OnEnemyHit -= HandleEnemyHit;
     }
 
     /// <summary>
@@ -225,6 +220,25 @@ public class GUIController : MonoBehaviour
     {
         HideToolTip();
         hoveringOverGameObject = false;
+    }
+
+    /// <summary>
+    /// Displays floating text indicating an increase in gold
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        SpawnFloatingText(enemy.transform.position, string.Format("+{0}g", enemy.EnemyData.Value), Color.yellow);
+    }
+
+    /// <summary>
+    /// Spawns text showing enemy damage taken
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="damage"></param>
+    private void HandleEnemyHit(Enemy enemy, float damage)
+    {
+        SpawnFloatingText(enemy.transform.position, damage.ToString("F1"), Color.red, 0.25f);
     }
 
     /// <summary>
@@ -457,10 +471,16 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    public void SpawnFloatingText(Vector3 position, string message, Color color)
+    /// <summary>
+    /// Displays a piece of text that floats up and fades away
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="message"></param>
+    /// <param name="color"></param>
+    public void SpawnFloatingText(Vector3 position, string message, Color color, float textSize = 0.5f)
     {
         FloatingText floatingText = GameObject.Instantiate(floatingTextGO).GetComponent<FloatingText>();
-        floatingText.Initialize(position, message, color);
+        floatingText.Initialize(position, message, color, textSize);
     }
     #endregion
 }
