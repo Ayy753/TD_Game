@@ -8,6 +8,7 @@ public class BuildManager : MonoBehaviour
 {
     private GameManager gameManager;
     private MapManager mapManager;
+    private GUIController guiController;
 
     //  We will user Vector3Int.down to indicate no tile is being hovered over
     private Vector3Int lastHoveredPosition = Vector3Int.down;
@@ -29,6 +30,7 @@ public class BuildManager : MonoBehaviour
     {
         gameManager = GameManager.Instance;
         mapManager = gameManager.MapManager;
+        guiController = gameManager.GUIController;
 
         instantiatedTowers = new List<GameObject>();
     }
@@ -126,7 +128,16 @@ public class BuildManager : MonoBehaviour
                     }
 
                     gameManager.SpendGold(structure.Cost);
+                    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
                 }
+                else
+                {
+                    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), "It is too unstable to build here", Color.red);
+                }
+            }
+            else
+            {
+                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition) , "Can't afford", Color.red);
             }
         }
     }

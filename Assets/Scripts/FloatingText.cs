@@ -10,7 +10,7 @@ public class FloatingText : MonoBehaviour
     private void OnEnable()
     {
         //  Move render order on top of sprites
-        gameObject.GetComponent<MeshRenderer>().sortingOrder = 5;
+        gameObject.GetComponent<MeshRenderer>().sortingOrder = 6;
         textMesh = GetComponent<TextMesh>();
     }
 
@@ -22,7 +22,9 @@ public class FloatingText : MonoBehaviour
     /// <param name="color"></param>
     public void Initialize(Vector3 position, string text, Color color, float textSize = 0.5f)
     {
-        transform.position = position;
+        //  Solves bug where mouse position causes text to be hidden from camera
+        transform.position = new Vector3(position.x, position.y, 1);
+
         textMesh.characterSize = textSize;
         textMesh.text = text;
         textMesh.color = color;
