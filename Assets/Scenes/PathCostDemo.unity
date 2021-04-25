@@ -23016,6 +23016,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3b2c73c71c6e0fe4bbe376fbba227645, type: 2}
   structureBuildBtnPrefab: {fileID: 942114833596911159, guid: 688cf1098c1ad9e4989a8c0d408710cd,
     type: 3}
+  txtFloatingText: {fileID: 9097496328856312276, guid: 2bdd298f4d9124d4e80f1d57fbed7887,
+    type: 3}
 --- !u!4 &1601462269
 Transform:
   m_ObjectHideFlags: 0

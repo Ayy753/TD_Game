@@ -24,6 +24,7 @@ public class GUIController : MonoBehaviour
     private GameObject btnExitEditMode;
     private GameObject txtPathRecalculating;
     private Text txtTileInfo;
+    private GameObject canvas;
 
     private Button btnTargetFurthest;
     private Button btnTargetClosest;
@@ -48,6 +49,9 @@ public class GUIController : MonoBehaviour
     [SerializeField]
     private GameObject structureBuildBtnPrefab;
 
+    [SerializeField]
+    private GameObject txtFloatingText;
+
     bool hoveringOverGameObject = false;
 
     void Start()
@@ -70,7 +74,7 @@ public class GUIController : MonoBehaviour
         txtPathRecalculating = GameObject.Find("txtPathRecalculating");
         btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
         txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
-
+        canvas = GameObject.Find("Canvas");
 
         //  Targetting panel UI
         targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
@@ -114,6 +118,13 @@ public class GUIController : MonoBehaviour
         HoverManager.OnHoveredNewTile += HandleHoveredNewTile;
         HoverManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
         HoverManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
+
+        Enemy.OnEnemyDied += HandleEnemyDied;
+    }
+
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        SpawnFloatingText(enemy.transform.position, string.Format("+{0} gold", enemy.EnemyData.Value), Color.yellow);
     }
 
     private void OnDisable()
@@ -123,6 +134,8 @@ public class GUIController : MonoBehaviour
         HoverManager.OnHoveredNewTile -= HandleHoveredNewTile;
         HoverManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
         HoverManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
+
+        Enemy.OnEnemyDied -= HandleEnemyDied;
     }
 
     /// <summary>
@@ -446,6 +459,13 @@ public class GUIController : MonoBehaviour
             print("unhighlighting");
             pathFinder.UnhighlightPath();
         }
+    }
+
+    public void SpawnFloatingText(Vector3 position, string message, Color color)
+    {
+        GameObject floatingTextGO = GameObject.Instantiate(txtFloatingText, canvas.transform) ;
+        FloatingText floatingText = floatingTextGO.GetComponent<FloatingText>();
+        floatingText.Initialize(position, message, color);
     }
     #endregion
 }
