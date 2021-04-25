@@ -15,9 +15,11 @@ public class GroundData : TileData, IDisplayable
     public override TileBase TileBase { get; protected set; }
     [field: SerializeField]
     public float WalkCost { get; private set; }
+    [field: SerializeField]
+    public bool IsSolid { get; private set; }
     public override MapManager.Layer Layer { get; protected set; } = MapManager.Layer.GroundLayer;
     public string GetDisplayText()
     {
-        return ToString() + string.Format("\nWalk cost: {0}\nlayer: {1}", WalkCost, Layer.ToString());
+        return ToString() + string.Format("\nWalk cost: {0}\nSolid?: {1}", WalkCost, IsSolid);
     }
 }

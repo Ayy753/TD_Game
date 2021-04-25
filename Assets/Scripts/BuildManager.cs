@@ -109,21 +109,24 @@ public class BuildManager : MonoBehaviour
         {
             if (gameManager.CanAfford(structure.Cost))
             {
-                if (structure.GetType() == typeof(TowerData))
+                if (mapManager.IsGroundSolid(position))
                 {
-                    InstantiateTower((TowerData)structure, position);
-                    mapManager.SetTile(position, structure);
-                }
-                else if (structure.GetType() == typeof(WallData))
-                {
-                    mapManager.SetTile(position, structure);
-                }
-                else
-                {
-                    throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
-                }
+                    if (structure.GetType() == typeof(TowerData))
+                    {
+                        InstantiateTower((TowerData)structure, position);
+                        mapManager.SetTile(position, structure);
+                    }
+                    else if (structure.GetType() == typeof(WallData))
+                    {
+                        mapManager.SetTile(position, structure);
+                    }
+                    else
+                    {
+                        throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+                    }
 
-                gameManager.SpendGold(structure.Cost);
+                    gameManager.SpendGold(structure.Cost);
+                }
             }
         }
     }
@@ -139,6 +142,7 @@ public class BuildManager : MonoBehaviour
 
         if (currentBuildMode == BuildMode.Build)
         {
+            //  Is there a structure here?
             if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
             {
                 StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
@@ -154,10 +158,19 @@ public class BuildManager : MonoBehaviour
                     mapManager.HighlightTile(tileLayer, position, tileColor);
                 }
             }
+            //  There is no structure here
             else
             {
                 tileLayer = MapManager.Layer.GroundLayer;
-                tileColor = Color.green;
+                //  Is tile capable of supporting a structure?
+                if (mapManager.IsGroundSolid(position))
+                {
+                    tileColor = Color.green;
+                }
+                else
+                {
+                    tileColor = Color.red;
+                }
                 mapManager.HighlightTile(tileLayer, position, tileColor);
             }
         }

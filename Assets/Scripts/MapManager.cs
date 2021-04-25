@@ -241,4 +241,18 @@ public class MapManager : MonoBehaviour
             HighlightTile(Layer.GroundLayer, tile, color);
         }
     }
+
+    /// <summary>
+    /// Is the ground tile at this position is capable of supporting a structure?
+    /// </summary>
+    /// <param name="position">Position of tile</param>
+    /// <returns>True or false</returns>
+    public bool IsGroundSolid(Vector3Int position)
+    {
+        if (((GroundData)(GetTileData(Layer.GroundLayer, position))).IsSolid)
+        {
+            return true;
+        }
+        return false;
+    }
 }

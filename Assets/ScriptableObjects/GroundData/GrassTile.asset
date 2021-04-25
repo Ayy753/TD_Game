@@ -19,3 +19,4 @@ MonoBehaviour:
   <TileBase>k__BackingField: {fileID: 11400000, guid: 9c2417cbffc505647a495a777d18e076,
     type: 2}
   <WalkCost>k__BackingField: 3
+  <IsSolid>k__BackingField: 1
