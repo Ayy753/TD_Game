@@ -184,11 +184,13 @@ public class GUIController : MonoBehaviour
     {
         if (mapManager != null)
         {
-            GroundData groundData = (GroundData)mapManager.GetTileData(MapManager.Layer.GroundLayer, tileCoords);
-
-            if (groundData != null)
+            if (mapManager.ContainsTileAt(MapManager.Layer.PlatformLayer, tileCoords))
             {
-                txtTileInfo.text = groundData.GetDisplayText();
+                txtTileInfo.text = mapManager.GetTileData(MapManager.Layer.PlatformLayer, tileCoords).ToString();
+            }
+            else if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords))
+            {
+                txtTileInfo.text = mapManager.GetTileData(MapManager.Layer.GroundLayer, tileCoords).ToString();
             }
             else
             {

@@ -14,6 +14,9 @@ public class MapManager : MonoBehaviour
     private Tilemap decoreLayer;
 
     [SerializeField]
+    private Tilemap PlatformLayer;
+
+    [SerializeField]
     private Tilemap structureLayer;
 
     [SerializeField]
@@ -34,7 +37,8 @@ public class MapManager : MonoBehaviour
     {
         GroundLayer,
         DecoreLayer,
-        StructureLayer
+        StructureLayer,
+        PlatformLayer
     }
 
     private void Awake()
@@ -73,6 +77,8 @@ public class MapManager : MonoBehaviour
                 return groundLayer;
             case Layer.DecoreLayer:
                 return decoreLayer;
+            case Layer.PlatformLayer:
+                return PlatformLayer;
             case Layer.StructureLayer:
                 return structureLayer;
             default:
@@ -221,13 +227,20 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets tilecost of ground tiles
+    /// Gets tile cost of a ground tile, or the platform built over it
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
     public float GetTileCost(Vector3Int position)
     {
-        return ((GroundData)GetTileData(Layer.GroundLayer, position)).WalkCost;
+        if (ContainsTileAt(Layer.PlatformLayer, position))
+        {
+            return ((PlatformData)GetTileData(Layer.PlatformLayer, position)).WalkCost;
+        }
+        else
+        {
+            return ((GroundData)GetTileData(Layer.GroundLayer, position)).WalkCost;
+        }
     }
 
     /// <summary>
