@@ -15,6 +15,9 @@ public class BuildManager : MonoBehaviour
     private List<GameObject> instantiatedTowers;
     private BuildMode currentBuildMode = BuildMode.None;
     private StructureData currentlySelectedStructure;
+    
+    [SerializeField]
+    private GameObject radiusIndicator;
 
     //  An offset for GameObjects to align properly with the tilemap
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
@@ -177,6 +180,18 @@ public class BuildManager : MonoBehaviour
                 if (mapManager.IsGroundSolid(position))
                 {
                     tileColor = Color.green;
+
+                    //  If the selected structure is a tower, display the targetting radius
+                    if (currentlySelectedStructure.GetType() == typeof(TowerData))
+                    {
+                        TowerData towerData = (TowerData)currentlySelectedStructure;
+                        radiusIndicator.SetActive(true);
+                        radiusIndicator.transform.localScale = new Vector3(towerData.Range * 2, towerData.Range * 2, 0);
+                        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                        mousePos = Vector3Int.FloorToInt(mousePos);
+                        mousePos.z = 1;
+                        radiusIndicator.transform.position = mousePos + tilemapOffset;
+                    }
                 }
                 else
                 {
@@ -246,6 +261,7 @@ public class BuildManager : MonoBehaviour
         {
             mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
         }
+        radiusIndicator.SetActive(false);
     }
 
     /// <summary>
