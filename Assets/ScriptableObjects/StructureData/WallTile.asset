@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WallTile
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Wall Tile
-  <Description>k__BackingField: A wall
+  <Description>k__BackingField: Blocks enemy's path
   <Icon>k__BackingField: {fileID: -4736528836439802678, guid: fc61c99e0466d7544ac9f303f902b5fc,
     type: 3}
   <TileBase>k__BackingField: {fileID: 11400000, guid: d9ca2c05f89579b4ea287574fe5a8a0c,

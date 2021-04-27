@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74dbf4b14ba866f45871afc2590c1384, type: 3}
   m_Name: GreenTower
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Green Tower
-  <Description>k__BackingField: A Green Tower
+  <Name>k__BackingField: Sniper Tower
+  <Description>k__BackingField: Shoots far and does a lot of damage
   <Icon>k__BackingField: {fileID: 21300000, guid: 742568104319ba74ab40a6dd713ee9f3,
     type: 3}
   <TowerPrefab>k__BackingField: {fileID: 1079728213048591739, guid: 32a804d2afb1d5e4890c313fa5a6759a,
     type: 3}
-  <Damage>k__BackingField: 10
+  <Damage>k__BackingField: 15
   <Range>k__BackingField: 10
-  <ReloadTime>k__BackingField: 1
+  <ReloadTime>k__BackingField: 5
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
-  <Cost>k__BackingField: 50
+  <Cost>k__BackingField: 150
   <ProjectilePrefab>k__BackingField: {fileID: 1511556566754288140, guid: 4e5894fe90d810a41a96994e1c4a0157,
     type: 3}

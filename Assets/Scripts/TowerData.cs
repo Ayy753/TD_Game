@@ -27,6 +27,6 @@ public class TowerData : StructureData
 
     public override string ToString()
     {
-        return base.ToString() + string.Format("\nDamage: {0}\nRange: {1}\nCost: {2}", Damage, Range, Cost);
+        return base.ToString() + string.Format("\nDamage: {0}\nRange: {1}\nCost: {2}\nShots per second: {3}", Damage, Range, Cost, 1/ReloadTime);
     }
 }

@@ -13,16 +13,17 @@ MonoBehaviour:
   m_Name: SplashTower
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Splash Tower
-  <Description>k__BackingField: A short range tower that does splash damage
+  <Description>k__BackingField: Short range, fires explosive projectiles that do
+    area damage
   <Icon>k__BackingField: {fileID: 21300000, guid: aad74aacff08e7847a60d3fdf59b206f,
     type: 3}
   <TowerPrefab>k__BackingField: {fileID: 5345949471958930777, guid: 6d747ff39adb1a04599890244abd31b9,
     type: 3}
   <Damage>k__BackingField: 5
-  <Range>k__BackingField: 5
-  <ReloadTime>k__BackingField: 1
+  <Range>k__BackingField: 3
+  <ReloadTime>k__BackingField: 2
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
-  <Cost>k__BackingField: 50
+  <Cost>k__BackingField: 200
   <ProjectilePrefab>k__BackingField: {fileID: 809695654054733838, guid: caae2163599fffd4599d9ae726e10a42,
     type: 3}
