@@ -1,4 +1,3 @@
-using Assets.Scripts;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -111,9 +110,9 @@ public class GUIController : MonoBehaviour
     {
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
         PathFinder.OnPathRecalculating += HandlePathRecalculating;
-        HoverManager.OnHoveredNewTile += HandleHoveredNewTile;
-        HoverManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
-        HoverManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
+        MouseManager.OnHoveredNewTile += HandleHoveredNewTile;
+        MouseManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
+        MouseManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
         Enemy.OnEnemyDied += HandleEnemyDied;
         Enemy.OnEnemyHit += HandleEnemyHit;
     }
@@ -122,9 +121,9 @@ public class GUIController : MonoBehaviour
     {
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
         PathFinder.OnPathRecalculating -= HandlePathRecalculating;
-        HoverManager.OnHoveredNewTile -= HandleHoveredNewTile;
-        HoverManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
-        HoverManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
+        MouseManager.OnHoveredNewTile -= HandleHoveredNewTile;
+        MouseManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
+        MouseManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
         Enemy.OnEnemyDied -= HandleEnemyDied;
         Enemy.OnEnemyHit -= HandleEnemyHit;
     }

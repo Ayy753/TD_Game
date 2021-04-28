@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using Assets.Scripts;
 using System;
 
 public class BuildManager : MonoBehaviour
@@ -34,32 +33,37 @@ public class BuildManager : MonoBehaviour
         gameManager = GameManager.Instance;
         mapManager = gameManager.MapManager;
         guiController = gameManager.GUIController;
-
-        instantiatedTowers = new List<GameObject>();
     }
 
     private void OnEnable()
     {
-        HoverManager.OnHoveredNewTile += HandleNewTileHovered;
+
+
+        instantiatedTowers = new List<GameObject>();
+
+
+        MouseManager.OnHoveredNewTile += HandleNewTileHovered;
+        MouseManager.OnMouseUp += HandleMouseUp;
     }
 
     private void OnDisable()
     {
-        HoverManager.OnHoveredNewTile -= HandleNewTileHovered;
+        MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
+        MouseManager.OnMouseUp -= HandleMouseUp;
     }
 
-    private void Update()
-    {
-        //  Prevent clicking through GUI elements
-        if (EventSystem.current.IsPointerOverGameObject() == false)
-        {
-            HandleClickLogic();
-        }
-        else
-        {
-            PauseHighlighting();
-        }
-    }
+    //private void Update()
+    //{
+    //    //  Prevent clicking through GUI elements
+    //    if (EventSystem.current.IsPointerOverGameObject() == false)
+    //    {
+    //        //HandleClickLogic();
+    //    }
+    //    else
+    //    {
+    //        PauseHighlighting();
+    //    }
+    //}
 
     /// <summary>
     /// Used when cursor hovers over GUI elements or empty space
@@ -71,36 +75,36 @@ public class BuildManager : MonoBehaviour
         lastHoveredPosition = Vector3Int.down;
     }
 
-    /// <summary>
-    /// Handles build mode click logic
-    /// </summary>
-    private void HandleClickLogic()
-    {
-        if (currentBuildMode != BuildMode.None && Input.GetMouseButtonDown(0))
-        {
-            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            mouseposition.z = 0;
+    ///// <summary>
+    ///// Handles build mode click logic
+    ///// </summary>
+    //private void HandleClickLogic()
+    //{
+    //    if (currentBuildMode != BuildMode.None && Input.GetMouseButtonDown(0))
+    //    {
+    //        Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+    //        mouseposition.z = 0;
 
-            if (currentBuildMode == BuildMode.Build)
-            {
-                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
-                {
-                    BuildStructure(currentlySelectedStructure, mouseposition);
-                }
-            }
-            else if (currentBuildMode == BuildMode.Demolish)
-            {
-                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition))
-                {
-                    DemolishStructure(mouseposition);
-                }
-            }
-            else
-            {
-                throw new System.Exception("This build mode is not implemented");
-            }
-        }
-    }
+    //        if (currentBuildMode == BuildMode.Build)
+    //        {
+    //            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
+    //            {
+    //                BuildStructure(currentlySelectedStructure, mouseposition);
+    //            }
+    //        }
+    //        else if (currentBuildMode == BuildMode.Demolish)
+    //        {
+    //            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition))
+    //            {
+    //                DemolishStructure(mouseposition);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            throw new System.Exception("This build mode is not implemented");
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// Builds a structure over a ground tile
@@ -238,29 +242,34 @@ public class BuildManager : MonoBehaviour
     /// <param name="position"></param>
     private void UnhoverTile(Vector3Int position)
     {
-        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+        //  Temp until I fix script load order
+        if (mapManager != null)
         {
-            TileData tile = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            {
+                TileData tile = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
 
-            if (tile.GetType() == typeof(WallData))
-            {
-                mapManager.ReverseHighlight(MapManager.Layer.StructureLayer, position);
-            }
-            else if (tile.GetType() == typeof(TowerData))
-            {
-                //  Add previous tower color property to tower script?
-                //  So far nothing else can highlight structures so we would never need to revert it
-                ChangeTowerTint(position, Color.white);
+                if (tile.GetType() == typeof(WallData))
+                {
+                    mapManager.ReverseHighlight(MapManager.Layer.StructureLayer, position);
+                }
+                else if (tile.GetType() == typeof(TowerData))
+                {
+                    //  Add previous tower color property to tower script?
+                    //  So far nothing else can highlight structures so we would never need to revert it
+                    ChangeTowerTint(position, Color.white);
+                }
+                else
+                {
+                    throw new System.Exception("Structure type not implemented");
+                }
             }
             else
             {
-                throw new System.Exception("Structure type not implemented");
+                mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
             }
         }
-        else
-        {
-            mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
-        }
+
         radiusIndicator.SetActive(false);
     }
 
@@ -301,10 +310,43 @@ public class BuildManager : MonoBehaviour
     {
         if (currentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
         {
-            if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords))
+            if (mapManager != null && mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords))
             {
                 UnhoverTile(lastHoveredPosition);
                 HoverTile(tileCoords);
+            }
+        }
+        else
+        {
+            PauseHighlighting();
+        }
+    }
+
+    private void HandleMouseUp()
+    {
+        Debug.Log("Mouse button up");
+        if (currentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
+        {
+            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            mouseposition.z = 0;
+
+            if (currentBuildMode == BuildMode.Build)
+            {
+                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
+                {
+                    BuildStructure(currentlySelectedStructure, mouseposition);
+                }
+            }
+            else if (currentBuildMode == BuildMode.Demolish)
+            {
+                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition))
+                {
+                    DemolishStructure(mouseposition);
+                }
+            }
+            else
+            {
+                throw new System.Exception("This build mode is not implemented");
             }
         }
     }

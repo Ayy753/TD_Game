@@ -8,7 +8,7 @@ class MouseManager : MonoBehaviour
     private Vector3Int lastTileHovered = Vector3Int.zero;
     private GameObject lastGameObjectHovered;
     private bool wasMouseDown = false;
-    private float PollingRate = 0.025f;
+    private float MousePollingRate = 0.025f;
 
     public delegate void HoveredNewTile(Vector3Int tileCoords);
     public delegate void HoveredNewGameObject(GameObject gameObject);
@@ -27,6 +27,11 @@ class MouseManager : MonoBehaviour
         StartCoroutine(MousePolling());
     }
 
+    private void Update()
+    {
+        PollClickEvents();
+    }
+
     /// <summary>
     /// Polls various mouse-related things
     /// and calls functions that fire events
@@ -38,43 +43,37 @@ class MouseManager : MonoBehaviour
         while (true)
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            if (PollGameObjectHover(pos) == false)
-            {
-                PollDisplayableUI();
-            }
-
-            PollMouseEvents();
+            PollDisplayableHover(pos);
             PollTileHoverEvents(pos);
 
-            yield return new WaitForSeconds(PollingRate);
+            yield return new WaitForSeconds(MousePollingRate);
         }
     }
 
     /// <summary>
     /// Fires event when mouse goes down or up
     /// </summary>
-    private void PollMouseEvents()
+    private void PollClickEvents()
     {
-        //  Check if mouse was previously down and is now up
-        if (wasMouseDown)
+        //  if was not previously down and is now down
+        if (wasMouseDown == false)
         {
-            if (Input.GetMouseButtonUp(1))
+            if (Input.GetMouseButtonDown(0))
             {
-                wasMouseDown = false;
-                if (OnMouseUp != null)
+                wasMouseDown = true;
+                if (OnMouseDown != null)
                 {
-                    OnMouseUp.Invoke();
+                    OnMouseDown.Invoke();
                 }
             }
         }
-        //  Otherwise, if was not previously down and is now down
-        else if (Input.GetMouseButtonDown(1))
+        //  Otherwise, check if mouse was previously down and is now up
+        else if (Input.GetMouseButtonUp(0))
         {
-            wasMouseDown = true;
-            if (OnMouseDown != null)
+            wasMouseDown = false;
+            if (OnMouseUp != null)
             {
-                OnMouseDown.Invoke();
+                OnMouseUp.Invoke();
             }
         }
     }
@@ -100,22 +99,21 @@ class MouseManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if the mouse is hovering over a Game Object
-    /// Fires event when the cursor either hovers over a 
-    /// new Game Object or leaves a previous Game Object
+    /// Checks if the mouse is hovering over either a game 
+    /// object or UI that implements IDisplayable
     /// </summary>
     /// <param name="pos"></param>
     /// <returns></returns>
-    private bool PollGameObjectHover(Vector3 pos)
+    private void PollDisplayableHover(Vector3 pos)
     {
-        bool raycastHit = false;
+        IDisplayable displayable = null;
 
         //  Check if cursor is over a game object using raycasting
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, Mathf.Infinity);
         if (hit.collider != null)
         {
-            raycastHit = true;
-            if (hit.collider.gameObject != lastGameObjectHovered)
+            displayable = hit.collider.gameObject.GetComponent<IDisplayable>();
+            if (displayable != null && hit.collider.gameObject != lastGameObjectHovered)
             {
                 lastGameObjectHovered = hit.collider.gameObject;
 
@@ -125,46 +123,19 @@ class MouseManager : MonoBehaviour
                 }
             }
         }
-
-        //  If a game object was previously hovered over
-        //  but nothing is under cursor now
-        if (raycastHit == false && lastGameObjectHovered != null)
+        else
         {
-            lastGameObjectHovered = null;
+            //  Check if cursor is over a UI element that implements IDisplayable
+            PointerEventData pointerEvent = new PointerEventData(EventSystem.current);
+            pointerEvent.position = Input.mousePosition;
+            List<RaycastResult> result = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerEvent, result);
 
-            //  Fire event notifying anything interested that previous 
-            //  hovered gameobject is no longer being hovered over
-            if (OnUnhoveredGameObject != null)
+            //  Check each GUI object hit by ray for an IDisplayable object
+            foreach (var item in result)
             {
-                OnUnhoveredGameObject.Invoke();
-            }
-        }
-
-        return raycastHit;
-    }
-
-    /// <summary>
-    /// Checks if the mouse cursor either hovered over a new UI
-    /// that implements IDisplayable or left one that did and fires an event
-    /// </summary>
-    private void PollDisplayableUI()
-    {
-        //  Check if cursor is over a UI element that implements IDisplayable
-        PointerEventData pointerEvent = new PointerEventData(EventSystem.current);
-        pointerEvent.position = Input.mousePosition;
-
-        List<RaycastResult> result = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerEvent, result);
-
-        bool raycastHit = false;
-
-        //  Check each GUI object hit by ray for an IDisplayable object
-        foreach (var item in result)
-        {
-            if (item.gameObject.GetComponent<IDisplayable>() != null)
-            {
-                raycastHit = true;
-                if (item.gameObject != lastGameObjectHovered)
+                displayable = item.gameObject.GetComponent<IDisplayable>();
+                if (displayable != null && item.gameObject != lastGameObjectHovered)
                 {
                     lastGameObjectHovered = item.gameObject;
 
@@ -177,21 +148,19 @@ class MouseManager : MonoBehaviour
             }
         }
 
-        //  If cursor left previous game object
-        if (raycastHit == false && lastGameObjectHovered != null)
+        //  If a game object was previously hovered over
+        //  but nothing is under cursor now
+        if (displayable == null && lastGameObjectHovered != null)
         {
-            //  And last hovered game object implemets IDisplayable
-            if (lastGameObjectHovered.GetComponent<IDisplayable>() != null)
-            {
-                lastGameObjectHovered = null;
+            lastGameObjectHovered = null;
 
-                //  Fire event notifying anything interested that previous 
-                //  hovered gameobject is no longer being hovered over
-                if (OnUnhoveredGameObject != null)
-                {
-                    OnUnhoveredGameObject.Invoke();
-                }
+            //  Fire event notifying anything interested that previous 
+            //  hovered gameobject is no longer being hovered over
+            if (OnUnhoveredGameObject != null)
+            {
+                OnUnhoveredGameObject.Invoke();
             }
         }
     }
+
 }
