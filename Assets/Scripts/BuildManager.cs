@@ -60,45 +60,41 @@ public class BuildManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Builds a structure over a ground tile
+    /// Attempts to build a structure over a ground tile
     /// </summary>
     /// <param name="structure"></param>
     /// <param name="position"></param>
-    private void BuildStructure(StructureData structure, Vector3Int position)
+    private void AttemptBuildStructure(StructureData structure, Vector3Int position)
     {
-        //  Ensure there is a ground to be built upon
-        if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position))
+        if (gameManager.CanAfford(structure.Cost))
         {
-            if (gameManager.CanAfford(structure.Cost))
+            if (mapManager.IsGroundSolid(position))
             {
-                if (mapManager.IsGroundSolid(position))
+                if (structure.GetType() == typeof(TowerData))
                 {
-                    if (structure.GetType() == typeof(TowerData))
-                    {
-                        InstantiateTower((TowerData)structure, position);
-                        mapManager.SetTile(position, structure);
-                    }
-                    else if (structure.GetType() == typeof(WallData))
-                    {
-                        mapManager.SetTile(position, structure);
-                    }
-                    else
-                    {
-                        throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
-                    }
-
-                    gameManager.SpendGold(structure.Cost);
-                    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
+                    InstantiateTower((TowerData)structure, position);
+                    mapManager.SetTile(position, structure);
+                }
+                else if (structure.GetType() == typeof(WallData))
+                {
+                    mapManager.SetTile(position, structure);
                 }
                 else
                 {
-                    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), "It is too unstable to build here", Color.red);
+                    throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
                 }
+
+                gameManager.SpendGold(structure.Cost);
+                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
             }
             else
             {
-                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition) , "Can't afford", Color.red);
+                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), "It is too unstable to build here", Color.red);
             }
+        }
+        else
+        {
+            guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition) , "Can't afford", Color.red);
         }
     }
 
@@ -148,7 +144,7 @@ public class BuildManager : MonoBehaviour
                 tileLayer = MapManager.Layer.StructureLayer;
                 tileColor = Color.red;
                 mapManager.HighlightTile(tileLayer, position, tileColor);
-            }
+            }   
         }
         //  There is no structure here
         else
@@ -317,7 +313,6 @@ public class BuildManager : MonoBehaviour
     /// </summary>
     private void HandleMouseUp()
     {
-        Debug.Log("Mouse button up");
         if (currentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
         {
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -327,7 +322,7 @@ public class BuildManager : MonoBehaviour
             {
                 if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
                 {
-                    BuildStructure(currentlySelectedStructure, mouseposition);
+                    AttemptBuildStructure(currentlySelectedStructure, mouseposition);
                 }
             }
             else if (currentBuildMode == BuildMode.Demolish)
