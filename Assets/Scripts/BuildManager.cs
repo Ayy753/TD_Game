@@ -103,83 +103,19 @@ public class BuildManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Highlights the tile being hovered over
+    /// Highlights the tile being hovered over while in build
+    /// or demolish mode
     /// </summary>
     /// <param name="position">Mouse cursor position</param>
     private void HoverTile(Vector3Int position)
     {
-        MapManager.Layer tileLayer;
-        Color tileColor;
-
         if (currentBuildMode == BuildMode.Build)
         {
-            //  Is there a structure here?
-            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
-            {
-                StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
-
-                if (tile.GetType() == typeof(TowerData))
-                {
-                    ChangeTowerTint(position, Color.red);
-                }
-                else
-                {
-                    tileLayer = MapManager.Layer.StructureLayer;
-                    tileColor = Color.red;
-                    mapManager.HighlightTile(tileLayer, position, tileColor);
-                }
-            }
-            //  There is no structure here
-            else
-            {
-                tileLayer = MapManager.Layer.GroundLayer;
-                //  Is tile capable of supporting a structure?
-                if (mapManager.IsGroundSolid(position))
-                {
-                    tileColor = Color.green;
-
-                    //  If the selected structure is a tower, display the targetting radius
-                    if (currentlySelectedStructure.GetType() == typeof(TowerData))
-                    {
-                        TowerData towerData = (TowerData)currentlySelectedStructure;
-                        radiusIndicator.SetActive(true);
-                        radiusIndicator.transform.localScale = new Vector3(towerData.Range * 2, towerData.Range * 2, 0);
-                        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                        mousePos = Vector3Int.FloorToInt(mousePos);
-                        mousePos.z = 1;
-                        radiusIndicator.transform.position = mousePos + tilemapOffset;
-                    }
-                }
-                else
-                {
-                    tileColor = Color.red;
-                }
-                mapManager.HighlightTile(tileLayer, position, tileColor);
-            }
+            BuildModeHoverLogic(position);
         }
         else if (currentBuildMode == BuildMode.Demolish)
         {
-            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
-            {
-                StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
-
-                if (tile.GetType() == typeof(TowerData))
-                {
-                    ChangeTowerTint(position, Color.green);
-                }
-                else
-                {
-                    tileLayer = MapManager.Layer.StructureLayer;
-                    tileColor = Color.green;
-                    mapManager.HighlightTile(tileLayer, position, tileColor);
-                }
-            }
-            else
-            {
-                tileLayer = MapManager.Layer.GroundLayer;
-                tileColor = Color.red;
-                mapManager.HighlightTile(tileLayer, position, tileColor);
-            }
+            DemolishModeHoverLogic(position);
         }
         else
         {
@@ -187,6 +123,101 @@ public class BuildManager : MonoBehaviour
         }
 
         lastHoveredPosition = position;
+    }
+
+    /// <summary>
+    /// Handles hover logic while in build mode
+    /// </summary>
+    /// <param name="position"></param>
+    private void BuildModeHoverLogic(Vector3Int position)
+    {
+        MapManager.Layer tileLayer;
+        Color tileColor;
+
+        //  Is there a structure here?
+        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+        {
+            StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+
+            if (tile.GetType() == typeof(TowerData))
+            {
+                ChangeTowerTint(position, Color.red);
+            }
+            else
+            {
+                tileLayer = MapManager.Layer.StructureLayer;
+                tileColor = Color.red;
+                mapManager.HighlightTile(tileLayer, position, tileColor);
+            }
+        }
+        //  There is no structure here
+        else
+        {
+            tileLayer = MapManager.Layer.GroundLayer;
+            //  Is tile capable of supporting a structure?
+            if (mapManager.IsGroundSolid(position))
+            {
+                tileColor = Color.green;
+
+                //  If the selected structure is a tower, display the targetting radius
+                if (currentlySelectedStructure.GetType() == typeof(TowerData))
+                {
+                    TowerData towerData = (TowerData)currentlySelectedStructure;
+                    ShowTowerRangeIndicator(towerData);
+                }
+            }
+            else
+            {
+                tileColor = Color.red;
+            }
+            mapManager.HighlightTile(tileLayer, position, tileColor);
+        }
+    }
+
+    /// <summary>
+    /// Handles hover logic while in demolish mode
+    /// </summary>
+    /// <param name="position"></param>
+    private void DemolishModeHoverLogic(Vector3Int position)
+    {
+        MapManager.Layer tileLayer;
+        Color tileColor;
+
+        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+        {
+            StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+
+            if (tile.GetType() == typeof(TowerData))
+            {
+                ChangeTowerTint(position, Color.green);
+            }
+            else
+            {
+                tileLayer = MapManager.Layer.StructureLayer;
+                tileColor = Color.green;
+                mapManager.HighlightTile(tileLayer, position, tileColor);
+            }
+        }
+        else
+        {
+            tileLayer = MapManager.Layer.GroundLayer;
+            tileColor = Color.red;
+            mapManager.HighlightTile(tileLayer, position, tileColor);
+        }
+    }
+    
+    /// <summary>
+    /// Displays the selected tower type's attack radius while in build mode
+    /// </summary>
+    /// <param name="towerData"></param>
+    private void ShowTowerRangeIndicator(TowerData towerData)
+    {
+        radiusIndicator.SetActive(true);
+        radiusIndicator.transform.localScale = new Vector3(towerData.Range * 2, towerData.Range * 2, 0);
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = Vector3Int.FloorToInt(mousePos);
+        mousePos.z = 1;
+        radiusIndicator.transform.position = mousePos + tilemapOffset;
     }
 
     /// <summary>
