@@ -37,10 +37,7 @@ public class BuildManager : MonoBehaviour
 
     private void OnEnable()
     {
-
-
         instantiatedTowers = new List<GameObject>();
-
 
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
         MouseManager.OnMouseUp += HandleMouseUp;
@@ -52,19 +49,6 @@ public class BuildManager : MonoBehaviour
         MouseManager.OnMouseUp -= HandleMouseUp;
     }
 
-    //private void Update()
-    //{
-    //    //  Prevent clicking through GUI elements
-    //    if (EventSystem.current.IsPointerOverGameObject() == false)
-    //    {
-    //        //HandleClickLogic();
-    //    }
-    //    else
-    //    {
-    //        PauseHighlighting();
-    //    }
-    //}
-
     /// <summary>
     /// Used when cursor hovers over GUI elements or empty space
     /// or when user exits build/demolish mode
@@ -74,37 +58,6 @@ public class BuildManager : MonoBehaviour
         UnhoverTile(lastHoveredPosition);
         lastHoveredPosition = Vector3Int.down;
     }
-
-    ///// <summary>
-    ///// Handles build mode click logic
-    ///// </summary>
-    //private void HandleClickLogic()
-    //{
-    //    if (currentBuildMode != BuildMode.None && Input.GetMouseButtonDown(0))
-    //    {
-    //        Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-    //        mouseposition.z = 0;
-
-    //        if (currentBuildMode == BuildMode.Build)
-    //        {
-    //            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
-    //            {
-    //                BuildStructure(currentlySelectedStructure, mouseposition);
-    //            }
-    //        }
-    //        else if (currentBuildMode == BuildMode.Demolish)
-    //        {
-    //            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition))
-    //            {
-    //                DemolishStructure(mouseposition);
-    //            }
-    //        }
-    //        else
-    //        {
-    //            throw new System.Exception("This build mode is not implemented");
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// Builds a structure over a ground tile
@@ -308,20 +261,29 @@ public class BuildManager : MonoBehaviour
     /// <param name="tileCoords"></param>
     private void HandleNewTileHovered(Vector3Int tileCoords)
     {
-        if (currentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
+        //  Temp until I fix script load order
+        if (mapManager != null)
         {
-            if (mapManager != null && mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords))
+            if (currentBuildMode != BuildMode.None )
             {
-                UnhoverTile(lastHoveredPosition);
-                HoverTile(tileCoords);
+                if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords) && EventSystem.current.IsPointerOverGameObject() == false)
+                {
+                    UnhoverTile(lastHoveredPosition);
+                    HoverTile(tileCoords);
+                }
+                else
+                {
+                    PauseHighlighting();
+                }
             }
-        }
-        else
-        {
-            PauseHighlighting();
         }
     }
 
+    /// <summary>
+    /// Responds to a complete mouse click
+    /// If in build mode, it will attempt to build a structure
+    /// 
+    /// </summary>
     private void HandleMouseUp()
     {
         Debug.Log("Mouse button up");
