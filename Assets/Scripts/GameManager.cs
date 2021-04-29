@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
             EnemySpawner.StopSpawning();
             Lives = 0;
             GUIController.ShowGameOverPanel();
+            GUIController.HideToolTip();
             PauseGame();
         }
 
