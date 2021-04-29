@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GUIController : MonoBehaviour
@@ -248,6 +249,14 @@ public class GUIController : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    /// <summary>
+    /// Restarts the current level
+    /// </summary>
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     /// <summary>

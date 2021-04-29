@@ -16,14 +16,16 @@ public class GameManager : MonoBehaviour
     public GUIController GUIController { get; private set; }
     public BuildManager BuildManager { get; private set; }
 
-    public int Lives { get; private set; } = 25;
-    public int Gold { get; private set; } = 250;
+    public int Lives { get; private set; }
+    public int Gold { get; private set; }
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
         Enemy.OnEnemyDied += HandleEnemyDied;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     private void OnDisable()
@@ -40,6 +42,10 @@ public class GameManager : MonoBehaviour
         PathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
         GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
         BuildManager = GameObject.Find("BuildManager").GetComponent<BuildManager>();
+
+        //  Initialize properties
+        Lives = 25;
+        Gold = 250;
 
         StartCoroutine(InitializeGame());
     }
@@ -62,8 +68,6 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
         }
-
-
         EnemySpawner.StartSpawning();
     }
 
