@@ -240,7 +240,11 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     public string GetDisplayText()
     {
-        return string.Format("Name:{0}\nHealth:{1}/{2}\nValue:{3}\nDescription:{4}", EnemyData.Name, Mathf.RoundToInt(CurrentHealth), EnemyData.MaxHealth, EnemyData.Value, EnemyData.Description);
+        return string.Format("<b><color=green>Name</color></b>: {0}" +
+            "\n<b><color=green>Health</color></b>: {1}/{2}" +
+            "\n<b><color=green>Value</color></b>: {3}" +
+            "\n<b><color=green>Description</color></b>: {4}"
+            , EnemyData.Name, Mathf.RoundToInt(CurrentHealth), EnemyData.MaxHealth, EnemyData.Value, EnemyData.Description);
     }
 
     #endregion

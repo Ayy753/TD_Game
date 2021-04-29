@@ -18,6 +18,6 @@ public class WallData : StructureData
 
     public override string ToString()
     {
-        return string.Format("Name: {0}\nDescription:{1}\nCost: {2}", Name, Description, Cost);
+        return base.ToString() + string.Format("\n<b>Cost</b>: {0}", Cost);
     }
 }

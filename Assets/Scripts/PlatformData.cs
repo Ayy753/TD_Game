@@ -18,6 +18,6 @@ public class PlatformData : TileData
 
     public override string ToString()
     {
-        return base.ToString() + string.Format("\nWalk cost: {0}", WalkCost);
+        return base.ToString() + string.Format("\n<b>Walk cost</b>: {0}", WalkCost);
     }
 }

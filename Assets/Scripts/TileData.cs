@@ -18,6 +18,6 @@ public abstract class TileData : ScriptableObject
 
     public override string ToString()
     {
-        return string.Format("Name: {0}\nDescription: {1}", Name, Description);
+        return string.Format("<b>Name</b>: {0}\n<b>Description</b>: {1}", Name, Description);
     }
 }

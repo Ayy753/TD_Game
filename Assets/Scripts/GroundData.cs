@@ -19,11 +19,11 @@ public class GroundData : TileData, IDisplayable
     public override MapManager.Layer Layer { get; protected set; } = MapManager.Layer.GroundLayer;
     public string GetDisplayText()
     {
-        return ToString() + string.Format("\nWalk cost: {0}\nSolid?: {1}", WalkCost, IsSolid);
+        return ToString();
     }
 
     public override string ToString()
     {
-        return base.ToString() + string.Format("\nWalk cost: {0}\nSolid?: {1}", WalkCost, IsSolid);
+        return base.ToString() + string.Format("\n<b>Walk cost</b>: {0}\n<b>Solid?</b>: {1}", WalkCost, IsSolid);
     }
 }
