@@ -51,7 +51,7 @@ public class GUIController : MonoBehaviour
     //private GameObject txtFloatingText;
     [SerializeField]
     GameObject floatingTextGO;
-    bool hoveringOverGameObject = false;
+    GameObject lastHoveredGameObject;
 
     void Start()
     {
@@ -98,13 +98,6 @@ public class GUIController : MonoBehaviour
             ExitEditMode();
             ClearTarget();
         }
-
-        //  Clear target if user clicks on empty ground
-        if (EventSystem.current.IsPointerOverGameObject() == false && 
-            hoveringOverGameObject == false && Input.GetMouseButton(0) == true)
-        {
-           ClearTarget();
-        }
     }
 
     private void OnEnable()
@@ -114,6 +107,7 @@ public class GUIController : MonoBehaviour
         MouseManager.OnHoveredNewTile += HandleHoveredNewTile;
         MouseManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
         MouseManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
+        MouseManager.OnMouseUp += HandleMouseUp;
         Enemy.OnEnemyDied += HandleEnemyDied;
         Enemy.OnEnemyHit += HandleEnemyHit;
     }
@@ -125,6 +119,7 @@ public class GUIController : MonoBehaviour
         MouseManager.OnHoveredNewTile -= HandleHoveredNewTile;
         MouseManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
         MouseManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
+        MouseManager.OnMouseUp -= HandleMouseUp;
         Enemy.OnEnemyDied -= HandleEnemyDied;
         Enemy.OnEnemyHit -= HandleEnemyHit;
     }
@@ -201,18 +196,19 @@ public class GUIController : MonoBehaviour
 
     /// <summary>
     /// Shows tooltip if object hovered over implements IDisplayable
+    /// and keeps a reference to the hovered object regardless
     /// </summary>
     /// <param name="gameObject"></param>
     private void HandleHoveredNewGameObject(GameObject gameObject)
     {
+        //  If it implements IDisplayable, show tooltip
         IDisplayable displayable = gameObject.GetComponent<IDisplayable>();
-
         if (displayable != null)
         {
             toolTip.SetCurrentString(displayable.GetDisplayText());
             ShowToolTip();
         }
-        hoveringOverGameObject = true;
+        lastHoveredGameObject = gameObject;
     }
 
     /// <summary>
@@ -221,7 +217,39 @@ public class GUIController : MonoBehaviour
     private void HandleUnhoveredGameObject()
     {
         HideToolTip();
-        hoveringOverGameObject = false;
+        lastHoveredGameObject = null;
+    }
+
+    /// <summary>
+    /// Clears the target if user clicks in empty space
+    /// or targets tower if user is hovering over it while not in build/demolish mode
+    /// </summary>
+    private void HandleMouseUp()
+    {
+        //  If user clicks empty space
+        if (lastHoveredGameObject == null)
+        {
+            ClearTarget();
+        }
+        //  Otherwise user clicks a game object
+        else 
+        {
+            //  And object is a tower
+            Tower tower = lastHoveredGameObject.GetComponent<Tower>();
+            if (tower != null)
+            {
+                //  And build mode is set to none
+                if (buildManager.CurrentBuildMode == BuildManager.BuildMode.None)
+                {
+                    TargetTower(tower);
+                }
+                //  Otherwise if the user is demolishing tower, therefore hide tooltip
+                else if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Demolish)
+                {
+                    HideToolTip();
+                }
+            }
+        }
     }
 
     /// <summary>

@@ -50,11 +50,6 @@ public class Tower : MonoBehaviour, IDisplayable
         ShootLogic();
     }
 
-    private void OnMouseDown()
-    {
-        GameManager.Instance.GUIController.TargetTower(this);
-    }
-
     private void ShootLogic()
     {
         if (Target != null && TimeSinceLastShot >= TowerData.ReloadTime)

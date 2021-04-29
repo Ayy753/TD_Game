@@ -12,7 +12,7 @@ public class BuildManager : MonoBehaviour
     //  We will user Vector3Int.down to indicate no tile is being hovered over
     private Vector3Int lastHoveredPosition = Vector3Int.down;
     private List<GameObject> instantiatedTowers;
-    private BuildMode currentBuildMode = BuildMode.None;
+    public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
     private StructureData currentlySelectedStructure;
     
     [SerializeField]
@@ -105,11 +105,11 @@ public class BuildManager : MonoBehaviour
     /// <param name="position">Mouse cursor position</param>
     private void HoverTile(Vector3Int position)
     {
-        if (currentBuildMode == BuildMode.Build)
+        if (CurrentBuildMode == BuildMode.Build)
         {
             BuildModeHoverLogic(position);
         }
-        else if (currentBuildMode == BuildMode.Demolish)
+        else if (CurrentBuildMode == BuildMode.Demolish)
         {
             DemolishModeHoverLogic(position);
         }
@@ -291,7 +291,7 @@ public class BuildManager : MonoBehaviour
         //  Temp until I fix script load order
         if (mapManager != null)
         {
-            if (currentBuildMode != BuildMode.None )
+            if (CurrentBuildMode != BuildMode.None )
             {
                 if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords) && EventSystem.current.IsPointerOverGameObject() == false)
                 {
@@ -313,19 +313,19 @@ public class BuildManager : MonoBehaviour
     /// </summary>
     private void HandleMouseUp()
     {
-        if (currentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
+        if (CurrentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
         {
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             mouseposition.z = 0;
 
-            if (currentBuildMode == BuildMode.Build)
+            if (CurrentBuildMode == BuildMode.Build)
             {
                 if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
                 {
                     AttemptBuildStructure(currentlySelectedStructure, mouseposition);
                 }
             }
-            else if (currentBuildMode == BuildMode.Demolish)
+            else if (CurrentBuildMode == BuildMode.Demolish)
             {
                 if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition))
                 {
@@ -380,7 +380,7 @@ public class BuildManager : MonoBehaviour
     {
         currentlySelectedStructure = selectedStructure;
         lastHoveredPosition = Vector3Int.zero;
-        currentBuildMode = BuildMode.Build;
+        CurrentBuildMode = BuildMode.Build;
         Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
     }
 
@@ -390,7 +390,7 @@ public class BuildManager : MonoBehaviour
     public void EnterDemolishMode()
     {
         lastHoveredPosition = Vector3Int.zero;
-        currentBuildMode = BuildMode.Demolish;
+        CurrentBuildMode = BuildMode.Demolish;
         Debug.Log("Entered demolish mode");
     }
 
@@ -400,7 +400,7 @@ public class BuildManager : MonoBehaviour
     public void ExitBuildMode()
     {
         currentlySelectedStructure = null;
-        currentBuildMode = BuildMode.None;
+        CurrentBuildMode = BuildMode.None;
         PauseHighlighting();
         Debug.Log("Exited build mode");
     }
