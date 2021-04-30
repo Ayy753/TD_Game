@@ -11,7 +11,6 @@ public class NormalProjectile : Projectile
     {
         MoveTowardsTarget();
     }
-
     private void OnEnable()
     {
         Enemy.OnEnemyDied += HandleEnemyDied;
@@ -20,7 +19,23 @@ public class NormalProjectile : Projectile
     {
         Enemy.OnEnemyDied -= HandleEnemyDied;
     }
-
+    
+    /// <summary>
+    /// Check if it was target that died
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        if (enemy.transform == Target)
+        {
+            targetDead = true;
+        }
+    }
+    
+    /// <summary>
+    /// Follows the target if its still alive
+    /// if the target dies, projectile moves to enemy's last position
+    /// </summary>
     protected override void MoveTowardsTarget()
     {
         //  Prevent projectile from targetting a dead enemy that got respawned
@@ -38,11 +53,20 @@ public class NormalProjectile : Projectile
         }
     }
 
+    /// <summary>
+    /// Deals damage to the enemy 
+    /// </summary>
+    /// <param name="enemy"></param>
     protected override void DealDamage(Enemy enemy)
     {
         enemy.TakeDamage(Damage);
     }
 
+    /// <summary>
+    /// If the target is still alive, ignore collisions with other enemies
+    /// otherwise deal damage to any other enemy hit
+    /// </summary>
+    /// <param name="collision"></param>
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
@@ -57,18 +81,6 @@ public class NormalProjectile : Projectile
                 alreadyHit = true;
                 Destroy(gameObject);
             }
-        }
-    }
-
-    /// <summary>
-    /// Check if it was target that died
-    /// </summary>
-    /// <param name="enemy"></param>
-    private void HandleEnemyDied(Enemy enemy)
-    {
-        if (enemy.transform == Target)
-        {
-            targetDead = true;
         }
     }
 }

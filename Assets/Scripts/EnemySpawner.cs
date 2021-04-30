@@ -17,6 +17,19 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// Periodically spawns enemies
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PeriodicSpawner()
+    {
+        while (true)
+        {
+            SpawnRandomEnemyType(entrance.transform.position);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    /// <summary>
     /// A function that is accessible through unity's inspector
     /// Spawns random enemies at the entrance
     /// </summary>
@@ -35,12 +48,20 @@ public class EnemySpawner : MonoBehaviour
             SpawnRandomEnemyType(position + new Vector3(offsetx, offsetx));
         }
     }
+
+    /// <summary>
+    /// Spawns one random enemy, used for testing
+    /// </summary>
     [ContextMenu("spawnOneEnemy")]
     public void SpawnOneEnemy()
     {
         SpawnRandomEnemyType(entrance.transform.position);
     }
 
+    /// <summary>
+    /// Spawns a random type of enemy based on a list of prefabs
+    /// </summary>
+    /// <param name="position"></param>
     public void SpawnRandomEnemyType(Vector3 position)
     {
         GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
@@ -82,19 +103,6 @@ public class EnemySpawner : MonoBehaviour
                     break;
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Periodically spawns enemies
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator PeriodicSpawner()   
-    {
-        while (true)
-        {
-            SpawnRandomEnemyType(entrance.transform.position);
-            yield return new WaitForSeconds(1f);
         }
     }
 

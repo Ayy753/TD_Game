@@ -231,7 +231,7 @@ public class PathFinder : MonoBehaviour
                                 float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
                                 float neighFCost = neighGCost + neighHCost;
 
-                                mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
+                                //mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
 
                                 //  Check if openlist already contains a path to this tile
                                 //  If it has, and the other one has a smaller F cost, update cost and parent
@@ -273,6 +273,55 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
+    /// A tile is valid(walkable) if it doesn't contain a structure, but contains a ground tile
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private bool IsValidTile(Vector3Int position)
+    {
+        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position) != true &&
+            mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position) == true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Used to estimate the heuristic value of a tile
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="finish"></param>
+    /// <returns></returns>
+    private int ManhattanDistance(Vector3Int start, Vector3Int finish)
+    {
+        return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
+    }
+
+    /// <summary>
+    /// Handle pathfinding when a structure is built or demolished
+    /// </summary>
+    /// <param name="demolish"></param>
+    private void HandleStructureChanged(bool demolish)
+    {
+        //  If a structure demolished
+        //  or a structure was built that blocks the current path
+        //  Recalculate path
+        if (demolish == true || PathBlocked(CurrentPath) == true)
+        {
+            StopCoroutine("CalculateShortestPath");
+            PreviousPath = CurrentPath;
+            //  Pause game
+            GameManager.Instance.PauseGame();
+            StartCoroutine("CalculateShortestPath");
+            OnPathRecalculating.Invoke();
+        }
+    }
+
+    /// <summary>
     /// Performs a flood search for the shortest route to the main path
     /// </summary>
     public (List<Vector3Int>, int) RouteToPath(Vector3Int startingPos)
@@ -285,7 +334,7 @@ public class PathFinder : MonoBehaviour
 
         int counter = 0;
         int maxItt = 1000;
-    
+
         while (openList.Count > 0 && counter < maxItt)
         {
             parentNode = openList[0];
@@ -374,55 +423,6 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// A tile is valid(walkable) if it doesn't contain a structure, but contains a ground tile
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns></returns>
-    private bool IsValidTile(Vector3Int position)
-    {
-        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position) != true &&
-            mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position) == true)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Used to estimate the heuristic value of a tile
-    /// </summary>
-    /// <param name="start"></param>
-    /// <param name="finish"></param>
-    /// <returns></returns>
-    private int ManhattanDistance(Vector3Int start, Vector3Int finish)
-    {
-        return Mathf.Abs(finish.x - start.x) + Mathf.Abs(finish.y - start.y);
-    }
-
-    /// <summary>
-    /// Handle pathfinding when a structure is built or demolished
-    /// </summary>
-    /// <param name="demolish"></param>
-    private void HandleStructureChanged(bool demolish)
-    {
-        //  If a structure demolished
-        //  or a structure was built that blocks the current path
-        //  Recalculate path
-        if (demolish == true || PathBlocked(CurrentPath) == true)
-        {
-            StopCoroutine("CalculateShortestPath");
-            PreviousPath = CurrentPath;
-            //  Pause game
-            GameManager.Instance.PauseGame();
-            StartCoroutine("CalculateShortestPath");
-            OnPathRecalculating.Invoke();
-        }
-    }
-
-    /// <summary>
     /// Check if any tile in the current path is blocked
     /// </summary>
     /// <returns></returns>
@@ -439,28 +439,10 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if path was blocked after a point
+    /// Is this point a part of the main path?
     /// </summary>
-    /// <param name="path"></param>
-    /// <param name="index"></param>
+    /// <param name="point"></param>
     /// <returns></returns>
-    public bool PathBlockedAfter(List<Vector3Int> path, int index)
-    {
-        if (index + 1 >= path.Count)
-        {
-            throw new ArgumentOutOfRangeException("Index exceeds path length");
-        }
-
-        for (int i = index + 1; i < path.Count; i++)
-        {
-            if (IsValidTile(path[i]) == false)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public bool PointOnPath(Vector3Int point)
     {
         foreach (Vector3Int node in CurrentPath)

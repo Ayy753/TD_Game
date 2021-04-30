@@ -53,6 +53,9 @@ public class SplashProjectile : Projectile
         Destroy(gameObject);
     }
     
+    /// <summary>
+    /// Moves towards target's initial position at the time of projectile's creation
+    /// </summary>
     protected override void MoveTowardsTarget()
     {
         if (triggered == false)
@@ -85,6 +88,11 @@ public class SplashProjectile : Projectile
         }
     }
 
+    /// <summary>
+    /// Used to find all target's within projectile splash range after it reaches
+    /// the target destination
+    /// </summary>
+    /// <param name="collision"></param>
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
@@ -94,6 +102,12 @@ public class SplashProjectile : Projectile
         }
     }
     
+    /// <summary>
+    /// Used by tower to set projectile's target, damage, and move speed
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="damage"></param>
+    /// <param name="speed"></param>
     public override void Initialize(Transform target, float damage, float speed)
     {
         base.Initialize(target, damage, speed);

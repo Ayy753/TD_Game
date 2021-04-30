@@ -92,6 +92,10 @@ public class Tower : MonoBehaviour, IDisplayable
         }
     }
 
+    /// <summary>
+    /// Periodically searches for a new target
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TargetFinder()
     {
         while (true)
@@ -101,11 +105,19 @@ public class Tower : MonoBehaviour, IDisplayable
         }
     }
 
+    /// <summary>
+    /// Called when user changes target mode on the tower
+    /// </summary>
+    /// <param name="targetMode"></param>
     public void SelectTargetMode(TargetMode targetMode)
     {
         SelectedTargetMode = targetMode;
     }
 
+    /// <summary>
+    /// Selects the most suitable target based on the selected target mode
+    /// </summary>
+    /// <returns></returns>
     private Enemy FindTarget()
     {
         Enemy target = null;
@@ -133,6 +145,10 @@ public class Tower : MonoBehaviour, IDisplayable
         return target;
     }
 
+    /// <summary>
+    /// Selects the enemy closest to tower, within range
+    /// </summary>
+    /// <returns></returns>
     private Enemy FindClosestEnemy()
     {
         Enemy closestEnemy = null;
@@ -153,6 +169,10 @@ public class Tower : MonoBehaviour, IDisplayable
         return closestEnemy;
     }
 
+    /// <summary>
+    /// Selects the enemy furthest from tower, within range
+    /// </summary>
+    /// <returns></returns>
     private Enemy FindFurthestEnemy()
     {
         Enemy closestEnemy = null;
@@ -173,6 +193,10 @@ public class Tower : MonoBehaviour, IDisplayable
         return closestEnemy;
     }
 
+    /// <summary>
+    /// Selects the enemy with the lowest health in range
+    /// </summary>
+    /// <returns></returns>
     private Enemy FindLowestHealthEnemy()
     {
         Enemy lowestEnemy = null;
@@ -193,6 +217,10 @@ public class Tower : MonoBehaviour, IDisplayable
         return lowestEnemy;
     }
 
+    /// <summary>
+    /// Selects the enemy with the highest health in range
+    /// </summary>
+    /// <returns></returns>
     private Enemy FindHighestHealthEnemy()
     {
         Enemy highestEnemy = null;
@@ -213,6 +241,10 @@ public class Tower : MonoBehaviour, IDisplayable
         return highestEnemy;
     }
 
+    /// <summary>
+    /// Selects a random enemy within range
+    /// </summary>
+    /// <returns></returns>
     private Enemy FindRandomEnemy()
     {
         if (enemiesInRange.Count > 0)
@@ -223,6 +255,12 @@ public class Tower : MonoBehaviour, IDisplayable
         return null;
     }
 
+    /// <summary>
+    /// Calculates the distance between two points
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="finish"></param>
+    /// <returns></returns>
     private float Distance(Vector3 start, Vector3 finish)
     {
         return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));

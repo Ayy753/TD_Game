@@ -13,8 +13,8 @@ public class Enemy : MonoBehaviour, IDisplayable
     private List<Vector3Int> currentPath;
     private int currentPathIndex;
     private bool onMainPath = true;
-    private List<Vector3Int> routeToPath;
-    private int routeIndex;
+    private List<Vector3Int> routeToMainPath;
+    private int subPathIndex;
 
     //  To compensate for the 0.5 unit offset of the tilemap system
     private static Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     //  The last tile walked on
     private Vector3Int lastTile = Vector3Int.down;
     //  Walk speed on current tile type
-    private float walkSpeed;
+    private float currentWalkSpeed;
     #endregion
 
     public delegate void EnemyReachedExit(Enemy enemy);
@@ -70,43 +70,17 @@ public class Enemy : MonoBehaviour, IDisplayable
         MapManager.OnStructureChanged -= HandleStructureChanged;
     }
 
-    /// <summary>
-    /// Individually handle the case where the sturcture map changes, but the
-    /// main path doesnt need to be recalculated, and the enemy's path towards 
-    /// the main path got blocked
-    /// </summary>
-    /// <param name="demolish"></param>
-    private void HandleStructureChanged(bool demolish)
-    {
-        if (onMainPath == false)
-        {
-            if (pathFinder.PathBlocked(routeToPath))
-            {
-                (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
-
-                //  Route to new path
-                routeToPath = result.Item1;
-
-                //  Current index in route to path
-                routeIndex = 0;
-
-                //  Where enemy will be when it joins main path
-                currentPathIndex = result.Item2;
-            }
-        }
-    }
-
     private void Update()
     {
         if (Vector3Int.FloorToInt(transform.position) != lastTile)
         {
             lastTile = Vector3Int.FloorToInt(transform.position);
-            walkSpeed = EnemyData.Speed - mapManager.GetTileCost(lastTile) / 15;
+            currentWalkSpeed = EnemyData.Speed - mapManager.GetTileCost(lastTile) / 15;
         }
 
         if (onMainPath)
         {
-            transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, walkSpeed * Time.deltaTime);
+            transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, currentWalkSpeed * Time.deltaTime);
             if (currentPath[currentPathIndex] + tilemapOffset == transform.position)
             {
                 currentPathIndex++;
@@ -123,17 +97,17 @@ public class Enemy : MonoBehaviour, IDisplayable
         }
         else
         {
-            transform.parent.position = Vector3.MoveTowards(transform.position, routeToPath[routeIndex] + tilemapOffset, walkSpeed * Time.deltaTime);
-            if (routeToPath[routeIndex] + tilemapOffset == transform.position)
+            transform.parent.position = Vector3.MoveTowards(transform.position, routeToMainPath[subPathIndex] + tilemapOffset, currentWalkSpeed * Time.deltaTime);
+            if (routeToMainPath[subPathIndex] + tilemapOffset == transform.position)
             {
-                routeIndex++;
-                if (routeIndex == routeToPath.Count)
+                subPathIndex++;
+                if (subPathIndex == routeToMainPath.Count)
                 {
                     onMainPath = true;
                 }
                 else
                 {
-                    FaceNextNode(routeToPath[routeIndex]);
+                    FaceNextNode(routeToMainPath[subPathIndex]);
                 }
             }
         }
@@ -163,7 +137,6 @@ public class Enemy : MonoBehaviour, IDisplayable
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
-        
     /// <summary>
     /// Responds to path change event
     /// </summary>
@@ -175,15 +148,41 @@ public class Enemy : MonoBehaviour, IDisplayable
         (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
 
         //  Route to new path
-        routeToPath = result.Item1;
+        routeToMainPath = result.Item1;
 
         //  Current index in route to path
-        routeIndex = 0;
+        subPathIndex = 0;
 
         //  Where enemy will be when it joins main path
         currentPathIndex = result.Item2;
 
         onMainPath = false;
+    }
+
+    /// <summary>
+    /// Individually handle the case where the sturcture map changes, but the
+    /// main path doesnt need to be recalculated, and the enemy's path towards 
+    /// the main path got blocked
+    /// </summary>
+    /// <param name="demolish"></param>
+    private void HandleStructureChanged(bool demolish)
+    {
+        if (onMainPath == false)
+        {
+            if (pathFinder.PathBlocked(routeToMainPath))
+            {
+                (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
+
+                //  Route to new path
+                routeToMainPath = result.Item1;
+
+                //  Current index in route to path
+                subPathIndex = 0;
+
+                //  Where enemy will be when it joins main path
+                currentPathIndex = result.Item2;
+            }
+        }
     }
 
     /// <summary>
@@ -238,6 +237,10 @@ public class Enemy : MonoBehaviour, IDisplayable
         }
     }
 
+    /// <summary>
+    /// Gets information about enemy for the user
+    /// </summary>
+    /// <returns></returns>
     public string GetDisplayText()
     {
         return string.Format("<b><color=green>Name</color></b>: {0}" +

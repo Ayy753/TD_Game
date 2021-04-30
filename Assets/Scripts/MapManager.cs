@@ -14,10 +14,10 @@ public class MapManager : MonoBehaviour
     private Tilemap decoreLayer;
 
     [SerializeField]
-    private Tilemap PlatformLayer;
+    private Tilemap structureLayer;
 
     [SerializeField]
-    private Tilemap structureLayer;
+    private Tilemap PlatformLayer;
 
     [SerializeField]
     private List<TileData> tileDatas;

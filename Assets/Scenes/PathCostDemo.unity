@@ -4339,8 +4339,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601462268}
-        m_TargetAssemblyTypeName: GUIController, GameAssembly
+      - m_Target: {fileID: 133250871}
+        m_TargetAssemblyTypeName: TowerGUI, GameAssembly
         m_MethodName: SellTower
         m_Mode: 1
         m_Arguments:
@@ -25272,8 +25272,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundLayer: {fileID: 1520836379}
   decoreLayer: {fileID: 7290289}
-  PlatformLayer: {fileID: 1154869474}
   structureLayer: {fileID: 479069626}
+  PlatformLayer: {fileID: 1154869474}
   tileDatas:
   - {fileID: 11400000, guid: 7ad11fcc236bb2640bce50be41f1326a, type: 2}
   - {fileID: 11400000, guid: eabc4f62921ced2408cd704009c5a753, type: 2}
