@@ -11,30 +11,18 @@ public class GUIController : MonoBehaviour
     PathFinder pathFinder;
     BuildManager buildManager;
     MapManager mapManager;
-    
+    TowerGUI towerGUI;
+
     private ToolTip toolTip;
     private Image selectedIcon;
     private Text selectedDetails;
     private Text livesLabel;
     private Text goldLabel;
     private GameObject gameOverPanel;
-    private Tower targettedTower;
-    private Image targetIcon;
     private GameObject btnExitEditMode;
     private GameObject txtPathRecalculating;
     private Text txtTileInfo;
-
-    private Button btnTargetFurthest;
-    private Button btnTargetClosest;
-    private Button btnTargetHighest;
-    private Button btnTargetLowest;
-    private Button btnTargetRandom;
-    private Text txtTargetDescription;
-    private GameObject pnlTarget;
     private GameObject pnlStructureInfo;
-    private Button btnSellStructure;
-
-    private List<Button> towerTargetButtons;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -59,6 +47,7 @@ public class GUIController : MonoBehaviour
         pathFinder = gameManager.PathFinder;
         buildManager = gameManager.BuildManager;
         mapManager = gameManager.MapManager;
+        towerGUI = gameManager.TowerGUI;
 
         toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
@@ -66,29 +55,17 @@ public class GUIController : MonoBehaviour
         livesLabel = GameObject.Find("lblLives").GetComponent<Text>();
         goldLabel = GameObject.Find("lblGold").GetComponent<Text>();
         gameOverPanel = GameObject.Find("pnlGameOver");
-        pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
         btnExitEditMode = GameObject.Find("btnExit");
         txtPathRecalculating = GameObject.Find("txtPathRecalculating");
-        btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
         txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
-
-        //  Targetting panel UI
-        targetIcon = GameObject.Find("imgTargetIcon").GetComponent<Image>();
-        btnTargetFurthest = GameObject.Find("btnFurthest").GetComponent<Button>();
-        btnTargetClosest = GameObject.Find("btnClosest").GetComponent<Button>();
-        btnTargetHighest = GameObject.Find("btnMaxHP").GetComponent<Button>();
-        btnTargetLowest = GameObject.Find("btnMinHP").GetComponent<Button>();
-        btnTargetRandom = GameObject.Find("btnRandom").GetComponent<Button>();
-        txtTargetDescription = GameObject.Find("txtDescription").GetComponent<Text>();
-        towerTargetButtons = new List<Button>() { btnTargetFurthest, btnTargetClosest, btnTargetHighest, btnTargetLowest, btnTargetRandom };
-        pnlTarget = GameObject.Find("pnlTarget");
+        pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
 
         HideGameOverPanel();    
         PopulateScrollView();
-        pnlTarget.SetActive(false);
-        pnlStructureInfo.SetActive(false);
+
         btnExitEditMode.SetActive(false);
         txtPathRecalculating.SetActive(false);
+        pnlStructureInfo.SetActive(false);
     }
 
     private void Update()
@@ -96,7 +73,7 @@ public class GUIController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ExitEditMode();
-            ClearTarget();
+           towerGUI.ClearTarget();
         }
     }
 
@@ -163,15 +140,6 @@ public class GUIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Unselects the targetted tower
-    /// </summary>
-    private void ClearTarget()
-    {
-        pnlTarget.SetActive(false);
-        targettedTower = null;
-    }
-
-    /// <summary>
     /// Updates tile info box
     /// </summary>
     /// <param name="tileCoords"></param>
@@ -229,7 +197,11 @@ public class GUIController : MonoBehaviour
         //  If user clicks empty space
         if (lastHoveredGameObject == null)
         {
-            ClearTarget();
+            //  and cursor isn't over UI
+            if (EventSystem.current.IsPointerOverGameObject() == false)
+            {
+                towerGUI.ClearTarget();
+            }
         }
         //  Otherwise user clicks a game object
         else 
@@ -241,9 +213,9 @@ public class GUIController : MonoBehaviour
                 //  And build mode is set to none
                 if (buildManager.CurrentBuildMode == BuildManager.BuildMode.None)
                 {
-                    TargetTower(tower);
+                    towerGUI.TargetTower(tower);
                 }
-                //  Otherwise if the user is demolishing tower, therefore hide tooltip
+                //  Otherwise if the user is demolishing tower
                 else if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Demolish)
                 {
                     HideToolTip();
@@ -294,7 +266,6 @@ public class GUIController : MonoBehaviour
     public void EnterBuildMode(StructureData structureData)
     {
         pnlStructureInfo.SetActive(true);
-        pnlTarget.SetActive(false);
         btnExitEditMode.SetActive(true);
         selectedIcon.sprite = structureData.Icon;
         selectedDetails.text = structureData.ToString();
@@ -307,7 +278,6 @@ public class GUIController : MonoBehaviour
     public void EnterDemolishMode()
     {
         pnlStructureInfo.SetActive(false);
-        pnlTarget.SetActive(false);
         btnExitEditMode.SetActive(true);
         buildManager.EnterDemolishMode();
     }
@@ -364,130 +334,6 @@ public class GUIController : MonoBehaviour
     public void HideGameOverPanel()
     {
         gameOverPanel.SetActive(false);
-    }
-
-    /// <summary>
-    /// Populate target window with selected tower's info
-    /// </summary>
-    /// <param name="tower"></param>
-    public void TargetTower(Tower tower)
-    {
-        targettedTower = tower;
-        targetIcon.sprite = targettedTower.TowerData.Icon;
-
-        UnhighlightTowerButtons();
-
-        switch (tower.SelectedTargetMode)
-        {
-            case Tower.TargetMode.Closest:
-                btnTargetClosest.image.color = Color.cyan;
-                break;
-            case Tower.TargetMode.Furthest:
-                btnTargetFurthest.image.color = Color.cyan;
-                break;
-            case Tower.TargetMode.Random:
-                btnTargetRandom.image.color = Color.cyan;
-                break;
-            case Tower.TargetMode.LowestHealth:
-                btnTargetLowest.image.color = Color.cyan;
-                break;
-            case Tower.TargetMode.HighestHealth:
-                btnTargetHighest.image.color = Color.cyan;
-                break;
-            default:
-                throw new Exception("Target mode invalid");
-        }
-
-        txtTargetDescription.text = tower.GetDisplayText();
-        float value = Mathf.Round(tower.TowerData.Cost * 0.66f);
-        btnSellStructure.GetComponentInChildren<Text>().text = "Sell for " + value.ToString() + " Gold";
-        pnlStructureInfo.SetActive(false);
-        pnlTarget.SetActive(true);
-    }
-
-    /// <summary>
-    /// Sells the targetted tower
-    /// </summary>
-    public void SellTower()
-    {
-        buildManager.DemolishStructure(Vector3Int.FloorToInt(targettedTower.transform.position));
-        pnlTarget.SetActive(false);
-    }
-
-    /// <summary>
-    /// Clears the highlighted target mode button
-    /// </summary>
-    public void UnhighlightTowerButtons()
-    {
-        foreach (Button button in towerTargetButtons)
-        {
-            button.image.color = Color.white;
-        }
-    }
-
-    /// <summary>
-    /// Tower targets nearest enemy
-    /// </summary>
-    public void TargetNearest()
-    {
-        if (targettedTower != null)
-        {
-            UnhighlightTowerButtons();
-            targettedTower.SelectTargetMode(Tower.TargetMode.Closest);
-            btnTargetClosest.image.color = Color.cyan;
-        }
-    }
-
-    /// <summary>
-    /// Tower targets nearest enemy
-    /// </summary>
-    public void TargetFurthest()
-    {
-        if (targettedTower != null)
-        {
-            UnhighlightTowerButtons();
-            targettedTower.SelectTargetMode(Tower.TargetMode.Furthest);
-            btnTargetFurthest.image.color = Color.cyan;
-        }
-    }
-
-    /// <summary>
-    /// Tower targets enemy with lowest health
-    /// </summary>
-    public void TargetMinHP()
-    {
-        if (targettedTower != null)
-        {
-            UnhighlightTowerButtons();
-            targettedTower.SelectTargetMode(Tower.TargetMode.LowestHealth);
-            btnTargetLowest.image.color = Color.cyan;
-        }
-    }
-
-    /// <summary>
-    /// Tower targets enemy with highest health
-    /// </summary>
-    public void TargetMaxHP()
-    {
-        if (targettedTower != null)
-        {
-            UnhighlightTowerButtons();
-            targettedTower.SelectTargetMode(Tower.TargetMode.HighestHealth);
-            btnTargetHighest.image.color = Color.cyan;
-        }
-    }
-
-    /// <summary>
-    /// Tower targets random enemy within range
-    /// </summary>
-    public void TargetRandom()
-    {
-        if (targettedTower != null)
-        {
-            UnhighlightTowerButtons();
-            targettedTower.SelectTargetMode(Tower.TargetMode.Random);
-            btnTargetRandom.image.color = Color.cyan;
-        }
     }
 
     #region Demo Functions

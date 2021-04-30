@@ -712,6 +712,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109366811}
   m_CullTransparentMesh: 1
+--- !u!1 &133250869
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 133250870}
+  - component: {fileID: 133250871}
+  m_Layer: 0
+  m_Name: TowerGUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &133250870
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133250869}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 208.20836, y: 263, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &133250871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133250869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2283358017670db41897c4c01d774865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &194305021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -991,9 +1034,9 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 20}
+  m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &363401452
 MonoBehaviour:
@@ -1038,7 +1081,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2057229067}
   m_HandleRect: {fileID: 2057229066}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1910,7 +1953,7 @@ RectTransform:
   - {fileID: 1677605352}
   - {fileID: 1114275076}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2000,8 +2043,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601462268}
-        m_TargetAssemblyTypeName: GUIController, GameAssembly
+      - m_Target: {fileID: 133250871}
+        m_TargetAssemblyTypeName: TowerGUI, GameAssembly
         m_MethodName: TargetMaxHP
         m_Mode: 1
         m_Arguments:
@@ -2880,9 +2923,9 @@ RectTransform:
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: -17}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1061609893
 MonoBehaviour:
@@ -3012,7 +3055,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1114275075
 GameObject:
@@ -4381,9 +4424,9 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: -17}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1476779959
 MonoBehaviour:
@@ -23587,7 +23630,7 @@ Transform:
   m_Children:
   - {fileID: 194305023}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1586722970
 GameObject:
@@ -24118,8 +24161,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601462268}
-        m_TargetAssemblyTypeName: GUIController, GameAssembly
+      - m_Target: {fileID: 133250871}
+        m_TargetAssemblyTypeName: TowerGUI, GameAssembly
         m_MethodName: TargetMinHP
         m_Mode: 1
         m_Arguments:
@@ -24484,8 +24527,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601462268}
-        m_TargetAssemblyTypeName: GUIController, GameAssembly
+      - m_Target: {fileID: 133250871}
+        m_TargetAssemblyTypeName: TowerGUI, GameAssembly
         m_MethodName: TargetFurthest
         m_Mode: 1
         m_Arguments:
@@ -25070,8 +25113,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601462268}
-        m_TargetAssemblyTypeName: GUIController, GameAssembly
+      - m_Target: {fileID: 133250871}
+        m_TargetAssemblyTypeName: TowerGUI, GameAssembly
         m_MethodName: TargetNearest
         m_Mode: 1
         m_Arguments:
@@ -25599,8 +25642,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601462268}
-        m_TargetAssemblyTypeName: GUIController, GameAssembly
+      - m_Target: {fileID: 133250871}
+        m_TargetAssemblyTypeName: TowerGUI, GameAssembly
         m_MethodName: TargetRandom
         m_Mode: 1
         m_Arguments:
@@ -26000,7 +26043,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2108374924
 GameObject:

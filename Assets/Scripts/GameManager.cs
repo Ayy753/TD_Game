@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public PathFinder PathFinder { get; private set; }
     public GUIController GUIController { get; private set; }
     public BuildManager BuildManager { get; private set; }
+    public TowerGUI TowerGUI { get; private set; }
 
     public int Lives { get; private set; }
     public int Gold { get; private set; }
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
         PathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
         GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
         BuildManager = GameObject.Find("BuildManager").GetComponent<BuildManager>();
+        TowerGUI = GameObject.Find("TowerGUI").GetComponent<TowerGUI>();
 
         //  Initialize properties
         Lives = 25;
