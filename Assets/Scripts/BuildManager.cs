@@ -66,35 +66,37 @@ public class BuildManager : MonoBehaviour
     /// <param name="position"></param>
     private void AttemptBuildStructure(StructureData structure, Vector3Int position)
     {
-        if (gameManager.CanAfford(structure.Cost))
+        if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, position))
         {
-            if (mapManager.IsGroundSolid(position))
+            if (gameManager.CanAfford(structure.Cost))
             {
-                if (structure.GetType() == typeof(TowerData))
+                if (mapManager.IsGroundSolid(position))
                 {
-                    InstantiateTower((TowerData)structure, position);
-                    mapManager.SetTile(position, structure);
-                }
-                else if (structure.GetType() == typeof(WallData))
-                {
-                    mapManager.SetTile(position, structure);
+                    if (structure.GetType() == typeof(TowerData))
+                    {
+                        InstantiateTower((TowerData)structure, position);
+                        mapManager.SetTile(position, structure);
+                    }
+                    else if (structure.GetType() == typeof(WallData))
+                    {
+                        mapManager.SetTile(position, structure);
+                    }
+                    else
+                    {
+                        throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+                    }
+                    gameManager.SpendGold(structure.Cost);
+                    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
                 }
                 else
                 {
-                    throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+                    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), "It is too unstable to build here", Color.red);
                 }
-
-                gameManager.SpendGold(structure.Cost);
-                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
             }
             else
             {
-                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), "It is too unstable to build here", Color.red);
+                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition) , "Can't afford", Color.red);
             }
-        }
-        else
-        {
-            guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition) , "Can't afford", Color.red);
         }
     }
 
