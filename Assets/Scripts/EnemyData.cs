@@ -12,5 +12,7 @@ public class EnemyData : ScriptableObject
     [field: SerializeField]
     public float Speed { get; private set; }
     [field: SerializeField]
-    public string Description { get; set; }
+    public string Description { get; private set; }
+    [field: SerializeField]
+    public GameObject EnemyPrefab { get; private set; }
 }

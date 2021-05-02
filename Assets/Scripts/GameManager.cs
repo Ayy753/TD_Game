@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public GUIController GUIController { get; private set; }
     public BuildManager BuildManager { get; private set; }
     public TowerGUI TowerGUI { get; private set; }
+    public ObjectPool ObjectPool { get; private set; }
 
     public int Lives { get; private set; }
     public int Gold { get; private set; }
@@ -44,6 +45,7 @@ public class GameManager : MonoBehaviour
         GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
         BuildManager = GameObject.Find("BuildManager").GetComponent<BuildManager>();
         TowerGUI = GameObject.Find("TowerGUI").GetComponent<TowerGUI>();
+        ObjectPool = GameObject.Find("ObjectPool").GetComponent<ObjectPool>();
 
         //  Initialize properties
         Lives = 25;
@@ -71,6 +73,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         EnemySpawner.StartSpawning();
+
     }
 
     /// <summary>

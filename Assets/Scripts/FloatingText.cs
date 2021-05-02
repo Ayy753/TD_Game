@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FloatingText : MonoBehaviour
+public class FloatingText : MonoBehaviour, IPoolable
 {
     private TextMesh textMesh;
+
+    [SerializeField]
+    private GameObject prefab;
+    public GameObject Prefab { get { return prefab; } }
+    public GameObject GameObjectRef { get { return gameObject; } }
 
     private void OnEnable()
     {
@@ -41,6 +46,13 @@ public class FloatingText : MonoBehaviour
             textMesh.color = new Color(textMesh.color.r, textMesh.color.g, textMesh.color.b, textMesh.color.a - 0.02f);
             yield return new WaitForSeconds(0.05f);
         }
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
+        gameObject.SetActive(false);
+    }
+
+    public void Spawn(Vector3 position, Transform parent)
+    {
+        transform.position = position;
+        transform.parent = parent;
     }
 }
