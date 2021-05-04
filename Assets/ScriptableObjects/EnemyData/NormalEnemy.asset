@@ -17,3 +17,5 @@ MonoBehaviour:
   <Name>k__BackingField: Normal Enemy
   <Speed>k__BackingField: 1
   <Description>k__BackingField: A normal enemy
+  <Prefab>k__BackingField: {fileID: 8672801003913250982, guid: 1b0b2b327f09edb4c8077db638a85990,
+    type: 3}

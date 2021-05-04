@@ -12,6 +12,7 @@ public class GUIController : MonoBehaviour
     BuildManager buildManager;
     MapManager mapManager;
     TowerGUI towerGUI;
+    ObjectPool objectPool;
 
     private ToolTip toolTip;
     private Image selectedIcon;
@@ -48,6 +49,7 @@ public class GUIController : MonoBehaviour
         buildManager = gameManager.BuildManager;
         mapManager = gameManager.MapManager;
         towerGUI = gameManager.TowerGUI;
+        objectPool = gameManager.ObjectPool;
 
         toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
@@ -363,7 +365,8 @@ public class GUIController : MonoBehaviour
     /// <param name="color"></param>
     public void SpawnFloatingText(Vector3 position, string message, Color color, float textSize = 0.5f)
     {
-        FloatingText floatingText = GameObject.Instantiate(floatingTextGO).GetComponent<FloatingText>();
+        //FloatingText floatingText = GameObject.Instantiate(floatingTextGO).GetComponent<FloatingText>();
+        FloatingText floatingText = objectPool.CreateFloatingText();
         floatingText.Initialize(position, message, color, textSize);
     }
     #endregion

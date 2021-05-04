@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField]
-    List<GameObject> enemyPrefabs;
+    GameManager gameManager;
+    ObjectPool objectPool;
     GameObject entrance;
 
-    private List<Enemy> enemyPool;
+    //  temp
+    [SerializeField]
+    List<GameObject> enemyPrefabs;
 
     void Start()
     {
+        gameManager = GameManager.Instance;
+        objectPool = gameManager.ObjectPool;
         entrance = GameObject.Find("Entrance");
-        enemyPool = new List<Enemy>();
     }
 
     /// <summary>
@@ -74,36 +77,9 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="position"></param>
     private void SpawnEnemy(Vector3 position, GameObject desiredEnemyPrefab)
     {
-        bool foundAvailible = false;
         EnemyData desiredEnemyData = desiredEnemyPrefab.GetComponentInChildren<Enemy>().EnemyData;
-
-        //  Search for an inactive instance in the pool
-        foreach (Enemy enemy in enemyPool)
-        {
-            if (enemy.gameObject.activeInHierarchy == false && enemy.EnemyData == desiredEnemyData)
-            {
-                foundAvailible = true;
-                enemy.Spawn(position);
-                break;
-            }
-        }
-
-        //  Instantiate a new enemy and add to pool if no inactive enemies exist
-        if (foundAvailible == false)
-        {
-            foreach (GameObject enemyPrefab in enemyPrefabs)
-            {
-                //EnemyData prefabEnemyData = enemyPrefab.GetComponent<Enemy>().EnemyData;
-                if (enemyPrefab == desiredEnemyPrefab)
-                {
-                    GameObject go = Instantiate(enemyPrefab, position, new Quaternion());
-                    Enemy newEnemy = go.GetComponentInChildren<Enemy>();
-                    newEnemy.Spawn(position);
-                    enemyPool.Add(newEnemy);
-                    break;
-                }
-            }
-        }
+        Enemy newEnemy = objectPool.CreateEnemy(desiredEnemyData);
+        newEnemy.Spawn(position);
     }
 
     /// <summary>

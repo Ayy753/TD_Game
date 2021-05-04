@@ -7,10 +7,14 @@ public class FloatingText : MonoBehaviour
 {
     private TextMesh textMesh;
 
+    private void Start()
+    {
+        gameObject.GetComponent<MeshRenderer>().sortingOrder = 6;
+    }
+
     private void OnEnable()
     {
         //  Move render order on top of sprites
-        gameObject.GetComponent<MeshRenderer>().sortingOrder = 6;
         textMesh = GetComponent<TextMesh>();
     }
 
@@ -41,6 +45,6 @@ public class FloatingText : MonoBehaviour
             textMesh.color = new Color(textMesh.color.r, textMesh.color.g, textMesh.color.b, textMesh.color.a - 0.02f);
             yield return new WaitForSeconds(0.05f);
         }
-        Destroy(this.gameObject);
+        gameObject.SetActive(false);
     }
 }

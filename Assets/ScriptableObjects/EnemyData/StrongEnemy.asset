@@ -17,3 +17,5 @@ MonoBehaviour:
   <Name>k__BackingField: Strong Enemy
   <Speed>k__BackingField: 0.75
   <Description>k__BackingField: A strong enemy
+  <Prefab>k__BackingField: {fileID: 2333105322325362320, guid: 4ff90c5f8598eac4292e06928c867af7,
+    type: 3}
