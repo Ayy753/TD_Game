@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : MonoBehaviour, IDisplayable, IPoolable
+public class Tower : MonoBehaviour, IDisplayable
 {
     [SerializeField]
     public TowerData TowerData;
@@ -15,9 +15,6 @@ public class Tower : MonoBehaviour, IDisplayable, IPoolable
     private Transform Turret;
 
     public TargetMode SelectedTargetMode { get; private set; } = TargetMode.Closest;
-    public GameObject Prefab { get { return TowerData.TowerPrefab; } }
-    public GameObject GameObjectRef { get { return gameObject; } }
-
     public enum TargetMode
     {
         Closest, 
@@ -325,11 +322,5 @@ public class Tower : MonoBehaviour, IDisplayable, IPoolable
     public void EnemyLeftRange(Enemy enemy)
     {
         enemiesInRange.Remove(enemy);
-    }
-
-    public void Spawn(Vector3 position, Transform parent)
-    {
-        transform.position = position;
-        transform.parent = parent;
     }
 }
