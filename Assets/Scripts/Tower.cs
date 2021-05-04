@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour, IDisplayable
 {
+    ObjectPool objectPool;
+
     [SerializeField]
     public TowerData TowerData;
 
@@ -26,6 +28,7 @@ public class Tower : MonoBehaviour, IDisplayable
 
     private void Start()
     {
+        objectPool = GameManager.Instance.ObjectPool;
         radiusIndicator = transform.Find("RadiusIndicator");
         enemiesInRange = new List<Enemy>();
         Turret = transform.Find("Turret");
@@ -58,7 +61,7 @@ public class Tower : MonoBehaviour, IDisplayable
             FaceTarget(Target.transform);
 
             //  Fire projectile
-            Projectile projectile = GameObject.Instantiate(TowerData.ProjectilePrefab, transform.position, new Quaternion()).GetComponent<Projectile>();
+            Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectilePrefab, transform.position);
             projectile.Initialize(Target.transform, TowerData.Damage, 6f);
             TimeSinceLastShot = 0;
         }

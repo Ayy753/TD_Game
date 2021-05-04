@@ -55,24 +55,25 @@ public class ObjectPool : MonoBehaviour
         return newEnemyObj;
     }
 
-    //public Projectile CreateProjectile(GameObject projectilePrefab)
-    //{
-    //    Projectile projectileType = projectilePrefab.GetComponent<Projectile>();
-        
-    //    foreach (Projectile projectile in projectilePool)
-    //    {
-    //        if (projectileType.GetType() == projectile.GetType() && projectile.gameObject.activeInHierarchy == false)
-    //        {
-    //            projectile.gameObject.SetActive(true);
-    //            return projectile;
-    //        }
-    //    }
+    public Projectile CreateProjectile(GameObject projectilePrefab, Vector3 position)
+    {
+        Projectile projectileType = projectilePrefab.GetComponent<Projectile>();
 
-    //    GameObject newProjectileGO = Instantiate(projectilePrefab, projectileContainer);
-    //    Projectile newProjectile = newProjectileGO.GetComponent<Projectile>();
-    //    projectilePool.Add(newProjectile);
-    //    return newProjectile;
-    //}
+        foreach (Projectile projectile in projectilePool)
+        {
+            if (projectileType.GetType() == projectile.GetType() && projectile.gameObject.activeInHierarchy == false)
+            {
+                projectile.gameObject.SetActive(true);
+                projectile.gameObject.transform.position = position;
+                return projectile;
+            }
+        }
+
+        GameObject newProjectileGO = Instantiate(projectilePrefab, position, new Quaternion(), projectileContainer);
+        Projectile newProjectile = newProjectileGO.GetComponent<Projectile>();
+        projectilePool.Add(newProjectile);
+        return newProjectile;
+    }
 
     /// <summary>
     /// Returns a floating text object by either finding an inactive

@@ -9,11 +9,40 @@ public class SplashProjectile : Projectile
     private bool triggered = false;
     private CircleCollider2D circleCollider;
     private ParticleSystem particle;
+    private SpriteRenderer spriteRenderer;
 
     private void Start()
     {
         circleCollider = GetComponent<CircleCollider2D>();
         particle = transform.GetChild(0).GetComponent<ParticleSystem>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        //  Set particle Explode duration
+        ParticleSystem.MainModule main = particle.main;
+        main.startLifetime = ExplodeDuration;
+
+        //  Scale speed in relation to radius
+        main.startSpeed = SplashRadius * 100;
+    }
+
+    private void OnEnable()
+    {
+        //  Show projectile sprite
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = true;
+        }
+    }
+
+    private void OnDisable()
+    {
+        print("projectile disabled");
+        circleCollider.enabled = false;
+        StopCoroutine(ApplySlashDamage());
+        triggered = false;
+
+        //  Disable explosion particle effect
+        transform.GetChild(0).gameObject.SetActive(false);
     }
 
     private void Update()
@@ -29,18 +58,11 @@ public class SplashProjectile : Projectile
     /// <returns>A reference to the coroutine</returns>
     private IEnumerator ApplySlashDamage()
     {
-        //  Set particle Explode duraction
-        ParticleSystem.MainModule main = particle.main;
-        main.startLifetime = ExplodeDuration;
-
-        //  Scale speed in relation to radius
-        main.startSpeed = SplashRadius * 100;
-
         //  Enable explosion particle effect
         transform.GetChild(0).gameObject.SetActive(true);
 
         //  Hide projectile sprite
-        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        spriteRenderer.enabled = false;
 
         //  Enable circle collider and set it's radius to splash radius
         circleCollider.enabled = true;
@@ -50,7 +72,7 @@ public class SplashProjectile : Projectile
         yield return new WaitForSeconds(ExplodeDuration);
 
         //  Destroy this projectile
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
     
     /// <summary>

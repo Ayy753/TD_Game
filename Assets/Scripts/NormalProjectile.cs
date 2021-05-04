@@ -49,7 +49,8 @@ public class NormalProjectile : Projectile
         //  If target is dead and projectile reaches the target's last position
         if (transform.position == LastTargetPosition)
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -79,8 +80,22 @@ public class NormalProjectile : Projectile
                 DealDamage(enemy);
                 //  Prevent multiple enemies from taking damage before the projectile gets destroyed
                 alreadyHit = true;
-                Destroy(gameObject);
+                //Destroy(gameObject);
+                gameObject.SetActive(false);
             }
         }
+    }
+
+    /// <summary>
+    /// Used by tower to set projectile's target, damage, and move speed
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="damage"></param>
+    /// <param name="speed"></param>
+    public override void Initialize(Transform target, float damage, float speed)
+    {
+        base.Initialize(target, damage, speed);
+        alreadyHit = false;
+        targetDead = false;
     }
 }
