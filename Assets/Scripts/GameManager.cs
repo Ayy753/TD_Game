@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public BuildManager BuildManager { get; private set; }
     public TowerGUI TowerGUI { get; private set; }
     public ObjectPool ObjectPool { get; private set; }
+    public WaveManager WaveManager { get; private set; }
 
     public int Lives { get; private set; }
     public int Gold { get; private set; }
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
         BuildManager = GameObject.Find("BuildManager").GetComponent<BuildManager>();
         TowerGUI = GameObject.Find("TowerGUI").GetComponent<TowerGUI>();
         ObjectPool = GameObject.Find("ObjectPool").GetComponent<ObjectPool>();
+        WaveManager = GameObject.Find("WaveManager").GetComponentInParent<WaveManager>();
 
         //  Initialize properties
         Lives = 25;

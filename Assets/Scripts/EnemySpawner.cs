@@ -7,6 +7,8 @@ public class EnemySpawner : MonoBehaviour
     GameManager gameManager;
     ObjectPool objectPool;
     GameObject entrance;
+    WaveManager waveManager;
+    private int timeBetweenWaves = 5;
 
     //  temp
     [SerializeField]
@@ -16,20 +18,8 @@ public class EnemySpawner : MonoBehaviour
     {
         gameManager = GameManager.Instance;
         objectPool = gameManager.ObjectPool;
+        waveManager = gameManager.WaveManager;
         entrance = GameObject.Find("Entrance");
-    }
-
-    /// <summary>
-    /// Periodically spawns enemies
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator PeriodicSpawner()
-    {
-        while (true)
-        {
-            SpawnRandomEnemyType(entrance.transform.position);
-            yield return new WaitForSeconds(1f);
-        }
     }
 
     /// <summary>
@@ -87,7 +77,7 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     public void StartSpawning()
     {
-        StartCoroutine(PeriodicSpawner());
+        StartCoroutine(StartNextWave());
     }
 
     /// <summary>
@@ -95,6 +85,71 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     public void StopSpawning()
     {
-        StopCoroutine(PeriodicSpawner());
+        StopAllCoroutines();
+    }
+
+    public IEnumerator StartNextWave()
+    {
+        WaveManager.Wave wave = waveManager.GetNextWave();
+        if (wave != null)
+        {
+            //  Loop through each group of enemies
+            foreach (WaveManager.Group group in wave.Groups)
+            {
+                //  Loop through each enemy in the current group
+                for (int i = 0; i < group.NumEnemies; i++)
+                {
+                    //  Loop through list of prefabs to find one that matches the enemy type
+                    foreach (GameObject enemyPrefab in enemyPrefabs)
+                    {
+                        if (enemyPrefab.name == group.EnemyType)
+                        {
+                            SpawnEnemy(entrance.transform.position, enemyPrefab);
+                        }
+                    }
+                    //  Wait until next enemy should be spawned
+                    yield return new WaitForSeconds(group.TimebetweenSpawns);
+                }
+                //  Wait until next group should start spawning
+                yield return new WaitForSeconds(wave.TimebetweenGroups);
+            }
+            Debug.Log("wave finished spawning");
+            if (waveManager.CurrentWave-1 == wave.WaveNum)
+            {
+                WaveFinishedSpawning();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Counts down and launches next wave when its ready
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator WaveTimer()
+    {
+        int secondsUntilNextWave = timeBetweenWaves;
+
+        while (secondsUntilNextWave > 0)
+        {
+            secondsUntilNextWave--;
+            //  todo: update a wave counter via guicontroller
+            yield return new WaitForSeconds(1);
+        }
+        Debug.Log("Next wave started");
+        StartCoroutine(StartNextWave());
+    }
+
+    private void WaveFinishedSpawning()
+    {
+
+        if (waveManager.StillMoreWaves() == true) 
+        {
+            StopCoroutine(WaveTimer());
+            StartCoroutine(WaveTimer());
+        }
+        else
+        {
+            Debug.Log("There are no more waves");
+        }
     }
 }
