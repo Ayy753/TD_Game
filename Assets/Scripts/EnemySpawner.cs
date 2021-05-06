@@ -20,9 +20,16 @@ public class EnemySpawner : MonoBehaviour
         objectPool = gameManager.ObjectPool;
         waveManager = gameManager.WaveManager;
         entrance = GameObject.Find("Entrance");
+    }
 
-        //  todo add initial path calculated event on pathfinder and listen for it here
-        StartCoroutine(WaitForPath());
+    private void OnEnable()
+    {
+        PathFinder.OnInitialPathCalculated += HandleInitialPathCalculated;
+    }
+
+    private void OnDisable()
+    {
+        PathFinder.OnInitialPathCalculated -= HandleInitialPathCalculated;
     }
 
     /// <summary>
@@ -73,6 +80,14 @@ public class EnemySpawner : MonoBehaviour
         EnemyData desiredEnemyData = desiredEnemyPrefab.GetComponentInChildren<Enemy>().EnemyData;
         Enemy newEnemy = objectPool.CreateEnemy(desiredEnemyData);
         newEnemy.Spawn(position);
+    }
+
+    /// <summary>
+    /// Starts spawning after the path is first calculated at the beginning of level
+    /// </summary>
+    private void HandleInitialPathCalculated()
+    {
+        StartSpawning();
     }
 
     /// <summary>
@@ -147,18 +162,5 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
         StartCoroutine(StartNextWave());
-    }
-
-    /// <summary>
-    /// temp solution for problem with coroutines started through game manager persisting across scene reloads
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator WaitForPath()
-    {
-        while (gameManager.PathFinder.CurrentPath == null)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-        StartSpawning();
     }
 }

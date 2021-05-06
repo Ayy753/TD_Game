@@ -26,8 +26,10 @@ public class PathFinder : MonoBehaviour
 
     public delegate void PathRecalculated(List<Vector3Int> newPath);
     public delegate void PathRecalculating();
+    public delegate void InitialPathCalculated();
     public static PathRecalculated OnPathRecalculated;
     public static PathRecalculating OnPathRecalculating;
+    public static InitialPathCalculated OnInitialPathCalculated;
 
     /// <summary>
     /// The current path through the map
@@ -193,6 +195,11 @@ public class PathFinder : MonoBehaviour
                 if (PreviousPath != null && OnPathRecalculated != null)
                 {
                     OnPathRecalculated.Invoke(CurrentPath);
+                }
+                else if (PreviousPath == null && OnInitialPathCalculated != null)
+                {
+                    //  Alert other objects that the main path has been calculated
+                    OnInitialPathCalculated.Invoke();
                 }
                 //foundPath.PrintChain();
                 GameManager.Instance.ResumeGame();
