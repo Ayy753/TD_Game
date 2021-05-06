@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
         }
-        EnemySpawner.StartSpawning();
+        //EnemySpawner.StartSpawning();
     }
 
     /// <summary>

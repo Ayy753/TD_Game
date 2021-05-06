@@ -20,6 +20,9 @@ public class EnemySpawner : MonoBehaviour
         objectPool = gameManager.ObjectPool;
         waveManager = gameManager.WaveManager;
         entrance = GameObject.Find("Entrance");
+
+        //  todo add initial path calculated event on pathfinder and listen for it here
+        StartCoroutine(WaitForPath());
     }
 
     /// <summary>
@@ -88,11 +91,14 @@ public class EnemySpawner : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public IEnumerator StartNextWave()
+    private IEnumerator StartNextWave()
     {
         WaveManager.Wave wave = waveManager.GetNextWave();
         if (wave != null)
         {
+            StopCoroutine(NextWaveCountdown());
+            Debug.Log("Starting wave " + (waveManager.CurrentWave - 1));
+
             //  Loop through each group of enemies
             foreach (WaveManager.Group group in wave.Groups)
             {
@@ -113,10 +119,15 @@ public class EnemySpawner : MonoBehaviour
                 //  Wait until next group should start spawning
                 yield return new WaitForSeconds(wave.TimebetweenGroups);
             }
-            Debug.Log("wave finished spawning");
+
+            Debug.Log(string.Format("Wave {0} finished spawning", wave.WaveNum));
             if (waveManager.CurrentWave-1 == wave.WaveNum)
             {
-                WaveFinishedSpawning();
+                if (waveManager.StillMoreWaves() == true)
+                {
+                    Debug.Log(string.Format("Wave {0} was the most recent wave launched.", wave.WaveNum));
+                    StartCoroutine(NextWaveCountdown());
+                }
             }
         }
     }
@@ -125,31 +136,29 @@ public class EnemySpawner : MonoBehaviour
     /// Counts down and launches next wave when its ready
     /// </summary>
     /// <returns></returns>
-    private IEnumerator WaveTimer()
+    private IEnumerator NextWaveCountdown()
     {
         int secondsUntilNextWave = timeBetweenWaves;
-
         while (secondsUntilNextWave > 0)
         {
             secondsUntilNextWave--;
+            Debug.Log("Next wave in: " + secondsUntilNextWave);
             //  todo: update a wave counter via guicontroller
             yield return new WaitForSeconds(1);
         }
-        Debug.Log("Next wave started");
         StartCoroutine(StartNextWave());
     }
 
-    private void WaveFinishedSpawning()
+    /// <summary>
+    /// temp solution for problem with coroutines started through game manager persisting across scene reloads
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator WaitForPath()
     {
-
-        if (waveManager.StillMoreWaves() == true) 
+        while (gameManager.PathFinder.CurrentPath == null)
         {
-            StopCoroutine(WaveTimer());
-            StartCoroutine(WaveTimer());
+            yield return new WaitForSeconds(0.1f);
         }
-        else
-        {
-            Debug.Log("There are no more waves");
-        }
+        StartSpawning();
     }
 }

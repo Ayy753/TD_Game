@@ -119,7 +119,7 @@ public class GUIController : MonoBehaviour
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
             newButton.GetComponent<BuildMenuButton>().SetStructureData(structure);
-            Debug.Log("created build button");
+            //Debug.Log("created build button");
         }
     }
 
@@ -336,6 +336,11 @@ public class GUIController : MonoBehaviour
     public void HideGameOverPanel()
     {
         gameOverPanel.SetActive(false);
+    }
+
+    public void StartNextWave()
+    {
+        gameManager.EnemySpawner.StartSpawning();
     }
 
     #region Demo Functions
