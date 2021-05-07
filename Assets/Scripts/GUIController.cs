@@ -187,6 +187,14 @@ public class GUIController : MonoBehaviour
         {
             toolTip.SetCurrentString(displayable.GetDisplayText());
             ShowToolTip();
+
+            //  If this is a tower, show it's attack radius
+            Tower tower = gameObject.GetComponent<Tower>();
+            if (tower != null)
+            {
+                TowerData towerData = tower.TowerData;
+                buildManager.RenderRadius(gameObject.transform.position, towerData.Range);
+            }
         }
         lastHoveredGameObject = gameObject;
     }
@@ -197,6 +205,13 @@ public class GUIController : MonoBehaviour
     private void HandleUnhoveredGameObject()
     {
         HideToolTip();
+
+        //  If last hovered object was tower, hide radius
+        if (lastHoveredGameObject.GetComponent<Tower>() != null)
+        {
+            buildManager.HideRadius();
+        }
+
         lastHoveredGameObject = null;
     }
 

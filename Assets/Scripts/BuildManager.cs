@@ -250,7 +250,7 @@ public class BuildManager : MonoBehaviour
                 mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
             }
         }
-        line.enabled = false;
+        HideRadius();
     }
 
     /// <summary>
@@ -359,6 +359,14 @@ public class BuildManager : MonoBehaviour
 
             line.SetPosition(i, new Vector3(x, y, 0));
         }
+    }
+
+    /// <summary>
+    /// Hides the line
+    /// </summary>
+    public void HideRadius()
+    {
+        line.enabled = false;
     }
 
     /// <summary>

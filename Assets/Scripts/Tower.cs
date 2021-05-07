@@ -11,7 +11,6 @@ public class Tower : MonoBehaviour, IDisplayable
     public TowerData TowerData;
 
     float TimeSinceLastShot = float.MaxValue;
-    Transform radiusIndicator;
     List<Enemy> enemiesInRange;
     Enemy Target;
     private Transform Turret;
@@ -29,7 +28,6 @@ public class Tower : MonoBehaviour, IDisplayable
     private void Start()
     {
         objectPool = GameManager.Instance.ObjectPool;
-        radiusIndicator = transform.Find("RadiusIndicator");
         enemiesInRange = new List<Enemy>();
         Turret = transform.Find("Turret");
 
@@ -267,23 +265,6 @@ public class Tower : MonoBehaviour, IDisplayable
     private float Distance(Vector3 start, Vector3 finish)
     {
         return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));
-    }
-
-    /// <summary>
-    /// Show the radius indicator
-    /// </summary>
-    private void OnMouseEnter()
-    {
-        radiusIndicator.gameObject.SetActive(true);
-        radiusIndicator.localScale = new Vector3(TowerData.Range * 2, TowerData.Range * 2, 0);
-    }
-
-    /// <summary>
-    /// Hide the radius indicator
-    /// </summary>
-    private void OnMouseExit()
-    {
-        radiusIndicator.gameObject.SetActive(false);
     }
 
     /// <summary>

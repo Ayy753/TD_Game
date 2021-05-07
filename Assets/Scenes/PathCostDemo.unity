@@ -971,12 +971,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1582dc7a7bee92d428be57e0517e35fc, type: 3}
---- !u!1 &194305022 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7359396858667254234, guid: 1582dc7a7bee92d428be57e0517e35fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 194305021}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &194305023 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8078168409724179719, guid: 1582dc7a7bee92d428be57e0517e35fc,
@@ -24980,7 +24974,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f756137e0fa2254489a9d525fba36d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusIndicator: {fileID: 194305022}
 --- !u!4 &1527237781
 Transform:
   m_ObjectHideFlags: 0
@@ -25038,6 +25031,16 @@ LineRenderer:
   m_SortingOrder: 6
   m_Positions:
   - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
   - {x: 0, y: 0, z: 1}
   - {x: 0, y: 0, z: 1}
   - {x: 0, y: 0, z: 1}
