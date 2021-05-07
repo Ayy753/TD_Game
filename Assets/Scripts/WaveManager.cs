@@ -56,7 +56,7 @@ public class WaveManager : MonoBehaviour
 
         public override string ToString()
         {
-            return string.Format("Enemy Type: {0}, Amount: {1}",
+            return string.Format("{0} X{1}",
                     EnemyType, NumEnemies);
         }
     }
@@ -109,7 +109,8 @@ public class WaveManager : MonoBehaviour
     /// </summary>
     private void HandleInitialPathCalculated()
     {
-        StartSpawning();
+        StartCoroutine(NextWaveCountdown());
+        guiController.UpdateWaveInformation(string.Empty, "Next wave's groups:\n" + LevelData.waves[0].ToString());
     }
 
     /// <summary>
@@ -130,6 +131,8 @@ public class WaveManager : MonoBehaviour
             }
 
             guiController.UpdateWaveInformation(strCurrent, strNext);
+            Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            guiController.SpawnFloatingText(pos, "Starting wave " + (CurrentWave+1), Color.white, 3);
             StartCoroutine(StartNextWave());
         }
         else
