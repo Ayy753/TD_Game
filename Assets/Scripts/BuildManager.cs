@@ -13,9 +13,7 @@ public class BuildManager : MonoBehaviour
     private List<GameObject> instantiatedTowers;
     public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
     private StructureData currentlySelectedStructure;
-    
-    [SerializeField]
-    private GameObject radiusIndicator;
+    private LineRenderer line;
 
     //  An offset for GameObjects to align properly with the tilemap
     private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0f);
@@ -32,6 +30,9 @@ public class BuildManager : MonoBehaviour
         gameManager = GameManager.Instance;
         mapManager = gameManager.MapManager;
         guiController = gameManager.GUIController;
+
+        line = GetComponent<LineRenderer>();
+        RenderRadius(Vector3.zero, 10);
     }
 
     private void OnEnable()
@@ -209,12 +210,11 @@ public class BuildManager : MonoBehaviour
     /// <param name="towerData"></param>
     private void ShowTowerRangeIndicator(TowerData towerData)
     {
-        radiusIndicator.SetActive(true);
-        radiusIndicator.transform.localScale = new Vector3(towerData.Range * 2, towerData.Range * 2, 0);
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos = Vector3Int.FloorToInt(mousePos);
         mousePos.z = 1;
-        radiusIndicator.transform.position = mousePos + tilemapOffset;
+        RenderRadius(mousePos + tilemapOffset, towerData.Range);
+
     }
 
     /// <summary>
@@ -250,8 +250,7 @@ public class BuildManager : MonoBehaviour
                 mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
             }
         }
-
-        radiusIndicator.SetActive(false);
+        line.enabled = false;
     }
 
     /// <summary>
@@ -337,6 +336,28 @@ public class BuildManager : MonoBehaviour
             {
                 throw new System.Exception("This build mode is not implemented");
             }
+        }
+    }
+
+    /// <summary>
+    /// Renders a line of a given radius around a point to draw a circle
+    /// used to show the radius of things
+    /// </summary>
+    /// <param name="center"></param>
+    /// <param name="radius"></param>
+    public void RenderRadius(Vector3 center, float radius)
+    {
+        line.enabled = true;
+        float x;
+        float y;
+        
+        //  Drawing a line around the given position
+        for (int i = 0; i < line.positionCount; i++)
+        {
+            x = center.x + radius * Mathf.Sin(Mathf.Deg2Rad * (360 / line.positionCount * i));
+            y = center.y + radius * Mathf.Cos(Mathf.Deg2Rad * (360 / line.positionCount * i));
+
+            line.SetPosition(i, new Vector3(x, y, 0));
         }
     }
 
