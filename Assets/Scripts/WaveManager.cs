@@ -1,21 +1,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.Collections;
+using System.IO;
+
 public class WaveManager : MonoBehaviour
 {
+    GUIController guiController;
+    ObjectPool objectPool;
+
     //  Todo: in future search leveldata folder for a json file whose name matches the scene name
     private string FilePath = "Assets/LevelData/demo_waves.json";
     private Root LevelData;
     public int NumberOfWaves { get; private set; }
     public int CurrentWave { get; private set; }
 
+    private int timeBetweenWaves = 5;
+
+    [SerializeField]
+    private GameObject[] enemyPrefabs;
+    GameObject entrance;
+
     // Start is called before the first frame update
     void Start()
     {
+        guiController = GameManager.Instance.GUIController;
+        objectPool = GameManager.Instance.ObjectPool;
+        entrance = GameObject.Find("Entrance");
+
+
         string jsonText = System.IO.File.ReadAllText(FilePath);
         LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
         NumberOfWaves = LevelData.waves.Count;
         CurrentWave = 0;
+    }
+
+    private void OnEnable()
+    {
+        PathFinder.OnInitialPathCalculated += HandleInitialPathCalculated;
+    }
+
+    private void OnDisable()
+    {
+        PathFinder.OnInitialPathCalculated -= HandleInitialPathCalculated;
     }
 
     /// <summary>
@@ -78,6 +105,92 @@ public class WaveManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Starts spawning after the path is first calculated at the beginning of level
+    /// </summary>
+    private void HandleInitialPathCalculated()
+    {
+        StartSpawning();
+    }
+
+    /// <summary>
+    /// Start spawning enemies
+    /// </summary>
+    public void StartSpawning()
+    {
+        WaveManager.Wave currentWave = GetWave(CurrentWave);
+        WaveManager.Wave nextWave = GetWave(CurrentWave + 1);
+        string strCurrent;
+        string strNext;
+
+        if (currentWave != null)
+        {
+            strCurrent = currentWave.ToString();
+            if (nextWave != null)
+            {
+                strNext = nextWave.ToString();
+            }
+            else
+            {
+                strNext = "-";
+            }
+        }
+        else
+        {
+            strCurrent = "-";
+            strNext = "-";
+        }
+
+        guiController.UpdateWaveInformation(strCurrent, strNext);
+        StartCoroutine(StartNextWave());
+    }
+
+    public void StopSpawning()
+    {
+        StopAllCoroutines();
+    }
+
+    private IEnumerator StartNextWave()
+    {
+        WaveManager.Wave wave = GetNextWave();
+        if (wave != null)
+        {
+            StopCoroutine(NextWaveCountdown());
+            Debug.Log("Starting wave " + (CurrentWave - 1));
+
+            //  Loop through each group of enemies
+            foreach (WaveManager.Group group in wave.Groups)
+            {
+                //  Loop through each enemy in the current group
+                for (int i = 0; i < group.NumEnemies; i++)
+                {
+                    //  Loop through list of prefabs to find one that matches the enemy type
+                    foreach (GameObject enemyPrefab in enemyPrefabs)
+                    {
+                        if (enemyPrefab.name == group.EnemyType)
+                        {
+                            SpawnEnemy(entrance.transform.position, enemyPrefab);
+                        }
+                    }
+                    //  Wait until next enemy should be spawned
+                    yield return new WaitForSeconds(group.TimebetweenSpawns);
+                }
+                //  Wait until next group should start spawning
+                yield return new WaitForSeconds(wave.TimebetweenGroups);
+            }
+
+            Debug.Log(string.Format("Wave {0} finished spawning", wave.WaveNum));
+            if (CurrentWave - 1 == wave.WaveNum)
+            {
+                if (StillMoreWaves() == true)
+                {
+                    Debug.Log(string.Format("Wave {0} was the most recent wave launched.", wave.WaveNum));
+                    StartCoroutine(NextWaveCountdown());
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Returns a wave object
     /// </summary>
     /// <param name="waveNum"></param>
@@ -106,7 +219,18 @@ public class WaveManager : MonoBehaviour
         }
         return null;
     }
-    
+
+    /// <summary>
+    /// Spawns an enemy at a specified position using the object pool
+    /// </summary>
+    /// <param name="position"></param>
+    private void SpawnEnemy(Vector3 position, GameObject desiredEnemyPrefab)
+    {
+        EnemyData desiredEnemyData = desiredEnemyPrefab.GetComponentInChildren<Enemy>().EnemyData;
+        Enemy newEnemy = objectPool.CreateEnemy(desiredEnemyData);
+        newEnemy.Spawn(position);
+    }
+
     /// <summary>
     /// Are there more waves?
     /// </summary>
@@ -118,5 +242,21 @@ public class WaveManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Counts down and launches next wave when its ready
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator NextWaveCountdown()
+    {
+        int secondsUntilNextWave = timeBetweenWaves;
+        while (secondsUntilNextWave > 0)
+        {
+            secondsUntilNextWave--;
+            guiController.UpdateWaveCounter("Next wave in: \n" + secondsUntilNextWave);
+            yield return new WaitForSeconds(1);
+        }
+        StartSpawning();
     }
 }

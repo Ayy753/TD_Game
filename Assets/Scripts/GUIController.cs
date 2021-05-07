@@ -13,6 +13,7 @@ public class GUIController : MonoBehaviour
     MapManager mapManager;
     TowerGUI towerGUI;
     ObjectPool objectPool;
+    WaveManager waveManager;
 
     private ToolTip toolTip;
     private Image selectedIcon;
@@ -24,6 +25,10 @@ public class GUIController : MonoBehaviour
     private GameObject txtPathRecalculating;
     private Text txtTileInfo;
     private GameObject pnlStructureInfo;
+
+    private Text currentWaveInfo;
+    private Text nextWaveInfo;
+    private Text nextWaveCounter;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -50,6 +55,7 @@ public class GUIController : MonoBehaviour
         mapManager = gameManager.MapManager;
         towerGUI = gameManager.TowerGUI;
         objectPool = gameManager.ObjectPool;
+        waveManager = gameManager.WaveManager;
 
         toolTip = GameObject.Find("ToolTip").GetComponent<ToolTip>();
         selectedIcon = GameObject.Find("imgStructureIcon").GetComponent<Image>();
@@ -61,6 +67,10 @@ public class GUIController : MonoBehaviour
         txtPathRecalculating = GameObject.Find("txtPathRecalculating");
         txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
         pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
+
+        currentWaveInfo = GameObject.Find("txtCurrentWaveInfo").GetComponent<Text>();
+        nextWaveInfo = GameObject.Find("txtNextWaveInfo").GetComponent<Text>();
+        nextWaveCounter = GameObject.Find("txtNextWaveCounter").GetComponent<Text>();
 
         HideGameOverPanel();    
         PopulateScrollView();
@@ -340,7 +350,18 @@ public class GUIController : MonoBehaviour
 
     public void StartNextWave()
     {
-        gameManager.EnemySpawner.StartSpawning();
+        waveManager.StartSpawning();
+    }
+
+    public void UpdateWaveInformation(string currentWave, string nextWave)
+    {
+        currentWaveInfo.text = currentWave;
+        nextWaveInfo.text = nextWave;
+    }
+
+    public void UpdateWaveCounter(string waveCounter)
+    {
+        nextWaveCounter.text = waveCounter;
     }
 
     #region Demo Functions

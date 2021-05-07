@@ -10,7 +10,6 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public EnemySpawner EnemySpawner { get; private set; }
     public MapManager MapManager { get; private set; }
     public PathFinder PathFinder { get; private set; }
     public GUIController GUIController { get; private set; }
@@ -40,7 +39,6 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Instance = this;
-        EnemySpawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
         PathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
         GUIController = GameObject.Find("GUIController").GetComponent<GUIController>();
@@ -81,7 +79,7 @@ public class GameManager : MonoBehaviour
 
         if (Lives <= 0 )
         {
-            EnemySpawner.StopSpawning();
+            WaveManager.StopSpawning();
             Lives = 0;
             GUIController.ShowGameOverPanel();
             GUIController.HideToolTip();
