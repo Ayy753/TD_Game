@@ -117,31 +117,25 @@ public class WaveManager : MonoBehaviour
     /// </summary>
     public void StartSpawning()
     {
-        WaveManager.Wave currentWave = GetWave(CurrentWave);
-        WaveManager.Wave nextWave = GetWave(CurrentWave + 1);
-        string strCurrent;
-        string strNext;
+        string strCurrent = string.Empty;
+        string strNext = string.Empty;
 
-        if (currentWave != null)
+        if (CurrentWave < NumberOfWaves)
         {
-            strCurrent = currentWave.ToString();
-            if (nextWave != null)
+            strCurrent = "Current wave's groups:\n" + LevelData.waves[CurrentWave].ToString();
+
+            if (CurrentWave +1 < NumberOfWaves)
             {
-                strNext = nextWave.ToString();
+                strNext = "Next wave's groups:\n" + LevelData.waves[CurrentWave+1].ToString();
             }
-            else
-            {
-                strNext = "-";
-            }
+
+            guiController.UpdateWaveInformation(strCurrent, strNext);
+            StartCoroutine(StartNextWave());
         }
         else
         {
-            strCurrent = "-";
-            strNext = "-";
+            Debug.Log("No more waves");
         }
-
-        guiController.UpdateWaveInformation(strCurrent, strNext);
-        StartCoroutine(StartNextWave());
     }
 
     public void StopSpawning()
@@ -151,11 +145,12 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartNextWave()
     {
-        WaveManager.Wave wave = GetNextWave();
-        if (wave != null)
+        if (CurrentWave < NumberOfWaves)
         {
+            Wave wave = LevelData.waves[CurrentWave];
             StopCoroutine(NextWaveCountdown());
-            Debug.Log("Starting wave " + (CurrentWave - 1));
+            Debug.Log("Starting wave " + (CurrentWave));
+            CurrentWave++;
 
             //  Loop through each group of enemies
             foreach (WaveManager.Group group in wave.Groups)
@@ -190,35 +185,7 @@ public class WaveManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Returns a wave object
-    /// </summary>
-    /// <param name="waveNum"></param>
-    /// <returns></returns>
-    public Wave GetNextWave()
-    {
-        if (CurrentWave < NumberOfWaves)
-        {
-            //  return the current wave and then increments the counter
-            return LevelData.waves[CurrentWave++];
-        }
-        Debug.LogError("There aren't any more waves");
-        return null;
-    }
 
-    /// <summary>
-    /// Returns a specific wave based on index
-    /// </summary>
-    /// <param name="waveNum"></param>
-    /// <returns></returns>
-    public Wave GetWave(int waveNum)
-    {
-        if (waveNum < NumberOfWaves)
-        {
-            return LevelData.waves[waveNum];
-        }
-        return null;
-    }
 
     /// <summary>
     /// Spawns an enemy at a specified position using the object pool
@@ -257,6 +224,7 @@ public class WaveManager : MonoBehaviour
             guiController.UpdateWaveCounter("Next wave in: \n" + secondsUntilNextWave);
             yield return new WaitForSeconds(1);
         }
+        guiController.UpdateWaveCounter(string.Empty);
         StartSpawning();
     }
 }
