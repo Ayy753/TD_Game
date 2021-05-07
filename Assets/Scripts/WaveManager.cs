@@ -26,6 +26,12 @@ public class WaveManager : MonoBehaviour
         public string EnemyType { get; set; }
         public int NumEnemies { get; set; }
         public float TimebetweenSpawns { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Enemy Type: {0}, Amount: {1}",
+                    EnemyType, NumEnemies);
+        }
     }
 
     /// <summary>
@@ -36,6 +42,16 @@ public class WaveManager : MonoBehaviour
         public int WaveNum { get; set; }
         public List<Group> Groups { get; set; }
         public int TimebetweenGroups { get; set; }
+
+        public override string ToString()
+        {
+            string result = string.Empty;
+            foreach (Group group in Groups)
+            {
+                result += group.ToString() + "\n";
+            }
+            return result;
+        }
     }
 
     /// <summary>
@@ -74,6 +90,20 @@ public class WaveManager : MonoBehaviour
             return LevelData.waves[CurrentWave++];
         }
         Debug.LogError("There aren't any more waves");
+        return null;
+    }
+
+    /// <summary>
+    /// Returns a specific wave based on index
+    /// </summary>
+    /// <param name="waveNum"></param>
+    /// <returns></returns>
+    public Wave GetWave(int waveNum)
+    {
+        if (waveNum < NumberOfWaves)
+        {
+            return LevelData.waves[waveNum];
+        }
         return null;
     }
     
