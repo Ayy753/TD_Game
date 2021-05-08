@@ -18,6 +18,7 @@ public class TowerGUI : MonoBehaviour
     private GameObject pnlTarget;
     private Button btnSellStructure;
     private List<Button> towerTargetButtons;
+    private GameObject targetedTowerIndicator;
 
     private Tower targettedTower;
 
@@ -37,7 +38,8 @@ public class TowerGUI : MonoBehaviour
         towerTargetButtons = new List<Button>() { btnTargetFurthest, btnTargetClosest, btnTargetHighest, btnTargetLowest, btnTargetRandom };
         pnlTarget = GameObject.Find("pnlTarget");
         btnSellStructure = GameObject.Find("btnSellStructure").GetComponent<Button>();
-
+        targetedTowerIndicator = transform.Find("DoughnutParticles").gameObject;
+        targetedTowerIndicator.SetActive(false);
         pnlTarget.SetActive(false);
     }
 
@@ -76,6 +78,10 @@ public class TowerGUI : MonoBehaviour
         txtTargetDescription.text = tower.GetDisplayText();
         float value = Mathf.Round(tower.TowerData.Cost * 0.66f);
         btnSellStructure.GetComponentInChildren<Text>().text = "Sell for " + value.ToString() + " Gold";
+
+            targetedTowerIndicator.SetActive(true);
+            targetedTowerIndicator.transform.position = targettedTower.transform.position;
+
         pnlTarget.SetActive(true);
     }
 
@@ -171,6 +177,7 @@ public class TowerGUI : MonoBehaviour
     {
         pnlTarget.SetActive(false);
         targettedTower = null;
+        targetedTowerIndicator.SetActive(false);
     }
 
     /// <summary>
