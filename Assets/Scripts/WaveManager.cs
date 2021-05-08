@@ -15,7 +15,9 @@ public class WaveManager : MonoBehaviour
     public int NumberOfWaves { get; private set; }
     public int CurrentWave { get; private set; }
 
-    private int timeBetweenWaves = 5;
+    private int timeBetweenWaves = 10;
+
+    private Coroutine nextWaveCountDown;
 
     [SerializeField]
     private GameObject[] enemyPrefabs;
@@ -28,11 +30,18 @@ public class WaveManager : MonoBehaviour
         objectPool = GameManager.Instance.ObjectPool;
         entrance = GameObject.Find("Entrance");
 
-
+        //  Load level data
         string jsonText = System.IO.File.ReadAllText(FilePath);
         LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
+        
         NumberOfWaves = LevelData.waves.Count;
         CurrentWave = 0;
+
+        //  Set initial wave information on GUI
+        guiController.UpdateWaveNumber(CurrentWave + 1, NumberOfWaves);
+        guiController.UpdateWaveInformation(string.Empty, 
+            "Current wave's groups:\n" + LevelData.waves[0].ToString());
+
     }
 
     private void OnEnable()
@@ -109,8 +118,12 @@ public class WaveManager : MonoBehaviour
     /// </summary>
     private void HandleInitialPathCalculated()
     {
-        StartCoroutine(NextWaveCountdown());
+        nextWaveCountDown = StartCoroutine(NextWaveCountdown());
         guiController.UpdateWaveInformation(string.Empty, "Next wave's groups:\n" + LevelData.waves[0].ToString());
+
+        Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        guiController.SpawnFloatingText(pos,
+            string.Format("Wave 1 begins in {0} seconds", timeBetweenWaves), Color.white, 1);
     }
 
     /// <summary>
@@ -123,6 +136,8 @@ public class WaveManager : MonoBehaviour
 
         if (CurrentWave < NumberOfWaves)
         {
+            StopCoroutine(nextWaveCountDown);
+
             strCurrent = "Current wave's groups:\n" + LevelData.waves[CurrentWave].ToString();
 
             if (CurrentWave +1 < NumberOfWaves)
@@ -131,6 +146,7 @@ public class WaveManager : MonoBehaviour
             }
 
             guiController.UpdateWaveInformation(strCurrent, strNext);
+            guiController.UpdateWaveNumber(CurrentWave + 1, NumberOfWaves);
             Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
             guiController.SpawnFloatingText(pos, "Starting wave " + (CurrentWave+1), Color.white, 3);
             StartCoroutine(StartNextWave());
@@ -151,8 +167,8 @@ public class WaveManager : MonoBehaviour
         if (CurrentWave < NumberOfWaves)
         {
             Wave wave = LevelData.waves[CurrentWave];
-            StopCoroutine(NextWaveCountdown());
             Debug.Log("Starting wave " + (CurrentWave));
+            guiController.UpdateWaveCounter("Wave in progress...");
             CurrentWave++;
 
             //  Loop through each group of enemies
@@ -182,7 +198,7 @@ public class WaveManager : MonoBehaviour
                 if (StillMoreWaves() == true)
                 {
                     Debug.Log(string.Format("Wave {0} was the most recent wave launched.", wave.WaveNum));
-                    StartCoroutine(NextWaveCountdown());
+                    nextWaveCountDown = StartCoroutine(NextWaveCountdown());
                 }
             }
         }
@@ -223,11 +239,16 @@ public class WaveManager : MonoBehaviour
         int secondsUntilNextWave = timeBetweenWaves;
         while (secondsUntilNextWave > 0)
         {
-            secondsUntilNextWave--;
-            guiController.UpdateWaveCounter("Next wave in: \n" + secondsUntilNextWave);
+            guiController.UpdateWaveCounter("Next wave in: " + secondsUntilNextWave);
+            if (secondsUntilNextWave <= 5)
+            {
+                Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+                guiController.SpawnFloatingText(pos, 
+                    string.Format("Next wave in {0} seconds", secondsUntilNextWave), Color.white, 1);
+            }
             yield return new WaitForSeconds(1);
+            secondsUntilNextWave--;
         }
-        guiController.UpdateWaveCounter(string.Empty);
         StartSpawning();
     }
 }

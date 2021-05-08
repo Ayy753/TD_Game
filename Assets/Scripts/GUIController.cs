@@ -29,6 +29,7 @@ public class GUIController : MonoBehaviour
     private Text currentWaveInfo;
     private Text nextWaveInfo;
     private Text nextWaveCounter;
+    private Text waveNumber;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -71,6 +72,7 @@ public class GUIController : MonoBehaviour
         currentWaveInfo = GameObject.Find("txtCurrentWaveInfo").GetComponent<Text>();
         nextWaveInfo = GameObject.Find("txtNextWaveInfo").GetComponent<Text>();
         nextWaveCounter = GameObject.Find("txtNextWaveCounter").GetComponent<Text>();
+        waveNumber = GameObject.Find("txtWaveNum").GetComponent<Text>();
 
         HideGameOverPanel();    
         PopulateScrollView();
@@ -377,6 +379,11 @@ public class GUIController : MonoBehaviour
     public void UpdateWaveCounter(string waveCounter)
     {
         nextWaveCounter.text = waveCounter;
+    }
+
+    public void UpdateWaveNumber(int currentWave, int totalWaves)
+    {
+        waveNumber.text = string.Format("Wave {0}/{1}", currentWave, totalWaves);
     }
 
     #region Demo Functions
