@@ -32,7 +32,7 @@ public class BuildManager : MonoBehaviour
         guiController = gameManager.GUIController;
 
         line = GetComponent<LineRenderer>();
-        RenderRadius(Vector3.zero, 10);
+        HideRadius();
     }
 
     private void OnEnable()
