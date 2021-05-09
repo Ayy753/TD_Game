@@ -298,6 +298,7 @@ public class GUIController : MonoBehaviour
         btnExitEditMode.SetActive(true);
         selectedIcon.sprite = structureData.Icon;
         selectedDetails.text = structureData.ToString();
+        towerGUI.ClearTarget();
         buildManager.EnterBuildMode(structureData);
     }
 
