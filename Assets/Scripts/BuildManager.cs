@@ -394,6 +394,7 @@ public class BuildManager : MonoBehaviour
                 {
                     int value = Mathf.RoundToInt(((TowerData)structure).Cost * 0.66f);
                     gameManager.GainGold(value);
+                    guiController.SpawnFloatingTextInCenter("Sold for " + value + " gold", Color.yellow);
                     instantiatedTowers.Remove(tower);
                     GameObject.Destroy(tower);
                     mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);

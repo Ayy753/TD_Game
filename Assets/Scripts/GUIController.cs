@@ -441,5 +441,28 @@ public class GUIController : MonoBehaviour
         FloatingText floatingText = objectPool.CreateFloatingText();
         floatingText.Initialize(position, message, color, textSize);
     }
+
+    /// <summary>
+    /// Spawns floating text at the center of the screen
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="color"></param>
+    /// <param name="textSize"></param>
+    public void SpawnFloatingTextInCenter(string message, Color color, float textSize = 0.5f)
+    {
+        Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        SpawnFloatingText(pos, message, color, textSize);
+    }
+
+    /// <summary>
+    /// Spawns floating text at the cursor's position
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="color"></param>
+    /// <param name="textSize"></param>
+    public void SpawnFloatingTextAtCursor(string message, Color color, float textSize = 0.5f)
+    {
+        SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), message, color, textSize);
+    }
     #endregion
 }
