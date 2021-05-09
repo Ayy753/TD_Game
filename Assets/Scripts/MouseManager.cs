@@ -46,7 +46,7 @@ class MouseManager : MonoBehaviour
             PollDisplayableHover(pos);
             PollTileHoverEvents(pos);
 
-            yield return new WaitForSeconds(MousePollingRate);
+            yield return new WaitForSecondsRealtime(MousePollingRate);
         }
     }
 

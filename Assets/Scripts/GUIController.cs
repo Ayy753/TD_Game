@@ -387,7 +387,11 @@ public class GUIController : MonoBehaviour
 
     public void StartNextWave()
     {
-        waveManager.StartSpawning();
+        //  Prevent next wave button from being pressed while game is paused
+        if (gameManager.GamePaused != true)
+        {
+            waveManager.StartSpawning();
+        }
     }
 
     public void UpdateWaveInformation(string currentWave, string nextWave)

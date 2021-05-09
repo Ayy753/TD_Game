@@ -291,17 +291,25 @@ public class BuildManager : MonoBehaviour
         //  Temp until I fix script load order
         if (mapManager != null)
         {
-            if (CurrentBuildMode != BuildMode.None )
+            if (gameManager.GamePaused == false)
             {
-                if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords) && EventSystem.current.IsPointerOverGameObject() == false)
+                if (CurrentBuildMode != BuildMode.None)
                 {
-                    UnhoverTile(lastHoveredPosition);
-                    HoverTile(tileCoords);
+                    if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords) && EventSystem.current.IsPointerOverGameObject() == false)
+                    {
+                        UnhoverTile(lastHoveredPosition);
+                        HoverTile(tileCoords);
+                    }
+                    else
+                    {
+                        PauseHighlighting();
+                    }
                 }
-                else
-                {
-                    PauseHighlighting();
-                }
+            }
+            else if(lastHoveredPosition != Vector3Int.down)
+            {
+                UnhoverTile(lastHoveredPosition);
+                lastHoveredPosition = Vector3Int.down;
             }
         }
     }
@@ -313,7 +321,8 @@ public class BuildManager : MonoBehaviour
     /// </summary>
     private void HandleMouseUp()
     {
-        if (CurrentBuildMode != BuildMode.None && EventSystem.current.IsPointerOverGameObject() == false)
+        if (CurrentBuildMode != BuildMode.None && gameManager.GamePaused == false && 
+            EventSystem.current.IsPointerOverGameObject() == false)
         {
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             mouseposition.z = 0;

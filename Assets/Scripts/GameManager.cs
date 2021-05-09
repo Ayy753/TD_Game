@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
     public int Lives { get; private set; }
     public int Gold { get; private set; }
 
+    public bool GamePaused { get; private set; } = false;
     //  Flag to prevent user from unpausing while path is recalculating
     private bool pathRecalculating = false;
-    private bool paused = false;
 
     private void OnEnable()
     {
@@ -77,8 +77,8 @@ public class GameManager : MonoBehaviour
             //  Ensure path isnt being recalculated
             if (pathRecalculating == false)
             {
-                paused = !paused;
-                if (paused)
+                GamePaused = !GamePaused;
+                if (GamePaused)
                 {
                     PauseGame();
                     GUIController.ShowPausedText();
