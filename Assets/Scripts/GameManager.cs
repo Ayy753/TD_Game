@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,21 +23,30 @@ public class GameManager : MonoBehaviour
     public int Lives { get; private set; }
     public int Gold { get; private set; }
 
+    //  Flag to prevent user from unpausing while path is recalculating
+    private bool pathRecalculating = false;
+    private bool paused = false;
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
         Enemy.OnEnemyDied += HandleEnemyDied;
+        PathFinder.OnPathRecalculating += HandlePathRecalculating;
+        PathFinder.OnPathRecalculated += HandlePathRecalculated;
 
         DontDestroyOnLoad(gameObject);
     }
 
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
         Enemy.OnEnemyDied -= HandleEnemyDied;
+        PathFinder.OnPathRecalculating -= HandlePathRecalculating;
+        PathFinder.OnPathRecalculated -= HandlePathRecalculated;
     }
-    
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Instance = this;
@@ -57,6 +68,28 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("GameManager loaded");
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //  Ensure path isnt being recalculated
+            if (pathRecalculating == false)
+            {
+                paused = !paused;
+                if (paused)
+                {
+                    PauseGame();
+                    GUIController.ShowPausedText();
+                }
+                else
+                {
+                    ResumeGame();
+                    GUIController.HidePausedText();
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -100,6 +133,25 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Pauses game when path is recalculating
+    /// </summary>
+    private void HandlePathRecalculating()
+    {
+        pathRecalculating = true;
+        PauseGame();
+    }
+
+    /// <summary>
+    /// Resumes game when path is finished calculating
+    /// </summary>
+    /// <param name="newPath"></param>
+    private void HandlePathRecalculated(List<Vector3Int> newPath)
+    {
+        pathRecalculating = false;
+        ResumeGame();
+    }
+
+    /// <summary>
     /// Check if 
     /// </summary>
     /// <param name="price"></param>
@@ -139,7 +191,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Pauses the game
     /// </summary>
-    public void PauseGame()
+    private void PauseGame()
     {
         Time.timeScale = 0;
     }
@@ -147,7 +199,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Unpauses the game
     /// </summary>
-    public void ResumeGame()
+    private void ResumeGame()
     {
         Time.timeScale = 1;
     }

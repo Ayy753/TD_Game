@@ -25,6 +25,7 @@ public class GUIController : MonoBehaviour
     private GameObject txtPathRecalculating;
     private Text txtTileInfo;
     private GameObject pnlStructureInfo;
+    private GameObject txtGamePaused;
 
     private Text currentWaveInfo;
     private Text nextWaveInfo;
@@ -68,6 +69,7 @@ public class GUIController : MonoBehaviour
         txtPathRecalculating = GameObject.Find("txtPathRecalculating");
         txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
         pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
+        txtGamePaused = GameObject.Find("txtGamePaused");
 
         currentWaveInfo = GameObject.Find("txtCurrentWaveInfo").GetComponent<Text>();
         nextWaveInfo = GameObject.Find("txtNextWaveInfo").GetComponent<Text>();
@@ -80,6 +82,7 @@ public class GUIController : MonoBehaviour
         btnExitEditMode.SetActive(false);
         txtPathRecalculating.SetActive(false);
         pnlStructureInfo.SetActive(false);
+        txtGamePaused.SetActive(false);
     }
 
     private void Update()
@@ -364,6 +367,22 @@ public class GUIController : MonoBehaviour
     public void HideGameOverPanel()
     {
         gameOverPanel.SetActive(false);
+    }
+
+    /// <summary>
+    /// Shows text showing game is paused
+    /// </summary>
+    public void ShowPausedText()
+    {
+        txtGamePaused.SetActive(true);
+    }
+
+    /// <summary>
+    /// Hides text showing game is paused
+    /// </summary>
+    public void HidePausedText()
+    {
+        txtGamePaused.SetActive(false);
     }
 
     public void StartNextWave()

@@ -202,7 +202,6 @@ public class PathFinder : MonoBehaviour
                     OnInitialPathCalculated.Invoke();
                 }
                 //foundPath.PrintChain();
-                GameManager.Instance.ResumeGame();
                 yield break;
             }
 
@@ -321,10 +320,11 @@ public class PathFinder : MonoBehaviour
         {
             StopCoroutine("CalculateShortestPath");
             PreviousPath = CurrentPath;
-            //  Pause game
-            GameManager.Instance.PauseGame();
             StartCoroutine("CalculateShortestPath");
-            OnPathRecalculating.Invoke();
+            if (OnPathRecalculating != null)
+            {
+                OnPathRecalculating.Invoke();
+            }
         }
     }
 
