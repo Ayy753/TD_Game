@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("GameManager loaded");
+        Application.targetFrameRate = 60;
     }
 
     private void Update()

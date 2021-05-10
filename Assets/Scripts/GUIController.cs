@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 
 public class GUIController : MonoBehaviour
 {
@@ -31,6 +33,7 @@ public class GUIController : MonoBehaviour
     private Text nextWaveInfo;
     private Text nextWaveCounter;
     private Text waveNumber;
+    private TMP_Text txtFps;
 
     [SerializeField]
     private GameObject scrollViewContentBox;
@@ -75,6 +78,7 @@ public class GUIController : MonoBehaviour
         nextWaveInfo = GameObject.Find("txtNextWaveInfo").GetComponent<Text>();
         nextWaveCounter = GameObject.Find("txtNextWaveCounter").GetComponent<Text>();
         waveNumber = GameObject.Find("txtWaveNum").GetComponent<Text>();
+        txtFps = GameObject.Find("txtFps").GetComponent<TMP_Text>();
 
         HideGameOverPanel();    
         PopulateScrollView();
@@ -83,6 +87,8 @@ public class GUIController : MonoBehaviour
         txtPathRecalculating.SetActive(false);
         pnlStructureInfo.SetActive(false);
         txtGamePaused.SetActive(false);
+
+        StartCoroutine(FpsPoller());
     }
 
     private void Update()
@@ -92,6 +98,7 @@ public class GUIController : MonoBehaviour
             ExitEditMode();
            towerGUI.ClearTarget();
         }
+
     }
 
     private void OnEnable()
@@ -104,6 +111,7 @@ public class GUIController : MonoBehaviour
         MouseManager.OnMouseUp += HandleMouseUp;
         Enemy.OnEnemyDied += HandleEnemyDied;
         Enemy.OnEnemyHit += HandleEnemyHit;
+
     }
 
     private void OnDisable()
@@ -273,6 +281,15 @@ public class GUIController : MonoBehaviour
     private void HandleEnemyHit(Enemy enemy, float damage)
     {
         SpawnFloatingText(enemy.transform.position, damage.ToString("F1"), Color.red, 0.25f);
+    }
+
+    private IEnumerator FpsPoller()
+    {
+        while (txtFps != null)
+        {
+            txtFps.text = "FPS: " + Mathf.RoundToInt(1 / Time.unscaledDeltaTime);
+            yield return new WaitForSecondsRealtime(1f);
+        }
     }
 
     /// <summary>
