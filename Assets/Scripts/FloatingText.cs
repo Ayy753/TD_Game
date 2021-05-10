@@ -2,20 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FloatingText : MonoBehaviour
 {
-    private TextMesh textMesh;
+    private TMP_Text theText;
 
     private void Start()
     {
+        //  Move render order on top of sprites
         gameObject.GetComponent<MeshRenderer>().sortingOrder = 6;
     }
 
     private void OnEnable()
     {
-        //  Move render order on top of sprites
-        textMesh = GetComponent<TextMesh>();
+        theText = GetComponent<TMP_Text>();
     }
 
     /// <summary>
@@ -29,9 +30,10 @@ public class FloatingText : MonoBehaviour
         //  Solves bug where mouse position causes text to be hidden from camera
         transform.position = new Vector3(position.x, position.y, 1);
 
-        textMesh.characterSize = textSize;
-        textMesh.text = text;
-        textMesh.color = color;
+        //  textmesh pro text scale doesnt match the previous text scale
+        theText.fontSize = textSize * 10;
+        theText.text = text;
+        theText.color = color;
         StartCoroutine(FloatUp());
     }
 
@@ -42,7 +44,7 @@ public class FloatingText : MonoBehaviour
             //  Float up
             transform.position = transform.position += new Vector3(0, 0.2f, 0);
             //  Fade out
-            textMesh.color = new Color(textMesh.color.r, textMesh.color.g, textMesh.color.b, textMesh.color.a - 0.02f);
+            theText.color = new Color(theText.color.r, theText.color.g, theText.color.b, theText.color.a - 0.02f);
             yield return new WaitForSeconds(0.05f);
         }
         gameObject.SetActive(false);

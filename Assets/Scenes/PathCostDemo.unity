@@ -28709,7 +28709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefabs: []
-  floatingTextPrefab: {fileID: 992355081995552975, guid: 63ed0cae673723c49839b5d3529ae982,
+  floatingTextPrefab: {fileID: 5828480776538396354, guid: 63ed0cae673723c49839b5d3529ae982,
     type: 3}
 --- !u!4 &2101549011
 Transform:
