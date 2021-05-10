@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDisplayable
@@ -56,10 +57,15 @@ public class Enemy : MonoBehaviour, IDisplayable
             gameManager = GameManager.Instance;
             pathFinder = gameManager.PathFinder;
             mapManager = gameManager.MapManager;
-            currentPath = pathFinder.CurrentPath;
         }
 
-        FaceNextNode(currentPath[currentPathIndex]);
+        if (pathFinder.CurrentPath != null)
+        {
+            currentPath = pathFinder.CurrentPath;
+            FaceNextNode(currentPath[currentPathIndex]);
+            Debug.Log("enemy init");
+        }
+
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
         MapManager.OnStructureChanged += HandleStructureChanged;
     }
@@ -72,42 +78,44 @@ public class Enemy : MonoBehaviour, IDisplayable
 
     private void Update()
     {
-        if (Vector3Int.FloorToInt(transform.position) != lastTile)
+        if (currentPath != null)
         {
-            lastTile = Vector3Int.FloorToInt(transform.position);
-            currentWalkSpeed = EnemyData.Speed - mapManager.GetTileCost(lastTile) / 15;
-        }
-
-        if (onMainPath)
-        {
-            transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, currentWalkSpeed * Time.deltaTime);
-            if (currentPath[currentPathIndex] + tilemapOffset == transform.position)
+            if (Vector3Int.FloorToInt(transform.position) != lastTile)
             {
-                currentPathIndex++;
-                if (currentPathIndex == currentPath.Count)
+                lastTile = Vector3Int.FloorToInt(transform.position);
+                currentWalkSpeed = EnemyData.Speed - mapManager.GetTileCost(lastTile) / 15;
+            }
+            if (onMainPath)
+            {
+                transform.parent.position = Vector3.MoveTowards(transform.position, currentPath[currentPathIndex] + tilemapOffset, currentWalkSpeed * Time.deltaTime);
+                if (currentPath[currentPathIndex] + tilemapOffset == transform.position)
                 {
-                    OnEnemyReachedGate.Invoke(this);
-                    Despawn();
-                }
-                else
-                {
-                    FaceNextNode(currentPath[currentPathIndex]);
+                    currentPathIndex++;
+                    if (currentPathIndex == currentPath.Count)
+                    {
+                        OnEnemyReachedGate.Invoke(this);
+                        Despawn();
+                    }
+                    else
+                    {
+                        FaceNextNode(currentPath[currentPathIndex]);
+                    }
                 }
             }
-        }
-        else
-        {
-            transform.parent.position = Vector3.MoveTowards(transform.position, routeToMainPath[subPathIndex] + tilemapOffset, currentWalkSpeed * Time.deltaTime);
-            if (routeToMainPath[subPathIndex] + tilemapOffset == transform.position)
+            else
             {
-                subPathIndex++;
-                if (subPathIndex == routeToMainPath.Count)
+                transform.parent.position = Vector3.MoveTowards(transform.position, routeToMainPath[subPathIndex] + tilemapOffset, currentWalkSpeed * Time.deltaTime);
+                if (routeToMainPath[subPathIndex] + tilemapOffset == transform.position)
                 {
-                    onMainPath = true;
-                }
-                else
-                {
-                    FaceNextNode(routeToMainPath[subPathIndex]);
+                    subPathIndex++;
+                    if (subPathIndex == routeToMainPath.Count)
+                    {
+                        onMainPath = true;
+                    }
+                    else
+                    {
+                        FaceNextNode(routeToMainPath[subPathIndex]);
+                    }
                 }
             }
         }
@@ -137,6 +145,7 @@ public class Enemy : MonoBehaviour, IDisplayable
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
+
     /// <summary>
     /// Responds to path change event
     /// </summary>

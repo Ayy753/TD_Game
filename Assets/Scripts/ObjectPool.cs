@@ -20,7 +20,7 @@ public class ObjectPool : MonoBehaviour
     private GameObject floatingTextPrefab;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         enemyPool = new List<Enemy>();
         projectilePool = new List<Projectile>();
@@ -29,6 +29,34 @@ public class ObjectPool : MonoBehaviour
         projectileContainer = transform.Find("ProjectilePool");
         textContainer = transform.Find("TextPool");
         enemyContainer = transform.Find("EnemyPool");
+
+        PreloadPool();
+    }
+
+    /// <summary>
+    /// Instantiates objects into pool ahead of time to avoid fps drops
+    /// at the start of level
+    /// </summary>
+    private void PreloadPool()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject newTextGO = Instantiate(floatingTextPrefab, textContainer);
+            FloatingText newText = newTextGO.GetComponent<FloatingText>();
+            floatingTextPool.Add(newText);
+            newTextGO.SetActive(false);
+        }
+
+        foreach (GameObject prefabType in enemyPrefabs)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                GameObject newEnemy = Instantiate(prefabType, enemyContainer);
+                Enemy newEnemyObj = newEnemy.GetComponentInChildren<Enemy>();
+                enemyPool.Add(newEnemyObj);
+                newEnemy.SetActive(false);
+            }
+        }
     }
 
     /// <summary>
