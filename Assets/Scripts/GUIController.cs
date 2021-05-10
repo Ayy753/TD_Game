@@ -285,10 +285,25 @@ public class GUIController : MonoBehaviour
 
     private IEnumerator FpsPoller()
     {
-        while (txtFps != null)
+        int numSamples = 5;
+        int sampleCount = 0;
+        float accumulatedFrames = 0;
+        float averageFps;
+        
+        while (true)
         {
-            txtFps.text = "FPS: " + Mathf.RoundToInt(1 / Time.unscaledDeltaTime);
-            yield return new WaitForSecondsRealtime(1f);
+            accumulatedFrames += Time.unscaledDeltaTime;
+            sampleCount++;
+
+            if (sampleCount == numSamples)
+            {
+                averageFps = accumulatedFrames / numSamples;
+                txtFps.text = "FPS: " + Mathf.RoundToInt(1 / averageFps);
+                sampleCount = 0;
+                accumulatedFrames = 0;
+            }
+
+            yield return new WaitForSecondsRealtime(0.1f);
         }
     }
 
