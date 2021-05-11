@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -31,13 +32,16 @@ public class PathFinder : MonoBehaviour
     public static PathRecalculating OnPathRecalculating;
     public static InitialPathCalculated OnInitialPathCalculated;
 
+    private string FilePath = "Assets/LevelData/PathData/demo_path_data.txt";
+
+
     /// <summary>
     /// The current path through the map
     /// </summary>
     public List<Vector3Int> CurrentPath { get; protected set; }
     public List<Vector3Int> PreviousPath { get; protected set; }
 
-    void Start()
+    private void Start()
     {
         Debug.Log("Path Finder loaded");
 
@@ -45,7 +49,21 @@ public class PathFinder : MonoBehaviour
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
         entranceCoordinate = structureLayer.WorldToCell(entrance.transform.position);
 
-        StartCoroutine("CalculateShortestPath");
+        //  If game is not running in editor, load intital path data from file
+        if (Application.isEditor == false)
+        {
+            LoadPathData();
+            mapManager.HighlightPath(CurrentPath, Color.cyan);
+            if (OnInitialPathCalculated != null)
+            {
+                OnInitialPathCalculated.Invoke();
+            }
+        }
+        //  Otherwise calculate the inital path
+        else
+        {
+            StartCoroutine("CalculateShortestPath");
+        }
     }
 
     private void OnEnable()
@@ -195,11 +213,21 @@ public class PathFinder : MonoBehaviour
                 if (PreviousPath != null && OnPathRecalculated != null)
                 {
                     OnPathRecalculated.Invoke(CurrentPath);
-                }
-                else if (PreviousPath == null && OnInitialPathCalculated != null)
+                }       
+                //  If this is the initial path calculation
+                else if (PreviousPath == null)
                 {
+                    //  Save path to file only if game is running in the editor
+                    if (Application.isEditor)
+                    {
+                        SavePathData();
+                    }
+
                     //  Alert other objects that the main path has been calculated
-                    OnInitialPathCalculated.Invoke();
+                    if (OnInitialPathCalculated != null)
+                    {
+                        OnInitialPathCalculated.Invoke();
+                    }
                 }
                 //foundPath.PrintChain();
                 yield break;
@@ -324,6 +352,40 @@ public class PathFinder : MonoBehaviour
             if (OnPathRecalculating != null)
             {
                 OnPathRecalculating.Invoke();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Saves the path coordinates to file
+    /// </summary>
+    private void SavePathData()
+    {
+        using (StreamWriter sw = new StreamWriter(FilePath, false))
+        {
+            foreach (Vector3Int node in CurrentPath)
+            {
+                sw.WriteLine(string.Format("{0},{1},{2}", node.x, node.y, node.z));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Loads the path coordinates from file
+    /// </summary>
+    private void LoadPathData()
+    {
+        CurrentPath = new List<Vector3Int>();
+        using (StreamReader sr = new StreamReader(FilePath))
+        {
+            while (sr.EndOfStream == false)
+            {
+                string line = sr.ReadLine();
+                if (line != string.Empty)
+                {
+                    string[] chars = line.Split(',');
+                    CurrentPath.Add(new Vector3Int(int.Parse(chars[0]), int.Parse(chars[1]), int.Parse(chars[2])));
+                }
             }
         }
     }

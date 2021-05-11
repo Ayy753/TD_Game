@@ -12,7 +12,7 @@ MonoImporter:
   - greeNTowerPrefab: {instanceID: 0}
   - buildCursor: {fileID: 2800000, guid: dc298ab7504953744a7d2ad95afbfa43, type: 3}
   - demolishCursor: {instanceID: 0}
-  executionOrder: 5
+  executionOrder: 2
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 
