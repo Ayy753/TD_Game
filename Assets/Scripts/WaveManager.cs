@@ -10,7 +10,7 @@ public class WaveManager : MonoBehaviour
     ObjectPool objectPool;
 
     //  Todo: in future search leveldata folder for a json file whose name matches the scene name
-    private string FilePath = "Assets/LevelData/demo_waves.json";
+    private string FilePath = "Assets/LevelData/WaveData/demo_waves.json";
     private Root LevelData;
     public int NumberOfWaves { get; private set; }
     public int CurrentWave { get; private set; }
