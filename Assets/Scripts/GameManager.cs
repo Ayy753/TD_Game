@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
     private void HandleEnemyReachedGate(Enemy enemy)
     {
         Lives -= 1;
-
+        GUIController.SpawnFloatingTextInCenter("-1 life", Color.red, 0.75f);
         if (Lives <= 0 )
         {
             WaveManager.StopSpawning();
