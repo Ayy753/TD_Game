@@ -6,7 +6,7 @@ public class EnemyData : ScriptableObject
     [field: SerializeField]
     public float BaseHealth { get; private set; }
     [field: SerializeField]
-    public int Value { get; private set; }
+    public int BaseValue { get; private set; }
     [field: SerializeField]
     public string Name { get; private set; }
     [field: SerializeField]

@@ -39,6 +39,8 @@ public class Enemy : MonoBehaviour, IDisplayable
     
     //  Max health scales base health up based on wave number
     public float ScaledMaxHealth { get; private set; }
+    public int ScaledValue { get; private set; }
+
     [SerializeField]
     public EnemyData EnemyData;
     #endregion
@@ -204,9 +206,9 @@ public class Enemy : MonoBehaviour, IDisplayable
     public void Spawn(Vector3 position, int waveNum)
     {
         transform.parent.position = position;
-        ScaledMaxHealth = Mathf.FloorToInt(EnemyData.BaseHealth * (1f + Mathf.Pow((waveNum/10f), 2f)));
+        ScaledMaxHealth = Mathf.FloorToInt(EnemyData.BaseHealth * (1f + Mathf.Pow((waveNum/8f), 2f)));
         CurrentHealth = ScaledMaxHealth;
-        Debug.Log(string.Format("current health: {0} wave num: {1}", CurrentHealth, waveNum));
+        ScaledValue = Mathf.FloorToInt(EnemyData.BaseValue * (1f + Mathf.Pow((waveNum / 10f), 2f)));
         transform.parent.gameObject.SetActive(true);
     }
 
@@ -261,7 +263,7 @@ public class Enemy : MonoBehaviour, IDisplayable
             "\n<b><color=green>Health</color></b>: {1}/{2}" +
             "\n<b><color=green>Value</color></b>: {3}" +
             "\n<b><color=green>Description</color></b>: {4}"
-            , EnemyData.Name, Mathf.RoundToInt(CurrentHealth), Mathf.RoundToInt(ScaledMaxHealth), EnemyData.Value, EnemyData.Description);
+            , EnemyData.Name, Mathf.RoundToInt(CurrentHealth), Mathf.RoundToInt(ScaledMaxHealth), ScaledValue, EnemyData.Description);
     }
 
     #endregion

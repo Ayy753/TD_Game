@@ -273,7 +273,7 @@ public class GUIController : MonoBehaviour
     /// <param name="enemy"></param>
     private void HandleEnemyDied(Enemy enemy)
     {
-        SpawnFloatingText(enemy.transform.position, string.Format("+{0}g", enemy.EnemyData.Value), Color.yellow);
+        SpawnFloatingText(enemy.transform.position, string.Format("+{0}g", enemy.EnemyData.BaseValue), Color.yellow);
     }
 
     /// <summary>

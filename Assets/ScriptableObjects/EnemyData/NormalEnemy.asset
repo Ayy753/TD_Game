@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NormalEnemy
   m_EditorClassIdentifier: 
   <BaseHealth>k__BackingField: 25
-  <Value>k__BackingField: 5
+  <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Normal Enemy
   <Speed>k__BackingField: 1
   <Description>k__BackingField: A normal enemy

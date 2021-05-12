@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StrongEnemy
   m_EditorClassIdentifier: 
   <BaseHealth>k__BackingField: 100
-  <Value>k__BackingField: 20
+  <BaseValue>k__BackingField: 20
   <Name>k__BackingField: Strong Enemy
   <Speed>k__BackingField: 0.75
   <Description>k__BackingField: A strong enemy
