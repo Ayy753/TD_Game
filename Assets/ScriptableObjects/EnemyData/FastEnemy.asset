@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 654c48055da733b49af241bbedad84d9, type: 3}
   m_Name: FastEnemy
   m_EditorClassIdentifier: 
-  <MaxHealth>k__BackingField: 10
+  <BaseHealth>k__BackingField: 10
   <Value>k__BackingField: 5
   <Name>k__BackingField: FastEnemy
   <Speed>k__BackingField: 2

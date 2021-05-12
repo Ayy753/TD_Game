@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 654c48055da733b49af241bbedad84d9, type: 3}
   m_Name: StrongEnemy
   m_EditorClassIdentifier: 
-  <MaxHealth>k__BackingField: 100
+  <BaseHealth>k__BackingField: 100
   <Value>k__BackingField: 20
   <Name>k__BackingField: Strong Enemy
   <Speed>k__BackingField: 0.75

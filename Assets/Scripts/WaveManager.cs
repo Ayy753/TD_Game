@@ -215,7 +215,7 @@ public class WaveManager : MonoBehaviour
                     {
                         if (enemyPrefab.name == group.EnemyType)
                         {
-                            SpawnEnemy(entrance.transform.position, enemyPrefab);
+                            SpawnEnemy(entrance.transform.position, enemyPrefab, wave.WaveNum);
                         }
                     }
                     //  Wait until next enemy should be spawned
@@ -248,12 +248,12 @@ public class WaveManager : MonoBehaviour
     /// Spawns an enemy at a specified position using the object pool
     /// </summary>
     /// <param name="position"></param>
-    private void SpawnEnemy(Vector3 position, GameObject desiredEnemyPrefab)
+    private void SpawnEnemy(Vector3 position, GameObject desiredEnemyPrefab, int waveNum)
     {
         EnemyData desiredEnemyData = desiredEnemyPrefab.GetComponentInChildren<Enemy>().EnemyData;
         Enemy newEnemy = objectPool.CreateEnemy(desiredEnemyData);
         enemiesActive.Add(newEnemy);
-        newEnemy.Spawn(position);
+        newEnemy.Spawn(position, waveNum);
     }
 
     /// <summary>

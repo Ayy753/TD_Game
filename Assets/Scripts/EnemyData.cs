@@ -4,7 +4,7 @@
 public class EnemyData : ScriptableObject
 {
     [field: SerializeField]
-    public float MaxHealth { get; private set; }
+    public float BaseHealth { get; private set; }
     [field: SerializeField]
     public int Value { get; private set; }
     [field: SerializeField]

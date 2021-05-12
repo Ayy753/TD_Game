@@ -2904,7 +2904,7 @@ GameObject:
   - component: {fileID: 697702502}
   - component: {fileID: 697702501}
   m_Layer: 5
-  m_Name: btnExit
+  m_Name: btnRestart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2973,7 +2973,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 697702502}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1601462268}
+        m_TargetAssemblyTypeName: GUIController, GameAssembly
+        m_MethodName: RestartScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &697702502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26889,7 +26901,7 @@ GameObject:
   - component: {fileID: 1718952599}
   - component: {fileID: 1718952598}
   m_Layer: 5
-  m_Name: btnRestart
+  m_Name: btnExit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26958,7 +26970,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1718952599}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1601462267}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1718952599
 MonoBehaviour:
   m_ObjectHideFlags: 0
