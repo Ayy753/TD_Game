@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
         //  Initialize properties
         Lives = 25;
-        Gold = 500;
+        Gold = 250;
 
         gameEnded = false;
         StartCoroutine(InitializeGame());

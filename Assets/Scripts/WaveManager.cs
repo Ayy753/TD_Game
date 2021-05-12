@@ -20,6 +20,7 @@ public class WaveManager : MonoBehaviour
     public int NumEnemiesActive { get { return enemiesActive.Count; }}
 
     private int timeBetweenWaves = 10;
+    private int timeBeforeFirstWave = 30;
     private bool lastWaveFinishedSpawning = false;
 
     private Coroutine nextWaveCountDown;
@@ -134,7 +135,7 @@ public class WaveManager : MonoBehaviour
 
         Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         guiController.SpawnFloatingText(pos,
-            string.Format("Wave 1 begins in {0} seconds", timeBetweenWaves), Color.white, 1);
+            string.Format("Wave 1 begins in {0} seconds", timeBeforeFirstWave), Color.white, 1);
     }
 
     /// <summary>
@@ -274,7 +275,18 @@ public class WaveManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator NextWaveCountdown()
     {
-        int secondsUntilNextWave = timeBetweenWaves;
+        //  Determine the appropriate countdown time
+        int secondsUntilNextWave;
+        if (CurrentWave == 0)
+        {
+            secondsUntilNextWave = timeBeforeFirstWave;
+        }
+        else
+        {
+            secondsUntilNextWave = timeBetweenWaves;
+        }
+
+        //  Start counting down
         while (secondsUntilNextWave > 0)
         {
             guiController.UpdateWaveCounter("Next wave in: " + secondsUntilNextWave);
