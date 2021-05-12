@@ -76,7 +76,8 @@ public class TowerGUI : MonoBehaviour
         }
 
         txtTargetDescription.text = tower.GetDisplayText();
-        float value = Mathf.Round(tower.TowerData.Cost * 0.66f);
+        int value = Mathf.RoundToInt(tower.TowerData.Cost * 0.66f);
+
         btnSellStructure.GetComponentInChildren<Text>().text = "Sell for " + value.ToString() + " Gold";
 
             targetedTowerIndicator.SetActive(true);

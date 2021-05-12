@@ -392,9 +392,10 @@ public class BuildManager : MonoBehaviour
             {
                 if (tower.transform.position == position + tilemapOffset)
                 {
-                    int value = Mathf.RoundToInt(((TowerData)structure).Cost * 0.66f);
-                    gameManager.GainGold(value);
-                    guiController.SpawnFloatingTextInCenter("Sold for " + value + " gold", Color.yellow);
+                    TowerData towerData = tower.GetComponent<Tower>().TowerData;
+                    int sellValue = Mathf.RoundToInt(towerData.Cost * 0.66f);
+                    gameManager.GainGold(sellValue);
+                    guiController.SpawnFloatingTextInCenter("Sold for " + sellValue + " gold", Color.yellow);
                     instantiatedTowers.Remove(tower);
                     GameObject.Destroy(tower);
                     mapManager.RemoveTile(MapManager.Layer.StructureLayer, position);
