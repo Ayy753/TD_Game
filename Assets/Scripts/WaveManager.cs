@@ -11,7 +11,7 @@ public class WaveManager : MonoBehaviour
     ObjectPool objectPool;
 
     //  Todo: in future search leveldata folder for a json file whose name matches the scene name
-    private string FilePath = "Assets/LevelData/WaveData/demo_waves.json";
+    private string FilePath = "LevelData/WaveData/demo_waves";
     private Root LevelData;
     private List<Enemy> enemiesActive;
 
@@ -40,7 +40,8 @@ public class WaveManager : MonoBehaviour
         entrance = GameObject.Find("Entrance");
 
         //  Load level data
-        string jsonText = System.IO.File.ReadAllText(FilePath);
+        //string jsonText = System.IO.File.ReadAllText(FilePath);
+        string jsonText = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
         LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
         
         NumberOfWaves = LevelData.waves.Count;

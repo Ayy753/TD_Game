@@ -32,7 +32,7 @@ public class PathFinder : MonoBehaviour
     public static PathRecalculating OnPathRecalculating;
     public static InitialPathCalculated OnInitialPathCalculated;
 
-    private string FilePath = "Assets/LevelData/PathData/demo_path_data.txt";
+    private string FilePath = "LevelData/PathData/demo_path_data";
 
 
     /// <summary>
@@ -361,7 +361,7 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     private void SavePathData()
     {
-        using (StreamWriter sw = new StreamWriter(FilePath, false))
+        using (StreamWriter sw = new StreamWriter("Assets/Resources/" + FilePath, false))
         {
             foreach (Vector3Int node in CurrentPath)
             {
@@ -376,16 +376,28 @@ public class PathFinder : MonoBehaviour
     private void LoadPathData()
     {
         CurrentPath = new List<Vector3Int>();
-        using (StreamReader sr = new StreamReader(FilePath))
+        //using (StreamReader sr = new StreamReader(FilePath))
+        //{
+        //    while (sr.EndOfStream == false)
+        //    {
+        //        string line = sr.ReadLine();
+        //        if (line != string.Empty)
+        //        {
+        //            string[] chars = line.Split(',');
+        //            CurrentPath.Add(new Vector3Int(int.Parse(chars[0]), int.Parse(chars[1]), int.Parse(chars[2])));
+        //        }
+        //    }
+        //}
+
+        string fileContents = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
+        string[] lines = fileContents.Split('\n');
+
+        foreach (string line in lines)
         {
-            while (sr.EndOfStream == false)
+            if (line != string.Empty)
             {
-                string line = sr.ReadLine();
-                if (line != string.Empty)
-                {
-                    string[] chars = line.Split(',');
-                    CurrentPath.Add(new Vector3Int(int.Parse(chars[0]), int.Parse(chars[1]), int.Parse(chars[2])));
-                }
+                string[] chars = line.Split(',');
+                CurrentPath.Add(new Vector3Int(int.Parse(chars[0]), int.Parse(chars[1]), int.Parse(chars[2])));
             }
         }
     }
