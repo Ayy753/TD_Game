@@ -28,6 +28,7 @@ public class GUIController : MonoBehaviour
     private Text txtTileInfo;
     private GameObject pnlStructureInfo;
     private GameObject txtGamePaused;
+    private GameObject pnlWinner;
 
     private Text currentWaveInfo;
     private Text nextWaveInfo;
@@ -73,6 +74,7 @@ public class GUIController : MonoBehaviour
         txtTileInfo = GameObject.Find("txtTileInfo").GetComponent<Text>();
         pnlStructureInfo = GameObject.Find("pnlSelectedStructure");
         txtGamePaused = GameObject.Find("txtGamePaused");
+        pnlWinner = GameObject.Find("pnlWinner");
 
         currentWaveInfo = GameObject.Find("txtCurrentWaveInfo").GetComponent<Text>();
         nextWaveInfo = GameObject.Find("txtNextWaveInfo").GetComponent<Text>();
@@ -87,6 +89,7 @@ public class GUIController : MonoBehaviour
         txtPathRecalculating.SetActive(false);
         pnlStructureInfo.SetActive(false);
         txtGamePaused.SetActive(false);
+        pnlWinner.SetActive(false);
 
         StartCoroutine(FpsPoller());
     }
@@ -415,6 +418,14 @@ public class GUIController : MonoBehaviour
     public void HidePausedText()
     {
         txtGamePaused.SetActive(false);
+    }
+
+    /// <summary>
+    /// Shows panel when player wins the game
+    /// </summary>
+    public void ShowWinnerPanel()
+    {
+        pnlWinner.SetActive(true);
     }
 
     public void StartNextWave()

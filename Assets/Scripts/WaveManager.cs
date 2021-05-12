@@ -3,6 +3,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.Collections;
 using System.IO;
+using System;
 
 public class WaveManager : MonoBehaviour
 {
@@ -12,16 +13,23 @@ public class WaveManager : MonoBehaviour
     //  Todo: in future search leveldata folder for a json file whose name matches the scene name
     private string FilePath = "Assets/LevelData/WaveData/demo_waves.json";
     private Root LevelData;
+    private List<Enemy> enemiesActive;
+
     public int NumberOfWaves { get; private set; }
     public int CurrentWave { get; private set; }
+    public int NumEnemiesActive { get { return enemiesActive.Count; }}
 
     private int timeBetweenWaves = 10;
+    private bool lastWaveFinishedSpawning = false;
 
     private Coroutine nextWaveCountDown;
 
     [SerializeField]
     private GameObject[] enemyPrefabs;
     GameObject entrance;
+
+    public delegate void LastWaveDefeated();
+    public static event LastWaveDefeated OnLastWaveDefeated;
 
     // Start is called before the first frame update
     void Start()
@@ -42,16 +50,19 @@ public class WaveManager : MonoBehaviour
         guiController.UpdateWaveInformation(string.Empty, 
             "Current wave's groups:\n" + LevelData.waves[0].ToString());
 
+        enemiesActive = new List<Enemy>();
     }
 
     private void OnEnable()
     {
         PathFinder.OnInitialPathCalculated += HandleInitialPathCalculated;
+        Enemy.OnEnemyDied += HandleEnemyDied;
     }
 
     private void OnDisable()
     {
         PathFinder.OnInitialPathCalculated -= HandleInitialPathCalculated;
+        Enemy.OnEnemyDied -= HandleEnemyDied;
     }
 
     /// <summary>
@@ -124,6 +135,27 @@ public class WaveManager : MonoBehaviour
         Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         guiController.SpawnFloatingText(pos,
             string.Format("Wave 1 begins in {0} seconds", timeBetweenWaves), Color.white, 1);
+    }
+
+    /// <summary>
+    /// Removes enemy from active list when it dies
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyDied(Enemy enemy)
+    {
+        enemiesActive.Remove(enemy);
+        if (NumEnemiesActive == 0)
+        {
+            Debug.Log("last activie enemy died");
+
+            if (lastWaveFinishedSpawning == true)
+            {
+                if (OnLastWaveDefeated != null)
+                {
+                    OnLastWaveDefeated.Invoke();
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -202,6 +234,11 @@ public class WaveManager : MonoBehaviour
                 }
             }
         }
+
+        if (CurrentWave == NumberOfWaves)
+        {
+            lastWaveFinishedSpawning = true;
+        }
     }
 
 
@@ -214,6 +251,7 @@ public class WaveManager : MonoBehaviour
     {
         EnemyData desiredEnemyData = desiredEnemyPrefab.GetComponentInChildren<Enemy>().EnemyData;
         Enemy newEnemy = objectPool.CreateEnemy(desiredEnemyData);
+        enemiesActive.Add(newEnemy);
         newEnemy.Spawn(position);
     }
 

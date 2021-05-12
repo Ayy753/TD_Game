@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public bool GamePaused { get; private set; } = false;
     //  Flag to prevent user from unpausing while path is recalculating
     private bool pathRecalculating = false;
+    private bool gameEnded = false;
 
     private void OnEnable()
     {
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
         Enemy.OnEnemyDied += HandleEnemyDied;
         PathFinder.OnPathRecalculating += HandlePathRecalculating;
         PathFinder.OnPathRecalculated += HandlePathRecalculated;
+        WaveManager.OnLastWaveDefeated += HandleLastWaveDefeated;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
         Enemy.OnEnemyDied -= HandleEnemyDied;
         PathFinder.OnPathRecalculating -= HandlePathRecalculating;
         PathFinder.OnPathRecalculated -= HandlePathRecalculated;
+        WaveManager.OnLastWaveDefeated -= HandleLastWaveDefeated;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -62,6 +65,7 @@ public class GameManager : MonoBehaviour
         Lives = 25;
         Gold = 500;
 
+        gameEnded = false;
         StartCoroutine(InitializeGame());
     }
 
@@ -75,8 +79,8 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //  Ensure path isnt being recalculated
-            if (pathRecalculating == false)
+            //  Ensure path isnt being recalculated and the game hasnt ended
+            if (pathRecalculating == false && gameEnded == false)
             {
                 GamePaused = !GamePaused;
                 if (GamePaused)
@@ -150,6 +154,15 @@ public class GameManager : MonoBehaviour
     {
         pathRecalculating = false;
         ResumeGame();
+    }
+
+    /// <summary>
+    /// End the game when player beats level
+    /// </summary>
+    private void HandleLastWaveDefeated()
+    {
+        gameEnded = true;
+        GUIController.ShowWinnerPanel();
     }
 
     /// <summary>
