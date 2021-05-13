@@ -291,7 +291,7 @@ public class BuildManager : MonoBehaviour
         //  Temp until I fix script load order
         if (mapManager != null)
         {
-            if (gameManager.GamePaused == false)
+            if (gameManager.GameEnded == false)
             {
                 if (CurrentBuildMode != BuildMode.None)
                 {
@@ -321,7 +321,7 @@ public class BuildManager : MonoBehaviour
     /// </summary>
     private void HandleMouseUp()
     {
-        if (CurrentBuildMode != BuildMode.None && gameManager.GamePaused == false && 
+        if (CurrentBuildMode != BuildMode.None && gameManager.GameEnded == false && 
             EventSystem.current.IsPointerOverGameObject() == false)
         {
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));

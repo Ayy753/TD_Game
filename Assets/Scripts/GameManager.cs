@@ -23,10 +23,15 @@ public class GameManager : MonoBehaviour
     public int Lives { get; private set; }
     public int Gold { get; private set; }
 
+    /// <summary>
+    /// Did user manaually pause the game? 
+    /// This flag doesn't get set if the game pauses it (for path recalculation, etc)
+    /// </summary>
     public bool GamePaused { get; private set; } = false;
+    public bool GameEnded { get; private set; } = false;
+
     //  Flag to prevent user from unpausing while path is recalculating
     private bool pathRecalculating = false;
-    private bool gameEnded = false;
 
     private void OnEnable()
     {
@@ -65,7 +70,7 @@ public class GameManager : MonoBehaviour
         Lives = 25;
         Gold = 250;
 
-        gameEnded = false;
+        GameEnded = false;
         StartCoroutine(InitializeGame());
     }
 
@@ -80,7 +85,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //  Ensure path isnt being recalculated and the game hasnt ended
-            if (pathRecalculating == false && gameEnded == false)
+            if (pathRecalculating == false && GameEnded == false)
             {
                 GamePaused = !GamePaused;
                 if (GamePaused)
@@ -117,6 +122,7 @@ public class GameManager : MonoBehaviour
         GUIController.SpawnFloatingTextInCenter("-1 life", Color.red, 0.75f);
         if (Lives <= 0 )
         {
+            GameEnded = true;
             WaveManager.StopSpawning();
             Lives = 0;
             GUIController.ShowGameOverPanel();
@@ -153,7 +159,13 @@ public class GameManager : MonoBehaviour
     private void HandlePathRecalculated(List<Vector3Int> newPath)
     {
         pathRecalculating = false;
-        ResumeGame();
+
+        //  If the user hasn't paused game while path is being recalculating
+        //  or the path player wasnt building/demolishing structures while game is paused
+        if (GamePaused == false)
+        {
+            ResumeGame();
+        }
     }
 
     /// <summary>
@@ -161,7 +173,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void HandleLastWaveDefeated()
     {
-        gameEnded = true;
+        GameEnded = true;
         GUIController.ShowWinnerPanel();
     }
 
