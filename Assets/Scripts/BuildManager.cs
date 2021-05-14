@@ -11,6 +11,7 @@ public class BuildManager : MonoBehaviour
     //  We will user Vector3Int.down to indicate no tile is being hovered over
     private Vector3Int lastHoveredPosition = Vector3Int.down;
     private List<GameObject> instantiatedTowers;
+    private bool lastHoveredPositionWasABlock = false;
     public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
     private StructureData currentlySelectedStructure;
     private LineRenderer line;
@@ -132,43 +133,130 @@ public class BuildManager : MonoBehaviour
         MapManager.Layer tileLayer;
         Color tileColor;
 
-        //  Is there a structure here?
-        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+        //  If tower is selected, handle special case
+        if (currentlySelectedStructure.GetType() == typeof(TowerData))
         {
-            StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
-
-            if (tile.GetType() == typeof(TowerData))
-            {
-                ChangeTowerTint(position, Color.red);
-            }
-            else
-            {
-                tileLayer = MapManager.Layer.StructureLayer;
-                tileColor = Color.red;
-                mapManager.HighlightTile(tileLayer, position, tileColor);
-            }   
+            BuildTowerHoverLogic(position);
         }
-        //  There is no structure here
+        //  Otherwise something other than a tower is selected
         else
         {
-            tileLayer = MapManager.Layer.GroundLayer;
-            //  Is tile capable of supporting a structure?
-            if (mapManager.IsGroundSolid(position))
+            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
             {
-                tileColor = Color.green;
-
-                //  If the selected structure is a tower, display the targetting radius
-                if (currentlySelectedStructure.GetType() == typeof(TowerData))
+                StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+                if (tile.GetType() == typeof(TowerData))
                 {
-                    TowerData towerData = (TowerData)currentlySelectedStructure;
-                    ShowTowerRangeIndicator(towerData);
+                    ChangeTowerTint(position, Color.red);
+                }
+                else
+                {
+                    tileLayer = MapManager.Layer.StructureLayer;
+                    tileColor = Color.red;
+                    mapManager.HighlightTile(tileLayer, position, tileColor);
                 }
             }
+            //  There is no structure here
             else
             {
-                tileColor = Color.red;
+                tileLayer = MapManager.Layer.GroundLayer;
+                //  Is tile capable of supporting a structure?
+                if (mapManager.IsGroundSolid(position))
+                {
+                    tileColor = Color.green;
+                }
+                else
+                {
+                    tileColor = Color.red;
+                }
+                mapManager.HighlightTile(tileLayer, position, tileColor);
             }
-            mapManager.HighlightTile(tileLayer, position, tileColor);
+        }
+    }
+
+    /// <summary>
+    /// Checks if there is a tower within a 3x3 radius of position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private bool IsTowerAdjacent(Vector3Int position)
+    {
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector3Int neighbour = position + new Vector3Int(x, y, 0);
+                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, neighbour))
+                {
+                    TileData tileData = mapManager.GetTileData(MapManager.Layer.StructureLayer, neighbour);
+
+                    if (tileData.GetType() == typeof(TowerData))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Highlights 3x3 grid around tower in build mode
+    /// </summary>
+    /// <param name="position"></param>
+    private void BuildTowerHoverLogic(Vector3Int position)
+    {
+        //  Highlight grid red if another tower is present in it
+        if (IsTowerAdjacent(position))
+        {
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    mapManager.HighlightTile(MapManager.Layer.GroundLayer, position + new Vector3Int(x, y, 0), Color.red);
+                }
+            }
+        }
+        //  Otherwise highligh yellow/green
+        else
+        {
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    //  Highlight center green and perimeter yellow
+                    if (x == 0 && y == 0)
+                    {
+                        mapManager.HighlightTile(MapManager.Layer.GroundLayer, position + new Vector3Int(x, y, 0), Color.green);
+                    }
+                    else
+                    {
+                        mapManager.HighlightTile(MapManager.Layer.GroundLayer, position + new Vector3Int(x, y, 0), Color.yellow);
+                    }
+                }
+            }
+        }
+        lastHoveredPositionWasABlock = true;
+    }
+
+    /// <summary>
+    /// Unhighlights 3x3 grid around tower in build mode
+    /// </summary>
+    /// <param name="position"></param>
+    private void BuildTowerUnhoverLogic(Vector3Int position)
+    {
+        if (lastHoveredPositionWasABlock == true)
+        {
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position + new Vector3Int(x, y, 0));
+                }
+            }
+        }
+        else
+        {
+            mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
         }
     }
 
@@ -226,7 +314,11 @@ public class BuildManager : MonoBehaviour
         //  Temp until I fix script load order
         if (mapManager != null)
         {
-            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            if (currentlySelectedStructure.GetType() == typeof(TowerData))
+            {
+                BuildTowerUnhoverLogic(position);
+            }
+            else if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
             {
                 TileData tile = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
 
@@ -329,7 +421,18 @@ public class BuildManager : MonoBehaviour
 
             if (CurrentBuildMode == BuildMode.Build)
             {
-                if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
+                if (currentlySelectedStructure.GetType() == typeof(TowerData))
+                {
+                    if (IsTowerAdjacent(mouseposition) == true)
+                    {
+                        guiController.SpawnFloatingTextAtCursor("You cannot build towers next to eachother", Color.red);
+                    }
+                    else
+                    {
+                        AttemptBuildStructure(currentlySelectedStructure, mouseposition);
+                    }
+                }
+                else if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, mouseposition) == false)
                 {
                     AttemptBuildStructure(currentlySelectedStructure, mouseposition);
                 }
