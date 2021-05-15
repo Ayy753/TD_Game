@@ -255,7 +255,7 @@ public class BuildManager : MonoBehaviour
                     }
                 }
             }
-            RenderRadius(position, ((TowerData)currentlySelectedStructure).Range);
+            RenderRadius(position + tilemapOffset, ((TowerData)currentlySelectedStructure).Range);
         }
         lastSelectedStructureWasTower = true;
     }
@@ -308,18 +308,6 @@ public class BuildManager : MonoBehaviour
             tileColor = Color.red;
             mapManager.HighlightTile(tileLayer, position, tileColor);
         }
-    }
-
-    /// <summary>
-    /// Displays the selected tower type's attack radius while in build mode
-    /// </summary>
-    /// <param name="towerData"></param>
-    private void ShowTowerRangeIndicator(TowerData towerData)
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos = Vector3Int.FloorToInt(mousePos);
-        mousePos.z = 1;
-        RenderRadius(mousePos + tilemapOffset, towerData.Range);
     }
 
     /// <summary>
@@ -475,8 +463,8 @@ public class BuildManager : MonoBehaviour
     /// Renders a line of a given radius around a point to draw a circle
     /// used to show the radius of things
     /// </summary>
-    /// <param name="center"></param>
-    /// <param name="radius"></param>
+    /// <param name="center">Center of tower</param>
+    /// <param name="radius">Attack radius of tower</param>
     public void RenderRadius(Vector3 center, float radius)
     {
         line.enabled = true;
