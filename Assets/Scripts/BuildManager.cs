@@ -11,7 +11,7 @@ public class BuildManager : MonoBehaviour
     //  We will user Vector3Int.down to indicate no tile is being hovered over
     private Vector3Int lastHoveredPosition = Vector3Int.down;
     private List<GameObject> instantiatedTowers;
-    private bool lastHoveredPositionWasABlock = false;
+    private bool lastSelectedStructureWasTower = false;
     public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
     private StructureData currentlySelectedStructure;
     private LineRenderer line;
@@ -56,7 +56,14 @@ public class BuildManager : MonoBehaviour
     /// </summary>
     private void PauseHighlighting()
     {
-        UnhoverTile(lastHoveredPosition);
+        if (lastSelectedStructureWasTower)
+        {
+            UnHoverGrid(lastHoveredPosition);
+        }
+        else
+        {
+            UnhoverTile(lastHoveredPosition);
+        }
         lastHoveredPosition = Vector3Int.down;
     }
 
@@ -96,7 +103,7 @@ public class BuildManager : MonoBehaviour
             }
             else
             {
-                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition) , "Can't afford", Color.red);
+                guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), "Can't afford", Color.red);
             }
         }
     }
@@ -133,42 +140,39 @@ public class BuildManager : MonoBehaviour
         MapManager.Layer tileLayer;
         Color tileColor;
 
-        //  If tower is selected, handle special case
-        if (currentlySelectedStructure.GetType() == typeof(TowerData))
+        if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
         {
-            BuildTowerHoverLogic(position);
-        }
-        //  Otherwise something other than a tower is selected
-        else
-        {
-            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
+            if (tile.GetType() == typeof(TowerData))
             {
-                StructureData tile = (StructureData)mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
-                if (tile.GetType() == typeof(TowerData))
-                {
-                    ChangeTowerTint(position, Color.red);
-                }
-                else
-                {
-                    tileLayer = MapManager.Layer.StructureLayer;
-                    tileColor = Color.red;
-                    mapManager.HighlightTile(tileLayer, position, tileColor);
-                }
+                ChangeTowerTint(position, Color.red);
             }
-            //  There is no structure here
             else
             {
-                tileLayer = MapManager.Layer.GroundLayer;
-                //  Is tile capable of supporting a structure?
-                if (mapManager.IsGroundSolid(position))
+                tileLayer = MapManager.Layer.StructureLayer;
+                tileColor = Color.red;
+                mapManager.HighlightTile(tileLayer, position, tileColor);
+            }
+        }
+        //  There is no structure here
+        else
+        {
+            tileLayer = MapManager.Layer.GroundLayer;
+            //  Is tile capable of supporting a structure?
+            if (mapManager.IsGroundSolid(position))
+            {
+                if (currentlySelectedStructure.GetType() == typeof(TowerData))
                 {
-                    tileColor = Color.green;
+                    BuildTowerHoverLogic(position);
                 }
                 else
                 {
-                    tileColor = Color.red;
+                    mapManager.HighlightTile(tileLayer, position, Color.green);
                 }
-                mapManager.HighlightTile(tileLayer, position, tileColor);
+            }
+            else
+            {
+                mapManager.HighlightTile(tileLayer, position, Color.red);
             }
         }
     }
@@ -200,7 +204,9 @@ public class BuildManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Highlights 3x3 grid around tower in build mode
+    /// Highlights 3x3 grid around tower in build mode.
+    /// Should only be called if the user is in buildmode, 
+    /// has a tower selected, and is hovering over a stable ground tile
     /// </summary>
     /// <param name="position"></param>
     private void BuildTowerHoverLogic(Vector3Int position)
@@ -234,30 +240,27 @@ public class BuildManager : MonoBehaviour
                     }
                 }
             }
+            RenderRadius(position, ((TowerData)currentlySelectedStructure).Range);
         }
-        lastHoveredPositionWasABlock = true;
+        lastSelectedStructureWasTower = true;
     }
 
     /// <summary>
     /// Unhighlights 3x3 grid around tower in build mode
     /// </summary>
     /// <param name="position"></param>
-    private void BuildTowerUnhoverLogic(Vector3Int position)
+    public void UnHoverGrid(Vector3Int position)
     {
-        if (lastHoveredPositionWasABlock == true)
+        Debug.Log("unhovering grid");
+        for (int x = -1; x <= 1; x++)
         {
-            for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
             {
-                for (int y = -1; y <= 1; y++)
-                {
-                    mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position + new Vector3Int(x, y, 0));
-                }
+                UnhoverTile(new Vector3Int(x, y, 0) + position);
             }
         }
-        else
-        {
-            mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
-        }
+        lastSelectedStructureWasTower = false;
+        HideRadius();
     }
 
     /// <summary>
@@ -291,7 +294,7 @@ public class BuildManager : MonoBehaviour
             mapManager.HighlightTile(tileLayer, position, tileColor);
         }
     }
-    
+
     /// <summary>
     /// Displays the selected tower type's attack radius while in build mode
     /// </summary>
@@ -302,7 +305,6 @@ public class BuildManager : MonoBehaviour
         mousePos = Vector3Int.FloorToInt(mousePos);
         mousePos.z = 1;
         RenderRadius(mousePos + tilemapOffset, towerData.Range);
-
     }
 
     /// <summary>
@@ -314,11 +316,7 @@ public class BuildManager : MonoBehaviour
         //  Temp until I fix script load order
         if (mapManager != null)
         {
-            if (currentlySelectedStructure.GetType() == typeof(TowerData))
-            {
-                BuildTowerUnhoverLogic(position);
-            }
-            else if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
+            if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, position))
             {
                 TileData tile = mapManager.GetTileData(MapManager.Layer.StructureLayer, position);
 
@@ -342,7 +340,6 @@ public class BuildManager : MonoBehaviour
                 mapManager.ReverseHighlight(MapManager.Layer.GroundLayer, position);
             }
         }
-        HideRadius();
     }
 
     /// <summary>
@@ -389,7 +386,15 @@ public class BuildManager : MonoBehaviour
                 {
                     if (mapManager.ContainsTileAt(MapManager.Layer.GroundLayer, tileCoords) && EventSystem.current.IsPointerOverGameObject() == false)
                     {
-                        UnhoverTile(lastHoveredPosition);
+                        if (lastSelectedStructureWasTower)
+                        {
+                            UnHoverGrid(lastHoveredPosition);
+                        }
+                        else
+                        {
+                            UnhoverTile(lastHoveredPosition);
+                        }
+
                         HoverTile(tileCoords);
                     }
                     else
@@ -398,7 +403,7 @@ public class BuildManager : MonoBehaviour
                     }
                 }
             }
-            else if(lastHoveredPosition != Vector3Int.down)
+            else if (lastHoveredPosition != Vector3Int.down)
             {
                 UnhoverTile(lastHoveredPosition);
                 lastHoveredPosition = Vector3Int.down;
@@ -413,7 +418,7 @@ public class BuildManager : MonoBehaviour
     /// </summary>
     private void HandleMouseUp()
     {
-        if (CurrentBuildMode != BuildMode.None && gameManager.GameEnded == false && 
+        if (CurrentBuildMode != BuildMode.None && gameManager.GameEnded == false &&
             EventSystem.current.IsPointerOverGameObject() == false)
         {
             Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -462,7 +467,7 @@ public class BuildManager : MonoBehaviour
         line.enabled = true;
         float x;
         float y;
-        
+
         //  Drawing a line around the given position
         for (int i = 0; i < line.positionCount; i++)
         {
