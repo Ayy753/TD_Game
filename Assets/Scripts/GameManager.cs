@@ -71,6 +71,8 @@ public class GameManager : MonoBehaviour
         Gold = 250;
 
         GameEnded = false;
+        GamePaused = false;
+        ResumeGame();
         StartCoroutine(InitializeGame());
     }
 
