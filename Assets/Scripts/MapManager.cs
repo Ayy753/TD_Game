@@ -159,7 +159,11 @@ public class MapManager : MonoBehaviour
             tileMapLayer.SetTileFlags(position, TileFlags.None);
             tileMapLayer.SetColor(position, color);
 
-            highlightedTiles.Add(new HighlightedTile(position, layer, color, previousColor));
+            //  Don't store highlighted tile if a color is being removed 
+            if (color != Color.white)
+            {
+                highlightedTiles.Add(new HighlightedTile(position, layer, color, previousColor));
+            }
         }
     }
 

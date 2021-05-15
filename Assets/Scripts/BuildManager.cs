@@ -218,7 +218,22 @@ public class BuildManager : MonoBehaviour
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    mapManager.HighlightTile(MapManager.Layer.GroundLayer, position + new Vector3Int(x, y, 0), Color.red);
+                    Vector3Int neighbor = position + new Vector3Int(x, y, 0);
+                    if (mapManager.ContainsTileAt(MapManager.Layer.StructureLayer, neighbor))
+                    {
+                        if (mapManager.GetTileData(MapManager.Layer.StructureLayer, neighbor).GetType() == typeof(TowerData))
+                        {
+                            ChangeTowerTint(neighbor, Color.red);
+                        }
+                        else
+                        {
+                            mapManager.HighlightTile(MapManager.Layer.StructureLayer, neighbor, Color.red);
+                        }
+                    }
+                    else
+                    {
+                        mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbor, Color.red);
+                    }
                 }
             }
         }
