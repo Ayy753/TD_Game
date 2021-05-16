@@ -45,7 +45,7 @@ public class FloatingText : MonoBehaviour
             transform.position = transform.position += new Vector3(0, 0.2f, 0);
             //  Fade out
             theText.color = new Color(theText.color.r, theText.color.g, theText.color.b, theText.color.a - 0.02f);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSecondsRealtime(0.05f);
         }
         gameObject.SetActive(false);
     }
