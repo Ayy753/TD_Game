@@ -209,7 +209,7 @@ public class Enemy : MonoBehaviour, IDisplayable
         transform.parent.position = position;
         ScaledMaxHealth = Mathf.FloorToInt(EnemyData.BaseHealth * (1f + Mathf.Pow((waveNum/8f), 2f)));
         CurrentHealth = ScaledMaxHealth;
-        ScaledValue = Mathf.FloorToInt(EnemyData.BaseValue * (1f + Mathf.Pow((waveNum / 10f), 2f)));
+        ScaledValue = Mathf.FloorToInt(EnemyData.BaseValue * (1f + Mathf.Pow((waveNum / 20f), 2f)));
         transform.parent.gameObject.SetActive(true);
     }
 

@@ -18,4 +18,4 @@ MonoBehaviour:
     type: 3}
   <TileBase>k__BackingField: {fileID: 11400000, guid: d9ca2c05f89579b4ea287574fe5a8a0c,
     type: 2}
-  <Cost>k__BackingField: 25
+  <Cost>k__BackingField: 15

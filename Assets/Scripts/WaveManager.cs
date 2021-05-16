@@ -19,8 +19,8 @@ public class WaveManager : MonoBehaviour
     public int CurrentWave { get; private set; }
     public int NumEnemiesActive { get { return enemiesActive.Count; }}
 
-    private int timeBetweenWaves = 10;
-    private int timeBeforeFirstWave = 30;
+    private int timeBetweenWaves = 15;
+    private int timeBeforeFirstWave = 120;
     private bool lastWaveFinishedSpawning = false;
 
     private Coroutine nextWaveCountDown;

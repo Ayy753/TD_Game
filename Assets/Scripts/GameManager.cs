@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
 
         //  Initialize properties
         Lives = 25;
-        Gold = 250;
+        Gold = 500;
 
         GameEnded = false;
         GamePaused = false;
