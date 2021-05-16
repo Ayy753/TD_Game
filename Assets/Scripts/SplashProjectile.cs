@@ -58,6 +58,8 @@ public class SplashProjectile : Projectile
     /// <returns>A reference to the coroutine</returns>
     private IEnumerator ApplySlashDamage()
     {
+        PlayCollsionAudio(CollsionType.explosion);
+
         //  Enable explosion particle effect
         transform.GetChild(0).gameObject.SetActive(true);
 
@@ -133,5 +135,17 @@ public class SplashProjectile : Projectile
     public override void Initialize(Transform target, float damage, float speed)
     {
         base.Initialize(target, damage, speed);
+    }
+
+    protected override void PlayCollsionAudio(CollsionType collsionType)
+    {
+        if (collsionType == CollsionType.explosion)
+        {
+            soundManager.PlaySound(SoundManager.soundType.explosionTiny);
+        }
+        else
+        {
+            Debug.LogWarning("collsion type " + collsionType + " not implemented");
+        }
     }
 }

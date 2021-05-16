@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public ObjectPool ObjectPool { get; private set; }
     public WaveManager WaveManager { get; private set; }
 
+    public SoundManager SoundManager { get; private set; }
+
     public int Lives { get; private set; }
     public int Gold { get; private set; }
 
@@ -65,6 +67,7 @@ public class GameManager : MonoBehaviour
         TowerGUI = GameObject.Find("TowerGUI").GetComponent<TowerGUI>();
         ObjectPool = GameObject.Find("ObjectPool").GetComponent<ObjectPool>();
         WaveManager = GameObject.Find("WaveManager").GetComponentInParent<WaveManager>();
+        SoundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 
         //  Initialize properties
         Lives = 25;

@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour, IDisplayable
     private GameManager gameManager;
     private PathFinder pathFinder;
     private MapManager mapManager;
+
     private SpriteRenderer healthBarForeground;
     private Sprite Icon;
 

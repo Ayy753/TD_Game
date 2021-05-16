@@ -49,7 +49,16 @@ public class NormalProjectile : Projectile
         //  If target is dead and projectile reaches the target's last position
         if (transform.position == LastTargetPosition)
         {
-            //Destroy(gameObject);
+            string collidedGroundName = mapManager.GetTileData(MapManager.Layer.GroundLayer, Vector3Int.FloorToInt(transform.position)).Name;
+            if (collidedGroundName == "GrassTile" || collidedGroundName == "SandTile")
+            {
+                PlayCollsionAudio(CollsionType.dirt);
+            }
+            else if(collidedGroundName == "StoneTile")
+            {
+                PlayCollsionAudio(CollsionType.stone);
+            }
+
             gameObject.SetActive(false);
         }
     }
@@ -61,6 +70,7 @@ public class NormalProjectile : Projectile
     protected override void DealDamage(Enemy enemy)
     {
         enemy.TakeDamage(Damage);
+        PlayCollsionAudio(CollsionType.enemy);
     }
 
     /// <summary>
@@ -97,5 +107,24 @@ public class NormalProjectile : Projectile
         base.Initialize(target, damage, speed);
         alreadyHit = false;
         targetDead = false;
+    }
+
+    protected override void PlayCollsionAudio(CollsionType collsionType)
+    {
+        switch (collsionType)
+        {
+            case CollsionType.enemy:
+                soundManager.PlaySound(SoundManager.soundType.arrowHitFlesh);
+                break;
+            case CollsionType.dirt:
+                soundManager.PlaySound(SoundManager.soundType.arrowHitDirt);
+                break;
+            case CollsionType.stone:
+                soundManager.PlaySound(SoundManager.soundType.arrowHitStone);
+                break;
+            default:
+                Debug.LogWarning("collsion type " + collsionType + " not implemented");
+                break;
+        }
     }
 }
