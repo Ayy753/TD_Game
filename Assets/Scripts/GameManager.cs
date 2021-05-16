@@ -134,7 +134,6 @@ public class GameManager : MonoBehaviour
             GUIController.HideToolTip();
             PauseGame();
         }
-
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
@@ -179,7 +178,15 @@ public class GameManager : MonoBehaviour
     private void HandleLastWaveDefeated()
     {
         GameEnded = true;
-        GUIController.ShowWinnerPanel();
+
+        if (Lives > 0)
+        {
+            GUIController.ShowWinnerPanel();
+        }
+        else
+        {
+            GUIController.ShowGameOverPanel();
+        }
     }
 
     /// <summary>

@@ -59,12 +59,14 @@ public class WaveManager : MonoBehaviour
     {
         PathFinder.OnInitialPathCalculated += HandleInitialPathCalculated;
         Enemy.OnEnemyDied += HandleEnemyDied;
+        Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
     }
 
     private void OnDisable()
     {
         PathFinder.OnInitialPathCalculated -= HandleInitialPathCalculated;
         Enemy.OnEnemyDied -= HandleEnemyDied;
+        Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
     }
 
     /// <summary>
@@ -156,6 +158,23 @@ public class WaveManager : MonoBehaviour
                 {
                     OnLastWaveDefeated.Invoke();
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes enemy and checks if it was last enemy of last wave
+    /// </summary>
+    /// <param name="enemy"></param>
+    private void HandleEnemyReachedGate(Enemy enemy)
+    {
+        enemiesActive.Remove(enemy);
+
+        if (lastWaveFinishedSpawning && enemiesActive.Count == 0)
+        {
+            if (OnLastWaveDefeated != null)
+            {
+                OnLastWaveDefeated.Invoke();
             }
         }
     }
