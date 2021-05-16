@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour, IDisplayable
 {
+    GameManager gameManager;
+    SoundManager soundManager;
     ObjectPool objectPool;
+
 
     [SerializeField]
     public TowerData TowerData;
@@ -27,7 +30,10 @@ public class Tower : MonoBehaviour, IDisplayable
 
     private void Start()
     {
-        objectPool = GameManager.Instance.ObjectPool;
+        gameManager = GameManager.Instance;
+        soundManager = gameManager.SoundManager;
+        objectPool = gameManager.ObjectPool;
+
         enemiesInRange = new List<Enemy>();
         Turret = transform.Find("Turret");
 
@@ -57,6 +63,9 @@ public class Tower : MonoBehaviour, IDisplayable
         {
             //  Ensure turret aligns with projectile when it fires
             FaceTarget(Target.transform);
+
+            //  Commenting this out for now because its a bit annoying
+            //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
 
             //  Fire projectile
             Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectilePrefab, transform.position);

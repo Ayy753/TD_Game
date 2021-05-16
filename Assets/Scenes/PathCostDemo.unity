@@ -4070,8 +4070,15 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 506228cbc7bc4734e878e7e4b9e8897d, type: 3}
     - {fileID: 8300000, guid: a094e4eecb70c2d4a89a5bf247cb730c, type: 3}
     - {fileID: 8300000, guid: be2eb79d079201f45b62859972d53a7f, type: 3}
-    sources: []
-    volume: 0.2
+    - {fileID: 8300000, guid: 9e82899ffc6124c4eb1087524ab8e918, type: 3}
+    - {fileID: 8300000, guid: c195ba1592db5bd4a806138a6f6543d8, type: 3}
+    - {fileID: 8300000, guid: a0a7b12b582d5e24eb6f7b5de7aa5152, type: 3}
+    - {fileID: 8300000, guid: c4bf5fba4bd070b45953a7d0fab29c43, type: 3}
+    - {fileID: 8300000, guid: 0858c102729c655419bc6eb84fb2dd5a, type: 3}
+    - {fileID: 8300000, guid: d2fad9738e94dc041bba2cc929e1043b, type: 3}
+    - {fileID: 8300000, guid: eb9d0f5940c28a74bb5a42f3491b82fb, type: 3}
+    audioSources: []
+    volume: 0.1
     pitch: 0.3
     loop: 0
   - soundType: 1
@@ -4079,8 +4086,8 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 8f5d36798e2cd2d408f1fd17570edd3d, type: 3}
     - {fileID: 8300000, guid: fd8a872bacfe3f44ca349ece6b6f845b, type: 3}
     - {fileID: 8300000, guid: d99fcde2f85ffd54f9cb0cf1fefb5e2e, type: 3}
-    sources: []
-    volume: 0.2
+    audioSources: []
+    volume: 0.1
     pitch: 0.3
     loop: 0
   - soundType: 2
@@ -4088,20 +4095,53 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 2216b443eed32c946ad47d63c62f3a30, type: 3}
     - {fileID: 8300000, guid: 39dad320571346e489c1d68d548ba3a0, type: 3}
     - {fileID: 8300000, guid: f9241eac94bf9a642b5621a15aec10a0, type: 3}
-    sources: []
-    volume: 0.2
+    audioSources: []
+    volume: 0.1
     pitch: 0.3
     loop: 0
   - soundType: 5
     soundVarients:
+    - {fileID: 8300000, guid: 5873d779d1ba8274aaa93aab0bbeafc7, type: 3}
+    - {fileID: 8300000, guid: 96e944d9073b0ad48a68c2b59e48453a, type: 3}
     - {fileID: 8300000, guid: 5244a1b86cfbf57489d28b22382b7981, type: 3}
     - {fileID: 8300000, guid: ab76e9aa3ef863445a6589ad85d4cef6, type: 3}
     - {fileID: 8300000, guid: 690e26f6ba78a5740aea536807aa7d9b, type: 3}
     - {fileID: 8300000, guid: 25eeefaa897f06044a4b078bb189c80f, type: 3}
     - {fileID: 8300000, guid: 68f96415f58052345b7b767876121cbf, type: 3}
-    sources: []
-    volume: 0.2
+    audioSources: []
+    volume: 0.12
     pitch: 0.3
+    loop: 0
+  - soundType: 6
+    soundVarients:
+    - {fileID: 8300000, guid: 3b75cd655f3558a41bbb8dc544d3fa72, type: 3}
+    - {fileID: 8300000, guid: 031059e3647fd394885ecb6c056ad13c, type: 3}
+    - {fileID: 8300000, guid: af0b85d23c9221e49826dc361ed98e45, type: 3}
+    - {fileID: 8300000, guid: 02be168c40849c844b92270b714a9d8a, type: 3}
+    - {fileID: 8300000, guid: 09a172f1c40373b44a6020035904186d, type: 3}
+    - {fileID: 8300000, guid: fa54a00a8f06eb0408a08b23f5c607ef, type: 3}
+    - {fileID: 8300000, guid: 7ed9473b80973414aa7f80de42eec918, type: 3}
+    - {fileID: 8300000, guid: f3896bd1aa0d7844c8f98f18037aebf7, type: 3}
+    - {fileID: 8300000, guid: 8bc8395c307e09c46afc4376bce2f2f7, type: 3}
+    - {fileID: 8300000, guid: 862b9a239875bbe429905541aec32f29, type: 3}
+    - {fileID: 8300000, guid: d5f49d3ea17378948bde6345b349218c, type: 3}
+    - {fileID: 8300000, guid: 9dc8b8a121404ba42aaef775f02bc99d, type: 3}
+    - {fileID: 8300000, guid: 0371ea0622791704d9e3aec70109ecb4, type: 3}
+    - {fileID: 8300000, guid: aad5b0d5bdd412847910a4cdf95a3e0b, type: 3}
+    audioSources: []
+    volume: 0.1
+    pitch: 0.3
+    loop: 0
+  - soundType: 7
+    soundVarients:
+    - {fileID: 8300000, guid: 7374eb5ebf236fa41af7e0496552e41c, type: 3}
+    - {fileID: 8300000, guid: ec5161222777d6c408339e3ec88ed68b, type: 3}
+    - {fileID: 8300000, guid: 18416af6c156f6b4e98f23b5d9be9389, type: 3}
+    - {fileID: 8300000, guid: 0fce33cfacb3a8a46a624fa229bdf426, type: 3}
+    - {fileID: 8300000, guid: f6bd0028078a2544fb9268a20b86641e, type: 3}
+    audioSources: []
+    volume: 0.25
+    pitch: 1
     loop: 0
 --- !u!4 &932024399
 Transform:
@@ -26983,7 +27023,7 @@ GameObject:
   - component: {fileID: 1718952599}
   - component: {fileID: 1718952598}
   m_Layer: 5
-  m_Name: btnExit
+  m_Name: btnExitGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

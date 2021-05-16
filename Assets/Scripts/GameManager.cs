@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour
     /// <param name="enemy"></param>
     private void HandleEnemyDied(Enemy enemy)
     {
-        Gold += enemy.EnemyData.BaseValue;
+        GainGold(enemy.EnemyData.BaseValue);
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
     }
 
@@ -207,6 +207,7 @@ public class GameManager : MonoBehaviour
     {
         Gold -= price;
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
+        SoundManager.PlaySound(SoundManager.soundType.gainGold);
     }
 
     /// <summary>
@@ -217,6 +218,8 @@ public class GameManager : MonoBehaviour
     {
         Gold += amount;
         GUIController.UpdateGameVariableDisplay(Lives, Gold);
+        //  Todo: add different sound for spending gold?
+        SoundManager.PlaySound(SoundManager.soundType.gainGold);
     }
 
     /// <summary>

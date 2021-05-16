@@ -13,7 +13,9 @@ public class SoundManager : MonoBehaviour
         arrowHitStone,
         arrowFire, 
         bluntHit,
-        explosionTiny
+        explosionTiny,
+        arrowRelease,
+        gainGold
     }
 
     public void Awake()
@@ -32,6 +34,8 @@ public class SoundManager : MonoBehaviour
                 audioSource.pitch = sound.pitch;
                 audioSource.clip = audioClip;
             }
+
+            Debug.Log(string.Format("sound name: {0} varient count: {1}", sound.soundType, sound.soundVarients.Count));
         }
     }
 
