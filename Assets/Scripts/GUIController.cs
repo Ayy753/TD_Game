@@ -106,8 +106,8 @@ public class GUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        PathFinder.OnPathRecalculated += HandlePathRecalculated;
-        PathFinder.OnPathRecalculating += HandlePathRecalculating;
+        //PathFinder.OnPathRecalculated += HandlePathRecalculated;
+        //PathFinder.OnPathRecalculating += HandlePathRecalculating;
         MouseManager.OnHoveredNewTile += HandleHoveredNewTile;
         MouseManager.OnHoveredNewGameObject += HandleHoveredNewGameObject;
         MouseManager.OnUnhoveredGameObject += HandleUnhoveredGameObject;
@@ -119,8 +119,8 @@ public class GUIController : MonoBehaviour
 
     private void OnDisable()
     {
-        PathFinder.OnPathRecalculated -= HandlePathRecalculated;
-        PathFinder.OnPathRecalculating -= HandlePathRecalculating;
+        //PathFinder.OnPathRecalculated -= HandlePathRecalculated;
+        //PathFinder.OnPathRecalculating -= HandlePathRecalculating;
         MouseManager.OnHoveredNewTile -= HandleHoveredNewTile;
         MouseManager.OnHoveredNewGameObject -= HandleHoveredNewGameObject;
         MouseManager.OnUnhoveredGameObject -= HandleUnhoveredGameObject;
@@ -152,20 +152,20 @@ public class GUIController : MonoBehaviour
     /// <summary>
     /// Alerts the user that the path is being recalculated
     /// </summary>
-    private void HandlePathRecalculating() 
-    {
-        txtPathRecalculating.SetActive(true);
-    }
+    //private void HandlePathRecalculating() 
+    //{
+    //    txtPathRecalculating.SetActive(true);
+    //}
 
     /// <summary>
     /// Removes path recalculated message
     /// </summary>
     /// <param name="path"></param>
     /// <param name="index"></param>
-    private void HandlePathRecalculated(List<Vector3Int> path) 
-    {
-        txtPathRecalculating.SetActive(false);
-    }
+    //private void HandlePathRecalculated(List<Vector3Int> path) 
+    //{
+    //    txtPathRecalculating.SetActive(false);
+    //}
 
     /// <summary>
     /// Updates tile info box

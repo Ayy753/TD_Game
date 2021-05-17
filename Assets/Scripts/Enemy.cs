@@ -159,19 +159,32 @@ public class Enemy : MonoBehaviour, IDisplayable
     private void HandlePathRecalculated(List<Vector3Int> newPath)
     {
         currentPath = newPath;
+        
+        //  Check if enemy is already on main path
+        //  and if it is, find which index of the path its on
+        int indexOnPath = pathFinder.PositionToPathIndex(Vector3Int.FloorToInt(transform.position));
+        if (indexOnPath != -1)
+        {
+            currentPathIndex = indexOnPath;
+            FaceNextNode(currentPath[currentPathIndex]);
+        }
 
-        (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
+        //  Otherwise pathfind to the nearest position on the path
+        else
+        {
+            (List<Vector3Int>, int) result = pathFinder.RouteToPath(Vector3Int.FloorToInt(transform.position));
 
-        //  Route to new path
-        routeToMainPath = result.Item1;
+            //  Route to new path
+            routeToMainPath = result.Item1;
 
-        //  Current index in route to path
-        subPathIndex = 0;
+            //  Current index in route to path
+            subPathIndex = 0;
 
-        //  Where enemy will be when it joins main path
-        currentPathIndex = result.Item2;
+            //  Where enemy will be when it joins main path
+            currentPathIndex = result.Item2;
 
-        onMainPath = false;
+            onMainPath = false;
+        }
     }
 
     /// <summary>

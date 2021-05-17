@@ -292,11 +292,12 @@ public class PathFinder : MonoBehaviour
                             }
                         }
 
-                        //  Pause coroutine every 75th tile processed to allow other processes to run in the meantime
+                        //  Pause coroutine every 1500 tiles processed to allow other processes to run in the meantime
                         //  Using a resetting counter is probably a lot faster than the modulus operator 
                         counter++;
-                        if (counter > 75)
+                        if (counter > 1500)
                         {
+                            Debug.Log("resetting counter"); 
                             counter = 0;
                             yield return null;
                         }
@@ -534,6 +535,25 @@ public class PathFinder : MonoBehaviour
             }
         }
         return false;
+    }
+
+
+    /// <summary>
+    /// Get path index of a point on path
+    /// </summary>
+    /// <param name="positon"></param>
+    /// <returns>Path index if position is on main path, or -1 if not</returns>
+    public int PositionToPathIndex(Vector3Int positon)
+    {
+        for (int pathIndex = 0; pathIndex < CurrentPath.Count; pathIndex++)
+        {
+            if (CurrentPath[pathIndex] == positon)
+            {
+                return pathIndex;
+            }
+        }
+
+        return -1;
     }
 
     /// <summary>
