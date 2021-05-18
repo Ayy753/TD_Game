@@ -22,6 +22,9 @@ public class PathFinder : MonoBehaviour
     [SerializeField]
     private GameObject exit;
 
+    //  Used to show path
+    private LineRenderer lineRenderer;
+
     private Vector3Int exitCoordinate;
     private Vector3Int entranceCoordinate;
 
@@ -48,12 +51,13 @@ public class PathFinder : MonoBehaviour
         mapManager = GameManager.Instance.MapManager;
         exitCoordinate = structureLayer.WorldToCell(exit.transform.position);
         entranceCoordinate = structureLayer.WorldToCell(entrance.transform.position);
+        lineRenderer = transform.GetComponent<LineRenderer>();
 
         //  If game is not running in editor, load intital path data from file
         if (Application.isEditor == false)
         {
             LoadPathData();
-            mapManager.HighlightPath(CurrentPath, Color.cyan);
+            HighlightPath();
             if (OnInitialPathCalculated != null)
             {
                 OnInitialPathCalculated.Invoke();
@@ -208,7 +212,7 @@ public class PathFinder : MonoBehaviour
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
                 
                 CurrentPath = foundPath.GetPath();
-                mapManager.HighlightPath(CurrentPath, Color.cyan);
+                HighlightPath();
 
                 if (PreviousPath != null && OnPathRecalculated != null)
                 {
@@ -537,7 +541,6 @@ public class PathFinder : MonoBehaviour
         return false;
     }
 
-
     /// <summary>
     /// Get path index of a point on path
     /// </summary>
@@ -562,6 +565,15 @@ public class PathFinder : MonoBehaviour
     public void HighlightPath()
     {
         mapManager.HighlightPath(CurrentPath, Color.cyan);
+        lineRenderer.positionCount = CurrentPath.Count;
+        Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
+
+        for (int i = 0; i < CurrentPath.Count; i++)
+        {
+            lineRenderer.SetPosition(i, CurrentPath[i] + tilemapOffset);
+        }
+
+        lineRenderer.enabled = true;
     }
 
     /// <summary>
@@ -570,5 +582,6 @@ public class PathFinder : MonoBehaviour
     public void UnhighlightPath()
     {
         mapManager.UnhighlightAll();
+        lineRenderer.enabled = false;
     }
 }
