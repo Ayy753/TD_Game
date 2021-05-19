@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: NormalEnemy
   m_EditorClassIdentifier: 
   <BaseHealth>k__BackingField: 25
+  <BaseFireResist>k__BackingField: 0
+  <BaseColdResist>k__BackingField: 0
+  <BasePoisonResist>k__BackingField: 0
+  <BaseArmor>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 2
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Normal Enemy
-  <Speed>k__BackingField: 1
   <Description>k__BackingField: A normal enemy
   <Prefab>k__BackingField: {fileID: 8672801003913250982, guid: 1b0b2b327f09edb4c8077db638a85990,
     type: 3}

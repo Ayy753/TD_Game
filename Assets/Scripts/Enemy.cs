@@ -42,8 +42,9 @@ public class Enemy : MonoBehaviour, IDisplayable
     public float ScaledMaxHealth { get; private set; }
     public int ScaledValue { get; private set; }
 
-    [SerializeField]
-    public EnemyData EnemyData;
+
+    [SerializeField] public EnemyData EnemyData;
+    private Status Status;
     #endregion
 
     private void Start()
@@ -89,7 +90,7 @@ public class Enemy : MonoBehaviour, IDisplayable
             if (Vector3Int.FloorToInt(transform.position) != lastTile)
             {
                 lastTile = Vector3Int.FloorToInt(transform.position);
-                currentWalkSpeed = EnemyData.Speed - mapManager.GetTileCost(lastTile) / 15;
+                currentWalkSpeed = Status.Speed - mapManager.GetTileCost(lastTile) / 15;
             }
             if (onMainPath)
             {
@@ -219,8 +220,9 @@ public class Enemy : MonoBehaviour, IDisplayable
     /// <param name="position"></param>
     public void Spawn(Vector3 position, int waveNum)
     {
+        Status = new Status(EnemyData);
         transform.parent.position = position;
-        ScaledMaxHealth = Mathf.FloorToInt(EnemyData.BaseHealth * (1f + Mathf.Pow((waveNum/8f), 2f)));
+        ScaledMaxHealth = Mathf.FloorToInt(Status.Health * (1f + Mathf.Pow((waveNum / 8f), 2f)));
         CurrentHealth = ScaledMaxHealth;
         ScaledValue = Mathf.FloorToInt(EnemyData.BaseValue * (1f + Mathf.Pow((waveNum / 20f), 2f)));
         transform.parent.gameObject.SetActive(true);

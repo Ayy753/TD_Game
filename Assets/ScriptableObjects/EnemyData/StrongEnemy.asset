@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: StrongEnemy
   m_EditorClassIdentifier: 
   <BaseHealth>k__BackingField: 100
+  <BaseFireResist>k__BackingField: 0
+  <BaseColdResist>k__BackingField: 0
+  <BasePoisonResist>k__BackingField: 0
+  <BaseArmor>k__BackingField: 5
+  <BaseSpeed>k__BackingField: 1
   <BaseValue>k__BackingField: 20
   <Name>k__BackingField: Strong Enemy
-  <Speed>k__BackingField: 0.75
   <Description>k__BackingField: A strong enemy
   <Prefab>k__BackingField: {fileID: 2333105322325362320, guid: 4ff90c5f8598eac4292e06928c867af7,
     type: 3}
