@@ -4,36 +4,43 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
 
-[CreateAssetMenu(fileName = "MapManagerScriptableObject", menuName = "ScriptableObjects/MapManagerScriptableObject")]
-public class MapManager : ScriptableObject, IMapManager
+public class MapManager : IMapManager, IInitializable
 {
     private Tilemap groundLayer;
     private Tilemap decoreLayer;
     private Tilemap structureLayer;
     private Tilemap platformLayer;
 
-    [SerializeField] private List<TileData> tileDatas;
+    TileData[] tileDatas;
     private Dictionary<TileBase, TileData> dataFromTiles;
 
-    public void Awake()
+    public MapManager()
     {
+        Debug.Log("constructor");
+    }
+
+    public void Initialize()
+    {
+        Debug.Log("initaliziing MapManager");
+
+        dataFromTiles = new Dictionary<TileBase, TileData>();
+        tileDatas = Resources.LoadAll<TileData>("ScriptableObjects/TileData");
+
         groundLayer = GameObject.Find("GroundLayer").GetComponent<Tilemap>();
         decoreLayer = GameObject.Find("DecorationLayer").GetComponent<Tilemap>();
         structureLayer = GameObject.Find("StructureLayer").GetComponent<Tilemap>();
         platformLayer = GameObject.Find("PlatformLayer").GetComponent<Tilemap>();
 
-        dataFromTiles = new Dictionary<TileBase, TileData>();
+        Debug.Log("tileDatas count: "  + tileDatas.Length);
 
-        foreach (TileData tileData in tileDatas)
+        for (int i = 0; i < tileDatas.Length; i++)
         {
-            Debug.Log("Test");
-
             //  Link TileBase objects to TileData 
             //  Since towers share the same tower base we need to ensure they dont get added twice
-            if (dataFromTiles.ContainsKey(tileData.TileBase) != true)
+            if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true)
             {
-                Debug.Log(string.Format("Adding: tile name:{0} tilebase:{1}", tileData.name, tileData.TileBase.name));
-                dataFromTiles.Add(tileData.TileBase, tileData);
+                Debug.Log(string.Format("Adding: tile name:{0} tilebase:{1}", tileDatas[i].name, tileDatas[i].TileBase.name));
+                dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
             }
         }
     }
@@ -76,10 +83,11 @@ public class MapManager : ScriptableObject, IMapManager
         TileBase tile = GetLayer(layer).GetTile(position);
         if (tile != null)
         {
-            Debug.Log("found " +tile.ToString());
+            Debug.Log("found " + tile.ToString());
             return dataFromTiles[tile];
         }
-        Debug.Log(string.Format("Did not find tile at layer {0} position {1}", layer, position)) ;
+
+        Debug.Log(string.Format("Did not find tile at layer {0} position {1}", layer, position));
         return null;
     }
 
@@ -87,6 +95,5 @@ public class MapManager : ScriptableObject, IMapManager
     {
         throw new System.NotImplementedException();
     }
-
 }
 

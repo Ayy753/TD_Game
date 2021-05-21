@@ -12,7 +12,14 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         TileData tileData = MapManager.GetTileData(IMapManager.Layer.GroundLayer, Vector3Int.FloorToInt(transform.position));
-        Debug.Log(tileData.ToString());
+        if (tileData != null)
+        {
+            Debug.Log(tileData.ToString());
+        }
+        else
+        {
+            Debug.LogError("tiledata is null");
+        }
     }
 
     // Update is called once per frame
