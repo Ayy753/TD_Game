@@ -13,7 +13,7 @@ public abstract class TileData : ScriptableObject
     public abstract string Name { get; protected set; }
     public abstract string Description { get; protected set; }
     public abstract Sprite Icon { get; protected set; }
-    public abstract MapManager.Layer Layer { get; protected set; }
+    public abstract IMapManager.Layer Layer { get; protected set; }
     public abstract TileBase TileBase { get; protected set; }
 
     public override string ToString()

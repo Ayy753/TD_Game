@@ -16,7 +16,7 @@ public class GroundData : TileData, IDisplayable
     public float WalkCost { get; private set; }
     [field: SerializeField]
     public bool IsSolid { get; private set; }
-    public override MapManager.Layer Layer { get; protected set; } = MapManager.Layer.GroundLayer;
+    public override IMapManager.Layer Layer { get; protected set; } = IMapManager.Layer.GroundLayer;
     public string GetDisplayText()
     {
         return ToString();

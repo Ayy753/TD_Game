@@ -14,7 +14,7 @@ public class PlatformData : TileData
     public override TileBase TileBase { get; protected set; }
     [field: SerializeField]
     public float WalkCost { get; protected set; }
-    public override MapManager.Layer Layer { get; protected set; } = MapManager.Layer.GroundLayer;
+    public override IMapManager.Layer Layer { get; protected set; } = IMapManager.Layer.GroundLayer;
 
     public override string ToString()
     {
