@@ -8,6 +8,11 @@ public class Enemy : MonoBehaviour
     [Inject]
     IMapManager MapManager;
 
+    [Inject]
+    IPathfinder Pathfinder;
+
+    List<Vector3Int> _mainPath;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +25,8 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("tiledata is null");
         }
+
+        _mainPath = Pathfinder.GetMainPath();
     }
 
     // Update is called once per frame

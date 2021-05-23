@@ -14,7 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TowerDefenseDemo.unity
     guid: 6144e0623520cfd4fa7e189af6755a22
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PathCostDemo.unity
     guid: 699a9d29234330d48921996cc4294f07
+  - enabled: 1
+    path: Assets/Scenes/DependencyInjection.unity
+    guid: 75e0be8d121dcba4387bb189e0507e33
   m_configObjects: {}
