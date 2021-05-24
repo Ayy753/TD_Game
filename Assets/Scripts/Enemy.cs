@@ -14,7 +14,8 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] CharacterData characterData;
 
-    private void Start() {
+    private IEnumerator Start() {
+        yield return new WaitForSeconds(2f);
         unitInput = new UnitAI(pathfinder);
         status = new Status(characterData);
         unitMovement = new UnitMovement(transform, status, unitInput);
