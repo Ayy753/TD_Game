@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 654c48055da733b49af241bbedad84d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 213f452f64c2f944dbb3a33a6d85cbb4, type: 3}
   m_Name: FastEnemy
   m_EditorClassIdentifier: 
   <BaseHealth>k__BackingField: 10
@@ -17,9 +17,4 @@ MonoBehaviour:
   <BaseColdResist>k__BackingField: 0
   <BasePoisonResist>k__BackingField: 0
   <BaseArmor>k__BackingField: 0
-  <BaseSpeed>k__BackingField: 3
-  <BaseValue>k__BackingField: 5
-  <Name>k__BackingField: FastEnemy
-  <Description>k__BackingField: A fast enemy
-  <Prefab>k__BackingField: {fileID: 2144752540751609877, guid: 78c70f7693ac4d740bb7b149e5806d03,
-    type: 3}
+  <BaseSpeed>k__BackingField: 2

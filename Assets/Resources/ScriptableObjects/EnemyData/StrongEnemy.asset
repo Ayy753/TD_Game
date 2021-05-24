@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 654c48055da733b49af241bbedad84d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 213f452f64c2f944dbb3a33a6d85cbb4, type: 3}
   m_Name: StrongEnemy
   m_EditorClassIdentifier: 
   <BaseHealth>k__BackingField: 100
@@ -17,9 +17,4 @@ MonoBehaviour:
   <BaseColdResist>k__BackingField: 0
   <BasePoisonResist>k__BackingField: 0
   <BaseArmor>k__BackingField: 5
-  <BaseSpeed>k__BackingField: 1
-  <BaseValue>k__BackingField: 20
-  <Name>k__BackingField: Strong Enemy
-  <Description>k__BackingField: A strong enemy
-  <Prefab>k__BackingField: {fileID: 2333105322325362320, guid: 4ff90c5f8598eac4292e06928c867af7,
-    type: 3}
+  <BaseSpeed>k__BackingField: 0.75

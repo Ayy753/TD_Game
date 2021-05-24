@@ -4,23 +4,23 @@ using UnityEngine;
 using Zenject;
 
 public class PathFinder : IPathfinder, IInitializable {
-    private List<Vector3Int> _currentPath;
-    private Transform _entrance, _exit;
+    private List<Vector3Int> currentPath;
+    private Transform entrance, exit;
 
-    [Inject] IMapManager _mapManager;
-    [Inject] AsyncProcessor _asyncProcessor;
+    [Inject] IMapManager mapManager;
+    [Inject] AsyncProcessor asyncProcessor;
 
     public void Initialize() {
         Debug.Log("Initializing pathfinder");
 
-        _entrance = GameObject.Find("Entrance").transform;
-        _exit = GameObject.Find("Exit").transform;
+        entrance = GameObject.Find("Entrance").transform;
+        exit = GameObject.Find("Exit").transform;
 
-        if (_entrance == null || _exit == null) {
+        if (entrance == null || exit == null) {
             Debug.LogError("entrance or exit not found");
         }
         else {
-            _asyncProcessor.StartCoroutine(CalculateMainPath());
+            asyncProcessor.StartCoroutine(CalculateMainPath());
         }
     }
 
@@ -40,8 +40,8 @@ public class PathFinder : IPathfinder, IInitializable {
     /// <param name="position"></param>
     /// <returns></returns>
     private bool IsValidTile(Vector3Int position) {
-        if (_mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) != true &&
-            _mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == true) {
+        if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) != true &&
+            mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == true) {
             return true;
         }
         else {
@@ -59,8 +59,8 @@ public class PathFinder : IPathfinder, IInitializable {
         List<PathNode> openList = new List<PathNode>();
         List<PathNode> closedList = new List<PathNode>();
 
-        Vector3Int entranceCoordinate = Vector3Int.FloorToInt(_entrance.transform.position);
-        Vector3Int exitCoordinate = Vector3Int.FloorToInt(_exit.transform.position);
+        Vector3Int entranceCoordinate = Vector3Int.FloorToInt(entrance.transform.position);
+        Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
 
         Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
 
@@ -93,8 +93,8 @@ public class PathFinder : IPathfinder, IInitializable {
             //  Return path chain if we found the exit tile
             if (currentNode.Coordinate == exitCoordinate) {
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
-                _currentPath = foundPath.GetPath();
-                _mapManager.HighlightPath(_currentPath, Color.cyan);
+                currentPath = foundPath.GetPath();
+                mapManager.HighlightPath(currentPath, Color.cyan);
                 Debug.Log("Successfully found main path");
                 yield break;
             }
@@ -107,7 +107,7 @@ public class PathFinder : IPathfinder, IInitializable {
                         Vector3Int neighbourCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
                         bool skipSuccessor = false;
 
-                        //_mapManager.HighlightTile(IMapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
+                        //mapManager.HighlightTile(IMapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
                         //  Proceed if there is an open space at this position
                         if (IsValidTile(neighbourCoordinate)) {
                             // Skip this tile if its already been considered
@@ -120,7 +120,7 @@ public class PathFinder : IPathfinder, IInitializable {
 
                             //  Otherwise, process this tile 
                             if (skipSuccessor == false) {
-                                float tileCost = _mapManager.GetTileCost(neighbourCoordinate);
+                                float tileCost = mapManager.GetTileCost(neighbourCoordinate);
                                 float neighGCost = tileCost + parent.Gcost;
                                 float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
                                 float neighFCost = neighGCost + neighHCost;
@@ -152,7 +152,6 @@ public class PathFinder : IPathfinder, IInitializable {
                         //  Using a resetting counter is probably a lot faster than the modulus operator 
                         counter++;
                         if (counter > 1500) {
-                            Debug.Log("resetting counter");
                             counter = 0;
                             yield return null;
                         }
@@ -165,7 +164,7 @@ public class PathFinder : IPathfinder, IInitializable {
     public List<Vector3Int> GetMainPath() {
 
 
-        return _currentPath;
+        return currentPath;
     }
 
     public List<Vector3Int> GetRouteToMainPath(Vector3Int currentPosition) {

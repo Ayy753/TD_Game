@@ -6,32 +6,23 @@ using Zenject;
 public class Enemy : MonoBehaviour
 {
     [Inject]
-    IMapManager MapManager;
+    IPathfinder pathfinder;
 
-    [Inject]
-    IPathfinder Pathfinder;
+    private IUnitInput unitInput;
+    private Status status;
+    private IUnitMovement unitMovement;
 
-    List<Vector3Int> _mainPath;
+    [SerializeField] CharacterData characterData;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        TileData tileData = MapManager.GetTileData(IMapManager.Layer.GroundLayer, Vector3Int.FloorToInt(transform.position));
-        if (tileData != null)
-        {
-            Debug.Log(tileData.ToString());
-        }
-        else
-        {
-            Debug.LogError("tiledata is null");
-        }
-
-        _mainPath = Pathfinder.GetMainPath();
+    private void Start() {
+        unitInput = new UnitAI(pathfinder);
+        status = new Status(characterData);
+        unitMovement = new UnitMovement(transform, status, unitInput);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void Update() {
+        if (unitMovement != null) {
+            unitMovement.Move();
+        }
     }
 }
