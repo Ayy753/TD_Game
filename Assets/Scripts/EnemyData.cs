@@ -6,5 +6,5 @@ public class EnemyData : CharacterData
     [field: SerializeField] public int BaseValue { get; private set; }
     [field: SerializeField] public string Name { get; private set; }
     [field: SerializeField] public string Description { get; private set; }
-    [field: SerializeField] public GameObject Prefab { get; private set; }
+    [field: SerializeField] public Enemy.Type Type { get; private set; }
 }

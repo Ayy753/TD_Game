@@ -10,6 +10,6 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind(typeof(ITickable), typeof(IInitializable)).To<ObjectPool>().AsCached().NonLazy();
         Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
-        Container.BindFactory<UnityEngine.Object, Enemy, Enemy.Factory>().FromFactory<ObjectPool>();
+        Container.BindFactory<Enemy.Type, Enemy, Enemy.Factory>().FromFactory<ObjectPool>();
     }
 }

@@ -11,6 +11,12 @@ public class Enemy : MonoBehaviour
     private Status status;
     private IUnitMovement unitMovement;
 
+    public enum Type {
+        Fast,
+        Normal,
+        Strong
+    }
+
     private void Start() {
         unitInput = new UnitAI(pathFinder);
         status = new Status(enemyData);
@@ -23,5 +29,5 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public class Factory : PlaceholderFactory<UnityEngine.Object, Enemy> { }
+    public class Factory : PlaceholderFactory<Enemy.Type, Enemy> { }
 }
