@@ -5,19 +5,15 @@ using Zenject;
 
 public class Enemy : MonoBehaviour
 {
-    [Inject]
-    IPathfinder pathfinder;
-
+    [Inject] private readonly IPathfinder pathFinder;
+    [SerializeField] public EnemyData enemyData;
     private IUnitInput unitInput;
     private Status status;
     private IUnitMovement unitMovement;
 
-    [SerializeField] CharacterData characterData;
-
-    private IEnumerator Start() {
-        yield return new WaitForSeconds(2f);
-        unitInput = new UnitAI(pathfinder);
-        status = new Status(characterData);
+    private void Start() {
+        unitInput = new UnitAI(pathFinder);
+        status = new Status(enemyData);
         unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);
     }
 
@@ -28,6 +24,4 @@ public class Enemy : MonoBehaviour
     }
 
     public class Factory : PlaceholderFactory<UnityEngine.Object, Enemy> { }
-
-
 }

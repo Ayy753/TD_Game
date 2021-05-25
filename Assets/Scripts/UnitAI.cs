@@ -8,15 +8,15 @@ using Zenject;
 /// </summary>
 public class UnitAI : IUnitInput
 {
-
+    IPathfinder pathFinder;
     private List<Vector3Int> mainPath;
     private int pathIndex;
     private Vector3Int nextTilePosition;
 
     //  TODO find own reference to pathfinder
     //  injection apparently doesn't work at runtime so I have to pass in pathfinder for now
-    public UnitAI(IPathfinder pathfinder) {
-        mainPath = pathfinder.GetMainPath();
+    public UnitAI(IPathfinder pathFinder) {
+        mainPath = pathFinder.GetMainPath();
 
         if (mainPath.Count == 0)
             throw new System.Exception("There is no path");
