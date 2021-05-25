@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(2f);
         unitInput = new UnitAI(pathfinder);
         status = new Status(characterData);
-        unitMovement = new UnitMovement(transform, status, unitInput);
+        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);
     }
 
     private void Update() {
@@ -26,4 +26,8 @@ public class Enemy : MonoBehaviour
             unitMovement.Move();
         }
     }
+
+    public class Factory : PlaceholderFactory<UnityEngine.Object, Enemy> { }
+
+
 }

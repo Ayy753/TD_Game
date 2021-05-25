@@ -43,7 +43,7 @@ public class MapManager : IMapManager, IInitializable {
             //  Link TileBase objects to TileData 
             //  Since towers share the same tower base we need to ensure they dont get added twice
             if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true) {
-                Debug.Log(string.Format("Adding: tile name:{0} tilebase:{1}", tileDatas[i].name, tileDatas[i].TileBase.name));
+                //Debug.Log(string.Format("Adding: tile name:{0} tilebase:{1}", tileDatas[i].name, tileDatas[i].TileBase.name));
                 dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
             }
         }
