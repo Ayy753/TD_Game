@@ -28,6 +28,10 @@ public class Status
         statusEffects = new List<StatusEffect>();
     }
 
+    public void Initialize() {
+        //  TODO: Remove each status effect
+    }
+
     public void ApplyStatusEffect(StatusEffect newEffect)
     {
         foreach (StatusEffect effect in statusEffects)

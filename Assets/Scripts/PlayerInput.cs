@@ -7,6 +7,10 @@ public class PlayerInput : IUnitInput {
         throw new System.NotImplementedException();
     }
 
+    public void Initialize() {
+        throw new System.NotImplementedException();
+    }
+
     public void ReachedNextTile() {
         throw new System.NotImplementedException();
     }

@@ -14,8 +14,8 @@ public class WaveManager : IInitializable {
     public int NumberOfWaves { get; private set; }
     private int currentWave = 0;
 
-    private const int timeBetweenWaves = 2;
-    private const int timeBeforeFirstWave = 5;
+    private const int timeBetweenWaves = 30;
+    private const int timeBeforeFirstWave = 3;
     private Coroutine nextWaveCountDown;
 
     public void Initialize() {
@@ -113,7 +113,8 @@ public class WaveManager : IInitializable {
 
             for (int i = 0; i < group.NumEnemies; i++) {
                 yield return new WaitForSeconds(group.TimebetweenSpawns);
-                objectPool.Create(groupType);
+                Enemy enemy = objectPool.Create(groupType);
+                enemy.Spawn();
             }
 
             yield return new WaitForSeconds(LevelData.waves[thisWaveNum].TimebetweenGroups);

@@ -6,4 +6,5 @@ public interface IUnitInput
 {
     public void ReachedNextTile();
     public Vector3Int GetNextTile();
+    public void Initialize();
 }

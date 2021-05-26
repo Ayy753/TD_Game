@@ -52,9 +52,6 @@ public class ObjectPool : ITickable, IInitializable
         foreach (Enemy enemy in instantiatedEnemies) {
             enemy.transform.parent.gameObject.SetActive(false);
         }
-
-        //  Test
-        Create(Enemy.Type.Fast);
     }
 
     public void Tick() {
@@ -62,9 +59,6 @@ public class ObjectPool : ITickable, IInitializable
     }
 
     public Enemy Create(Enemy.Type type) {
-        Debug.Log("Creating enemy");
-        Debug.Log("instantiatedEnemies length: " + instantiatedEnemies.Count);
-
         //  Find available enemy of a prefab type
         foreach (Enemy enemy in instantiatedEnemies) {
             if (enemy.enemyData.Type == type && enemy.gameObject.activeInHierarchy == false) {

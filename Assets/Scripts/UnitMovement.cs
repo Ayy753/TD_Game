@@ -14,7 +14,11 @@ public class UnitMovement : IUnitMovement
         this.transform = transform;
         this.unitStatus = unitStatus;
         this.unitInput = unitInput;
+    }
+
+    public void Initialize() {
         nextTile = unitInput.GetNextTile();
+        transform.position = nextTile + TILEMAP_OFFSET;
     }
 
     public void Move() {
@@ -28,4 +32,6 @@ public class UnitMovement : IUnitMovement
             nextTile = unitInput.GetNextTile();
         }
     }
+
+
 }
