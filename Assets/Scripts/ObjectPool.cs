@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-public class ObjectPool : IFactory<Enemy.Type, Enemy>, ITickable, IInitializable
+public class ObjectPool : ITickable, IInitializable
 {
     private readonly DiContainer _container;
     private readonly GameObject[] enemyPrefabs;
@@ -16,6 +16,8 @@ public class ObjectPool : IFactory<Enemy.Type, Enemy>, ITickable, IInitializable
     }
 
     public void Initialize() {
+        Debug.Log("Initializing ObjectPool");
+
         instantiatedEnemies = new List<Enemy>();
         enemyTypeToPrefab = new Dictionary<Enemy.Type, GameObject>();
 
@@ -60,6 +62,9 @@ public class ObjectPool : IFactory<Enemy.Type, Enemy>, ITickable, IInitializable
     }
 
     public Enemy Create(Enemy.Type type) {
+        Debug.Log("Creating enemy");
+        Debug.Log("instantiatedEnemies length: " + instantiatedEnemies.Count);
+
         //  Find available enemy of a prefab type
         foreach (Enemy enemy in instantiatedEnemies) {
             if (enemy.enemyData.Type == type && enemy.gameObject.activeInHierarchy == false) {

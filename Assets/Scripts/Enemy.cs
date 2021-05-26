@@ -17,7 +17,8 @@ public class Enemy : MonoBehaviour
         Strong
     }
 
-    private void Start() {
+    private IEnumerator Start() {
+        yield return new WaitForSeconds(2f);
         unitInput = new UnitAI(pathFinder);
         status = new Status(enemyData);
         unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);

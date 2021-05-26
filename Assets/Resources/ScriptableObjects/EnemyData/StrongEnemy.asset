@@ -21,4 +21,4 @@ MonoBehaviour:
   <BaseValue>k__BackingField: 20
   <Name>k__BackingField: Strong Enemy
   <Description>k__BackingField: A strong enemy
-  <EnemyType>k__BackingField: 2
+  <Type>k__BackingField: 2

@@ -21,5 +21,4 @@ MonoBehaviour:
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Fast Enemy
   <Description>k__BackingField: A fast enemy
-  <Prefab>k__BackingField: {fileID: 2144752540751609877, guid: 78c70f7693ac4d740bb7b149e5806d03,
-    type: 3}
+  <Type>k__BackingField: 0
