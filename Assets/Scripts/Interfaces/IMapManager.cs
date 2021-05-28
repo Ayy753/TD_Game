@@ -11,7 +11,7 @@ public interface IMapManager
         PlatformLayer
     }
     public TileData GetTileData(Layer layer, Vector3Int position);
-    public void SetTile(TileData tileData, Vector3Int position);
+    public void SetTile(Vector3Int position, TileData tileData);
     float GetTileCost(Vector3Int neighbourCoordinate);
     bool ContainsTileAt(Layer structureLayer, Vector3Int position);
 
@@ -37,10 +37,12 @@ public interface IMapManager
     /// </summary>
     public void UnhighlightAll();
 
-
     /// <summary>
     /// Highlights the tiles in an array on the ground layer
     /// </summary>
     /// <param name="path"></param>
     public void HighlightPath(List<Vector3Int> path, Color color);
-    }
+
+    bool IsGroundSolid(Vector3Int position);
+    void RemoveTile(object structureLayer, Vector3Int position);
+}

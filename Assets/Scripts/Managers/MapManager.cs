@@ -90,7 +90,7 @@ public class MapManager : IMapManager, IInitializable {
         return null;
     }
 
-    public void SetTile(TileData tileData, Vector3Int position) {
+    public void SetTile(Vector3Int position, TileData tileData) {
         throw new System.NotImplementedException();
     }
 
@@ -181,5 +181,12 @@ public class MapManager : IMapManager, IInitializable {
         }
     }
     #endregion
+
+    public bool IsGroundSolid(Vector3Int position) {
+        if (((GroundData)(GetTileData(IMapManager.Layer.GroundLayer, position))).IsSolid) {
+            return true;
+        }
+        return false;
+    }
 }
 
