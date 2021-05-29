@@ -71,16 +71,23 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="position"></param>
     /// <returns>Error message or empty string if conditions are valid</returns>
     private string CanBuildStructure (StructureData structure, Vector3Int position) {
-        if (mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == false) {
-            return "You can't bulid over empty space";
-        }
-        if (mapManager.IsGroundSolid(position) == false) {
-            return "It is too unstable to build here";
+        if (CanBuildOverTile(position) == false) {
+            return "You can't build there";
         }
         if (gameManager.CanAfford(structure.Cost) == false) {
-            return "Can't afford";
+            return "You can't afford " + structure.Cost  + "g" ;
         }
         return string.Empty;
+    }
+
+    private bool CanBuildOverTile(Vector3Int position) {
+        if (mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == false ||
+            mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) == true ||
+            mapManager.IsGroundSolid(position) == false) { 
+            
+            return false;
+        }
+        return true;
     }
 
     /// <summary>
@@ -181,11 +188,7 @@ public class BuildManager : IInitializable, IDisposable {
         }
         return false;
     }
-
-
-
-
-
+    
     #region Hover/Unhover logic
 
     /// <summary>
@@ -271,8 +274,6 @@ public class BuildManager : IInitializable, IDisposable {
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
                 UnhoverTile(new Vector3Int(x, y, 0));
-
-                //mapManager.ReverseHighlight(IMapManager.Layer.GroundLayer, new Vector3Int(x, y, 0));
             }
         }
     }
@@ -285,9 +286,6 @@ public class BuildManager : IInitializable, IDisposable {
     private void HoverTowerGrid(Vector3Int position, Color color) {
         Vector3Int bottomLeft = position + new Vector3Int(-1, -1, 0);
         Vector3Int topRight = position + new Vector3Int(1, 1, 0);
-
-        Debug.Log(string.Format("bottom left: {0}, top right: {1}", bottomLeft, topRight));
-        
         HoverGrid(bottomLeft, topRight, color);
     }
 
@@ -311,7 +309,7 @@ public class BuildManager : IInitializable, IDisposable {
     private void BuildTowerHoverLogic(Vector3Int position) {
 
         //  Highlight grid red if another tower is present in it
-        if (IsTowerAdjacent(position)) {
+        if (IsTowerAdjacent(position) || CanBuildOverTile(position) == false) {
             HoverTowerGrid(position, Color.red);
         }
         //  Otherwise highligh yellow/green
@@ -335,32 +333,19 @@ public class BuildManager : IInitializable, IDisposable {
     /// </summary>
     /// <param name="position"></param>
     private void BuildModeHoverLogic(Vector3Int position) {
-
-        if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) {
-            StructureData tile = (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
-            if (tile.GetType() == typeof(TowerData)) {
-                ChangeTowerTint(position, Color.red);
+        if (currentlySelectedStructure.GetType() == typeof(TowerData)) {
+            BuildTowerHoverLogic(position);
+        }
+        else {
+            if (CanBuildOverTile(position) == true) {
+                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, Color.green);
             }
             else {
                 mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.red);
             }
         }
-        //  There is no structure here
-        else {
-            //  Is tile capable of supporting a structure?
-            if (mapManager.IsGroundSolid(position)) {
-                if (currentlySelectedStructure.GetType() == typeof(TowerData)) {
-                    BuildTowerHoverLogic(position);
-                }
-                else {
-                    mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, Color.green);
-                }
-            }
-            else {
-                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, Color.red);
-            }
-        }
     }
+
 
     /// <summary>
     /// Handles hover logic while in demolish mode
@@ -398,24 +383,6 @@ public class BuildManager : IInitializable, IDisposable {
         lastHoveredPosition = Vector3Int.down;
     }
     #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /// <summary>
@@ -503,6 +470,4 @@ public class BuildManager : IInitializable, IDisposable {
         PauseHighlighting();
         Debug.Log("Exited build mode");
     }
-
-
 }

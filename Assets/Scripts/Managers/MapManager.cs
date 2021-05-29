@@ -151,14 +151,8 @@ public class MapManager : IMapManager, IInitializable {
     }
 
     public void ReverseHighlight(IMapManager.Layer layer, Vector3Int position) {
-
-        Debug.Log(string.Format("trying to unhighlight layer: {0}, position: {1}", layer, position));
-
         foreach (HighlightedTile tile in highlightedTiles) {
             if (layer == tile.Layer && position == tile.Position) {
-                Debug.Log("found highlighted tile");
-
-
                 HighlightTile(layer, position, tile.PreviousColor);
                 break;
             }
@@ -198,7 +192,5 @@ public class MapManager : IMapManager, IInitializable {
         }
         return false;
     }
-
-
 }
 
