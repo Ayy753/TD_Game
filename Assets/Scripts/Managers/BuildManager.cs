@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
-public class BuildManager : IBuildManager{
+public class BuildManager : IInitializable, IDisposable {
 
     #region properties
     public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
@@ -29,12 +31,20 @@ public class BuildManager : IBuildManager{
     }
 
     public BuildManager(IMapManager mapManager, GameManager gameManager, GUIController guiController) {
+        Debug.Log("build manager constructor");
         this.mapManager = mapManager;
         this.gameManager = gameManager;
         this.guiController = guiController;
+    }
 
+    public void Initialize() {
         instantiatedTowers = new List<GameObject>();
-        line = new LineRenderer();
+        line = GameObject.Find("LineRenderer").GetComponent<LineRenderer>();
+        MouseManager.OnHoveredNewTile += HandleNewTileHovered;
+    }
+
+    public void Dispose() {
+        MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
     }
 
     /// <summary>
@@ -172,7 +182,40 @@ public class BuildManager : IBuildManager{
         return false;
     }
 
+
+
+
+
     #region Hover/Unhover logic
+
+    /// <summary>
+    /// Handles logic when a new tile is hovered
+    /// </summary>
+    /// <param name="tileCoords"></param>
+    private void HandleNewTileHovered(Vector3Int tileCoords) {
+        if (gameManager.GameEnded == true || 
+            CurrentBuildMode == BuildMode.None || 
+            EventSystem.current.IsPointerOverGameObject() == true ||
+            mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, tileCoords) == false) {
+
+            PauseHighlighting();
+            return;
+        }
+
+        if (lastSelectedStructureWasTower) {
+            BuildTowerUnHoverLogic();
+        }
+        else {
+            UnhoverTile(lastHoveredPosition);
+        }
+
+        if (currentlySelectedStructure.GetType() == typeof(TowerData)) {
+            BuildTowerHoverLogic(tileCoords);
+        }
+        else {
+            HoverTile(tileCoords);
+        }
+    }
 
     /// <summary>
     /// Highlights the tile being hovered over while in build
@@ -205,8 +248,6 @@ public class BuildManager : IBuildManager{
                 mapManager.ReverseHighlight(IMapManager.Layer.StructureLayer, position);
             }
             else if (tile.GetType() == typeof(TowerData)) {
-                //  Add previous tower color property to tower script?
-                //  So far nothing else can highlight structures so we would never need to revert it
                 ChangeTowerTint(position, Color.white);
             }
             else {
@@ -230,19 +271,34 @@ public class BuildManager : IBuildManager{
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
                 UnhoverTile(new Vector3Int(x, y, 0));
+
+                //mapManager.ReverseHighlight(IMapManager.Layer.GroundLayer, new Vector3Int(x, y, 0));
             }
         }
     }
 
+    /// <summary>
+    /// Hovers a 3x3 grid around tower center
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="color"></param>
     private void HoverTowerGrid(Vector3Int position, Color color) {
         Vector3Int bottomLeft = position + new Vector3Int(-1, -1, 0);
         Vector3Int topRight = position + new Vector3Int(1, 1, 0);
+
+        Debug.Log(string.Format("bottom left: {0}, top right: {1}", bottomLeft, topRight));
+        
         HoverGrid(bottomLeft, topRight, color);
     }
 
+    /// <summary>
+    /// Unhovers a 3x3 grid around tower center
+    /// </summary>
+    /// <param name="position"></param>
     private void UnhoverTowerGrid(Vector3Int position) {
         Vector3Int bottomLeft = position + new Vector3Int(-1, -1, 0);
         Vector3Int topRight = position + new Vector3Int(1, 1, 0);
+
         UnHoverGrid(bottomLeft, topRight);
     }
 
@@ -263,13 +319,12 @@ public class BuildManager : IBuildManager{
             HoverTowerGrid(position, Color.green);
             RenderRadius(position + tilemapOffset, ((TowerData)currentlySelectedStructure).Range);
         }
+        lastHoveredPosition = position;
         lastSelectedStructureWasTower = true;
     }
 
     private void BuildTowerUnHoverLogic() {
-        Vector3Int topLeft = lastHoveredPosition + new Vector3Int(-1, 1, 0);
-        Vector3Int bottomRight = lastHoveredPosition + new Vector3Int(1, -1, 0);
-        UnHoverGrid(topLeft, bottomRight);
+        UnhoverTowerGrid(lastHoveredPosition);
 
         lastSelectedStructureWasTower = false;
         HideRadius();
@@ -327,36 +382,7 @@ public class BuildManager : IBuildManager{
         }
     }
 
-    /// <summary>
-    /// Handles logic when a new tile is hovered
-    /// </summary>
-    /// <param name="tileCoords"></param>
-    private void HandleNewTileHovered(Vector3Int tileCoords) {
-        if (gameManager.GameEnded == false) {
 
-        }
-        else if (lastHoveredPosition != Vector3Int.down) {
-            UnhoverTile(lastHoveredPosition);
-            lastHoveredPosition = Vector3Int.down;
-        }
-
-
-        if (CurrentBuildMode != BuildMode.None) {
-            if (mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, tileCoords) && EventSystem.current.IsPointerOverGameObject() == false) {
-                if (lastSelectedStructureWasTower) {
-                    UnHoverGrid(lastHoveredPosition);
-                }
-                else {
-                    UnhoverTile(lastHoveredPosition);
-                }
-
-                HoverTile(tileCoords);
-            }
-            else {
-                PauseHighlighting();
-            }
-        }
-    }
 
     /// <summary>
     /// Used when cursor hovers over GUI elements or empty space
@@ -364,10 +390,7 @@ public class BuildManager : IBuildManager{
     /// </summary>
     private void PauseHighlighting() {
         if (lastSelectedStructureWasTower) {
-            Vector3Int topLeft = lastHoveredPosition + new Vector3Int(-1, 1, 0);
-            Vector3Int bottomRight = lastHoveredPosition + new Vector3Int(1, -1, 0);
-
-            UnHoverGrid(topLeft, bottomRight);
+            UnhoverTowerGrid(lastHoveredPosition);
         }
         else {
             UnhoverTile(lastHoveredPosition);
@@ -375,6 +398,24 @@ public class BuildManager : IBuildManager{
         lastHoveredPosition = Vector3Int.down;
     }
     #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /// <summary>
@@ -462,4 +503,6 @@ public class BuildManager : IBuildManager{
         PauseHighlighting();
         Debug.Log("Exited build mode");
     }
+
+
 }

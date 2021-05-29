@@ -80,7 +80,7 @@ public class WaveManager : IInitializable {
         }
 
         while (secondsUntilNextWave > 0) {
-            Debug.Log("Time until next wave: " + secondsUntilNextWave);
+            //Debug.Log("Time until next wave: " + secondsUntilNextWave);
             yield return new WaitForSeconds(1f);
             secondsUntilNextWave--;
         }

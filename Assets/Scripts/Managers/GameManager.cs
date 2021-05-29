@@ -8,6 +8,11 @@ public class GameManager {
     public int Gold { get; private set; }
     public bool GameEnded { get; internal set; }
 
+    public GameManager() {
+        Lives = 25;
+        Gold = 250;
+    }
+
     public bool CanAfford(int cost) {
         if (Gold >= cost) {
             return true;

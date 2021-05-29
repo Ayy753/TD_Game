@@ -19,6 +19,7 @@ class MouseManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("starting mouse manager");
         StartCoroutine(MousePolling());
     }
 

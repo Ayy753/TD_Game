@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -12,6 +13,14 @@ public class UntitledInstaller : MonoInstaller
         Container.BindIFactory<Enemy, Enemy.Factory>();
         Container.Bind(typeof(IInitializable)).To<WaveManager>().AsSingle().NonLazy();
         Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
-        Container.Bind<IBuildManager>().To<BuildManager>().AsSingle().NonLazy();
+
+        Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+
+        Container.Bind<GUIController>().FromComponentInHierarchy().AsSingle();
+
+        Container.Bind<GameManager>().AsSingle().NonLazy();
+
+        Container.Bind<BuildManager>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();
     }
 }
