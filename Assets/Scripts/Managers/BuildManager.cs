@@ -346,7 +346,6 @@ public class BuildManager : IInitializable, IDisposable {
         }
     }
 
-
     /// <summary>
     /// Handles hover logic while in demolish mode
     /// </summary>
@@ -367,8 +366,6 @@ public class BuildManager : IInitializable, IDisposable {
         }
     }
 
-
-
     /// <summary>
     /// Used when cursor hovers over GUI elements or empty space
     /// or when user exits build/demolish mode
@@ -383,7 +380,6 @@ public class BuildManager : IInitializable, IDisposable {
         lastHoveredPosition = Vector3Int.down;
     }
     #endregion
-
 
     /// <summary>
     /// Renders a line of a given radius around a point to draw a circle

@@ -177,10 +177,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2567355637282414980}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03889ef0a2a1dc64382ce30e8da112db, type: 3}
+  m_Script: {fileID: 11500000, guid: cec14a54ff642e34585067949dcac387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TowerData: {fileID: 11400000, guid: 7ad11fcc236bb2640bce50be41f1326a, type: 2}
 --- !u!61 &5137916138958110613
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -264,6 +263,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3515138666278300368}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6090af1c6b4a7a43a302caa2eb6bdbf, type: 3}
+  m_Script: {fileID: 11500000, guid: 235a5d6e2e4d41d40adbbce66f2fdfa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

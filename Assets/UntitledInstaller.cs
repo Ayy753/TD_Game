@@ -22,5 +22,12 @@ public class UntitledInstaller : MonoInstaller
 
         Container.Bind<BuildManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();
+
+        //StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
+
+        //for (int i = 0; i < structureDatas.Length; i++) {
+        //    Container.BindInstance(structureDatas[i]).AsTransient();
+        //    Container.InstantiatePrefabResourceForComponent<BuildMenuButton>("Prefabs/NewBuildMenuButton");
+        //}
     }
 }
