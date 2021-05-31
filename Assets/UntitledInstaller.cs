@@ -26,6 +26,7 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<HoverManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<HoverManager>().FromResolve();
 
+        Container.Bind(typeof(IHoverValidator)).To<HoverValidator>().AsSingle().NonLazy();
         //StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
 
         //for (int i = 0; i < structureDatas.Length; i++) {

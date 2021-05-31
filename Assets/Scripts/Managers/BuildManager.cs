@@ -51,15 +51,15 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="structure"></param>
     /// <param name="position"></param>
     private void AttemptBuildStructure(StructureData structure, Vector3Int position) {
-        string errorMessage = hoverManager.CanBuildStructure(structure, position);
-        if (errorMessage == string.Empty) {
-            BuildStructure(structure, position);
-            gameManager.SpendGold(structure.Cost);
-            guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
-        }
-        else {
-            guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), errorMessage, Color.red);
-        }
+        //string errorMessage = hoverManager.CanBuildStructure(structure, position);
+        //if (errorMessage == string.Empty) {
+        //    BuildStructure(structure, position);
+        //    gameManager.SpendGold(structure.Cost);
+        //    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
+        //}
+        //else {
+        //    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), errorMessage, Color.red);
+        //}
     }
 
     /// <summary>
