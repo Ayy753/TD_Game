@@ -13,13 +13,16 @@ public class BuildManager : IInitializable, IDisposable {
 
     #region fields
     IMapManager mapManager;
-    GameManager gameManager;
-    GUIController guiController;
+    IBuildValidator buildValidator;
+    IMessageSystem messageSystem;
+    IWallet wallet;
     HoverManager hoverManager;
+    GameManager gameManager;
 
     public StructureData currentlySelectedStructure;
     private List<GameObject> instantiatedTowers;
-    private Vector3Int tilemapOffset;
+    private Vector3 tilemapOffset = new Vector3( 0.5f, 0.5f, 0);
+    private Vector3Int lastPositionHovered;
     #endregion
 
     public enum BuildMode {
@@ -28,21 +31,25 @@ public class BuildManager : IInitializable, IDisposable {
         None
     }
 
-    public BuildManager(IMapManager mapManager, GameManager gameManager, GUIController guiController, HoverManager hoverManager) {
+    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, HoverManager hoverManager) {
         Debug.Log("build manager constructor");
         this.mapManager = mapManager;
         this.gameManager = gameManager;
-        this.guiController = guiController;
+        this.buildValidator = buildValidator;
+        this.messageSystem = messageSystem;
+        this.wallet = wallet;
         this.hoverManager = hoverManager;
     }
 
     public void Initialize() {
         instantiatedTowers = new List<GameObject>();
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
+        MouseManager.OnMouseUp += HandleMouseUp;
     }
 
     public void Dispose() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
+        MouseManager.OnMouseUp -= HandleMouseUp;
     }
 
     /// <summary>
@@ -51,15 +58,21 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="structure"></param>
     /// <param name="position"></param>
     private void AttemptBuildStructure(StructureData structure, Vector3Int position) {
-        //string errorMessage = hoverManager.CanBuildStructure(structure, position);
-        //if (errorMessage == string.Empty) {
-        //    BuildStructure(structure, position);
-        //    gameManager.SpendGold(structure.Cost);
-        //    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), string.Format("Spent {0}g", structure.Cost), Color.yellow);
-        //}
-        //else {
-        //    guiController.SpawnFloatingText(Camera.main.ScreenToWorldPoint(Input.mousePosition), errorMessage, Color.red);
-        //}
+        
+        //  Validate if user can build at this position and can afford structure
+        if (buildValidator.CanBuildOverTile(position, structure) == false) {
+            messageSystem.DisplayMessage("You cannot build here", Color.red);
+            return;
+        }
+        if (wallet.CanAfford(structure.Cost) == false) {
+            messageSystem.DisplayMessage("You cannot afford " + structure.Cost, Color.red);
+            return;
+        }
+
+        //  Build structure
+        BuildStructure(structure, position);
+        wallet.SpendMoney(structure.Cost);
+        messageSystem.DisplayMessage(string.Format("Spent {0}g", structure.Cost), Color.yellow);
     }
 
     /// <summary>
@@ -80,14 +93,33 @@ public class BuildManager : IInitializable, IDisposable {
         }
     }
 
+    private void AttemptDemolishStructure(Vector3Int position) {
+        if (buildValidator.CanDemolishStructure(position) == false) {
+            return;
+        }
+        DemolishStructure(position);
+    }
+
+    private void DemolishStructure(Vector3Int position) {
+        StructureData structureAtPos = (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+        float structureValue;
+
+        if (structureAtPos.GetType() == typeof(TowerData)) {
+            //  delete tower game object
+        }
+
+        mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
+        structureValue = structureAtPos.Cost * wallet.GetResellPercentageInDecimal();
+    }
+
     /// <summary>
     /// Handles logic when a new tile is hovered
     /// </summary>
     /// <param name="tileCoords"></param>
     private void HandleNewTileHovered(Vector3Int tileCoords) {
+        lastPositionHovered = tileCoords;
         hoverManager.NewTileHovered(tileCoords, CurrentBuildMode, currentlySelectedStructure);
     }
-
 
     /// <summary>
     /// Instantiates and initializes a tower game object and adds it to list
@@ -105,84 +137,68 @@ public class BuildManager : IInitializable, IDisposable {
     /// 
     /// </summary>
     private void HandleMouseUp() {
-        if (CurrentBuildMode != BuildMode.None && gameManager.GameEnded == false &&
-            EventSystem.current.IsPointerOverGameObject() == false) {
-            Vector3Int mouseposition = Vector3Int.FloorToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            mouseposition.z = 0;
+        //  Prevent building/demolishing after game ended
+        if (gameManager.GameEnded == true) {
+            return;
+        }
 
-            if (CurrentBuildMode == BuildMode.Build) {
-                if (currentlySelectedStructure.GetType() == typeof(TowerData)) {
-                    if (IsTowerAdjacent(mouseposition) == true) {
-                        guiController.SpawnFloatingTextAtCursor("You cannot build towers next to eachother", Color.red);
-                    }
-                    else {
-                        BuildStructure(currentlySelectedStructure, mouseposition);
-                    }
-                }
-                else if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, mouseposition) == false) {
-                    BuildStructure(currentlySelectedStructure, mouseposition);
-                }
-            }
-            else if (CurrentBuildMode == BuildMode.Demolish) {
-                if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, mouseposition)) {
-                    DemolishStructure(mouseposition);
-                }
-            }
-            else {
-                throw new System.Exception("This build mode is not implemented");
-            }
+        if (CurrentBuildMode == BuildMode.Build) {
+            AttemptBuildStructure(currentlySelectedStructure, lastPositionHovered);
+        }
+        else if (CurrentBuildMode == BuildMode.Demolish) {
+            AttemptDemolishStructure(lastPositionHovered);
         }
     }
 
-    /// <summary>
-    /// Checks if there is a tower within a 3x3 radius of position
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns></returns>
-    public bool IsTowerAdjacent(Vector3Int position) {
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
-                Vector3Int neighbour = position + new Vector3Int(x, y, 0);
-                if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, neighbour)) {
-                    TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, neighbour);
+    ///// <summary>
+    ///// Checks if there is a tower within a 3x3 radius of position
+    ///// </summary>
+    ///// <param name="position"></param>
+    ///// <returns></returns>
+    //public bool IsTowerAdjacent(Vector3Int position) {
+    //    for (int x = -1; x <= 1; x++) {
+    //        for (int y = -1; y <= 1; y++) {
+    //            Vector3Int neighbour = position + new Vector3Int(x, y, 0);
+    //            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, neighbour)) {
+    //                TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, neighbour);
 
-                    if (tileData.GetType() == typeof(TowerData)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    //                if (tileData.GetType() == typeof(TowerData)) {
+    //                    return true;
+    //                }
+    //            }
+    //        }
+    //    }
+    //    return false;
+    //}
 
-    /// <summary>
-    /// Demolishes a structure
-    /// </summary>
-    /// <param name="position"></param>
-    public void DemolishStructure(Vector3Int position) {
-        TileData structure = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
-        if (structure.GetType() == typeof(TowerData)) {
-            //  Find and remove tower at this position
-            foreach (GameObject tower in instantiatedTowers) {
-                if (tower.transform.position == position + tilemapOffset) {
-                    TowerData towerData = tower.GetComponent<Tower>().TowerData;
-                    int sellValue = Mathf.RoundToInt(towerData.Cost * 0.66f);
-                    gameManager.GainGold(sellValue);
-                    guiController.SpawnFloatingTextInCenter("Sold for " + sellValue + " gold", Color.yellow);
-                    instantiatedTowers.Remove(tower);
-                    GameObject.Destroy(tower);
-                    mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-                    break;
-                }
-            }
-        }
-        else if (structure.GetType() == typeof(WallData)) {
-            mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-        }
-        else {
-            throw new System.Exception("Stucture type " + structure.GetType() + " not implemented");
-        }
-    }
+    ///// <summary>
+    ///// Demolishes a structure
+    ///// </summary>
+    ///// <param name="position"></param>
+    //public void DemolishStructure(Vector3Int position) {
+    //    TileData structure = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+    //    if (structure.GetType() == typeof(TowerData)) {
+    //        //  Find and remove tower at this position
+    //        foreach (GameObject tower in instantiatedTowers) {
+    //            if (tower.transform.position == position + tilemapOffset) {
+    //                TowerData towerData = tower.GetComponent<Tower>().TowerData;
+    //                int sellValue = Mathf.RoundToInt(towerData.Cost * 0.66f);
+    //                //gameManager.GainGold(sellValue);
+    //                //guiController.SpawnFloatingTextInCenter("Sold for " + sellValue + " gold", Color.yellow);
+    //                instantiatedTowers.Remove(tower);
+    //                GameObject.Destroy(tower);
+    //                mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
+    //                break;
+    //            }
+    //        }
+    //    }
+    //    else if (structure.GetType() == typeof(WallData)) {
+    //        mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
+    //    }
+    //    else {
+    //        throw new System.Exception("Stucture type " + structure.GetType() + " not implemented");
+    //    }
+    //}
 
     /// <summary>
     /// Enters build mode
@@ -214,12 +230,12 @@ public class BuildManager : IInitializable, IDisposable {
         Debug.Log("Exited build mode");
     }
 
-    public GameObject GetTowerAtPosition(Vector3Int position) {
-        foreach (GameObject tower in instantiatedTowers) {
-            if (tower.transform.position == position + tilemapOffset) {
-                return tower;
-            }
-        }
-        return null;
-    }
+    //public GameObject GetTowerAtPosition(Vector3Int position) {
+    //    foreach (GameObject tower in instantiatedTowers) {
+    //        if (tower.transform.position == position + tilemapOffset) {
+    //            return tower;
+    //        }
+    //    }
+    //    return null;
+    //}
 }

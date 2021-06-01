@@ -1,10 +1,10 @@
 using UnityEngine;
 using Zenject;
 
-public class HoverValidator : IHoverValidator{
+public class BuildValidator : IBuildValidator{
     [Inject] IMapManager mapManager;
 
-    public HoverValidator(IMapManager mapManager) { 
+    public BuildValidator(IMapManager mapManager) { 
         this.mapManager = mapManager;
     }
     public bool CanBuildOverTile(Vector3Int position, StructureData selectedStructure) {

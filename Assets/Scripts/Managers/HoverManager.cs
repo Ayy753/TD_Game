@@ -5,7 +5,7 @@ using Zenject;
 
 public class HoverManager : IInitializable, IDisposable {
     private IMapManager mapManager;
-    private IHoverValidator hoverValidator;
+    private IBuildValidator hoverValidator;
     private GameManager gameManager;
 
     private Vector3Int lastHoveredPosition = Vector3Int.down;
@@ -15,7 +15,7 @@ public class HoverManager : IInitializable, IDisposable {
 
     //private LineRenderer line;
 
-    public HoverManager(IMapManager mapManager, IHoverValidator hoverValidator, GameManager gameManager) {
+    public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, GameManager gameManager) {
         this.mapManager = mapManager;
         this.hoverValidator = hoverValidator;
         this.gameManager = gameManager;
@@ -66,7 +66,6 @@ public class HoverManager : IInitializable, IDisposable {
         Color highlightColor;
 
         if (buildMode == BuildManager.BuildMode.Build) {
-
             if (hoverValidator.CanBuildOverTile(position, structureData))
                 highlightColor = Color.green;
             else
@@ -78,7 +77,6 @@ public class HoverManager : IInitializable, IDisposable {
             }
             else {
                 lastSelectedStructureWasTower = false;
-
                 if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) 
                     mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, highlightColor);
                 else 
@@ -86,7 +84,6 @@ public class HoverManager : IInitializable, IDisposable {
             }
         }
         else if (buildMode == BuildManager.BuildMode.Demolish) {
-
             if (hoverValidator.CanDemolishStructure(position) == true)
                 highlightColor = Color.green;
             else

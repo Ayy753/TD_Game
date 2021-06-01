@@ -85,17 +85,17 @@ public class MapManager : IMapManager, IInitializable {
         if (tile != null) {
             return dataFromTiles[tile];
         }
-
         Debug.Log(string.Format("Did not find tile at layer {0} position {1}", layer, position));
         return null;
     }
 
     public void SetTile(Vector3Int position, TileData tileData) {
-        throw new System.NotImplementedException();
+        IMapManager.Layer layer = tileData.Layer;
+        GetLayer(layer).SetTile(position, tileData.TileBase);
     }
 
-    public void RemoveTile(object structureLayer, Vector3Int position) {
-        throw new NotImplementedException();
+    public void RemoveTile(IMapManager.Layer layer, Vector3Int position) {
+        GetLayer(layer).SetTile(position, null);
     }
 
     /// <summary>

@@ -26,12 +26,9 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<HoverManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<HoverManager>().FromResolve();
 
-        Container.Bind(typeof(IHoverValidator)).To<HoverValidator>().AsSingle().NonLazy();
-        //StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
+        Container.Bind(typeof(IBuildValidator)).To<BuildValidator>().AsSingle().NonLazy();
 
-        //for (int i = 0; i < structureDatas.Length; i++) {
-        //    Container.BindInstance(structureDatas[i]).AsTransient();
-        //    Container.InstantiatePrefabResourceForComponent<BuildMenuButton>("Prefabs/NewBuildMenuButton");
-        //}
+        Container.Bind<IWallet>().To<Wallet>().AsSingle().NonLazy();
+        Container.Bind<IMessageSystem>().To<MessageSystem>().AsSingle().NonLazy();
     }
 }

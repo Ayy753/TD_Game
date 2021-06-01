@@ -44,5 +44,5 @@ public interface IMapManager
     public void HighlightPath(List<Vector3Int> path, Color color);
 
     bool IsGroundSolid(Vector3Int position);
-    void RemoveTile(object structureLayer, Vector3Int position);
+    void RemoveTile(Layer layer, Vector3Int position);
 }
