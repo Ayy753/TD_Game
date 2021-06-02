@@ -85,7 +85,6 @@ public class MapManager : IMapManager, IInitializable {
         if (tile != null) {
             return dataFromTiles[tile];
         }
-        Debug.Log(string.Format("Did not find tile at layer {0} position {1}", layer, position));
         return null;
     }
 

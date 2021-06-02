@@ -128,6 +128,7 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="position"></param>
     private void InstantiateTower(TowerData towerData, Vector3Int position) {
         GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
+        tower.GetComponent<Tower>().SetTowerData(towerData);
         instantiatedTowers.Add(tower);
     }
 

@@ -7,8 +7,10 @@ public class Enemy : MonoBehaviour, IUnit {
     [Inject] private readonly IPathfinder pathFinder;
     [SerializeField] public EnemyData enemyData;
     private IUnitInput unitInput;
-    private Status status;
     private IUnitMovement unitMovement;
+    
+    public Status Status { get; private set; }
+
 
     public enum Type {
         Fast,
@@ -18,8 +20,8 @@ public class Enemy : MonoBehaviour, IUnit {
 
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
-        status = new Status(enemyData);
-        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);
+        Status = new Status(enemyData);
+        unitMovement = new UnitMovement(transform.parent.transform, Status, unitInput);
     }
         
     private void Update() {
@@ -30,7 +32,7 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public void Spawn() {
         unitInput.Initialize();
-        status.Initialize();
+        Status.Initialize();
         unitMovement.Initialize();
     }
 

@@ -53,7 +53,6 @@ public class ObjectPool : ITickable, IInitializable
             enemy.transform.parent.gameObject.SetActive(false);
         }
     }
-
     public void Tick() {
         //SpawnEnemy();
     }
