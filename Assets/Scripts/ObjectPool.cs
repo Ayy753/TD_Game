@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-public class ObjectPool : ITickable, IInitializable
+public class ObjectPool : IInitializable
 {
     private readonly DiContainer _container;
     private readonly GameObject[] enemyPrefabs;
@@ -52,9 +52,6 @@ public class ObjectPool : ITickable, IInitializable
         foreach (Enemy enemy in instantiatedEnemies) {
             enemy.transform.parent.gameObject.SetActive(false);
         }
-    }
-    public void Tick() {
-        //SpawnEnemy();
     }
 
     public Enemy Create(Enemy.Type type) {
