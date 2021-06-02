@@ -12,12 +12,6 @@ public class Enemy : MonoBehaviour, IUnit {
     public Status Status { get; private set; }
 
 
-    public enum Type {
-        Fast,
-        Normal,
-        Strong
-    }
-
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
         Status = new Status(enemyData);
@@ -46,5 +40,5 @@ public class Enemy : MonoBehaviour, IUnit {
         transform.parent.gameObject.SetActive(false);
     }
 
-    public class Factory : PlaceholderFactory<Enemy.Type, Enemy> { }
+    public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
 }
