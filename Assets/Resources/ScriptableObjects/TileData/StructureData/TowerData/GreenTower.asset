@@ -24,5 +24,4 @@ MonoBehaviour:
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 150
-  <ProjectilePrefab>k__BackingField: {fileID: 1511556566754288140, guid: 4e5894fe90d810a41a96994e1c4a0157,
-    type: 3}
+  projectileType: 1

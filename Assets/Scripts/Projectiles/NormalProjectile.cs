@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class NormalProjectile : Projectile {
 
@@ -21,12 +22,11 @@ public class NormalProjectile : Projectile {
     public void OnTriggerEnter2D(Collider2D collision) {
         Enemy enemy = collision.GetComponentInChildren<Enemy>();
 
+        //  If it hit an enemy
         if (enemy != null) {
-            Debug.Log("Projectile hit enemy");
-            //enemy.Status.TakeDamage(ProjectileData.damageTypesAndAmounts);
             Damage.ApplyDamage(enemy, ProjectileData.damageTypesAndAmounts);
+            gameObject.SetActive(false);
         }
-
-        Destroy(gameObject);
     }
+
 }

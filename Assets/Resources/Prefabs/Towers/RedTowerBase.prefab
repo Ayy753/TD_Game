@@ -158,6 +158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec14a54ff642e34585067949dcac387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <TowerData>k__BackingField: {fileID: 11400000, guid: 8ff7a121dc28b274c8115e104793c0df,
+    type: 2}
 --- !u!61 &2081856905393847634
 BoxCollider2D:
   m_ObjectHideFlags: 0

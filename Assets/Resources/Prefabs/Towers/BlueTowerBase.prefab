@@ -180,8 +180,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec14a54ff642e34585067949dcac387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 1511556566754288140, guid: 4e5894fe90d810a41a96994e1c4a0157,
-    type: 3}
+  <TowerData>k__BackingField: {fileID: 11400000, guid: 7ad11fcc236bb2640bce50be41f1326a,
+    type: 2}
 --- !u!61 &5137916138958110613
 BoxCollider2D:
   m_ObjectHideFlags: 0

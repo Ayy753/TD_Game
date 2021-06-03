@@ -2,17 +2,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Zenject;
 
 public class Tower : MonoBehaviour {
+    [Inject] private ObjectPool objectPool;
+
     private List<Enemy> enemiesInRange = new List<Enemy>();
     private float timeSinceLastShot = float.MaxValue;
     private Enemy target;
     private Transform turret;
 
-    //  Temp until object pool projectiles are implemented
-    public GameObject projectilePrefab;
-
-    public TowerData TowerData { get; private set; }
+    [field: SerializeField] public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
 
     public enum TargetMode {
@@ -43,15 +43,9 @@ public class Tower : MonoBehaviour {
             //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
 
             //  Fire projectile
-            //Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectilePrefab, transform.position);
-            //projectile.Initialize(target.transform, TowerData.Damage, 6f);
-
-
-            //  Temp
-            Projectile projectile = Instantiate(projectilePrefab).GetComponent<Projectile>();
+            Debug.Log(objectPool == null);
+            Projectile projectile = objectPool.CreateProjectile(TowerData.projectileType);
             projectile.Initialize(transform.position, target.transform);
-            Debug.Log("Tower fired");
-
 
             timeSinceLastShot = 0;
         }
@@ -233,5 +227,7 @@ public class Tower : MonoBehaviour {
 
     public void SetTowerData(TowerData towerData) {
         TowerData = towerData;
-    } 
+    }
+
+    public class Factory : PlaceholderFactory<Tower> { }
 }

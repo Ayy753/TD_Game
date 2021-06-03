@@ -30,5 +30,7 @@ public class UntitledInstaller : MonoInstaller
 
         Container.Bind<IWallet>().To<Wallet>().AsSingle().NonLazy();
         Container.Bind<IMessageSystem>().To<MessageSystem>().AsSingle().NonLazy();
+
+        Container.BindFactory<Tower, Tower.Factory>();
     }
 }

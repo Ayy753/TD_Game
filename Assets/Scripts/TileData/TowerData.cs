@@ -23,7 +23,7 @@ public class TowerData : StructureData
     [field: SerializeField]
     public override int Cost { get; protected set; }
     [field: SerializeField]
-    public GameObject ProjectilePrefab { get; protected set; }
+    public ProjectileData.ProjectileType projectileType;
 
     public override string ToString()
     {

@@ -113,7 +113,7 @@ public class WaveManager : IInitializable {
 
             for (int i = 0; i < group.NumEnemies; i++) {
                 yield return new WaitForSeconds(group.TimebetweenSpawns);
-                Enemy enemy = objectPool.Create(groupType);
+                Enemy enemy = objectPool.CreateEnemy(groupType);
                 enemy.Spawn();
             }
 

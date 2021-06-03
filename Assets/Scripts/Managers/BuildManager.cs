@@ -18,6 +18,7 @@ public class BuildManager : IInitializable, IDisposable {
     IWallet wallet;
     HoverManager hoverManager;
     GameManager gameManager;
+    ObjectPool objectPool;
 
     public StructureData currentlySelectedStructure;
     private List<GameObject> instantiatedTowers;
@@ -31,7 +32,7 @@ public class BuildManager : IInitializable, IDisposable {
         None
     }
 
-    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, HoverManager hoverManager) {
+    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, HoverManager hoverManager, ObjectPool objectPool) {
         Debug.Log("build manager constructor");
         this.mapManager = mapManager;
         this.gameManager = gameManager;
@@ -39,6 +40,7 @@ public class BuildManager : IInitializable, IDisposable {
         this.messageSystem = messageSystem;
         this.wallet = wallet;
         this.hoverManager = hoverManager;
+        this.objectPool = objectPool;
     }
 
     public void Initialize() {
@@ -127,9 +129,10 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="towerData"></param>
     /// <param name="position"></param>
     private void InstantiateTower(TowerData towerData, Vector3Int position) {
-        GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
-        tower.GetComponent<Tower>().SetTowerData(towerData);
-        instantiatedTowers.Add(tower);
+        //GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
+        Tower tower = objectPool.CreateTower(towerData);
+        tower.gameObject.transform.position = position + tilemapOffset;
+        instantiatedTowers.Add(tower.gameObject);
     }
 
     /// <summary>
