@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 809695654054733836}
   - component: {fileID: 809695654054733839}
   - component: {fileID: 3716832038006987537}
-  - component: {fileID: 6733431973699256700}
+  - component: {fileID: -6812313139047394344}
   m_Layer: 2
   m_Name: ExplosiveProjectile
   m_TagString: Untagged
@@ -97,22 +97,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d25c0125889e141822dad0d104e710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &6733431973699256700
-CircleCollider2D:
+  <ProjectileData>k__BackingField: {fileID: 11400000, guid: 5a60e1ad69a17ca478e094dc550213d3,
+    type: 2}
+--- !u!61 &-6812313139047394344
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 809695654054733838}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.32, y: 0.32}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 1
+  m_Size: {x: 0.16, y: 0.16}
+  m_EdgeRadius: 0
 --- !u!1001 &1428896136608796600
 PrefabInstance:
   m_ObjectHideFlags: 0

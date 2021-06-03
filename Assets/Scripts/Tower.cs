@@ -9,6 +9,9 @@ public class Tower : MonoBehaviour {
     private Enemy target;
     private Transform turret;
 
+    //  Temp until object pool projectiles are implemented
+    public GameObject projectilePrefab;
+
     public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
 
@@ -42,7 +45,14 @@ public class Tower : MonoBehaviour {
             //  Fire projectile
             //Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectilePrefab, transform.position);
             //projectile.Initialize(target.transform, TowerData.Damage, 6f);
+
+
+            //  Temp
+            Projectile projectile = Instantiate(projectilePrefab).GetComponent<Projectile>();
+            projectile.Initialize(transform.position, target.transform);
             Debug.Log("Tower fired");
+
+
             timeSinceLastShot = 0;
         }
     }
@@ -161,7 +171,7 @@ public class Tower : MonoBehaviour {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                float health = enemy.Status.Health;
+                float health = enemy.GetStatus().Health;
                 if (health < lowestHealth) {
                     lowestHealth = health;
                     lowestEnemy = enemy;
@@ -181,7 +191,7 @@ public class Tower : MonoBehaviour {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                float health = enemy.Status.Health;
+                float health = enemy.GetStatus().Health;
                 if (health > highestHealth) {
                     highestHealth = health;
                     highestEnemy = enemy;

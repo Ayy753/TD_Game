@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Damage{
+/// <summary>
+/// Deals damage based on unit's status values
+/// </summary>
+public static class Damage{
     public enum DamageType {
         Kinetic,
         Fire,
@@ -18,7 +21,12 @@ public class Damage{
         public float amount;
     }
 
-    public float CalculateDamage(Status unitStatus, DamageTypeAndAmount[] damageTypes) {
+    public static void ApplyDamage(IUnit unit, DamageTypeAndAmount[] damages) {
+        float damage = CalculateDamage(unit.GetStatus(), damages);
+        unit.GetStatus().TakeDamage(damage);
+    }
+
+    private static float CalculateDamage(Status unitStatus, DamageTypeAndAmount[] damageTypes) {
         float totalDamage = 0;
         for (int i = 0; i < damageTypes.Length; i++) {
             switch (damageTypes[i].type) {

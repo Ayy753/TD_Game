@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3193731994037178643}
   - component: {fileID: -8992037166227278243}
   m_Layer: 2
-  m_Name: Projectile2
+  m_Name: NormalProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf046fbccafc7e64d90acf32eb16ca14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <ProjectileData>k__BackingField: {fileID: 11400000, guid: 226046c0e53968c4aabceb3b770c5ffd,
+    type: 2}
 --- !u!61 &-8992037166227278243
 BoxCollider2D:
   m_ObjectHideFlags: 0

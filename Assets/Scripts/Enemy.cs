@@ -8,14 +8,13 @@ public class Enemy : MonoBehaviour, IUnit {
     [SerializeField] public EnemyData enemyData;
     private IUnitInput unitInput;
     private IUnitMovement unitMovement;
-    
-    public Status Status { get; private set; }
+    private Status status;
 
 
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
-        Status = new Status(enemyData);
-        unitMovement = new UnitMovement(transform.parent.transform, Status, unitInput);
+        status = new Status(enemyData, this);
+        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);
     }
         
     private void Update() {
@@ -26,7 +25,7 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public void Spawn() {
         unitInput.Initialize();
-        Status.Initialize();
+        status.Initialize();
         unitMovement.Initialize();
     }
 
@@ -36,8 +35,16 @@ public class Enemy : MonoBehaviour, IUnit {
         Despawn();
     }
 
+    public void Died() {
+        Despawn();
+    }
+
     private void Despawn() {
         transform.parent.gameObject.SetActive(false);
+    }
+
+    public Status GetStatus() {
+        return status;
     }
 
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
