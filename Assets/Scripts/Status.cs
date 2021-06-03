@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Status
-{
+public class Status{
     private CharacterData characterData;
 
     private float AddHealth;    
     private float AddFireResist;
     private float AddColdResist;
     private float AddPoisonResist;
+    private float AddLightningResist;
     private float AddArmor;
     private float AddSpeed;
 
@@ -17,6 +17,7 @@ public class Status
     public float FireResist { get { return characterData.BaseFireResist + AddFireResist; } }
     public float ColdResist { get { return characterData.BaseColdResist + AddColdResist; } }
     public float PoisonResist { get { return characterData.BasePoisonResist + AddPoisonResist; } }
+    public float LightningResist { get { return characterData.BaseLightningResist + AddLightningResist; } }
     public float Armor { get { return characterData.BaseArmor + AddArmor; } }
     public float Speed { get { return characterData.BaseSpeed + AddSpeed; } }
 

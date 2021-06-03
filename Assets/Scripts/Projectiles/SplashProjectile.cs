@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SplashProjectile : Projectile
-{
+public class SplashProjectile : Projectile{
 
 }
