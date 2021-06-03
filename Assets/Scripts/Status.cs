@@ -103,7 +103,7 @@ public class Status{
     public void Heal(float healAmount) {
         Damage -= healAmount;
         if (Damage < 0) {
-            AddHealth = 0;
+            Damage = 0;
         }
     }
 }
