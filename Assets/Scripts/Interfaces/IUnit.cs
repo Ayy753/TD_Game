@@ -12,4 +12,6 @@ public interface IUnit
     public void Died();
 
     public Status GetStatus();
+
+    public void ApplyDamage(Damage.DamageTypeAndAmount[] damages);
 }

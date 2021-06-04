@@ -58,7 +58,10 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
         gameObject.SetActive(false);
     }
 
-
+    /// <summary>
+    /// Deals area damage proportional to each enemy's distance
+    /// </summary>
+    /// <param name="enemy"></param>
     private void ApplySplashDamage(Enemy enemy) {
         int numDamageTypes = ProjectileData.damageTypesAndAmounts.Length;
         float distance = Vector3.Distance(transform.position, enemy.transform.position);
@@ -72,7 +75,7 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
                 scaledDamageTypes[i].amount = ProjectileData.damageTypesAndAmounts[i].amount * damageScale;
                 scaledDamageTypes[i].type = ProjectileData.damageTypesAndAmounts[i].type;
             }
-            Damage.ApplyDamage(enemy, scaledDamageTypes);
+            enemy.ApplyDamage(ProjectileData.damageTypesAndAmounts);
         }
     }
 

@@ -24,7 +24,7 @@ public class NormalProjectile : Projectile {
 
         //  If it hit an enemy
         if (enemy != null) {
-            Damage.ApplyDamage(enemy, ProjectileData.damageTypesAndAmounts);
+            enemy.ApplyDamage(ProjectileData.damageTypesAndAmounts);
             gameObject.SetActive(false);
         }
     }

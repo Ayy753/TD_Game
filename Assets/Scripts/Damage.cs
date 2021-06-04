@@ -21,12 +21,7 @@ public static class Damage{
         public float amount;
     }
 
-    public static void ApplyDamage(IUnit unit, DamageTypeAndAmount[] damages) {
-        float damage = CalculateDamage(unit.GetStatus(), damages);
-        unit.GetStatus().TakeDamage(damage);
-    }
-
-    private static float CalculateDamage(Status unitStatus, DamageTypeAndAmount[] damageTypes) {
+    public static float CalculateDamage(Status unitStatus, DamageTypeAndAmount[] damageTypes) {
         float totalDamage = 0;
         for (int i = 0; i < damageTypes.Length; i++) {
             switch (damageTypes[i].type) {

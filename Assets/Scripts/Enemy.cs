@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour, IUnit {
     private void Update() {
         if (unitMovement != null) {
             unitMovement.Move();
+
         }
     }
 
@@ -45,6 +46,11 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public Status GetStatus() {
         return status;
+    }
+
+    public void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
+        float damage = Damage.CalculateDamage(status, damages);
+        status.TakeDamage(damage);
     }
 
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
