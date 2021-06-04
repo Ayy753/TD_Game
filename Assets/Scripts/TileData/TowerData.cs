@@ -13,8 +13,6 @@ public class TowerData : StructureData
     [field: SerializeField]
     public GameObject TowerPrefab { get; private set; }
     [field: SerializeField]
-    public float Damage { get; private set; }
-    [field: SerializeField]
     public float Range { get; private set; }
     [field: SerializeField]
     public float ReloadTime { get; set; }
@@ -24,9 +22,11 @@ public class TowerData : StructureData
     public override int Cost { get; protected set; }
     [field: SerializeField]
     public ProjectileData.ProjectileType projectileType;
+    [field: SerializeField]
+    public ProjectileData ProjectileData { get; protected set; }
 
     public override string ToString()
     {
-        return base.ToString() + string.Format("\n<b>Damage</b>: {0}\n<b>Range</b>: {1}\n<b>Cost</b>: {2}\n<b>Shots per second</b>: {3}", Damage, Range, Cost, 1/ReloadTime);
+        return base.ToString() + string.Format("\n<b>Raw Damage</b>: {0}\n<b>Range</b>: {1}\n<b>Cost</b>: {2}\n<b>Shots per second</b>: {3}", ProjectileData.RawTotalDamage(), Range, Cost, 1/ReloadTime);
     }
 }

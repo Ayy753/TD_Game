@@ -18,10 +18,11 @@ MonoBehaviour:
     type: 3}
   <TowerPrefab>k__BackingField: {fileID: 1079728213048591739, guid: 32a804d2afb1d5e4890c313fa5a6759a,
     type: 3}
-  <Damage>k__BackingField: 15
   <Range>k__BackingField: 10
   <ReloadTime>k__BackingField: 5
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 150
   projectileType: 1
+  <ProjectileData>k__BackingField: {fileID: 11400000, guid: 226046c0e53968c4aabceb3b770c5ffd,
+    type: 2}

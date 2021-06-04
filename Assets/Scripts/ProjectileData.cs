@@ -13,4 +13,20 @@ public class ProjectileData : ScriptableObject{
         Splash,
         Normal
     }
+
+    /// <summary>
+    /// Should only be used to display raw total damage.
+    /// Actual damage inflicted should be calculated through the Damage class
+    /// as unit's resistances impact the final value
+    /// </summary>
+    /// <returns></returns>
+    public string RawTotalDamage() {
+        float total = 0;
+
+        foreach (Damage.DamageTypeAndAmount damageType in damageTypesAndAmounts) {
+            total += damageType.amount;
+        }
+
+        return total.ToString();
+    }
 }
