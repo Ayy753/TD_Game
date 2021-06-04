@@ -9,9 +9,20 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
     private const float splashRadius = 3f;
 
     private CircleCollider2D rangeCollider;
+    private ParticleSystem particles;
+    private SpriteRenderer spriteRenderer;
 
     private void Awake() {
         rangeCollider = transform.Find("RangeCollider").GetComponent<CircleCollider2D>();
+        spriteRenderer = transform.GetComponentInChildren<SpriteRenderer>();
+        particles = transform.GetChild(0).GetComponent<ParticleSystem>();
+
+        //  Set particle Explode duration
+        ParticleSystem.MainModule main = particles.main;
+        main.startLifetime = detonationTime;
+
+        //  Scale speed in relation to radius
+        main.startSpeed = splashRadius * 100;
     }
 
     private void Update() {
@@ -28,7 +39,9 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
         LastTargetPosition = target.position;
         IsDetonating = false;
 
+        particles.gameObject.SetActive(false);
         rangeCollider.gameObject.SetActive(false);
+        spriteRenderer.enabled = true;
     }
 
     protected override void MoveTowardsTarget() {
@@ -38,6 +51,9 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
     private IEnumerator DetonationCountdown() {
         IsDetonating = true;
         rangeCollider.gameObject.SetActive(true);
+        particles.gameObject.SetActive(true);
+        spriteRenderer.enabled = false;
+        
         yield return new WaitForSeconds(detonationTime);
         gameObject.SetActive(false);
     }
