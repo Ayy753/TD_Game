@@ -5,11 +5,11 @@ using Zenject;
 
 public class NormalProjectile : Projectile {
 
-    public void Update() {
+    private void Update() {
         MoveTowardsTarget();
     }
 
-    public override void MoveTowardsTarget() {
+    protected override void MoveTowardsTarget() {
         if (Target != null) {
             LastTargetPosition = Target.position;
             transform.position = Vector3.MoveTowards(transform.position, Target.position, Time.deltaTime * ProjectileData.Speed);
@@ -19,7 +19,7 @@ public class NormalProjectile : Projectile {
         }
     }
 
-    public void OnTriggerEnter2D(Collider2D collision) {
+    protected void OnTriggerEnter2D(Collider2D collision) {
         Enemy enemy = collision.GetComponentInChildren<Enemy>();
 
         //  If it hit an enemy

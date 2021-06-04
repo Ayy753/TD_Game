@@ -55,7 +55,7 @@ public class ObjectPool : IInitializable
                 case "NormalProjectile":
                     projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Normal, prefab);
                     break;
-                case "ExplosiveProjectile":
+                case "SplashProjectile":
                     projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Splash, prefab);
                     break;
                 default:

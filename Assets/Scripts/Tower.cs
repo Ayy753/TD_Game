@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using Zenject;
 
-public class Tower : MonoBehaviour {
+public class Tower : MonoBehaviour, IUnitRangeDetection {
     [Inject] private ObjectPool objectPool;
 
     private List<Enemy> enemiesInRange = new List<Enemy>();
@@ -43,7 +43,6 @@ public class Tower : MonoBehaviour {
             //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
 
             //  Fire projectile
-            Debug.Log(objectPool == null);
             Projectile projectile = objectPool.CreateProjectile(TowerData.projectileType);
             projectile.Initialize(transform.position, target.transform);
 
@@ -217,16 +216,20 @@ public class Tower : MonoBehaviour {
         return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));
     }
 
-    public void EnemyEnteredRange(Enemy enemy) {
-        enemiesInRange.Add(enemy);
+    public void UnitEnteredRange(IUnit unit) {
+        if (unit.GetType() == typeof(Enemy)) {
+            enemiesInRange.Add((Enemy)unit);
+        }
     }
 
-    public void EnemyLeftRange(Enemy enemy) {
-        enemiesInRange.Remove(enemy);
+    public void UnitLeftRange(IUnit unit) {
+        if (unit.GetType() == typeof(Enemy)) {
+            enemiesInRange.Remove((Enemy)unit);
+        }
     }
 
-    public void SetTowerData(TowerData towerData) {
-        TowerData = towerData;
+    public float GetRange() {
+        return TowerData.Range;
     }
 
     public class Factory : PlaceholderFactory<Tower> { }

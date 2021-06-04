@@ -1,30 +1,30 @@
 using UnityEngine;
 
 /// <summary>
-/// Used to detect when an enemy enters or leaves the tower's range
+/// Used to detect when a unit enters or leaves collider's range
 /// </summary>
 public class RangeCollider : MonoBehaviour {
-    Tower Parent;
+    IUnitRangeDetection Parent;
+    CircleCollider2D theCollider;
 
     private void Awake() {
-    }
-
-    private void Start() {
-        Parent = transform.parent.GetComponent<Tower>();
-        gameObject.GetComponent<CircleCollider2D>().radius = Parent.TowerData.Range;
+        Parent = transform.parent.GetComponent<IUnitRangeDetection>();
+        theCollider = gameObject.GetComponent<CircleCollider2D>();
+        theCollider.radius = Parent.GetRange();
+        Debug.Log(Parent.ToString() + " radius: " + theCollider.radius);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        Enemy enemy = collision.GetComponent<Enemy>();
-        if (enemy != null) {
-            Parent.EnemyEnteredRange(enemy);
+        IUnit unit = collision.GetComponent<IUnit>();
+        if (unit != null) {
+            Parent.UnitEnteredRange(unit);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        Enemy enemy = collision.GetComponent<Enemy>();
-        if (enemy != null) {
-            Parent.EnemyLeftRange(enemy);
+        IUnit unit = collision.GetComponent<IUnit>();
+        if (unit != null) {
+            Parent.UnitLeftRange(unit);
         }
     }
 }
