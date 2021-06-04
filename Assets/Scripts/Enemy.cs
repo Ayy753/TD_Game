@@ -9,12 +9,13 @@ public class Enemy : MonoBehaviour, IUnit {
     private IUnitInput unitInput;
     private IUnitMovement unitMovement;
     private Status status;
-
+    private HealthBar healthBar;
 
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
         status = new Status(enemyData, this);
         unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);
+        healthBar = transform.parent.GetComponentInChildren<HealthBar>();
     }
         
     private void Update() {
@@ -28,6 +29,7 @@ public class Enemy : MonoBehaviour, IUnit {
         unitInput.Initialize();
         status.Initialize();
         unitMovement.Initialize();
+        healthBar.Initialize(status, enemyData.BaseHealth);
     }
 
     public void ReachedDestination() {
@@ -51,6 +53,7 @@ public class Enemy : MonoBehaviour, IUnit {
     public void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
         float damage = Damage.CalculateDamage(status, damages);
         status.TakeDamage(damage);
+        healthBar.UpdateHealthBar();
     }
 
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
