@@ -11,7 +11,7 @@ public class TowerData : StructureData
     [field: SerializeField]
     public override Sprite Icon { get; protected set; }
     [field: SerializeField]
-    public GameObject TowerPrefab { get; private set; }
+    public TowerType Type { get; protected set; }
     [field: SerializeField]
     public float Range { get; private set; }
     [field: SerializeField]
@@ -21,9 +21,13 @@ public class TowerData : StructureData
     [field: SerializeField]
     public override int Cost { get; protected set; }
     [field: SerializeField]
-    public ProjectileData.ProjectileType projectileType;
-    [field: SerializeField]
     public ProjectileData ProjectileData { get; protected set; }
+
+    public enum TowerType {
+        Bullet,
+        Splash,
+        Sniper
+    }
 
     public override string ToString()
     {

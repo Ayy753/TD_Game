@@ -15,10 +15,14 @@ public class ObjectPool : IInitializable
     private GameObject projectileContainer;
     private Dictionary<ProjectileData.ProjectileType, GameObject> projectileTypeToPrefab;
 
+    private readonly GameObject[] towerPrefabs;
+    private Dictionary<TowerData.TowerType, GameObject> towerTypeToPrefab;
+
     public ObjectPool(DiContainer container) {
         _container = container;
         enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
         projectilePrefabs = Resources.LoadAll<GameObject>("Prefabs/Projectiles");
+        towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
     }
 
     public void Initialize() {
@@ -29,6 +33,8 @@ public class ObjectPool : IInitializable
 
         instantiatedProjectiles = new List<Projectile>();
         projectileTypeToPrefab = new Dictionary<ProjectileData.ProjectileType, GameObject>();
+
+        towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
 
         //  Link enemy types to prefabs
         for (int i = 0; i < enemyPrefabs.Length; i++) {
@@ -60,6 +66,23 @@ public class ObjectPool : IInitializable
                     break;
                 default:
                     throw new System.Exception(string.Format("Projectile prefab name \"{0}\" does not match any ProjectileData.ProjectileType values", prefab.name));
+            }
+        }
+
+        for (int i = 0; i < towerPrefabs.Length; i++) {
+            GameObject prefab = towerPrefabs[i];
+            switch (prefab.name) {
+                case "BulletTower":
+                    towerTypeToPrefab.Add(TowerData.TowerType.Bullet, prefab);
+                    break;
+                case "SniperTower":
+                    towerTypeToPrefab.Add(TowerData.TowerType.Sniper, prefab);
+                    break;
+                case "SplashTower":
+                    towerTypeToPrefab.Add(TowerData.TowerType.Splash, prefab);
+                    break;
+                default:
+                    throw new System.Exception(string.Format("Tower name \"{0}\" does not match any TowerData.TowerType value", prefab.name));
             }
         }
 
@@ -129,8 +152,9 @@ public class ObjectPool : IInitializable
     }
 
     //  Don't know if its worth pooling towers but other objects will create/destroy them via object pool
-    public Tower CreateTower(TowerData towerData) {
-        Tower tower = _container.InstantiatePrefabForComponent<Tower>(towerData.TowerPrefab);
+    public Tower CreateTower(TowerData.TowerType type) {
+        GameObject prefab = towerTypeToPrefab[type];
+        Tower tower = _container.InstantiatePrefabForComponent<Tower>(prefab);
         return tower;
     }
 

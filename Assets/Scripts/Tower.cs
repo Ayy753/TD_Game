@@ -43,7 +43,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection {
             //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
 
             //  Fire projectile
-            Projectile projectile = objectPool.CreateProjectile(TowerData.projectileType);
+            Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectileData.type);
             projectile.Initialize(transform.position, target.transform);
 
             timeSinceLastShot = 0;
