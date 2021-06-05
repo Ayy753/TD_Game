@@ -32,7 +32,7 @@ public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable
     /// <summary>
     /// Initialize button with the StructureData it represents
     /// </summary>
-    public void Initialize(StructureData structureData, GUIController guiController) {
+    public void Initialize(StructureData structureData, IGUIManager guiController) {
         this.structureData = structureData;
         this.guiController = guiController;
     }
