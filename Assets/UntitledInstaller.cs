@@ -11,17 +11,24 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<ObjectPool>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable)).To<ObjectPool>().FromResolve();
         Container.BindIFactory<Enemy, Enemy.Factory>();
-        Container.Bind(typeof(IInitializable)).To<WaveManager>().AsSingle().NonLazy();
+
+
+
+        Container.Bind<WaveManager>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable)).To<WaveManager>().FromResolve();
+
+        Container.Bind<BuildManager>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();
+
+
+
         Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
         Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
-        Container.Bind<GUIController>().FromComponentInHierarchy().AsSingle();
-
         Container.Bind<GameManager>().AsSingle().NonLazy();
 
-        Container.Bind<BuildManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();
+
 
         Container.Bind<HoverManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<HoverManager>().FromResolve();
@@ -32,5 +39,7 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<IMessageSystem>().To<MessageSystem>().AsSingle().NonLazy();
 
         Container.BindFactory<Tower, Tower.Factory>();
+
+        Container.Bind(typeof(IGUIManager)).To<GUIController>().FromComponentInHierarchy().AsSingle();
     }
 }

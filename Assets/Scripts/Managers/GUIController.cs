@@ -6,18 +6,22 @@ using UnityEngine.UI;
 using Zenject;
 
 
-public class GUIController : MonoBehaviour {
+public class GUIController : MonoBehaviour, IGUIManager {
 
     [Inject] BuildManager buildManager;
+    [Inject] WaveManager waveManager;
 
     public void Awake() {
-        PopulateScrollView();
+        CreateDynamicButtons();
+
+        Debug.Log(buildManager == null);
+        Debug.Log(waveManager == null);
     }
 
     /// <summary>
     /// Populates build menu with structure buttons
     /// </summary>
-    private void PopulateScrollView() {
+    public void CreateDynamicButtons() {
         GameObject structureBuildBtnPrefab = Resources.Load<GameObject>("Prefabs/NewBuildMenuButton");
         StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
         GameObject scrollViewContentBox = GameObject.Find("Scroll View/Viewport/Content");
@@ -34,25 +38,22 @@ public class GUIController : MonoBehaviour {
             newButton.GetComponent<BuildMenuButton>().Initialize(structure, this);
         }
     }
-
-    internal void SpawnFloatingText(Vector3 vector3, string v, Color yellow) {
-        throw new NotImplementedException();
-    }
-
-    internal void SpawnFloatingTextAtCursor(string v, Color red) {
-        throw new NotImplementedException();
-    }
-
-    internal void SpawnFloatingTextInCenter(string v, Color yellow) {
-        throw new NotImplementedException();
-    }
     
     public void EnterBuildMode(StructureData structure) {
         buildManager.EnterBuildMode(structure);
     }
 
-    public void ExitBuildMode() {
+    public void EnterDemolishMode() {
+        buildManager.EnterDemolishMode();
+    }
+
+    public void ExitEditMode() {
         buildManager.ExitBuildMode();
     }
 
+    public void StartNextWave() {
+        waveManager.StartNextWave();
+    }
 }
+
+

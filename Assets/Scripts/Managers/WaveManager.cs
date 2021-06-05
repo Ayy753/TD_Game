@@ -14,7 +14,7 @@ public class WaveManager : IInitializable {
     public int NumberOfWaves { get; private set; }
     private int currentWave = 0;
 
-    private const int timeBetweenWaves = 30;
+    private const int timeBetweenWaves = 5;
     private const int timeBeforeFirstWave = 3;
     private Coroutine nextWaveCountDown;
 
@@ -85,14 +85,12 @@ public class WaveManager : IInitializable {
             secondsUntilNextWave--;
         }
 
-        asyncProcessor.StartCoroutine(StartNextWave());
+        asyncProcessor.StartCoroutine(LaunchWave());
     }
 
-    private IEnumerator StartNextWave() {
+    private IEnumerator LaunchWave() {
         int thisWaveNum = currentWave;
         currentWave++;
-
-        asyncProcessor.StopCoroutine(nextWaveCountDown);
 
         foreach (Group group in LevelData.waves[thisWaveNum].Groups) {
             EnemyData.Type groupType;
@@ -124,6 +122,13 @@ public class WaveManager : IInitializable {
 
         if (currentWave-1 == thisWaveNum && currentWave < NumberOfWaves - 1) {
             nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
+        }
+    }
+
+    public void StartNextWave() {
+        if (currentWave < NumberOfWaves) {
+            asyncProcessor.StopCoroutine(nextWaveCountDown);
+            LaunchWave();
         }
     }
 }

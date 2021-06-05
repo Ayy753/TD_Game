@@ -129,8 +129,7 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="towerData"></param>
     /// <param name="position"></param>
     private void InstantiateTower(TowerData towerData, Vector3Int position) {
-        //GameObject tower = GameObject.Instantiate(towerData.TowerPrefab, position + tilemapOffset, new Quaternion(0, 0, 0, 0));
-        Tower tower = objectPool.CreateTower(towerData);
+        Tower tower = objectPool.CreateTower(towerData.Type);
         tower.gameObject.transform.position = position + tilemapOffset;
         instantiatedTowers.Add(tower.gameObject);
     }

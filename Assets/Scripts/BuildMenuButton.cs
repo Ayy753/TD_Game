@@ -5,7 +5,7 @@ using Zenject;
 
 public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable {
 
-    private GUIController guiController;
+    [Inject] private IGUIManager guiController;
     StructureData structureData;
 
     private void Start() {
