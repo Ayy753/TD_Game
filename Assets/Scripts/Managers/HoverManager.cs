@@ -11,7 +11,7 @@ public class HoverManager : IInitializable, IDisposable {
     private Vector3Int lastHoveredPosition = Vector3Int.down;
     private bool lastSelectedStructureWasTower = false;
     private StructureData structureData;
-    private BuildManager.BuildMode buildMode;
+    private BuildManager.BuildMode buildMode = BuildManager.BuildMode.None;
 
     //private LineRenderer line;
 
@@ -37,10 +37,13 @@ public class HoverManager : IInitializable, IDisposable {
         structureData = currentStructureData;
 
         if (lastHoveredPosition != Vector3Int.down) {
+            Debug.Log("un hovering last tile");
             UnhoverLastTile();
         }
-        lastHoveredPosition = position;
-        HoverTile(position);
+        if (currentBuildMode != BuildManager.BuildMode.None) {
+            lastHoveredPosition = position;
+            HoverTile(position);
+        }
     }
 
     private void UnhoverLastTile() {
@@ -161,6 +164,7 @@ public class HoverManager : IInitializable, IDisposable {
             UnhoverTile(lastHoveredPosition);
         }
         lastHoveredPosition = Vector3Int.down;
+        buildMode = BuildManager.BuildMode.None;
     }
 
     ///// <summary>
