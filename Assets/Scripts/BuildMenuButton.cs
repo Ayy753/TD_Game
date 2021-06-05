@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Zenject;
 
 public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable {
 
-    [Inject] private IGUIManager guiController;
+    private IGUIManager guiController;
     StructureData structureData;
 
     private void Start() {
