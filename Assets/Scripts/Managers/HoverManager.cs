@@ -49,10 +49,10 @@ public class HoverManager : IInitializable, IDisposable {
         }
         else {
             if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, lastHoveredPosition) == true) {
-                mapManager.ReverseHighlight(IMapManager.Layer.StructureLayer, lastHoveredPosition);
+                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, lastHoveredPosition, Color.white);
             }
             else {
-                mapManager.ReverseHighlight(IMapManager.Layer.GroundLayer, lastHoveredPosition);
+                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, lastHoveredPosition, Color.white);
             }
         }
     }
@@ -102,14 +102,14 @@ public class HoverManager : IInitializable, IDisposable {
             TileData tile = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
 
             if (tile.GetType() == typeof(WallData)) {
-                mapManager.ReverseHighlight(IMapManager.Layer.StructureLayer, position);
+                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.white);
             }
             else if (tile.GetType() == typeof(TowerData)) {
                 ChangeTowerTint(position, Color.white);
             }
         }
         else {
-            mapManager.ReverseHighlight(IMapManager.Layer.GroundLayer, position);
+            mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, Color.white);
         }
     }
 

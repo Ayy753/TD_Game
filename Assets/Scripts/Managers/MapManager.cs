@@ -149,15 +149,6 @@ public class MapManager : IMapManager, IInitializable {
         }
     }
 
-    public void ReverseHighlight(IMapManager.Layer layer, Vector3Int position) {
-        foreach (HighlightedTile tile in highlightedTiles) {
-            if (layer == tile.Layer && position == tile.Position) {
-                HighlightTile(layer, position, tile.PreviousColor);
-                break;
-            }
-        }
-    }
-
     public void UnhighlightTile(IMapManager.Layer layer, Vector3Int position) {
         foreach (HighlightedTile tile in highlightedTiles) {
             if (layer == tile.Layer && position == tile.Position) {

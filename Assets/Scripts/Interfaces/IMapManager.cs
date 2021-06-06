@@ -19,13 +19,6 @@ public interface IMapManager
     public void HighlightTile(IMapManager.Layer layer, Vector3Int position, Color color);
 
     /// <summary>
-    /// Reverts tile to previous highlight color
-    /// </summary>
-    /// <param name="layer"></param>
-    /// <param name="position"></param>
-    public void ReverseHighlight(IMapManager.Layer layer, Vector3Int position);
-
-    /// <summary>
     /// Removes tile highlight
     /// </summary>
     /// <param name="layer"></param>
