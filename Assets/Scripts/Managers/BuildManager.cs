@@ -19,9 +19,9 @@ public class BuildManager : IInitializable, IDisposable {
     HoverManager hoverManager;
     GameManager gameManager;
     ObjectPool objectPool;
+    RadiusRenderer radiusRenderer;
 
     public StructureData currentlySelectedStructure;
-    private List<GameObject> instantiatedTowers;
     private Vector3 tilemapOffset = new Vector3( 0.5f, 0.5f, 0);
     private Vector3Int lastPositionHovered;
     #endregion
@@ -32,7 +32,7 @@ public class BuildManager : IInitializable, IDisposable {
         None
     }
 
-    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, HoverManager hoverManager, ObjectPool objectPool) {
+    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, HoverManager hoverManager, ObjectPool objectPool, RadiusRenderer radiusRenderer) {
         Debug.Log("build manager constructor");
         this.mapManager = mapManager;
         this.gameManager = gameManager;
@@ -41,10 +41,10 @@ public class BuildManager : IInitializable, IDisposable {
         this.wallet = wallet;
         this.hoverManager = hoverManager;
         this.objectPool = objectPool;
+        this.radiusRenderer = radiusRenderer;
     }
 
     public void Initialize() {
-        instantiatedTowers = new List<GameObject>();
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
         MouseManager.OnMouseUp += HandleMouseUp;
     }
@@ -107,7 +107,8 @@ public class BuildManager : IInitializable, IDisposable {
         float structureValue;
 
         if (structureAtPos.GetType() == typeof(TowerData)) {
-            //  delete tower game object
+            RaycastHit2D hit = Physics2D.Raycast((Vector3)position, -Vector2.up);
+            objectPool.DestroyTower(hit.collider.GetComponent<Tower>());
         }
 
         mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
@@ -121,6 +122,13 @@ public class BuildManager : IInitializable, IDisposable {
     private void HandleNewTileHovered(Vector3Int tileCoords) {
         lastPositionHovered = tileCoords;
         hoverManager.NewTileHovered(tileCoords, CurrentBuildMode, currentlySelectedStructure);
+
+        if (CurrentBuildMode == BuildMode.Build && currentlySelectedStructure.GetType() == typeof(TowerData)) {
+            radiusRenderer.RenderRadius(tileCoords + tilemapOffset, ((TowerData)(currentlySelectedStructure)).Range);
+        }
+        else {
+            radiusRenderer.HideRadius();
+        }
     }
 
     /// <summary>
@@ -131,7 +139,6 @@ public class BuildManager : IInitializable, IDisposable {
     private void InstantiateTower(TowerData towerData, Vector3Int position) {
         Tower tower = objectPool.CreateTower(towerData.Type);
         tower.gameObject.transform.position = position + tilemapOffset;
-        instantiatedTowers.Add(tower.gameObject);
     }
 
     /// <summary>

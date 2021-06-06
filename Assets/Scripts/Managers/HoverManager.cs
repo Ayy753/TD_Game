@@ -13,8 +13,6 @@ public class HoverManager : IInitializable, IDisposable {
     private StructureData structureData;
     private BuildManager.BuildMode buildMode = BuildManager.BuildMode.None;
 
-    //private LineRenderer line;
-
     public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, GameManager gameManager) {
         this.mapManager = mapManager;
         this.hoverValidator = hoverValidator;
@@ -22,7 +20,6 @@ public class HoverManager : IInitializable, IDisposable {
     }
 
     public void Initialize() {
-        //line = GameObject.Find("LineRenderer").GetComponent<LineRenderer>();
     }
 
     public void Dispose() {
@@ -76,6 +73,7 @@ public class HoverManager : IInitializable, IDisposable {
 
             if (structureData.GetType() == typeof(TowerData)) {
                 lastSelectedStructureWasTower = true;
+                ChangeTowerTint(position, highlightColor);
                 HoverTowerGrid(position, highlightColor);
             }
             else {
@@ -107,7 +105,7 @@ public class HoverManager : IInitializable, IDisposable {
                 mapManager.ReverseHighlight(IMapManager.Layer.StructureLayer, position);
             }
             else if (tile.GetType() == typeof(TowerData)) {
-                //ChangeTowerTint(position, Color.white);
+                ChangeTowerTint(position, Color.white);
             }
         }
         else {
@@ -167,31 +165,14 @@ public class HoverManager : IInitializable, IDisposable {
         buildMode = BuildManager.BuildMode.None;
     }
 
-    ///// <summary>
-    ///// Renders a line of a given radius around a point to draw a circle
-    ///// used to show the radius of things
-    ///// </summary>
-    ///// <param name="center">Center of tower</param>
-    ///// <param name="radius">Attack radius of tower</param>
-    //public void RenderRadius(Vector3 center, float radius) {
-    //    line.enabled = true;
-    //    float x;
-    //    float y;
+    public void ChangeTowerTint(Vector3 position, Color color) {
+        RaycastHit2D hit = Physics2D.Raycast(position, -Vector2.up);
 
-    //    //  Drawing a line around the given position
-    //    for (int i = 0; i < line.positionCount; i++) {
-    //        x = center.x + radius * Mathf.Sin(Mathf.Deg2Rad * (360 / line.positionCount * i));
-    //        y = center.y + radius * Mathf.Cos(Mathf.Deg2Rad * (360 / line.positionCount * i));
-
-    //        line.SetPosition(i, new Vector3(x, y, 0));
-    //    }
-    //}
-
-    ///// <summary>
-    ///// Hides the line
-    ///// </summary>
-    //public void HideRadius() {
-    //    line.enabled = false;
-    //}
-
+        if (hit.collider != null) {
+            SpriteRenderer[] sprites = hit.collider.GetComponentsInChildren<SpriteRenderer>();
+            for (int i = 0; i < sprites.Length; i++) {
+                sprites[i].color = color;
+            }
+        }
+    }
 }
