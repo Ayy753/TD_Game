@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,8 @@ public class PathFinder : IPathfinder, IInitializable {
 
     [Inject] IMapManager mapManager;
     [Inject] AsyncProcessor asyncProcessor;
-    [Inject] PathRenderer pathRenderer;
+
+    public event EventHandler PathRecalculated;
 
     public void Initialize() {
         Debug.Log("Initializing pathfinder");
@@ -95,10 +97,7 @@ public class PathFinder : IPathfinder, IInitializable {
             if (currentNode.Coordinate == exitCoordinate) {
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
                 currentPath = foundPath.GetPath();
-                //mapManager.HighlightPath(currentPath, Color.cyan);
-
-                pathRenderer.RenderPath(currentPath);
-
+                PathRecalculated.Invoke(this, EventArgs.Empty);
                 Debug.Log("Successfully found main path");
                 yield break;
             }
