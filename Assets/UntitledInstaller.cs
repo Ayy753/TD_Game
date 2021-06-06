@@ -43,5 +43,6 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind(typeof(IGUIManager)).To<GUIController>().FromComponentInHierarchy().AsSingle();
 
         Container.Bind<RadiusRenderer>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<PathRenderer>().FromComponentInHierarchy().AsSingle();
     }
 }

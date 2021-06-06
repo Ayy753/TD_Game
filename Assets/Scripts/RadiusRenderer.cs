@@ -7,7 +7,7 @@ public class RadiusRenderer : MonoBehaviour{
     private LineRenderer line;
 
     public void Awake() {
-        line = GameObject.Find("LineRenderer").GetComponent<LineRenderer>();
+        line = GetComponent<LineRenderer>();
     }
 
     /// <summary>
