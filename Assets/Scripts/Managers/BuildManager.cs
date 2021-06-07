@@ -158,12 +158,16 @@ public class BuildManager : IInitializable, IDisposable {
             return;
         }
 
-        if (CurrentBuildMode == BuildMode.Build) {
-            AttemptBuildStructure(currentlySelectedStructure, lastPositionHovered);
+        //  If cursor isn't over a gui element
+        if (EventSystem.current.IsPointerOverGameObject() == false) {
+            if (CurrentBuildMode == BuildMode.Build) {
+                AttemptBuildStructure(currentlySelectedStructure, lastPositionHovered);
+            }
+            else if (CurrentBuildMode == BuildMode.Demolish) {
+                AttemptDemolishStructure(lastPositionHovered);
+            }
         }
-        else if (CurrentBuildMode == BuildMode.Demolish) {
-            AttemptDemolishStructure(lastPositionHovered);
-        }
+
     }
 
     private bool ShouldShowRadius(Vector3Int tileCoords) {
