@@ -73,6 +73,8 @@ public class MapManager : IMapManager, IInitializable {
 
     /// <summary>
     /// Gets the TileData class associated with the TileBase on this layer and position
+    /// Note: Tilebase is the dictionary key and there are multiple tower types that share the same towerbase, and the same key can't exist twice...
+    /// Therefore only one towerbase key was added in the dictonary and this should not be used to get the tower type at this position.
     /// </summary>
     /// <param name="layer">Layer to search</param>
     /// <param name="position">Position of tile</param>

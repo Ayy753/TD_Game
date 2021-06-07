@@ -115,10 +115,18 @@ public class BuildManager : IInitializable, IDisposable {
         if (structureAtPos.GetType() == typeof(TowerData)) {
             RaycastHit2D hit = Physics2D.Raycast((Vector3)position, -Vector2.up);
             objectPool.DestroyTower(hit.collider.GetComponent<Tower>());
+
+            //  Mapmanager.GetTileData() will not return the currect tower type so we must get it from tower
+            TowerData towerData = hit.collider.GetComponent<Tower>().TowerData;
+            structureValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
+        }
+        else {
+            structureValue = Mathf.RoundToInt(structureAtPos.Cost * wallet.GetResellPercentageInDecimal());
         }
 
         mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-        structureValue = structureAtPos.Cost * wallet.GetResellPercentageInDecimal();
+        Debug.Log("sold structure for " + structureValue);
+        wallet.GainMoney(structureValue);
     }
 
     /// <summary>
