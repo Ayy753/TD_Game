@@ -103,6 +103,9 @@ public class BuildManager : IInitializable, IDisposable {
             return;
         }
         DemolishStructure(position);
+
+        //  Refresh hover after demolishing
+        hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
     }
 
     private void DemolishStructure(Vector3Int position) {
@@ -240,6 +243,7 @@ public class BuildManager : IInitializable, IDisposable {
     public void EnterDemolishMode() {
 
         CurrentBuildMode = BuildMode.Demolish;
+        currentlySelectedStructure = null;
         Debug.Log("Entered demolish mode");
     }
 

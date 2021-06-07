@@ -121,6 +121,11 @@ public class HoverManager : IInitializable, IDisposable {
         Vector3Int bottomLeft = position + new Vector3Int(-1, -1, 0);
         Vector3Int topRight = position + new Vector3Int(1, 1, 0);
         HoverGrid(bottomLeft, topRight, color);
+
+        //  If center contains structure, color it red
+        if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)){
+            mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.red);
+        }
     }
 
     /// <summary>
@@ -131,6 +136,11 @@ public class HoverManager : IInitializable, IDisposable {
         Vector3Int bottomLeft = position + new Vector3Int(-1, -1, 0);
         Vector3Int topRight = position + new Vector3Int(1, 1, 0);
         UnHoverGrid(bottomLeft, topRight);
+
+        //  If center contains structure, remove tint
+        if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)){
+            mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.white);
+        }
     }
 
     /// <summary>
