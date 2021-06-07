@@ -73,7 +73,6 @@ public class HoverManager : IInitializable, IDisposable {
 
             if (structureData.GetType() == typeof(TowerData)) {
                 lastSelectedStructureWasTower = true;
-                ChangeTowerTint(position, highlightColor);
                 HoverTowerGrid(position, highlightColor);
             }
             else {
@@ -97,22 +96,6 @@ public class HoverManager : IInitializable, IDisposable {
         }
     }
 
-    private void UnhoverTile(Vector3Int position) {
-        if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) {
-            TileData tile = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
-
-            if (tile.GetType() == typeof(WallData)) {
-                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.white);
-            }
-            else if (tile.GetType() == typeof(TowerData)) {
-                ChangeTowerTint(position, Color.white);
-            }
-        }
-        else {
-            mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, Color.white);
-        }
-    }
-
     private void HoverGrid(Vector3Int start, Vector3Int end, Color color) {
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
@@ -124,7 +107,7 @@ public class HoverManager : IInitializable, IDisposable {
     private void UnHoverGrid(Vector3Int start, Vector3Int end) {
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
-                UnhoverTile(new Vector3Int(x, y, 0));
+                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, new Vector3Int(x, y, 0), Color.white);
             }
         }
     }
@@ -159,7 +142,7 @@ public class HoverManager : IInitializable, IDisposable {
             UnhoverTowerGrid(lastHoveredPosition);
         }
         else {
-            UnhoverTile(lastHoveredPosition);
+            UnhoverLastTile();
         }
         lastHoveredPosition = Vector3Int.down;
         buildMode = BuildManager.BuildMode.None;

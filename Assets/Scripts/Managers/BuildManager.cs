@@ -93,6 +93,9 @@ public class BuildManager : IInitializable, IDisposable {
         else {
             throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
         }
+
+        //  Refresh hover after building
+        hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
     }
 
     private void AttemptDemolishStructure(Vector3Int position) {
