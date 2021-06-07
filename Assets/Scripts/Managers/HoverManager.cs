@@ -168,7 +168,8 @@ public class HoverManager : IInitializable, IDisposable {
     public void ChangeTowerTint(Vector3 position, Color color) {
         RaycastHit2D hit = Physics2D.Raycast(position, -Vector2.up);
 
-        if (hit.collider != null) {
+        //  If a gameobject is hit, and the gameobject hit is a tower
+        if (hit.collider != null && hit.collider.GetComponent<Tower>() != null) {
             SpriteRenderer[] sprites = hit.collider.GetComponentsInChildren<SpriteRenderer>();
             for (int i = 0; i < sprites.Length; i++) {
                 sprites[i].color = color;
