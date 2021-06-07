@@ -158,7 +158,6 @@ public class BuildManager : IInitializable, IDisposable {
     /// <summary>
     /// Responds to a complete mouse click
     /// If in build mode, it will attempt to build a structure
-    /// 
     /// </summary>
     private void HandleMouseUp() {
         //  Prevent building/demolishing after game ended
@@ -188,55 +187,6 @@ public class BuildManager : IInitializable, IDisposable {
         }
         return false;
     }
-    ///// <summary>
-    ///// Checks if there is a tower within a 3x3 radius of position
-    ///// </summary>
-    ///// <param name="position"></param>
-    ///// <returns></returns>
-    //public bool IsTowerAdjacent(Vector3Int position) {
-    //    for (int x = -1; x <= 1; x++) {
-    //        for (int y = -1; y <= 1; y++) {
-    //            Vector3Int neighbour = position + new Vector3Int(x, y, 0);
-    //            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, neighbour)) {
-    //                TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, neighbour);
-
-    //                if (tileData.GetType() == typeof(TowerData)) {
-    //                    return true;
-    //                }
-    //            }
-    //        }
-    //    }
-    //    return false;
-    //}
-
-    ///// <summary>
-    ///// Demolishes a structure
-    ///// </summary>
-    ///// <param name="position"></param>
-    //public void DemolishStructure(Vector3Int position) {
-    //    TileData structure = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
-    //    if (structure.GetType() == typeof(TowerData)) {
-    //        //  Find and remove tower at this position
-    //        foreach (GameObject tower in instantiatedTowers) {
-    //            if (tower.transform.position == position + tilemapOffset) {
-    //                TowerData towerData = tower.GetComponent<Tower>().TowerData;
-    //                int sellValue = Mathf.RoundToInt(towerData.Cost * 0.66f);
-    //                //gameManager.GainGold(sellValue);
-    //                //guiController.SpawnFloatingTextInCenter("Sold for " + sellValue + " gold", Color.yellow);
-    //                instantiatedTowers.Remove(tower);
-    //                GameObject.Destroy(tower);
-    //                mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-    //                break;
-    //            }
-    //        }
-    //    }
-    //    else if (structure.GetType() == typeof(WallData)) {
-    //        mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-    //    }
-    //    else {
-    //        throw new System.Exception("Stucture type " + structure.GetType() + " not implemented");
-    //    }
-    //}
 
     /// <summary>
     /// Enters build mode
@@ -268,12 +218,4 @@ public class BuildManager : IInitializable, IDisposable {
         hoverManager.PauseHighlighting();
         Debug.Log("Exited build mode");
     }
-    //public GameObject GetTowerAtPosition(Vector3Int position) {
-    //    foreach (GameObject tower in instantiatedTowers) {
-    //        if (tower.transform.position == position + tilemapOffset) {
-    //            return tower;
-    //        }
-    //    }
-    //    return null;
-    //}
 }
