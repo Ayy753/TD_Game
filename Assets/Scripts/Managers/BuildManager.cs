@@ -123,7 +123,7 @@ public class BuildManager : IInitializable, IDisposable {
         lastPositionHovered = tileCoords;
         hoverManager.NewTileHovered(tileCoords, CurrentBuildMode, currentlySelectedStructure);
 
-        if (CurrentBuildMode == BuildMode.Build && currentlySelectedStructure.GetType() == typeof(TowerData)) {
+        if (ShouldShowRadius(tileCoords)) {
             radiusRenderer.RenderRadius(tileCoords + tilemapOffset, ((TowerData)(currentlySelectedStructure)).Range);
         }
         else {
@@ -160,6 +160,16 @@ public class BuildManager : IInitializable, IDisposable {
         }
     }
 
+    private bool ShouldShowRadius(Vector3Int tileCoords) {
+        if (CurrentBuildMode == BuildMode.Build 
+            && EventSystem.current.IsPointerOverGameObject() == false 
+            && currentlySelectedStructure.GetType() == typeof(TowerData) 
+            && mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, tileCoords)) {
+
+            return true;
+        }
+        return false;
+    }
     ///// <summary>
     ///// Checks if there is a tower within a 3x3 radius of position
     ///// </summary>
@@ -239,7 +249,6 @@ public class BuildManager : IInitializable, IDisposable {
         hoverManager.PauseHighlighting();
         Debug.Log("Exited build mode");
     }
-
     //public GameObject GetTowerAtPosition(Vector3Int position) {
     //    foreach (GameObject tower in instantiatedTowers) {
     //        if (tower.transform.position == position + tilemapOffset) {
