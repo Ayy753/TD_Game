@@ -56,5 +56,9 @@ public class Enemy : MonoBehaviour, IUnit {
         healthBar.UpdateHealthBar();
     }
 
+    public Transform GetTransform() {
+        return transform;
+    }
+
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
 }

@@ -14,4 +14,10 @@ public interface IUnit
     public Status GetStatus();
 
     public void ApplyDamage(Damage.DamageTypeAndAmount[] damages);
+
+    /// <summary>
+    /// Get the transform component of the unit's gameobject
+    /// </summary>
+    /// <returns>Unit's gameobject transform component</returns>
+    public Transform GetTransform();
 }
