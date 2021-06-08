@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour, IUnit {
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
         status = new Status(enemyData, this);
-        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput);
+        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput, transform);
         healthBar = transform.parent.GetComponentInChildren<HealthBar>();
     }
         
