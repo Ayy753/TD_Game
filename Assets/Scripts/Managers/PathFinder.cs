@@ -14,6 +14,8 @@ public class PathFinder : IPathfinder, IInitializable {
 
     public event EventHandler PathRecalculated;
 
+
+
     public void Initialize() {
         Debug.Log("Initializing pathfinder");
 
@@ -27,11 +29,18 @@ public class PathFinder : IPathfinder, IInitializable {
             asyncProcessor.StartCoroutine(CalculateMainPath());
         }
 
-        buildManager.OnStructureChanged += HandleStructureChanged;
+        buildManager.StructureChanged += HandleStructureChanged;
     }
 
-    private void HandleStructureChanged() {
-        asyncProcessor.StartCoroutine(CalculateMainPath());
+    private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
+        if (e.changeType == StructureChangedEventArgs.Type.build) {
+            if (IsOnMainPath(e.position)) {
+                asyncProcessor.StartCoroutine(CalculateMainPath());
+            }
+        }
+        else if (e.changeType == StructureChangedEventArgs.Type.demolish) {
+            asyncProcessor.StartCoroutine(CalculateMainPath());
+        }
     }
 
     /// <summary>

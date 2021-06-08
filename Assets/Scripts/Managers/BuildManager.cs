@@ -25,8 +25,10 @@ public class BuildManager : IInitializable, IDisposable {
     private Vector3 tilemapOffset = new Vector3( 0.5f, 0.5f, 0);
     private Vector3Int lastPositionHovered;
 
-    public delegate void StructureChanged();
-    public event StructureChanged OnStructureChanged;
+    //public delegate void StructureChanged();
+    //public event StructureChanged OnStructureChanged;
+
+    public EventHandler<StructureChangedEventArgs> StructureChanged;
 
     #endregion
 
@@ -101,9 +103,7 @@ public class BuildManager : IInitializable, IDisposable {
         //  Refresh hover after building
         hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
 
-        if (OnStructureChanged != null) {
-            OnStructureChanged.Invoke();
-        }
+        StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
     }
 
     private void AttemptDemolishStructure(Vector3Int position) {
@@ -136,9 +136,7 @@ public class BuildManager : IInitializable, IDisposable {
         Debug.Log("sold structure for " + structureValue);
         wallet.GainMoney(structureValue);
 
-        if (OnStructureChanged != null) {
-            OnStructureChanged.Invoke();
-        }
+        StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.demolish, position));
     }
 
     /// <summary>
@@ -229,5 +227,20 @@ public class BuildManager : IInitializable, IDisposable {
         CurrentBuildMode = BuildMode.None;
         hoverManager.PauseHighlighting();
         Debug.Log("Exited build mode");
+    }
+}
+
+public class StructureChangedEventArgs : EventArgs {
+    public Type changeType;
+    public Vector3Int position;
+
+    public StructureChangedEventArgs(Type changeType, Vector3Int position) {
+        this.changeType = changeType;
+        this.position = position;
+    }
+    
+    public enum Type {
+        build,
+        demolish
     }
 }
