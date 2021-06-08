@@ -7,6 +7,7 @@ public class NormalProjectile : Projectile {
 
     private bool targetHit;
     private bool targetDied;
+    private bool dealtDamage;
 
     private void Update() {
         MoveTowardsTarget();
@@ -16,6 +17,7 @@ public class NormalProjectile : Projectile {
         base.Initialize(startPos, target);
         targetHit = false;
         targetDied = false;
+        dealtDamage = false;
     }
 
     protected override void MoveTowardsTarget() {
@@ -38,17 +40,19 @@ public class NormalProjectile : Projectile {
     protected void OnTriggerEnter2D(Collider2D collision) {
         IUnit unit = collision.GetComponentInChildren<IUnit>();
 
-        //  If it hit a unit
-        if (unit != null) {
+        //  If it hit a unit, and hasn't damaged anything yet (to prevent it from damaging multiple units at the same time)
+        if (unit != null && dealtDamage == false) {
             //  If the unit is the target
             if (unit.GetTransform() == Target) {
                 targetHit = true;
+                dealtDamage = true;
                 unit.ApplyDamage(ProjectileData.damageTypesAndAmounts);
                 gameObject.SetActive(false);
             }
             //  If target is already dead, it can damage another unit
             else if (targetDied == true) {
                 unit.ApplyDamage(ProjectileData.damageTypesAndAmounts);
+                dealtDamage = true;
                 gameObject.SetActive(false);
             }
         }
