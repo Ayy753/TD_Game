@@ -11,8 +11,16 @@ public class UnitAI : IUnitInput
 {
     IPathfinder pathFinder;
     IUnit unit;
+
+
     private List<Vector3Int> mainPath;
     private int pathIndex;
+
+    private List<Vector3Int> routeToMainPath;
+    private int routeIndex;
+
+    private bool onMainPath;
+
     private Vector3Int nextTilePosition;
 
     //  TODO find own reference to pathfinder
@@ -31,22 +39,55 @@ public class UnitAI : IUnitInput
         pathIndex = 0;
         nextTilePosition = mainPath[pathIndex];
 
+        onMainPath = true;
+
         pathFinder.PathRecalculated += OnPathRecalculated;
     }
 
     private void OnPathRecalculated(object sender, EventArgs e) {
-        pathIndex = pathFinder.GetPathIndexAtPosition(mainPath[pathIndex]);
+        Vector3Int currentPosition = mainPath[pathIndex];
+
+        if (pathFinder.IsOnMainPath(currentPosition) == false) {
+            (List<Vector3Int>, int) item =  pathFinder.GetRouteToMainPath(currentPosition);
+
+            routeToMainPath = item.Item1;
+
+            //  Index where unit will end up at the end of route to main path
+            pathIndex = item.Item2;
+
+            routeIndex = 0;
+
+            onMainPath = false;
+        }
+        else {
+            pathIndex = pathFinder.GetPathIndexAtPosition(currentPosition);
+            onMainPath = true;
+        }
+
         mainPath = pathFinder.GetMainPath();
     }
 
     public void ReachedNextTile() {
-        pathIndex++;
-        if (pathIndex < mainPath.Count) {
-            nextTilePosition = mainPath[pathIndex];
+
+        if (onMainPath) {
+            pathIndex++;
+            if (pathIndex < mainPath.Count) {
+                nextTilePosition = mainPath[pathIndex];
+            }
+            else {
+                unit.ReachedDestination();
+            }
         }
         else {
-            unit.ReachedDestination();
+            routeIndex++;
+            if (routeIndex < routeToMainPath.Count) {
+                nextTilePosition = routeToMainPath[routeIndex];
+            }
+            else {
+                onMainPath = true;
+            }
         }
+
     }
 
     public Vector3Int GetNextTile() {

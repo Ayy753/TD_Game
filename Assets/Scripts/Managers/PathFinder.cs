@@ -177,8 +177,81 @@ public class PathFinder : IPathfinder, IInitializable {
         return currentPath;
     }
 
-    public List<Vector3Int> GetRouteToMainPath(Vector3Int currentPosition) {
-        throw new System.NotImplementedException();
+    public (List<Vector3Int>, int) GetRouteToMainPath(Vector3Int currentPosition) {
+        List<PathNode> openList = new List<PathNode>();
+        List<PathNode> closedList = new List<PathNode>();
+
+        PathNode initialNode = new PathNode(currentPosition);
+        openList.Add(initialNode);
+
+        while (openList.Count > 0) {
+            PathNode shortest = openList[0];
+
+            foreach (PathNode node in openList) {
+                if (node.Fcost < shortest.Fcost) {
+                    shortest = node;
+                }
+            }
+
+            openList.Remove(shortest);
+            closedList.Add(shortest);
+
+            for (int i = 0; i < currentPath.Count; i++) {
+                //  If it is we found the shortest route to the main path
+                if (currentPath[i] == shortest.Coordinate) {
+                    List<Vector3Int> path = shortest.GetPath();
+
+                    //mapManager.HighlightPath(path, Color.grey);
+                    return (path, i);
+                }
+            }
+
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    if ((x == 0 && y != 0) || (x != 0 && y == 0)) {
+
+                        Vector3Int neighbour = shortest.Coordinate + new Vector3Int(x, y, 0);
+
+                        if (IsValidTile(neighbour)) {
+                            //float tileCost = ((GroundData)(mapManager.GetTileData(MapManager.Layer.GroundLayer, neighbourCoordinate))).WalkCost;
+
+                            float tileCost = mapManager.GetTileCost(neighbour);
+
+                            bool inClosedList = false;
+                            bool inOpenList = false;
+
+                            foreach (PathNode node in closedList) {
+                                if (node.Coordinate == neighbour) {
+                                    inClosedList = true;
+                                    break;
+                                }
+                            }
+
+                            if (inClosedList == false) {
+                                //  Might add some kind of heristic value later for tiebreaking
+                                float fScore = shortest.Fcost + tileCost;
+
+                                foreach (PathNode node in openList) {
+                                    if (node.Coordinate == neighbour) {
+                                        inOpenList = true;
+
+                                        if (fScore < node.Fcost) {
+                                            node.Fcost = fScore;
+                                        }
+                                        break;
+                                    }
+                                }
+
+                                if (inOpenList == false) {
+                                    openList.Add(new PathNode(neighbour, fScore, 0, shortest));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return (null, -1);
     }
 
     public int GetPathIndexAtPosition(Vector3Int position) {
@@ -188,6 +261,15 @@ public class PathFinder : IPathfinder, IInitializable {
             }
         }
         return -1;
+    }
+
+    public bool IsOnMainPath(Vector3Int position) {
+        foreach (Vector3Int node in currentPath) {
+            if (node == position) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>

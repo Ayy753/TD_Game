@@ -14,7 +14,7 @@ public interface IPathfinder {
     /// Pathfinding to join main path
     /// </summary>
     /// <returns></returns>
-    public List<Vector3Int> GetRouteToMainPath(Vector3Int currentPosition);
+    public (List<Vector3Int>, int) GetRouteToMainPath(Vector3Int currentPosition);
 
     /// <summary>
     /// Get path index at position
@@ -22,6 +22,8 @@ public interface IPathfinder {
     /// <param name="position"></param>
     /// <returns>Path index, or -1 if position isn't on path</returns>
     public int GetPathIndexAtPosition(Vector3Int position);
+
+    public bool IsOnMainPath(Vector3Int position);
 
     /// <summary>
     /// Fires when path is recalculated
