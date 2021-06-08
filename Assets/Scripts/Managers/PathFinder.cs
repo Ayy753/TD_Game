@@ -10,6 +10,7 @@ public class PathFinder : IPathfinder, IInitializable {
 
     [Inject] IMapManager mapManager;
     [Inject] AsyncProcessor asyncProcessor;
+    [Inject] BuildManager buildManager;
 
     public event EventHandler PathRecalculated;
 
@@ -25,6 +26,12 @@ public class PathFinder : IPathfinder, IInitializable {
         else {
             asyncProcessor.StartCoroutine(CalculateMainPath());
         }
+
+        buildManager.OnStructureChanged += HandleStructureChanged;
+    }
+
+    private void HandleStructureChanged() {
+        asyncProcessor.StartCoroutine(CalculateMainPath());
     }
 
     /// <summary>
@@ -172,6 +179,15 @@ public class PathFinder : IPathfinder, IInitializable {
 
     public List<Vector3Int> GetRouteToMainPath(Vector3Int currentPosition) {
         throw new System.NotImplementedException();
+    }
+
+    public int GetPathIndexAtPosition(Vector3Int position) {
+        for (int i = 0; i < currentPath.Count; i++) {
+            if (currentPath[i] == position) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /// <summary>

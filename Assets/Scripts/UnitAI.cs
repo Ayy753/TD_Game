@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,6 +30,13 @@ public class UnitAI : IUnitInput
 
         pathIndex = 0;
         nextTilePosition = mainPath[pathIndex];
+
+        pathFinder.PathRecalculated += OnPathRecalculated;
+    }
+
+    private void OnPathRecalculated(object sender, EventArgs e) {
+        pathIndex = pathFinder.GetPathIndexAtPosition(mainPath[pathIndex]);
+        mainPath = pathFinder.GetMainPath();
     }
 
     public void ReachedNextTile() {

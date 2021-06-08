@@ -24,6 +24,10 @@ public class BuildManager : IInitializable, IDisposable {
     public StructureData currentlySelectedStructure;
     private Vector3 tilemapOffset = new Vector3( 0.5f, 0.5f, 0);
     private Vector3Int lastPositionHovered;
+
+    public delegate void StructureChanged();
+    public event StructureChanged OnStructureChanged;
+
     #endregion
 
     public enum BuildMode {
@@ -96,6 +100,10 @@ public class BuildManager : IInitializable, IDisposable {
 
         //  Refresh hover after building
         hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
+
+        if (OnStructureChanged != null) {
+            OnStructureChanged.Invoke();
+        }
     }
 
     private void AttemptDemolishStructure(Vector3Int position) {
@@ -127,6 +135,10 @@ public class BuildManager : IInitializable, IDisposable {
         mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
         Debug.Log("sold structure for " + structureValue);
         wallet.GainMoney(structureValue);
+
+        if (OnStructureChanged != null) {
+            OnStructureChanged.Invoke();
+        }
     }
 
     /// <summary>
