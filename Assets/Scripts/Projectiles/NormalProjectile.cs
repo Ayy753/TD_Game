@@ -4,8 +4,6 @@ using UnityEngine;
 using Zenject;
 
 public class NormalProjectile : Projectile {
-
-    private bool targetHit;
     private bool targetDied;
     private bool dealtDamage;
 
@@ -15,7 +13,6 @@ public class NormalProjectile : Projectile {
 
     public override void Initialize(Vector3 startPos, Transform target) {
         base.Initialize(startPos, target);
-        targetHit = false;
         targetDied = false;
         dealtDamage = false;
     }
@@ -44,7 +41,6 @@ public class NormalProjectile : Projectile {
         if (unit != null && dealtDamage == false) {
             //  If the unit is the target
             if (unit.GetTransform() == Target) {
-                targetHit = true;
                 dealtDamage = true;
                 unit.ApplyDamage(ProjectileData.damageTypesAndAmounts);
                 gameObject.SetActive(false);
