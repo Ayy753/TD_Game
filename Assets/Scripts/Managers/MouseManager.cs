@@ -16,11 +16,15 @@ class MouseManager : MonoBehaviour
     public delegate void RightMouseDown();
     public delegate void RightMouseUp();
 
+    public delegate void GameObjectClicked(GameObject gameObject);
+
     public static event HoveredNewTile OnHoveredNewTile;
     public static event LeftMouseDown OnLeftMouseDown;
     public static event LeftMouseUp OnLeftMouseUp;
     public static event RightMouseDown OnRightMouseDown;
     public static event RightMouseUp OnRightMouseUp;
+
+    public static event GameObjectClicked OnGameObjectClicked;
 
     private void Start()
     {
@@ -74,8 +78,14 @@ class MouseManager : MonoBehaviour
             {
                 OnLeftMouseUp.Invoke();
             }
-        }
 
+            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            GameObject objectAtPos = PerformGameObjectRaycast(pos);
+
+            if (objectAtPos != null && OnGameObjectClicked != null) {
+                OnGameObjectClicked.Invoke(objectAtPos);
+            }
+        }
 
         //  if right mouse was not previously down and is now down
         if (wasRightMouseDown == false) {
@@ -112,5 +122,15 @@ class MouseManager : MonoBehaviour
                 OnHoveredNewTile.Invoke(mousePos);
             }
         }
+    }
+
+    private GameObject PerformGameObjectRaycast(Vector3 position) {
+        RaycastHit2D hit = Physics2D.Raycast(position, -Vector2.up);
+
+        // If it hits something...
+        if (hit.collider != null) {
+            return hit.collider.gameObject;
+        }
+        return null;
     }
 }

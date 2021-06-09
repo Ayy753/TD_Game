@@ -44,5 +44,11 @@ public class UntitledInstaller : MonoInstaller
 
         Container.Bind<RadiusRenderer>().FromComponentInHierarchy().AsSingle();
         Container.Bind<PathRenderer>().FromComponentInHierarchy().AsSingle();
+
+        Container.Bind<StatusPanel>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable)).To<StatusPanel>().FromResolve();
+
+        Container.Bind<TargetManager>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<TargetManager>().FromResolve();
     }
 }

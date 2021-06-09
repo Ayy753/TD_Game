@@ -1,20 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
-public class StatusPanel{
+public class StatusPanel : IInitializable {
     TMP_Text txtCurrentHealth, txtMaxHealth, txtARmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist;
+    
+    public void Initialize() {
+        Debug.Log("initializing status panel");
 
-    public void Awake() {
-        txtCurrentHealth = GameObject.Find("txtHealthCurrentVal").GetComponent<TextMeshPro>();
-        txtMaxHealth = GameObject.Find("txtHealthMaxVal").GetComponent<TextMeshPro>();
-        txtARmor = GameObject.Find("txtArmorVal").GetComponent<TextMeshPro>();
-        txtFireResist = GameObject.Find("txtFireResistVal").GetComponent<TextMeshPro>();
-        txtColdResist = GameObject.Find("txtColdResistVal").GetComponent<TextMeshPro>();
-        txtSpeed = GameObject.Find("txtSpeedVal").GetComponent<TextMeshPro>();
-        txtPoisonResist = GameObject.Find("txtPoisonResistVal").GetComponent<TextMeshPro>();
-        txtLightningResist = GameObject.Find("txtLightningResistVal").GetComponent<TextMeshPro>();
+        txtCurrentHealth = GameObject.Find("txtHealthCurrentVal").GetComponent<TMP_Text>();
+        txtMaxHealth = GameObject.Find("txtHealthMaxVal").GetComponent<TMP_Text>();
+        txtARmor = GameObject.Find("txtArmorVal").GetComponent<TMP_Text>();
+        txtFireResist = GameObject.Find("txtFireResistVal").GetComponent<TMP_Text>();
+        txtColdResist = GameObject.Find("txtColdResistVal").GetComponent<TMP_Text>();
+        txtSpeed = GameObject.Find("txtSpeedVal").GetComponent<TMP_Text>();
+        txtPoisonResist = GameObject.Find("txtPoisonResistVal").GetComponent<TMP_Text>();
+        txtLightningResist = GameObject.Find("txtLightningResistVal").GetComponent<TMP_Text>();
     }
 
     public void UpdateStatusPanel(Status status) {
