@@ -24,6 +24,7 @@ public class Status{
     //  Effective stats
     //  Resists are in percentage
     public float Health { get { return characterData.BaseHealth + AddHealth - Damage; } }
+    public float MaxHealth { get { return characterData.BaseHealth + AddHealth; } }
     public float FireResist { get { return characterData.BaseFireResist + AddFireResist; } }
     public float ColdResist { get { return characterData.BaseColdResist + AddColdResist; } }
     public float PoisonResist { get { return characterData.BasePoisonResist + AddPoisonResist; } }
