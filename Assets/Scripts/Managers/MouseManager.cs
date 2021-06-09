@@ -6,16 +6,21 @@ using UnityEngine.EventSystems;
 class MouseManager : MonoBehaviour
 {
     private Vector3Int lastTileHovered = Vector3Int.zero;
-    private bool wasMouseDown = false;
+    private bool wasLeftMouseDown = false;
+    private bool wasRightMouseDown = false;
     private float MousePollingRate = 0.025f;
 
     public delegate void HoveredNewTile(Vector3Int tileCoords);
-    public delegate void MouseDown();
-    public delegate void MouseUp();
+    public delegate void LeftMouseDown();
+    public delegate void LeftMouseUp();
+    public delegate void RightMouseDown();
+    public delegate void RightMouseUp();
 
     public static event HoveredNewTile OnHoveredNewTile;
-    public static event MouseDown OnMouseDown;
-    public static event MouseUp OnMouseUp;
+    public static event LeftMouseDown OnLeftMouseDown;
+    public static event LeftMouseUp OnLeftMouseUp;
+    public static event RightMouseDown OnRightMouseDown;
+    public static event RightMouseUp OnRightMouseUp;
 
     private void Start()
     {
@@ -49,25 +54,43 @@ class MouseManager : MonoBehaviour
     /// </summary>
     private void PollClickEvents()
     {
-        //  if was not previously down and is now down
-        if (wasMouseDown == false)
+        //  if left mouse was not previously down and is now down
+        if (wasLeftMouseDown == false)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                wasMouseDown = true;
-                if (OnMouseDown != null)
+                wasLeftMouseDown = true;
+                if (OnLeftMouseDown != null)
                 {
-                    OnMouseDown.Invoke();
+                    OnLeftMouseDown.Invoke();
                 }
             }
         }
-        //  Otherwise, check if mouse was previously down and is now up
+        //  Otherwise, check if left mouse was previously down and is now up
         else if (Input.GetMouseButtonUp(0))
         {
-            wasMouseDown = false;
-            if (OnMouseUp != null)
+            wasLeftMouseDown = false;
+            if (OnLeftMouseUp != null)
             {
-                OnMouseUp.Invoke();
+                OnLeftMouseUp.Invoke();
+            }
+        }
+
+
+        //  if right mouse was not previously down and is now down
+        if (wasRightMouseDown == false) {
+            if (Input.GetMouseButtonDown(1)) {
+                wasRightMouseDown = true;
+                if (OnRightMouseDown != null) {
+                    OnRightMouseDown.Invoke();
+                }
+            }
+        }
+        //  Otherwise, check if right mouse was previously down and is now up
+        else if (Input.GetMouseButtonUp(1)) {
+            wasRightMouseDown = false;
+            if (OnRightMouseUp != null) {
+                OnRightMouseUp.Invoke();
             }
         }
     }

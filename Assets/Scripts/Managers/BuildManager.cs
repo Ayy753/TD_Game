@@ -52,12 +52,14 @@ public class BuildManager : IInitializable, IDisposable {
 
     public void Initialize() {
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
-        MouseManager.OnMouseUp += HandleMouseUp;
+        MouseManager.OnLeftMouseUp += HandleLeftMouseUp;
+        MouseManager.OnRightMouseUp += HandleRightMouseUp;
     }
 
     public void Dispose() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
-        MouseManager.OnMouseUp -= HandleMouseUp;
+        MouseManager.OnLeftMouseUp -= HandleLeftMouseUp;
+        MouseManager.OnRightMouseUp -= HandleRightMouseUp;
     }
 
     /// <summary>
@@ -169,7 +171,7 @@ public class BuildManager : IInitializable, IDisposable {
     /// Responds to a complete mouse click
     /// If in build mode, it will attempt to build a structure
     /// </summary>
-    private void HandleMouseUp() {
+    private void HandleLeftMouseUp() {
         //  Prevent building/demolishing after game ended
         if (gameManager.GameEnded == true) {
             return;
@@ -183,6 +185,19 @@ public class BuildManager : IInitializable, IDisposable {
             else if (CurrentBuildMode == BuildMode.Demolish) {
                 AttemptDemolishStructure(lastPositionHovered);
             }
+        }
+
+    }
+    
+    private void HandleRightMouseUp() {
+        //  Prevent building/demolishing after game ended
+        if (gameManager.GameEnded == true) {
+            return;
+        }
+
+        //  If cursor isn't over a gui element
+        if (EventSystem.current.IsPointerOverGameObject() == false) {
+            ExitBuildMode();
         }
 
     }
@@ -226,6 +241,7 @@ public class BuildManager : IInitializable, IDisposable {
         currentlySelectedStructure = null;
         CurrentBuildMode = BuildMode.None;
         hoverManager.PauseHighlighting();
+        radiusRenderer.HideRadius();
         Debug.Log("Exited build mode");
     }
 }
