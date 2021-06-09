@@ -7,9 +7,11 @@ using Zenject;
 public class TargetManager: IInitializable, IDisposable{
 
     private StatusPanel statusPanel;
+    private TowerPanel towerPanel;
 
-    public TargetManager(StatusPanel statusPanel) {
+    public TargetManager(StatusPanel statusPanel, TowerPanel towerPanel) {
         this.statusPanel = statusPanel;
+        this.towerPanel = towerPanel;
     }
 
     public void Initialize() {
@@ -25,7 +27,7 @@ public class TargetManager: IInitializable, IDisposable{
         IUnit unit = gameObject.GetComponentInChildren<IUnit>();
 
         if (tower != null) {
-            //  TODO implement
+            towerPanel.UpdateTowerPanel(tower);
         }
         else if (unit != null) {
             statusPanel.UpdateStatusPanel(unit.GetStatus());

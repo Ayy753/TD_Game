@@ -232,5 +232,9 @@ public class Tower : MonoBehaviour, IUnitRangeDetection {
         return TowerData.Range;
     }
 
+    public void ChangeTargetMode(TargetMode targetMode) {
+        CurrentTargetMode = targetMode;
+    }
+
     public class Factory : PlaceholderFactory<Tower> { }
 }
