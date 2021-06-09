@@ -125,7 +125,7 @@ class MouseManager : MonoBehaviour
     }
 
     private GameObject PerformGameObjectRaycast(Vector3 position) {
-        RaycastHit2D hit = Physics2D.Raycast(position, -Vector2.up);
+        RaycastHit2D hit = Physics2D.Raycast(position, Vector2.zero);
 
         // If it hits something...
         if (hit.collider != null) {
