@@ -87,25 +87,29 @@ public class Status{
     }
 
     /// <summary>
-    /// Inflicts damage
+    /// Inflicts damage, or heals if damage is negative
     /// </summary>
     /// <param name="damage"></param>
-    public void TakeDamage(float damage) {
+    public void ModifyDamage(float damage) {
         Damage += damage;
-        if (Health <= 0) {
+
+        if (Damage < 0) {
+            Damage = 0;
+        }
+        else if (Health <= 0) {
             unit.Died();
         }
     }
 
-    /// <summary>
-    /// Mends inflicted damage
-    /// </summary>
-    /// <param name="healAmount"></param>
-    public void Heal(float healAmount) {
-        Damage -= healAmount;
-        if (Damage < 0) {
-            Damage = 0;
-        }
-    }
+    ///// <summary>
+    ///// Mends inflicted damage
+    ///// </summary>
+    ///// <param name="healAmount"></param>
+    //public void Heal(float healAmount) {
+    //    Damage -= healAmount;
+    //    if (Damage < 0) {
+    //        Damage = 0;
+    //    }
+    //}
 }
 

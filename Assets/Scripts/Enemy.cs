@@ -62,7 +62,7 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
         float damage = Damage.CalculateDamage(status, damages);
-        status.TakeDamage(damage);
+        status.ModifyDamage(damage);
         healthBar.UpdateHealthBar();
     }
 
