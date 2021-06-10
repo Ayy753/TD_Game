@@ -11,6 +11,12 @@ public class Enemy : MonoBehaviour, IUnit {
     private Status status;
     private HealthBar healthBar;
 
+    public delegate void EnemyReachedGate(Enemy enemy);
+    public delegate void EnemyDied(Enemy enemy);
+
+    public static event EnemyReachedGate OnEnemyReachedGate;
+    public static event EnemyDied OnEnemyDied;
+
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
         status = new Status(enemyData, this);
@@ -21,7 +27,6 @@ public class Enemy : MonoBehaviour, IUnit {
     private void Update() {
         if (unitMovement != null) {
             unitMovement.Move();
-
         }
     }
 
@@ -34,12 +39,17 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public void ReachedDestination() {
         Debug.Log("Unit reached destination");
-        //  TODO: fire event or something
+        if (OnEnemyReachedGate != null) {
+            OnEnemyReachedGate.Invoke(this);
+        }
         Despawn();
     }
 
     public void Died() {
         Despawn();
+        if (OnEnemyDied != null) {
+            OnEnemyDied.Invoke(this);
+        }
     }
 
     private void Despawn() {

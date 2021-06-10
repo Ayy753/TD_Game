@@ -12,8 +12,6 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind(typeof(IInitializable)).To<ObjectPool>().FromResolve();
         Container.BindIFactory<Enemy, Enemy.Factory>();
 
-
-
         Container.Bind<WaveManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable)).To<WaveManager>().FromResolve();
 
@@ -25,14 +23,14 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         Container.Bind<GameManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IInitializable)).To<GameManager>().FromResolve();
+        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<GameManager>().FromResolve();
 
         Container.Bind<HoverManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<HoverManager>().FromResolve();
 
         Container.Bind(typeof(IBuildValidator)).To<BuildValidator>().AsSingle().NonLazy();
 
-        Container.Bind(typeof(IWallet), typeof(IInitializable)).To<Wallet>().AsSingle().NonLazy();
+        Container.Bind(typeof(IWallet), typeof(IInitializable), typeof(IDisposable)).To<Wallet>().AsSingle().NonLazy();
 
         Container.Bind<IMessageSystem>().To<MessageSystem>().AsSingle().NonLazy();
 

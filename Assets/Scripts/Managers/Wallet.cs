@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 using Zenject;
 
-public class Wallet : IWallet, IInitializable {
+public class Wallet : IWallet, IInitializable, IDisposable {
     [Inject] private IGUIManager guiController;
 
     private float gold;
@@ -16,6 +14,15 @@ public class Wallet : IWallet, IInitializable {
 
     public void Initialize() {
         GainMoney(startingGold);
+        Enemy.OnEnemyDied += HandleEnemyDied;
+    }
+
+    public void Dispose() {
+        Enemy.OnEnemyDied -= HandleEnemyDied;
+    }
+
+    private void HandleEnemyDied(Enemy enemy) {
+        GainMoney(enemy.enemyData.BaseValue);
     }
 
     public bool CanAfford(float amount) {
