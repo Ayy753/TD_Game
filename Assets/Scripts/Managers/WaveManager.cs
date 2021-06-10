@@ -1,15 +1,21 @@
+using System;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class WaveManager : IInitializable {
+public class WaveManager : IInitializable, IDisposable {
 
     [Inject] private ObjectPool objectPool;
     [Inject] private AsyncProcessor asyncProcessor;
-    private const string FilePath = "LevelData/WaveData/demo_waves";
+    [Inject] private GameManager gameManager;
+
+    //private const string FilePath = "LevelData/WaveData/demo_waves";
+    private const string FilePath = "LevelData/WaveData/dummy_waves";
     private Root LevelData;
+
+    private List<Enemy> activeEnemies;
 
     public int NumberOfWaves { get; private set; }
     private int currentWave = 0;
@@ -17,11 +23,31 @@ public class WaveManager : IInitializable {
     private const int timeBetweenWaves = 5;
     private const int timeBeforeFirstWave = 3;
     private Coroutine nextWaveCountDown;
+    private bool lastWaveFinishedSpawning;
 
     public void Initialize() {
         Debug.Log("Initializing WaveManager");
+
+        Enemy.OnEnemyDied += HandleEnemyDeactivated;
+        Enemy.OnEnemyReachedGate += HandleEnemyDeactivated;
+
         LoadWaveData();
+
         nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
+        activeEnemies = new List<Enemy>();
+        lastWaveFinishedSpawning = false;
+    }
+
+    public void Dispose() {
+        Enemy.OnEnemyDied -= HandleEnemyDeactivated;
+        Enemy.OnEnemyReachedGate -= HandleEnemyDeactivated;
+    }
+
+    private void HandleEnemyDeactivated(Enemy enemy) {
+        activeEnemies.Remove(enemy);
+        if (lastWaveFinishedSpawning && activeEnemies.Count == 0) {
+            gameManager.NoEnemiesLeft();
+        }
     }
 
     private void LoadWaveData() {
@@ -80,7 +106,6 @@ public class WaveManager : IInitializable {
         }
 
         while (secondsUntilNextWave > 0) {
-            //Debug.Log("Time until next wave: " + secondsUntilNextWave);
             yield return new WaitForSeconds(1f);
             secondsUntilNextWave--;
         }
@@ -113,15 +138,19 @@ public class WaveManager : IInitializable {
                 yield return new WaitForSeconds(group.TimebetweenSpawns);
                 Enemy enemy = objectPool.CreateEnemy(groupType);
                 enemy.Spawn();
+                activeEnemies.Add(enemy);
             }
 
             yield return new WaitForSeconds(LevelData.waves[thisWaveNum].TimebetweenGroups);
         }
 
-        Debug.Log(string.Format("currentwave-1: {0}, thisWaveNum: {1}, numwaves-1: {2}", (currentWave-1), thisWaveNum, ( NumberOfWaves -1)));
-
+        //  If there are more waves, launch next wave
         if (currentWave-1 == thisWaveNum && currentWave < NumberOfWaves - 1) {
             nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
+        }
+        //  Otherwise set flag
+        else {
+            lastWaveFinishedSpawning = true;
         }
     }
 

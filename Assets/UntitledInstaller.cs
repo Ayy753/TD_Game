@@ -13,7 +13,7 @@ public class UntitledInstaller : MonoInstaller
         Container.BindIFactory<Enemy, Enemy.Factory>();
 
         Container.Bind<WaveManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IInitializable)).To<WaveManager>().FromResolve();
+        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<WaveManager>().FromResolve();
 
         Container.Bind<BuildManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();

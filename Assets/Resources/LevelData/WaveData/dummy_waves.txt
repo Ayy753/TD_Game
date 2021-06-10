@@ -1,0 +1,16 @@
+{
+	"waves" : 
+	[
+		{"WaveNum":0, "Groups" : [
+			{"EnemyType":"NormalEnemy", "NumEnemies":10, "TimebetweenSpawns":1}
+		], "TimebetweenGroups" : 3},
+		
+		{"WaveNum":1, "Groups" : [
+			{"EnemyType":"NormalEnemy", "NumEnemies":15, "TimebetweenSpawns":1}
+		], "TimebetweenGroups" : 3},
+		
+		{"WaveNum":2, "Groups" : [
+			{"EnemyType":"NormalEnemy", "NumEnemies":12, "TimebetweenSpawns":1}
+		], "TimebetweenGroups" : 3}
+	]	
+}

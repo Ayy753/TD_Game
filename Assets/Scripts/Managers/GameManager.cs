@@ -6,7 +6,7 @@ public class GameManager: IInitializable, IDisposable {
     IGUIManager guiController;
     
     public int Lives { get; private set; }
-    public bool GameEnded { get; internal set; }
+    public bool GameEnded { get; private set; }
     private const int startingLives = 25;
 
     public GameManager(IGUIManager guiController) {
@@ -30,5 +30,14 @@ public class GameManager: IInitializable, IDisposable {
             Debug.Log("game over");
             //  TODO: Gameover logic
         }
+    }
+
+    /// <summary>
+    /// used by wavemanager when there are no more waves and the last enemy died or reached gate
+    /// </summary>
+    public void NoEnemiesLeft() {
+        GameEnded = true;
+        Debug.Log("Game ended");
+        //  TODO: game ended logic
     }
 }
