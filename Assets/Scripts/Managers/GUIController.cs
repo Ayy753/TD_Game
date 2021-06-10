@@ -4,18 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-
+using TMPro;
 
 public class GUIController : MonoBehaviour, IGUIManager {
 
     [Inject] BuildManager buildManager;
     [Inject] WaveManager waveManager;
 
+    TMP_Text txtLives, txtGold;
+
     public void Awake() {
         CreateDynamicButtons();
 
-        Debug.Log(buildManager == null);
-        Debug.Log(waveManager == null);
+        txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
+        txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
     }
 
     /// <summary>
@@ -37,6 +39,14 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
             newButton.GetComponent<BuildMenuButton>().Initialize(structure, this);
         }
+    }
+
+    public void UpdateGoldLabel(float gold) {
+        txtGold.text = Mathf.RoundToInt(gold).ToString();
+    }
+
+    public void UpdateLivesLabel(int lives) {
+        txtLives.text = Mathf.RoundToInt(lives).ToString();
     }
     
     public void EnterBuildMode(StructureData structure) {

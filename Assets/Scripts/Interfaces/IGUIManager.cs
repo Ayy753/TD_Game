@@ -8,4 +8,6 @@ public interface IGUIManager{
     public void EnterDemolishMode();
     public void ExitEditMode();
     public void StartNextWave();
+    public void UpdateGoldLabel(float gold);
+    public void UpdateLivesLabel(int lives);
 }

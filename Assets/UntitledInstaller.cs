@@ -20,22 +20,20 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<BuildManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();
 
-
-
         Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
         Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         Container.Bind<GameManager>().AsSingle().NonLazy();
-
-
+        Container.Bind(typeof(IInitializable)).To<GameManager>().FromResolve();
 
         Container.Bind<HoverManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<HoverManager>().FromResolve();
 
         Container.Bind(typeof(IBuildValidator)).To<BuildValidator>().AsSingle().NonLazy();
 
-        Container.Bind<IWallet>().To<Wallet>().AsSingle().NonLazy();
+        Container.Bind(typeof(IWallet), typeof(IInitializable)).To<Wallet>().AsSingle().NonLazy();
+
         Container.Bind<IMessageSystem>().To<MessageSystem>().AsSingle().NonLazy();
 
         Container.BindFactory<Tower, Tower.Factory>();
