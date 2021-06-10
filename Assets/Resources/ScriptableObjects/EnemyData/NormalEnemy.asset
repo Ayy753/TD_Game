@@ -18,7 +18,7 @@ MonoBehaviour:
   <BasePoisonResist>k__BackingField: 0
   <BaseLightningResist>k__BackingField: 0
   <BaseArmor>k__BackingField: 0
-  <BaseSpeed>k__BackingField: 1
+  <BaseSpeed>k__BackingField: 7
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Normal Enemy
   <Description>k__BackingField: A normal enemy

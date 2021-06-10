@@ -13,19 +13,22 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     TMP_Text txtLives, txtGold;
 
-    GameObject gameOverPanel, gameWonPanel;
+    //  gameEnded panel is the parent for the other two panels
+    GameObject pnlGameEnded, pnlGameOver, pnlGameWon;
 
     public void Awake() {
         CreateDynamicButtons();
-
+        
         txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
         txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
 
-        gameOverPanel = GameObject.Find("pnlGameOver");
-        gameWonPanel = GameObject.Find("pnlGameWon");
+        pnlGameEnded = GameObject.Find("pnlGameEnded");
+        pnlGameOver = GameObject.Find("pnlGameOver");
+        pnlGameWon = GameObject.Find("pnlGameWon");
 
-        gameOverPanel.SetActive(false);
-        gameWonPanel.SetActive(false);
+        pnlGameEnded.SetActive(false);
+        pnlGameOver.SetActive(false);
+        pnlGameWon.SetActive(false);
     }
 
     /// <summary>
@@ -74,11 +77,13 @@ public class GUIController : MonoBehaviour, IGUIManager {
     }
 
     public void ShowGameOverScreen() {
-        gameOverPanel.SetActive(true);
+        pnlGameEnded.SetActive(true);
+        pnlGameOver.SetActive(true);
     }
 
     public void ShowGameWonScreen() {
-        gameWonPanel.SetActive(true);
+        pnlGameEnded.SetActive(true);
+        pnlGameWon.SetActive(true);
     }
 }
 
