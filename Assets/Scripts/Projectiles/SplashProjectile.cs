@@ -75,12 +75,11 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
                 scaledDamageTypes[i].amount = ProjectileData.damageTypesAndAmounts[i].amount * damageScale;
                 scaledDamageTypes[i].type = ProjectileData.damageTypesAndAmounts[i].type;
             }
-            enemy.ApplyDamage(ProjectileData.damageTypesAndAmounts);
+            enemy.ApplyDamage(scaledDamageTypes);
         }
     }
 
     public void UnitEnteredRange(IUnit unit) {
-        Debug.Log("unit entered range");
         if (unit.GetType() == typeof(Enemy)) {
             ApplySplashDamage((Enemy)unit);
         }
