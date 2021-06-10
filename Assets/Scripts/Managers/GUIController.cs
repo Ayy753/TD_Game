@@ -13,11 +13,19 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     TMP_Text txtLives, txtGold;
 
+    GameObject gameOverPanel, gameWonPanel;
+
     public void Awake() {
         CreateDynamicButtons();
 
         txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
         txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
+
+        gameOverPanel = GameObject.Find("pnlGameOver");
+        gameWonPanel = GameObject.Find("pnlGameWon");
+
+        gameOverPanel.SetActive(false);
+        gameWonPanel.SetActive(false);
     }
 
     /// <summary>
@@ -63,6 +71,14 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     public void StartNextWave() {
         waveManager.StartNextWave();
+    }
+
+    public void ShowGameOverScreen() {
+        gameOverPanel.SetActive(true);
+    }
+
+    public void ShowGameWonScreen() {
+        gameWonPanel.SetActive(true);
     }
 }
 

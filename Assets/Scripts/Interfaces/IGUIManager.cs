@@ -10,4 +10,6 @@ public interface IGUIManager{
     public void StartNextWave();
     public void UpdateGoldLabel(float gold);
     public void UpdateLivesLabel(int lives);
+    public void ShowGameOverScreen();
+    public void ShowGameWonScreen();
 }

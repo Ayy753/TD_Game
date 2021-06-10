@@ -27,8 +27,8 @@ public class GameManager: IInitializable, IDisposable {
         Lives -= 1;
         guiController.UpdateLivesLabel(Lives);
         if (Lives <= 0) {
-            Debug.Log("game over");
-            //  TODO: Gameover logic
+            guiController.ShowGameOverScreen();
+            PauseGame();
         }
     }
 
@@ -37,7 +37,15 @@ public class GameManager: IInitializable, IDisposable {
     /// </summary>
     public void NoEnemiesLeft() {
         GameEnded = true;
-        Debug.Log("Game ended");
-        //  TODO: game ended logic
+        guiController.ShowGameWonScreen();
+        PauseGame();
+    }
+
+    private void PauseGame() {
+        Time.timeScale = 0;
+    }
+
+    private void ResumeGame() {
+        Time.timeScale = 1;
     }
 }
