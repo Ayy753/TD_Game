@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour, IUnit {
         unitInput.Initialize();
         status.Initialize();
         unitMovement.Initialize();
-        healthBar.Initialize(status, enemyData.BaseHealth);
+        healthBar.Initialize(status);
     }
 
     public void ReachedDestination() {
