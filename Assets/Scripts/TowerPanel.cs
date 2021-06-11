@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using Zenject;
 
 public class TowerPanel : IInitializable {
+    GameObject pnlTowerPanel;
+    
     TMP_Text txtRange, txtDamage, txtReloadTime, txtProjectileType;
     Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom;
     Button[] buttons;
@@ -12,6 +14,8 @@ public class TowerPanel : IInitializable {
 
     public void Initialize() {
         Debug.Log("initializing tower panel");
+
+        pnlTowerPanel = GameObject.Find("pnlTower");
 
         txtRange = GameObject.Find("txtRangeVal").GetComponent<TMP_Text>();
         txtDamage = GameObject.Find("txtDamageVal").GetComponent<TMP_Text>();
@@ -31,11 +35,12 @@ public class TowerPanel : IInitializable {
         btnLowHP.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.LowestHealth); });
         btnHighHP.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.HighestHealth); });
         btnRandom.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Random); });
+
+        pnlTowerPanel.SetActive(false);
     }
 
-    public void UpdateTowerPanel(Tower tower) {
-        currentlySelectedTower = tower;
-        TowerData towerData = tower.TowerData;
+    private void UpdateTowerPanel() {
+        TowerData towerData = currentlySelectedTower.TowerData;
 
         txtRange.text = towerData.Range.ToString();
         txtDamage.text = towerData.ProjectileData.RawTotalDamage().ToString();
@@ -79,5 +84,16 @@ public class TowerPanel : IInitializable {
     public void SetTargetMode(Tower.TargetMode targetMode) {
         currentlySelectedTower.ChangeTargetMode(targetMode);
         UpdateButtonColors(targetMode);
+    }
+
+    public void TargetTower(Tower tower) {
+        currentlySelectedTower = tower;
+        pnlTowerPanel.SetActive(true);
+        UpdateTowerPanel();
+    }
+
+    public void ClearTarget() {
+        currentlySelectedTower = null;
+        pnlTowerPanel.SetActive(false);
     }
 }

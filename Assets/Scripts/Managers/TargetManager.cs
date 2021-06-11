@@ -27,7 +27,7 @@ public class TargetManager: IInitializable, IDisposable{
         IUnit unit = gameObject.GetComponentInChildren<IUnit>();
 
         if (tower != null) {
-            towerPanel.UpdateTowerPanel(tower);
+            towerPanel.TargetTower(tower);
         }
         else if (unit != null) {
             statusPanel.TargetUnit(unit.GetStatus());
