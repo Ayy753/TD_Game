@@ -10,27 +10,51 @@ public class Status{
     private IUnit unit;
 
     //  Additive modifications to base stats
-    private float AddHealth;    
-    private float AddFireResist;
-    private float AddColdResist;
-    private float AddPoisonResist;
-    private float AddLightningResist;
-    private float AddArmor;
-    private float AddSpeed;
+    //  These can either be positive or negative values and are the result of buffs/debuffs
+    private float addHealth;    
+    private float addFireResist;
+    private float addColdResist;
+    private float addPoisonResist;
+    private float addLightningResist;
+    private float addArmor;
+    private float addSpeed;
 
-    //  The amount of damage inflicted
-    private float Damage;
+    //  The amount of damage the unit currently has.
+    //  Value will never be negative
+    private float damageInflicted;
+    
+    /// <summary>
+    /// The current amount of damage inflicted on unit.
+    /// Dealing negative damage heals the unit. 
+    /// The total inflicted damage will always be >= 0
+    /// </summary>
+    public float DamageInflicted {
+        get {
+            return damageInflicted;
+        }
+        private set {
+            damageInflicted = value;
+            if (damageInflicted < 0) {
+                damageInflicted = 0;
+            } 
+        }
+    }
 
-    //  Effective stats
-    //  Resists are in percentage
-    public float Health { get { return characterData.BaseHealth + AddHealth - Damage; } }
-    public float MaxHealth { get { return characterData.BaseHealth + AddHealth; } }
-    public float FireResist { get { return characterData.BaseFireResist + AddFireResist; } }
-    public float ColdResist { get { return characterData.BaseColdResist + AddColdResist; } }
-    public float PoisonResist { get { return characterData.BasePoisonResist + AddPoisonResist; } }
-    public float LightningResist { get { return characterData.BaseLightningResist + AddLightningResist; } }
-    public float Armor { get { return characterData.BaseArmor + AddArmor; } }
-    public float Speed { get { return characterData.BaseSpeed + AddSpeed; } }
+    //  Health-related buffs/debuffs increase/decrease max health
+    //  Unit dies when current health <= 0
+    public float MaxHealth { get { return characterData.BaseHealth + addHealth; } }
+    public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
+
+    public float Speed { get { return characterData.BaseSpeed + addSpeed; } }
+
+    //  Resists/armor are in percentages (value of 100 nullifies all damage of that type, value > 100 heals unit, value below 0 deals additional damage)
+    public float FireResist { get { return characterData.BaseFireResist + addFireResist; } }
+    public float ColdResist { get { return characterData.BaseColdResist + addColdResist; } }
+    public float PoisonResist { get { return characterData.BasePoisonResist + addPoisonResist; } }
+    public float LightningResist { get { return characterData.BaseLightningResist + addLightningResist; } }
+    public float Armor { get { return characterData.BaseArmor + addArmor; } }
+
+
 
     public List<StatusEffect> statusEffects;
 
@@ -43,15 +67,15 @@ public class Status{
     //  Reset status
     public void Initialize() 
     {
-        AddHealth = 0;
-        AddFireResist = 0;
-        AddColdResist = 0;
-        AddPoisonResist = 0;
-        AddLightningResist = 0;
-        AddArmor = 0;
-        AddSpeed = 0;
+        addHealth = 0;
+        addFireResist = 0;
+        addColdResist = 0;
+        addPoisonResist = 0;
+        addLightningResist = 0;
+        addArmor = 0;
+        addSpeed = 0;
 
-        Damage = 0;
+        DamageInflicted = 0;
         //  Todo: remove all status effects
     }
 
@@ -91,25 +115,11 @@ public class Status{
     /// </summary>
     /// <param name="damage"></param>
     public void ModifyDamage(float damage) {
-        Damage += damage;
+        DamageInflicted += damage;
 
-        if (Damage < 0) {
-            Damage = 0;
-        }
-        else if (Health <= 0) {
+        if (CurrentHealth <= 0) {
             unit.Died();
         }
     }
-
-    ///// <summary>
-    ///// Mends inflicted damage
-    ///// </summary>
-    ///// <param name="healAmount"></param>
-    //public void Heal(float healAmount) {
-    //    Damage -= healAmount;
-    //    if (Damage < 0) {
-    //        Damage = 0;
-    //    }
-    //}
 }
 

@@ -25,7 +25,7 @@ public class StatusPanel : IInitializable {
     }
 
     public void UpdateStatusPanel(Status status) {
-        txtCurrentHealth.text = Math.Round(status.Health, 1).ToString();
+        txtCurrentHealth.text = Math.Round(status.CurrentHealth, 1).ToString();
         txtMaxHealth.text = Math.Round(status.MaxHealth, 1).ToString();
         txtARmor.text = status.Armor.ToString();
         txtFireResist.text = status.FireResist.ToString();

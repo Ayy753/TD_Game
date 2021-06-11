@@ -164,7 +164,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                float health = enemy.GetStatus().Health;
+                float health = enemy.GetStatus().CurrentHealth;
                 if (health < lowestHealth) {
                     lowestHealth = health;
                     lowestEnemy = enemy;
@@ -184,7 +184,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                float health = enemy.GetStatus().Health;
+                float health = enemy.GetStatus().CurrentHealth;
                 if (health > highestHealth) {
                     highestHealth = health;
                     highestEnemy = enemy;

@@ -16,7 +16,7 @@ public class HealthBar : MonoBehaviour{
     }
 
     public void UpdateHealthBar() {
-        float healthPercent = status.Health / status.MaxHealth;
+        float healthPercent = status.CurrentHealth / status.MaxHealth;
         if (healthPercent < 0) {
             healthPercent = 0;
         }
