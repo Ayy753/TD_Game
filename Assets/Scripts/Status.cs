@@ -54,9 +54,23 @@ public class Status{
     public float LightningResist { get { return characterData.BaseLightningResist + addLightningResist; } }
     public float Armor { get { return characterData.BaseArmor + addArmor; } }
 
-
-
     public List<StatusEffect> statusEffects;
+
+    public delegate void StatusChanged();
+    public delegate void ClearStatus();
+
+    /// <summary>
+    /// Instance event StatusPanel subscribes to when unit is targetted
+    /// Fires when unit is damaged/healed, or a buff/debuff is applied or removed
+    /// </summary>
+    public event StatusChanged OnStatusChanged;
+
+    /// <summary>
+    /// Instance event StatusPanel subscribes to when unit is targetted
+    /// Fires when unit dies and the status panel should be cleared
+    /// </summary>
+    public event ClearStatus OnStatusCleared;
+
 
     public Status(CharacterData characterData, IUnit unit){
         this.characterData = characterData;
@@ -88,11 +102,13 @@ public class Status{
                 effect.StrengthenEffect(newEffect);
             }
         }
+        OnStatusChanged.Invoke();
     }
 
     public void RemoveStatusEffect(StatusEffect effect)
     {
         statusEffects.Remove(effect);
+        OnStatusChanged.Invoke();
     }
 
     public IEnumerator OnTick()
@@ -119,7 +135,14 @@ public class Status{
 
         if (CurrentHealth <= 0) {
             unit.Died();
+            if (OnStatusCleared != null) {
+                OnStatusCleared.Invoke();
+            }
+        }
+        else {
+            if (OnStatusChanged != null) {
+                OnStatusChanged.Invoke();
+            }
         }
     }
 }
-

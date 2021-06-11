@@ -30,7 +30,7 @@ public class TargetManager: IInitializable, IDisposable{
             towerPanel.UpdateTowerPanel(tower);
         }
         else if (unit != null) {
-            statusPanel.UpdateStatusPanel(unit.GetStatus());
+            statusPanel.TargetUnit(unit.GetStatus());
         }
     }
 }
