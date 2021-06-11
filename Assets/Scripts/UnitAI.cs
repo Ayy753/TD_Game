@@ -75,6 +75,7 @@ public class UnitAI : IUnitInput
                 nextTilePosition = mainPath[pathIndex];
             }
             else {
+                pathFinder.PathRecalculated -= OnPathRecalculated;
                 unit.ReachedDestination();
             }
         }
