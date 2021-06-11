@@ -11,6 +11,7 @@ public class WaveManager : IInitializable, IDisposable {
     [Inject] private AsyncProcessor asyncProcessor;
     [Inject] private GameManager gameManager;
     [Inject] private IMessageSystem messageSystem;
+    [Inject] private IGUIManager guiController;
 
     //private const string FilePath = "LevelData/WaveData/demo_waves";
     private const string FilePath = "LevelData/WaveData/dummy_waves";
@@ -41,6 +42,9 @@ public class WaveManager : IInitializable, IDisposable {
         currentWave = 0;
 
         messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white);
+
+        guiController.UpdateWaveCountdown(timeBeforeFirstWave);
+        guiController.UpdateWaveNumber(currentWave, NumberOfWaves);
     }
 
     public void Dispose() {
@@ -113,18 +117,18 @@ public class WaveManager : IInitializable, IDisposable {
         while (secondsUntilNextWave > 0) {
             yield return new WaitForSeconds(1f);
             secondsUntilNextWave--;
+            guiController.UpdateWaveCountdown(secondsUntilNextWave);
 
             if (secondsUntilNextWave <= 5) {
                 messageSystem.DisplayMessage(string.Format("Next wave starts in {0} seconds", secondsUntilNextWave), Color.white);
             }
         }
-
-        asyncProcessor.StartCoroutine(LaunchWave());
+        
+        StartNextWave();
     }
 
     private IEnumerator LaunchWave() {
         int thisWaveNum = currentWave;
-        messageSystem.DisplayMessage("Starting wave " + (currentWave + 1), Color.white);
         currentWave++;
  
         foreach (Group group in LevelData.waves[thisWaveNum].Groups) {
@@ -167,7 +171,9 @@ public class WaveManager : IInitializable, IDisposable {
     public void StartNextWave() {
         if (currentWave < NumberOfWaves) {
             asyncProcessor.StopCoroutine(nextWaveCountDown);
-            LaunchWave();
+            messageSystem.DisplayMessage("Starting wave " + (currentWave + 1), Color.white);
+            asyncProcessor.StartCoroutine(LaunchWave());
+            guiController.UpdateWaveNumber(currentWave, NumberOfWaves);
         }
     }
 }

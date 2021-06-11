@@ -13,9 +13,11 @@ public class GUIController : MonoBehaviour, IGUIManager {
     [Inject] GameManager gameManager;
 
     TMP_Text txtLives, txtGold;
+    TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown;
 
     //  gameEnded panel is the parent for the other two panels
     GameObject pnlGameEnded, pnlGameOver, pnlGameWon;
+    GameObject pnlWave;
 
     public void Awake() {
         CreateDynamicButtons();
@@ -26,6 +28,12 @@ public class GUIController : MonoBehaviour, IGUIManager {
         pnlGameEnded = GameObject.Find("pnlGameEnded");
         pnlGameOver = GameObject.Find("pnlGameOver");
         pnlGameWon = GameObject.Find("pnlGameWon");
+
+        pnlWave = GameObject.Find("pnlWave");
+
+        txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
+        txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
+        txtWaveCountdown = GameObject.Find("txtWaveCountdown").GetComponent<TMP_Text>();
 
         pnlGameEnded.SetActive(false);
         pnlGameOver.SetActive(false);
@@ -93,6 +101,15 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     public void ExitGame() {
         gameManager.ExitGame();
+    }
+
+    public void UpdateWaveNumber(int current, int total) {
+        txtCurrentWave.text = current.ToString();
+        txtTotalWaves.text = total.ToString();
+    }
+
+    public void UpdateWaveCountdown(int secondsLeft) {
+        txtWaveCountdown.text = secondsLeft.ToString();
     }
 }
 
