@@ -10,6 +10,7 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     [Inject] BuildManager buildManager;
     [Inject] WaveManager waveManager;
+    [Inject] GameManager gameManager;
 
     TMP_Text txtLives, txtGold;
 
@@ -84,6 +85,14 @@ public class GUIController : MonoBehaviour, IGUIManager {
     public void ShowGameWonScreen() {
         pnlGameEnded.SetActive(true);
         pnlGameWon.SetActive(true);
+    }
+    
+    public void Restart() {
+        gameManager.Restart();
+    }
+
+    public void ExitGame() {
+        gameManager.ExitGame();
     }
 }
 

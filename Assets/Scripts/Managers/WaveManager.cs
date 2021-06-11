@@ -10,6 +10,7 @@ public class WaveManager : IInitializable, IDisposable {
     [Inject] private ObjectPool objectPool;
     [Inject] private AsyncProcessor asyncProcessor;
     [Inject] private GameManager gameManager;
+    [Inject] private IMessageSystem messageSystem;
 
     //private const string FilePath = "LevelData/WaveData/demo_waves";
     private const string FilePath = "LevelData/WaveData/dummy_waves";
@@ -36,6 +37,10 @@ public class WaveManager : IInitializable, IDisposable {
         nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
         activeEnemies = new List<Enemy>();
         lastWaveFinishedSpawning = false;
+
+        currentWave = 0;
+
+        messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white);
     }
 
     public void Dispose() {
@@ -108,6 +113,10 @@ public class WaveManager : IInitializable, IDisposable {
         while (secondsUntilNextWave > 0) {
             yield return new WaitForSeconds(1f);
             secondsUntilNextWave--;
+
+            if (secondsUntilNextWave <= 5) {
+                messageSystem.DisplayMessage(string.Format("Next wave starts in {0} seconds", secondsUntilNextWave), Color.white);
+            }
         }
 
         asyncProcessor.StartCoroutine(LaunchWave());
@@ -115,8 +124,9 @@ public class WaveManager : IInitializable, IDisposable {
 
     private IEnumerator LaunchWave() {
         int thisWaveNum = currentWave;
+        messageSystem.DisplayMessage("Starting wave " + (currentWave + 1), Color.white);
         currentWave++;
-
+ 
         foreach (Group group in LevelData.waves[thisWaveNum].Groups) {
             EnemyData.Type groupType;
 

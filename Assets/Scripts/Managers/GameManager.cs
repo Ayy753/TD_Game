@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 public class GameManager: IInitializable, IDisposable {
@@ -14,13 +15,17 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     public void Initialize() {
+        Debug.Log("GameManager initializing");
         Lives = startingLives;
         guiController.UpdateLivesLabel(Lives);
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
+        GameEnded = false;
+        ResumeGame();
     }
 
     public void Dispose() {
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
+        Debug.Log("Gameamanger Destroyed");
     }
 
     private void HandleEnemyReachedGate(Enemy enemy) {
@@ -47,5 +52,13 @@ public class GameManager: IInitializable, IDisposable {
 
     private void ResumeGame() {
         Time.timeScale = 1;
+    }
+
+    public void ExitGame() {
+        Application.Quit();
+    }
+
+    public void Restart() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
