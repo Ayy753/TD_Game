@@ -123,12 +123,10 @@ public class BuildManager : IInitializable, IDisposable {
         float structureValue;
 
         if (structureAtPos.GetType() == typeof(TowerData)) {
-            RaycastHit2D hit = Physics2D.Raycast((Vector3)position, -Vector2.up);
-            objectPool.DestroyTower(hit.collider.GetComponent<Tower>());
+            Tower tower = GetTower(position);
+            objectPool.DestroyTower(tower);
 
-            //  Mapmanager.GetTileData() will not return the currect tower type so we must get it from tower
-            TowerData towerData = hit.collider.GetComponent<Tower>().TowerData;
-            structureValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
+            structureValue = Mathf.RoundToInt(tower.TowerData.Cost * wallet.GetResellPercentageInDecimal());
         }
         else {
             structureValue = Mathf.RoundToInt(structureAtPos.Cost * wallet.GetResellPercentageInDecimal());
@@ -149,8 +147,15 @@ public class BuildManager : IInitializable, IDisposable {
         lastPositionHovered = tileCoords;
         hoverManager.NewTileHovered(tileCoords, CurrentBuildMode, currentlySelectedStructure);
 
+        Vector3 coordsWithOffset = tileCoords + tilemapOffset;
+
         if (ShouldShowRadius(tileCoords)) {
-            radiusRenderer.RenderRadius(tileCoords + tilemapOffset, ((TowerData)(currentlySelectedStructure)).Range);
+            if (CurrentBuildMode == BuildMode.Build) {
+                radiusRenderer.RenderRadius(coordsWithOffset, ((TowerData)(currentlySelectedStructure)).Range);
+            }
+            else {
+                radiusRenderer.RenderRadius(coordsWithOffset, GetTower(tileCoords).TowerData.Range);
+            }
         }
         else {
             radiusRenderer.HideRadius();
@@ -202,6 +207,12 @@ public class BuildManager : IInitializable, IDisposable {
 
     }
 
+    /// <summary>
+    /// Returns true if user is in build mode and selected a tower and cursor is over a ground tile
+    /// Or if user is not in build mode and cursor is over a tower 
+    /// </summary>
+    /// <param name="tileCoords"></param>
+    /// <returns></returns>
     private bool ShouldShowRadius(Vector3Int tileCoords) {
         if (CurrentBuildMode == BuildMode.Build 
             && EventSystem.current.IsPointerOverGameObject() == false 
@@ -210,7 +221,27 @@ public class BuildManager : IInitializable, IDisposable {
 
             return true;
         }
+        else if (CurrentBuildMode == BuildMode.None){
+            TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, tileCoords);
+            if (tileData != null && tileData.GetType() == typeof(TowerData)) {
+                return true;
+            }
+        }
         return false;
+    }
+
+    /// <summary>
+    /// Finds and returns a tower at a postiion if one exists 
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private Tower GetTower(Vector3 position) {
+        RaycastHit2D hit = Physics2D.Raycast(position, Vector2.zero);
+
+        if (hit.collider != null) {
+            return hit.collider.GetComponent<Tower>();
+        }
+        return null;
     }
 
     /// <summary>

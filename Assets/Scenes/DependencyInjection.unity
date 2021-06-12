@@ -1249,7 +1249,7 @@ GameObject:
   - component: {fileID: 193038269}
   - component: {fileID: 193038268}
   m_Layer: 5
-  m_Name: txtCurrentWaveNum
+  m_Name: txtWaveCountdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
