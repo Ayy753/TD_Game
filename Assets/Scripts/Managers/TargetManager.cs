@@ -9,6 +9,9 @@ public class TargetManager: IInitializable, IDisposable{
     private StatusPanel statusPanel;
     private TowerPanel towerPanel;
 
+    private GameObject targetIndicator;
+    private GameObject currentTarget;
+
     public TargetManager(StatusPanel statusPanel, TowerPanel towerPanel) {
         this.statusPanel = statusPanel;
         this.towerPanel = towerPanel;
@@ -16,6 +19,9 @@ public class TargetManager: IInitializable, IDisposable{
 
     public void Initialize() {
         MouseManager.OnGameObjectClicked += HandleGameObjectClicked;
+
+        GameObject prefab = Resources.Load<GameObject>("Prefabs/TargetIndicator");
+        targetIndicator = GameObject.Instantiate(prefab);
     }
 
     public void Dispose() {
@@ -28,9 +34,13 @@ public class TargetManager: IInitializable, IDisposable{
 
         if (tower != null) {
             towerPanel.TargetTower(tower);
+            targetIndicator.transform.SetParent(tower.transform);
+            targetIndicator.transform.localPosition = Vector3.zero;
         }
         else if (unit != null) {
-            statusPanel.TargetUnit(unit.GetStatus());
+            statusPanel.TargetUnit(unit);
+            targetIndicator.transform.SetParent(unit.GetTransform());
+            targetIndicator.transform.localPosition = Vector3.zero;
         }
     }
 }
