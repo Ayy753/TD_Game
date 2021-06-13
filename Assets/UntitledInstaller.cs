@@ -49,5 +49,8 @@ public class UntitledInstaller : MonoInstaller
 
         Container.Bind<TargetManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<TargetManager>().FromResolve();
+
+        Container.Bind<ToolTip>().FromComponentInHierarchy().AsSingle().NonLazy();
+        Container.Bind<TooltipManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
     }
 }
