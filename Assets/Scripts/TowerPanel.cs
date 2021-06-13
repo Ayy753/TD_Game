@@ -4,11 +4,13 @@ using UnityEngine.UI;
 using Zenject;
 
 public class TowerPanel : IInitializable {
+    [Inject] IWallet wallet;
+    
     GameObject pnlTowerPanel;
     
-    TMP_Text txtRange, txtDamage, txtReloadTime, txtProjectileType;
+    TMP_Text txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue;
     Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom;
-    Button[] buttons;
+    Button[] targetButtons;
 
     Tower currentlySelectedTower;
 
@@ -28,7 +30,9 @@ public class TowerPanel : IInitializable {
         btnHighHP = GameObject.Find("btnHighest").GetComponent<Button>();
         btnRandom = GameObject.Find("btnRandom").GetComponent<Button>();
 
-        buttons = new Button[] { btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom };
+        targetButtons = new Button[] { btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom };
+
+        txtSellValue = GameObject.Find("txtSellVal").GetComponent<TMP_Text>();
 
         btnClosest.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Closest); });
         btnFurthest.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Furthest); });
@@ -47,13 +51,16 @@ public class TowerPanel : IInitializable {
         txtReloadTime.text = towerData.ReloadTime.ToString();
         txtProjectileType.text = towerData.ProjectileData.type.ToString();
 
+        int sellValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
+        txtSellValue.text = sellValue.ToString();
+
         UpdateButtonColors(currentlySelectedTower.CurrentTargetMode);
     }
 
     private void UpdateButtonColors(Tower.TargetMode targetMode) {
         //  Remove highlight from each button
-        for (int i = 0; i < buttons.Length; i++) {
-            buttons[i].image.color = Color.white;
+        for (int i = 0; i < targetButtons.Length; i++) {
+            targetButtons[i].image.color = Color.white;
         }
 
         Button selectedBtn;
