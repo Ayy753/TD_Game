@@ -3,13 +3,9 @@ using UnityEngine;
 using Zenject;
 
 public class TargetManager: IInitializable, IDisposable{
-
     private StatusPanel statusPanel;
     private TowerPanel towerPanel;
-
     private GameObject targetIndicator;
-
-    //private Itargetable target;
     private Itargetable target;
 
     public TargetManager(StatusPanel statusPanel, TowerPanel towerPanel) {
@@ -81,10 +77,10 @@ public class TargetManager: IInitializable, IDisposable{
     private void Untarget() {
         target.TargetDisabled -= HandleTargetDisabled;
 
-        if (target.GetType() == typeof(Tower)) {
+        if (target is Tower) {
             towerPanel.ClearTarget();
         }
-        else if (target.GetType().IsSubclassOf(typeof(Unit))) {
+        else if (target is Unit) {
             statusPanel.ClearTarget();
         }
 
