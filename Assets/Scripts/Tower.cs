@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Collections;
 using Zenject;
 
-public class Tower : MonoBehaviour, IUnitRangeDetection {
+public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     [Inject] private ObjectPool objectPool;
 
     private List<Enemy> enemiesInRange = new List<Enemy>();
     private float timeSinceLastShot = float.MaxValue;
     private Enemy target;
     private Transform turret;
+
+    public event EventHandler TargetDisabled;
 
     [field: SerializeField] public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
@@ -234,6 +236,15 @@ public class Tower : MonoBehaviour, IUnitRangeDetection {
 
     public void ChangeTargetMode(TargetMode targetMode) {
         CurrentTargetMode = targetMode;
+    }
+
+    /// <summary>
+    /// Alerts tower it is being destroyed so it can fire it's targetdisabled event
+    /// </summary>
+    public void IsBeingDestroyed() {
+        if (TargetDisabled != null) {
+            TargetDisabled.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public class Factory : PlaceholderFactory<Tower> { }

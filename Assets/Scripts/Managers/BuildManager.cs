@@ -124,7 +124,7 @@ public class BuildManager : IInitializable, IDisposable {
 
         if (structureAtPos.GetType() == typeof(TowerData)) {
             Tower tower = GetTower(position);
-            objectPool.DestroyTower(tower);
+            DestroyTower(tower);
 
             structureValue = Mathf.RoundToInt(tower.TowerData.Cost * wallet.GetResellPercentageInDecimal());
         }
@@ -170,6 +170,15 @@ public class BuildManager : IInitializable, IDisposable {
     private void InstantiateTower(TowerData towerData, Vector3Int position) {
         Tower tower = objectPool.CreateTower(towerData.Type);
         tower.gameObject.transform.position = position + tilemapOffset;
+    }
+
+    /// <summary>
+    /// Removes tower from the scene
+    /// </summary>
+    /// <param name="tower"></param>
+    private void DestroyTower(Tower tower) {
+        tower.IsBeingDestroyed();
+        objectPool.DestroyTower(tower);
     }
 
     /// <summary>

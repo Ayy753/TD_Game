@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -10,7 +8,9 @@ public class TargetManager: IInitializable, IDisposable{
     private TowerPanel towerPanel;
 
     private GameObject targetIndicator;
-    private GameObject currentTarget;
+
+    //private Itargetable target;
+    private Itargetable target;
 
     public TargetManager(StatusPanel statusPanel, TowerPanel towerPanel) {
         this.statusPanel = statusPanel;
@@ -22,6 +22,7 @@ public class TargetManager: IInitializable, IDisposable{
 
         GameObject prefab = Resources.Load<GameObject>("Prefabs/TargetIndicator");
         targetIndicator = GameObject.Instantiate(prefab);
+        targetIndicator.SetActive(false);
     }
 
     public void Dispose() {
@@ -29,18 +30,62 @@ public class TargetManager: IInitializable, IDisposable{
     }
 
     private void HandleGameObjectClicked(GameObject gameObject) {
+
+        if (gameObject.GetComponent<Itargetable>() != null) {
+            //  If there is currently a target, untarget it first
+            if (target != null) {
+                Untarget();
+            }
+            Target(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// Subscribes to target's events and populates target panel
+    /// </summary>
+    /// <param name="gameObject"></param>
+    private void Target(GameObject gameObject) {
         Tower tower = gameObject.GetComponent<Tower>();
         IUnit unit = gameObject.GetComponentInChildren<IUnit>();
 
         if (tower != null) {
             towerPanel.TargetTower(tower);
-            targetIndicator.transform.SetParent(tower.transform);
-            targetIndicator.transform.localPosition = Vector3.zero;
+            target = tower;
         }
         else if (unit != null) {
             statusPanel.TargetUnit(unit);
-            targetIndicator.transform.SetParent(unit.GetTransform());
-            targetIndicator.transform.localPosition = Vector3.zero;
+            target = unit;
         }
+
+        target.TargetDisabled += HandleTargetDisabled;
+
+        targetIndicator.SetActive(true);
+        targetIndicator.transform.SetParent(gameObject.transform);
+        targetIndicator.transform.localPosition = Vector3.zero;
+    }
+
+    /// <summary>
+    /// Unsubscribes from target's events and clears target panel
+    /// </summary>
+    private void Untarget() {
+        target.TargetDisabled -= HandleTargetDisabled;
+
+        Debug.Log(target.GetType());
+
+        if (target.GetType() == typeof(Tower)) {
+            towerPanel.ClearTarget();
+        }
+        else if (target.GetType() == typeof(IUnit)) {
+            statusPanel.ClearTarget();
+        }
+
+        target = null;
+
+        targetIndicator.transform.SetParent(null);
+        targetIndicator.SetActive(false);
+    }
+
+    private void HandleTargetDisabled(object sender, EventArgs eventArgs) {
+        Untarget();
     }
 }

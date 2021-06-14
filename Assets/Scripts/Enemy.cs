@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +15,7 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public static event EnemyReachedGate OnEnemyReachedGate;
     public static event EnemyDied OnEnemyDied;
+    public event EventHandler TargetDisabled;
 
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
@@ -38,11 +38,10 @@ public class Enemy : MonoBehaviour, IUnit {
     }
 
     public void ReachedDestination() {
-        Debug.Log("Unit reached destination");
+        Despawn();
         if (OnEnemyReachedGate != null) {
             OnEnemyReachedGate.Invoke(this);
         }
-        Despawn();
     }
 
     public void Died() {
@@ -53,6 +52,9 @@ public class Enemy : MonoBehaviour, IUnit {
     }
 
     private void Despawn() {
+        if (TargetDisabled != null) {
+            TargetDisabled.Invoke(this, EventArgs.Empty);
+        }
         transform.parent.gameObject.SetActive(false);
     }
 
