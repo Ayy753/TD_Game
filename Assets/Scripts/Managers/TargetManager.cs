@@ -19,6 +19,7 @@ public class TargetManager: IInitializable, IDisposable{
 
     public void Initialize() {
         MouseManager.OnGameObjectClicked += HandleGameObjectClicked;
+        MouseManager.OnRightMouseUp += HandleRightMouseUp;
 
         GameObject prefab = Resources.Load<GameObject>("Prefabs/TargetIndicator");
         targetIndicator = GameObject.Instantiate(prefab);
@@ -27,6 +28,7 @@ public class TargetManager: IInitializable, IDisposable{
 
     public void Dispose() {
         MouseManager.OnGameObjectClicked -= HandleGameObjectClicked;
+        MouseManager.OnRightMouseUp -= HandleRightMouseUp;
     }
 
     private void HandleGameObjectClicked(GameObject gameObject) {
@@ -41,6 +43,15 @@ public class TargetManager: IInitializable, IDisposable{
     }
 
     /// <summary>
+    /// Untargets when user rightclicks
+    /// </summary>
+    private void HandleRightMouseUp() {
+        if (target != null) {
+            Untarget();
+        }
+    }
+
+    /// <summary>s
     /// Subscribes to target's events and populates target panel
     /// </summary>
     /// <param name="gameObject"></param>
