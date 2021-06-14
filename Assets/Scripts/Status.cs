@@ -145,4 +145,8 @@ public class Status{
             }
         }
     }
+
+    public Unit GetUnit() {
+        return unit;
+    }
 }

@@ -72,5 +72,9 @@ public class Enemy : Unit {
         return transform;
     }
 
+    public override string GetName() {
+        return enemyData.Name;
+    }
+
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
 }

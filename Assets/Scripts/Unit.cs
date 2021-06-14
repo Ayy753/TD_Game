@@ -21,4 +21,6 @@ public abstract class Unit : MonoBehaviour, Itargetable
     /// </summary>
     /// <returns>Unit's gameobject transform component</returns>
     public abstract Transform GetTransform();
+
+    public abstract string GetName();
 }

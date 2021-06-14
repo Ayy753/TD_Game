@@ -8,7 +8,7 @@ public class TowerPanel : IInitializable {
     
     GameObject pnlTowerPanel;
     
-    TMP_Text txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue;
+    TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue;
     Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom;
     Button[] targetButtons;
 
@@ -19,6 +19,7 @@ public class TowerPanel : IInitializable {
 
         pnlTowerPanel = GameObject.Find("pnlTower");
 
+        txtName = GameObject.Find("txtName").GetComponent<TMP_Text>();
         txtRange = GameObject.Find("txtRangeVal").GetComponent<TMP_Text>();
         txtDamage = GameObject.Find("txtDamageVal").GetComponent<TMP_Text>();
         txtReloadTime = GameObject.Find("txtReloadTimeVal").GetComponent<TMP_Text>();
@@ -46,6 +47,7 @@ public class TowerPanel : IInitializable {
     private void UpdateTowerPanel() {
         TowerData towerData = currentlySelectedTower.TowerData;
 
+        txtName.text = towerData.Name;
         txtRange.text = towerData.Range.ToString();
         txtDamage.text = towerData.ProjectileData.RawTotalDamage().ToString();
         txtReloadTime.text = towerData.ReloadTime.ToString();

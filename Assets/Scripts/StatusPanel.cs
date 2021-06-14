@@ -7,7 +7,7 @@ using Zenject;
 
 public class StatusPanel : IInitializable {
     GameObject pnlStausPanel;
-    TMP_Text txtCurrentHealth, txtMaxHealth, txtArmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist;
+    TMP_Text txtName, txtCurrentHealth, txtMaxHealth, txtArmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist;
     HealthBar healthBar;
 
     private Status targetStatus;
@@ -17,6 +17,7 @@ public class StatusPanel : IInitializable {
 
         pnlStausPanel = GameObject.Find("pnlStatus");
 
+        txtName = GameObject.Find("txtName").GetComponent<TMP_Text>();
         txtCurrentHealth = GameObject.Find("txtHealthCurrentVal").GetComponent<TMP_Text>();
         txtMaxHealth = GameObject.Find("txtHealthMaxVal").GetComponent<TMP_Text>();
         txtArmor = GameObject.Find("txtArmorVal").GetComponent<TMP_Text>();
@@ -32,6 +33,7 @@ public class StatusPanel : IInitializable {
     }
 
     private void UpdateStatusPanel() {
+        txtName.text = targetStatus.GetUnit().GetName();
         txtCurrentHealth.text = Math.Round(targetStatus.CurrentHealth, 1).ToString();
         txtMaxHealth.text = Math.Round(targetStatus.MaxHealth, 1).ToString();
         txtArmor.text = targetStatus.Armor.ToString();
