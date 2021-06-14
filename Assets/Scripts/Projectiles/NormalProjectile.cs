@@ -35,7 +35,7 @@ public class NormalProjectile : Projectile {
     }
 
     protected void OnTriggerEnter2D(Collider2D collision) {
-        IUnit unit = collision.GetComponentInChildren<IUnit>();
+        Unit unit = collision.GetComponentInChildren<Unit>();
 
         //  If it hit a unit, and hasn't damaged anything yet (to prevent it from damaging multiple units at the same time)
         if (unit != null && dealtDamage == false) {

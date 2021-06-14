@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Status{
     private CharacterData characterData;
-    private IUnit unit;
+    private Unit unit;
 
     //  Additive modifications to base stats
     //  These can either be positive or negative values and are the result of buffs/debuffs
@@ -72,7 +72,7 @@ public class Status{
     public event ClearStatus OnStatusCleared;
 
 
-    public Status(CharacterData characterData, IUnit unit){
+    public Status(CharacterData characterData, Unit unit){
         this.characterData = characterData;
         this.unit = unit;
         statusEffects = new List<StatusEffect>();

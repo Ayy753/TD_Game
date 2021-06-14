@@ -46,7 +46,7 @@ public class TargetManager: IInitializable, IDisposable{
     /// <param name="gameObject"></param>
     private void Target(GameObject gameObject) {
         Tower tower = gameObject.GetComponent<Tower>();
-        IUnit unit = gameObject.GetComponentInChildren<IUnit>();
+        Unit unit = gameObject.GetComponentInChildren<Unit>();
 
         if (tower != null) {
             towerPanel.TargetTower(tower);
@@ -70,12 +70,10 @@ public class TargetManager: IInitializable, IDisposable{
     private void Untarget() {
         target.TargetDisabled -= HandleTargetDisabled;
 
-        Debug.Log(target.GetType());
-
         if (target.GetType() == typeof(Tower)) {
             towerPanel.ClearTarget();
         }
-        else if (target.GetType() == typeof(IUnit)) {
+        else if (target.GetType().IsSubclassOf(typeof(Unit))) {
             statusPanel.ClearTarget();
         }
 

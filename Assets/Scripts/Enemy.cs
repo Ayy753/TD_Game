@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class Enemy : MonoBehaviour, IUnit {
+public class Enemy : Unit {
     [Inject] private readonly IPathfinder pathFinder;
     [SerializeField] public EnemyData enemyData;
     private IUnitInput unitInput;
@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public static event EnemyReachedGate OnEnemyReachedGate;
     public static event EnemyDied OnEnemyDied;
-    public event EventHandler TargetDisabled;
+    public override event EventHandler TargetDisabled;
 
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
@@ -37,14 +37,14 @@ public class Enemy : MonoBehaviour, IUnit {
         healthBar.Initialize(status);
     }
 
-    public void ReachedDestination() {
+    public override void ReachedDestination() {
         Despawn();
         if (OnEnemyReachedGate != null) {
             OnEnemyReachedGate.Invoke(this);
         }
     }
 
-    public void Died() {
+    public override void Died() {
         Despawn();
         if (OnEnemyDied != null) {
             OnEnemyDied.Invoke(this);
@@ -58,17 +58,17 @@ public class Enemy : MonoBehaviour, IUnit {
         transform.parent.gameObject.SetActive(false);
     }
 
-    public Status GetStatus() {
+    public override Status GetStatus() {
         return status;
     }
 
-    public void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
+    public override void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
         float damage = Damage.CalculateDamage(status, damages);
         status.ModifyDamage(damage);
         healthBar.UpdateHealthBar();
     }
 
-    public Transform GetTransform() {
+    public override Transform GetTransform() {
         return transform;
     }
 

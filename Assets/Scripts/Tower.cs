@@ -218,13 +218,13 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
         return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));
     }
 
-    public void UnitEnteredRange(IUnit unit) {
+    public void UnitEnteredRange(Unit unit) {
         if (unit.GetType() == typeof(Enemy)) {
             enemiesInRange.Add((Enemy)unit);
         }
     }
 
-    public void UnitLeftRange(IUnit unit) {
+    public void UnitLeftRange(Unit unit) {
         if (unit.GetType() == typeof(Enemy)) {
             enemiesInRange.Remove((Enemy)unit);
         }

@@ -10,7 +10,7 @@ using Zenject;
 public class UnitAI : IUnitInput
 {
     IPathfinder pathFinder;
-    IUnit unit;
+    Unit unit;
 
 
     private List<Vector3Int> mainPath;
@@ -25,7 +25,7 @@ public class UnitAI : IUnitInput
 
     //  TODO find own reference to pathfinder
     //  injection apparently doesn't work at runtime so I have to pass in pathfinder for now
-    public UnitAI(IUnit unit, IPathfinder pathFinder) {
+    public UnitAI(Unit unit, IPathfinder pathFinder) {
         this.unit = unit;
         this.pathFinder = pathFinder;
     }

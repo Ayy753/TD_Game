@@ -79,13 +79,13 @@ public class SplashProjectile : Projectile, IUnitRangeDetection {
         }
     }
 
-    public void UnitEnteredRange(IUnit unit) {
+    public void UnitEnteredRange(Unit unit) {
         if (unit.GetType() == typeof(Enemy)) {
             ApplySplashDamage((Enemy)unit);
         }
     }
 
-    public void UnitLeftRange(IUnit unit) {
+    public void UnitLeftRange(Unit unit) {
     }
 
     public float GetRange() {

@@ -15,14 +15,14 @@ public class RangeCollider : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        IUnit unit = collision.GetComponent<IUnit>();
+        Unit unit = collision.GetComponent<Unit>();
         if (unit != null) {
             Parent.UnitEnteredRange(unit);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        IUnit unit = collision.GetComponent<IUnit>();
+        Unit unit = collision.GetComponent<Unit>();
         if (unit != null) {
             Parent.UnitLeftRange(unit);
         }
