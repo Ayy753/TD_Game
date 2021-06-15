@@ -5,7 +5,7 @@ using Zenject;
 
 public class GameManager: IInitializable, IDisposable {
     IGUIManager guiController;
-    
+    IMessageSystem messageSystem;
     public int Lives { get; private set; }
 
     public State CurrentState { get; private set; }
@@ -17,8 +17,9 @@ public class GameManager: IInitializable, IDisposable {
     private const float speedIncrement = 1f;
     private float currentGameSpeed;
 
-    public GameManager(IGUIManager guiController) {
+    public GameManager(IGUIManager guiController, IMessageSystem messageSystem) {
         this.guiController = guiController;
+        this.messageSystem = messageSystem;
     }
 
     public enum State {
@@ -59,6 +60,7 @@ public class GameManager: IInitializable, IDisposable {
     private void HandleEnemyReachedGate(Enemy enemy) {
         Lives -= 1;
         guiController.UpdateLivesLabel(Lives);
+        messageSystem.DisplayMessage("-1 life", Color.red);
         if (Lives <= 0) {
             guiController.ShowGameOverScreen();
             SetState(State.Ended);

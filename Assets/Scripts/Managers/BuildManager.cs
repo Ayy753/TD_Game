@@ -81,8 +81,6 @@ public class BuildManager : IInitializable, IDisposable {
 
         //  Build structure
         BuildStructure(structure, position);
-        wallet.SpendMoney(structure.Cost);
-        messageSystem.DisplayMessage(string.Format("Spent {0}g", structure.Cost), Color.yellow);
     }
 
     /// <summary>
@@ -101,6 +99,9 @@ public class BuildManager : IInitializable, IDisposable {
         else {
             throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
         }
+
+        wallet.SpendMoney(structure.Cost);
+        messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structure.Cost), Color.yellow);
 
         //  Refresh hover after building
         hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
@@ -135,6 +136,7 @@ public class BuildManager : IInitializable, IDisposable {
         mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
         Debug.Log("sold structure for " + structureValue);
         wallet.GainMoney(structureValue);
+        messageSystem.DisplayMessageAtCursor(string.Format("+{0}g", structureValue), Color.yellow);
 
         StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.demolish, position));
     }

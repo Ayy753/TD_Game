@@ -4,6 +4,7 @@ using Zenject;
 
 public class Enemy : Unit {
     [Inject] private readonly IPathfinder pathFinder;
+    [Inject] private IMessageSystem messageSystem;
     [SerializeField] public EnemyData enemyData;
     private IUnitInput unitInput;
     private IUnitMovement unitMovement;
@@ -65,6 +66,7 @@ public class Enemy : Unit {
     public override void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
         float damage = Damage.CalculateDamage(status, damages);
         status.ModifyDamage(damage);
+        messageSystem.DisplayMessageAt(transform.position, Math.Round(damage, 1).ToString(), Color.red, 0.33f);
         healthBar.UpdateHealthBar();
     }
 

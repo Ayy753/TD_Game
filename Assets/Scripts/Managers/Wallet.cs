@@ -1,8 +1,10 @@
 using System;
+using UnityEngine;
 using Zenject;
 
 public class Wallet : IWallet, IInitializable, IDisposable {
     [Inject] private IGUIManager guiController;
+    [Inject] private IMessageSystem messageSystem;
 
     private float gold;
     private const float startingGold = 500;
@@ -22,7 +24,9 @@ public class Wallet : IWallet, IInitializable, IDisposable {
     }
 
     private void HandleEnemyDied(Enemy enemy) {
-        GainMoney(enemy.enemyData.BaseValue);
+        float value = enemy.enemyData.BaseValue;
+        GainMoney(value);
+        messageSystem.DisplayMessageAt(enemy.transform.position, string.Format("+{0}g", value), Color.yellow);
     }
 
     public bool CanAfford(float amount) {
