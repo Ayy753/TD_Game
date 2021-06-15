@@ -171,7 +171,7 @@ public class ObjectPool : IInitializable
     public FloatingText CreateFloatingText(Vector3 position, string text, Color color, float textSize = 0.5f) {
         foreach (FloatingText floatingText in instantiatedFloatingTexts) {
             if (floatingText.gameObject.activeInHierarchy == false) {
-                floatingText.Initialize(position, text, color);
+                floatingText.Initialize(position, text, color, textSize);
                 return floatingText;
             }
         }
