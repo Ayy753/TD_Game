@@ -168,7 +168,7 @@ public class ObjectPool : IInitializable
         GameObject.Destroy(tower.gameObject);
     }
 
-    public FloatingText CreateFloatingText(Vector3 position, string text, Color color) {
+    public FloatingText CreateFloatingText(Vector3 position, string text, Color color, float textSize = 0.5f) {
         foreach (FloatingText floatingText in instantiatedFloatingTexts) {
             if (floatingText.gameObject.activeInHierarchy == false) {
                 floatingText.Initialize(position, text, color);
@@ -176,7 +176,7 @@ public class ObjectPool : IInitializable
             }
         }
         FloatingText newFloatingText = GameObject.Instantiate(floatingTextPrefab).GetComponent<FloatingText>();
-        newFloatingText.Initialize(position, text, color);
+        newFloatingText.Initialize(position, text, color, textSize);
         instantiatedFloatingTexts.Add(newFloatingText);
         return newFloatingText;
     }
