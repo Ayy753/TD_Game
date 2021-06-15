@@ -12,6 +12,11 @@ public class GameManager: IInitializable, IDisposable {
 
     private const int startingLives = 25;
 
+    private const float minSpeed = 1f;
+    private const float maxSpeed = 3f;
+    private const float speedIncrement = 1f;
+    private float currentGameSpeed;
+
     public GameManager(IGUIManager guiController) {
         this.guiController = guiController;
     }
@@ -28,6 +33,7 @@ public class GameManager: IInitializable, IDisposable {
         guiController.UpdateLivesLabel(Lives);
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
         InputHandler.OnCommandEntered += HandlekeyboardInput;
+        currentGameSpeed = minSpeed;
         SetState(State.Running);
     }
 
@@ -41,11 +47,11 @@ public class GameManager: IInitializable, IDisposable {
             case InputHandler.Command.TogglePause:
                 TogglePause();
                 break;
-            case InputHandler.Command.SlowGameSpeed:
-                Debug.LogWarning("SlowGameSpeed not implemented yet");
+            case InputHandler.Command.DecreaseGameSpeed:
+                DecreaseGameSpeed();
                 break;
             case InputHandler.Command.IncreaseGameSpeed:
-                Debug.LogWarning("IncreaseGameSpeed not implemented yet");
+                IncreaseGameSpeed();
                 break;
         }
     }
@@ -66,7 +72,7 @@ public class GameManager: IInitializable, IDisposable {
     private void SetState(State state) {
         switch (state) {
             case State.Running:
-                Time.timeScale = 1;
+                Time.timeScale = currentGameSpeed;
                 break;
             case State.Paused:
                 Time.timeScale = 0;
@@ -79,6 +85,22 @@ public class GameManager: IInitializable, IDisposable {
         }
 
         CurrentState = state;
+    }
+
+    private void IncreaseGameSpeed() {
+        currentGameSpeed +=  speedIncrement;
+        if (currentGameSpeed > maxSpeed) {
+            currentGameSpeed = maxSpeed;
+        }
+        SetState(State.Running);
+    }
+
+    private void DecreaseGameSpeed() {
+        currentGameSpeed -= speedIncrement;
+        if (currentGameSpeed < minSpeed) {
+            currentGameSpeed = minSpeed;
+        }
+        SetState(State.Running);
     }
 
     private void TogglePause() {

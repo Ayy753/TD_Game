@@ -17,7 +17,7 @@ public class InputHandler : MonoBehaviour{
     public enum Command {
         TogglePause,
         FocusTarget,
-        SlowGameSpeed,
+        DecreaseGameSpeed,
         IncreaseGameSpeed
     }
 
@@ -29,7 +29,7 @@ public class InputHandler : MonoBehaviour{
             case Command.FocusTarget:
                 focusTarget = key;
                 break;
-            case Command.SlowGameSpeed:
+            case Command.DecreaseGameSpeed:
                 slowGameSpeed = key;
                 break;
             case Command.IncreaseGameSpeed:
@@ -47,7 +47,7 @@ public class InputHandler : MonoBehaviour{
                 OnCommandEntered.Invoke(Command.FocusTarget);
             }
             else if (Input.GetKeyDown(slowGameSpeed)) {
-                OnCommandEntered.Invoke(Command.SlowGameSpeed);
+                OnCommandEntered.Invoke(Command.DecreaseGameSpeed);
             }
             else if (Input.GetKeyDown(increaseGameSpeed)) {
                 OnCommandEntered.Invoke(Command.IncreaseGameSpeed);
