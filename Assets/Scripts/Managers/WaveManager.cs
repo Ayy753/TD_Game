@@ -13,8 +13,8 @@ public class WaveManager : IInitializable, IDisposable {
     [Inject] private IMessageSystem messageSystem;
     [Inject] private IGUIManager guiController;
 
-    //private const string FilePath = "LevelData/WaveData/demo_waves";
-    private const string FilePath = "LevelData/WaveData/dummy_waves";
+    private const string FilePath = "LevelData/WaveData/demo_waves";
+    //private const string FilePath = "LevelData/WaveData/dummy_waves";
     private Root LevelData;
 
     private List<Enemy> activeEnemies;
@@ -22,8 +22,8 @@ public class WaveManager : IInitializable, IDisposable {
     public int NumberOfWaves { get; private set; }
     private int currentWave = 0;
 
-    private const int timeBetweenWaves = 5;
-    private const int timeBeforeFirstWave = 3;
+    private const int timeBetweenWaves = 30;
+    private const int timeBeforeFirstWave = 60;
     private Coroutine nextWaveCountDown;
     private bool lastWaveFinishedSpawning;
 
@@ -41,7 +41,7 @@ public class WaveManager : IInitializable, IDisposable {
 
         currentWave = 0;
 
-        messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white);
+        messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white, 1f);
 
         guiController.UpdateWaveCountdown(timeBeforeFirstWave);
         guiController.UpdateWaveNumber(currentWave, NumberOfWaves);
@@ -116,7 +116,7 @@ public class WaveManager : IInitializable, IDisposable {
 
         while (secondsUntilNextWave > 0) {
             if (secondsUntilNextWave <= 5) {
-                messageSystem.DisplayMessage(string.Format("Next wave starts in {0} seconds", secondsUntilNextWave), Color.white);
+                messageSystem.DisplayMessage(string.Format("Next wave starts in {0} seconds", secondsUntilNextWave), Color.white, 1f);
             }
             yield return new WaitForSeconds(1f);
             secondsUntilNextWave--;
@@ -170,7 +170,8 @@ public class WaveManager : IInitializable, IDisposable {
     public void StartNextWave() {
         if (currentWave < NumberOfWaves) {
             asyncProcessor.StopCoroutine(nextWaveCountDown);
-            messageSystem.DisplayMessage("Starting wave " + (currentWave + 1), Color.white);
+            guiController.UpdateWaveCountdown(0);
+            messageSystem.DisplayMessage("Starting wave " + (currentWave + 1), Color.white, 1f);
             asyncProcessor.StartCoroutine(LaunchWave());
             guiController.UpdateWaveNumber(currentWave, NumberOfWaves);
         }
