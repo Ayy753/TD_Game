@@ -73,6 +73,7 @@ public class GameManager: IInitializable, IDisposable {
         switch (state) {
             case State.Running:
                 Time.timeScale = currentGameSpeed;
+                guiController.UpdateSpeedPanel(currentGameSpeed);
                 break;
             case State.Paused:
                 Time.timeScale = 0;
@@ -87,7 +88,7 @@ public class GameManager: IInitializable, IDisposable {
         CurrentState = state;
     }
 
-    private void IncreaseGameSpeed() {
+    public void IncreaseGameSpeed() {
         currentGameSpeed +=  speedIncrement;
         if (currentGameSpeed > maxSpeed) {
             currentGameSpeed = maxSpeed;
@@ -95,7 +96,7 @@ public class GameManager: IInitializable, IDisposable {
         SetState(State.Running);
     }
 
-    private void DecreaseGameSpeed() {
+    public void DecreaseGameSpeed() {
         currentGameSpeed -= speedIncrement;
         if (currentGameSpeed < minSpeed) {
             currentGameSpeed = minSpeed;

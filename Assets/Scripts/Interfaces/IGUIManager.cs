@@ -14,4 +14,7 @@ public interface IGUIManager{
     public void ShowGameWonScreen();
     public void UpdateWaveNumber(int current, int total);
     public void UpdateWaveCountdown(int secondsLeft);
+    public void UpdateSpeedPanel(float speed);
+    public void IncreaseaSpeed();
+    public void DecreaseSpeed();
 }
