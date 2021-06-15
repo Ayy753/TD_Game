@@ -187,7 +187,7 @@ public class BuildManager : IInitializable, IDisposable {
     /// </summary>
     private void HandleLeftMouseUp() {
         //  Prevent building/demolishing after game ended
-        if (gameManager.CurrentState != GameManager.State.Running) {
+        if (gameManager.CurrentState == GameManager.State.Ended) {
             return;
         }
 
@@ -205,7 +205,7 @@ public class BuildManager : IInitializable, IDisposable {
     
     private void HandleRightMouseUp() {
         //  Prevent building/demolishing after game ended
-        if (gameManager.CurrentState != GameManager.State.Running) {
+        if (gameManager.CurrentState == GameManager.State.Ended) {
             return;
         }
 

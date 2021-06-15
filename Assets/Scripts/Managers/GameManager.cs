@@ -27,11 +27,27 @@ public class GameManager: IInitializable, IDisposable {
         Lives = startingLives;
         guiController.UpdateLivesLabel(Lives);
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
+        InputHandler.OnCommandEntered += HandlekeyboardInput;
         SetState(State.Running);
     }
 
     public void Dispose() {
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
+        InputHandler.OnCommandEntered += HandlekeyboardInput;
+    }
+
+    private void HandlekeyboardInput(InputHandler.Command command) {
+        switch (command) {
+            case InputHandler.Command.TogglePause:
+                TogglePause();
+                break;
+            case InputHandler.Command.SlowGameSpeed:
+                Debug.LogWarning("SlowGameSpeed not implemented yet");
+                break;
+            case InputHandler.Command.IncreaseGameSpeed:
+                Debug.LogWarning("IncreaseGameSpeed not implemented yet");
+                break;
+        }
     }
 
     private void HandleEnemyReachedGate(Enemy enemy) {
