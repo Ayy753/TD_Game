@@ -158,11 +158,11 @@ public class WaveManager : IInitializable, IDisposable {
         }
 
         //  If there are more waves, launch next wave
-        if (currentWave-1 == thisWaveNum && currentWave < NumberOfWaves) {
+        if (currentWave < NumberOfWaves) {
             nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
         }
-        //  Otherwise set flag
-        else {
+        //  Otherwise if the last wave is defeated
+        else if(currentWave - 1 == thisWaveNum) {
             lastWaveFinishedSpawning = true;
         }
     }
