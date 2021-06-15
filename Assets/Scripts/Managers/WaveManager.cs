@@ -115,15 +115,14 @@ public class WaveManager : IInitializable, IDisposable {
         }
 
         while (secondsUntilNextWave > 0) {
-            yield return new WaitForSeconds(1f);
-            secondsUntilNextWave--;
-            guiController.UpdateWaveCountdown(secondsUntilNextWave);
-
             if (secondsUntilNextWave <= 5) {
                 messageSystem.DisplayMessage(string.Format("Next wave starts in {0} seconds", secondsUntilNextWave), Color.white);
             }
+            yield return new WaitForSeconds(1f);
+            secondsUntilNextWave--;
+            guiController.UpdateWaveCountdown(secondsUntilNextWave);
         }
-        
+
         StartNextWave();
     }
 
