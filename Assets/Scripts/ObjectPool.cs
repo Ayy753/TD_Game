@@ -18,11 +18,15 @@ public class ObjectPool : IInitializable
     private readonly GameObject[] towerPrefabs;
     private Dictionary<TowerData.TowerType, GameObject> towerTypeToPrefab;
 
+    private readonly GameObject floatingTextPrefab;
+    private List<FloatingText> instantiatedFloatingTexts;
+
     public ObjectPool(DiContainer container) {
         _container = container;
         enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
         projectilePrefabs = Resources.LoadAll<GameObject>("Prefabs/Projectiles");
         towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
+        floatingTextPrefab = Resources.Load<GameObject>("Prefabs/FloatingText");
     }
 
     public void Initialize() {
@@ -35,6 +39,8 @@ public class ObjectPool : IInitializable
         projectileTypeToPrefab = new Dictionary<ProjectileData.ProjectileType, GameObject>();
 
         towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
+
+        instantiatedFloatingTexts = new List<FloatingText>();
 
         //  Link enemy types to prefabs
         for (int i = 0; i < enemyPrefabs.Length; i++) {
@@ -160,5 +166,18 @@ public class ObjectPool : IInitializable
 
     public void DestroyTower(Tower tower) {
         GameObject.Destroy(tower.gameObject);
+    }
+
+    public FloatingText CreateFloatingText(Vector3 position, string text, Color color) {
+        foreach (FloatingText floatingText in instantiatedFloatingTexts) {
+            if (floatingText.gameObject.activeInHierarchy == false) {
+                floatingText.Initialize(position, text, color);
+                return floatingText;
+            }
+        }
+        FloatingText newFloatingText = GameObject.Instantiate(floatingTextPrefab).GetComponent<FloatingText>();
+        newFloatingText.Initialize(position, text, color);
+        instantiatedFloatingTexts.Add(newFloatingText);
+        return newFloatingText;
     }
 }
