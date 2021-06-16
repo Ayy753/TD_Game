@@ -93,4 +93,8 @@ public class TargetManager: IInitializable, IDisposable{
     private void HandleTargetDisabled(object sender, EventArgs eventArgs) {
         Untarget();
     }
+
+    public Itargetable GetTarget() {
+        return target;
+    }
 }

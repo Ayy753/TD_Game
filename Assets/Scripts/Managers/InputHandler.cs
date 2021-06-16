@@ -48,7 +48,7 @@ public class InputHandler : MonoBehaviour{
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public KeyCode GetCommand(Command command) {
+    public KeyCode GetHotkey(Command command) {
         switch (command) {
             case Command.TogglePause:
                 return togglePause;

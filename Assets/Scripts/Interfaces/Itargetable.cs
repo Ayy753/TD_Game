@@ -9,4 +9,6 @@ public interface Itargetable{
     /// Fires when target is destroyed
     /// </summary>
     public event EventHandler TargetDisabled;
+
+    public Transform GetTransform();
 }

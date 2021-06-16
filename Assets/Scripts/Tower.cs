@@ -247,5 +247,9 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
         }
     }
 
+    public Transform GetTransform() {
+        return transform;
+    }
+
     public class Factory : PlaceholderFactory<Tower> { }
 }
