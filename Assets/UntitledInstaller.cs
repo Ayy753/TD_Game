@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using Zenject;
 
 public class UntitledInstaller : MonoInstaller
@@ -54,5 +53,8 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<TooltipManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         Container.Bind<InputHandler>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+
+        Container.Bind<FPSCounter>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable)).To<FPSCounter>().FromResolve();
     }
 }

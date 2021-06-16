@@ -14,7 +14,7 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     TMP_Text txtLives, txtGold;
     TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown;
-    TMP_Text txtGameSpeed;
+    TMP_Text txtGameSpeed, txtFPS;
 
     //  gameEnded panel is the parent for the other two panels
     GameObject pnlGameEnded, pnlGameOver, pnlGameWon;
@@ -37,6 +37,7 @@ public class GUIController : MonoBehaviour, IGUIManager {
         txtWaveCountdown = GameObject.Find("txtWaveCountdown").GetComponent<TMP_Text>();
 
         txtGameSpeed = GameObject.Find("txtSpeed").GetComponent<TMP_Text>();
+        txtFPS = GameObject.Find("txtFPS").GetComponent<TMP_Text>();
 
         pnlGameEnded.SetActive(false);
         pnlGameOver.SetActive(false);
@@ -125,6 +126,10 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     public void DecreaseSpeed() {
         gameManager.DecreaseGameSpeed();
+    }
+
+    public void UpdateFPSCounter(int fps) {
+        txtFPS.text = fps.ToString();
     }
 }
 

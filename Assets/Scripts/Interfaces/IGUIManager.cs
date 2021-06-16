@@ -17,4 +17,5 @@ public interface IGUIManager{
     public void UpdateSpeedPanel(float speed);
     public void IncreaseaSpeed();
     public void DecreaseSpeed();
+    public void UpdateFPSCounter(int fps);
 }
