@@ -16,7 +16,8 @@ MonoBehaviour:
   <BaseFireResist>k__BackingField: 0
   <BaseColdResist>k__BackingField: 0
   <BasePoisonResist>k__BackingField: 0
-  <BaseArmor>k__BackingField: 2
+  <BaseLightningResist>k__BackingField: 0
+  <BaseArmor>k__BackingField: 50
   <BaseSpeed>k__BackingField: 0.75
   <BaseValue>k__BackingField: 20
   <Name>k__BackingField: Strong Enemy
