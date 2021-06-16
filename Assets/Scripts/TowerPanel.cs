@@ -20,7 +20,7 @@ public class TowerPanel : IInitializable {
 
         pnlTowerPanel = GameObject.Find("pnlTower");
 
-        txtName = GameObject.Find("txtName").GetComponent<TMP_Text>();
+        txtName = GameObject.Find("txtTowerName").GetComponent<TMP_Text>();
         txtRange = GameObject.Find("txtRangeVal").GetComponent<TMP_Text>();
         txtDamage = GameObject.Find("txtDamageVal").GetComponent<TMP_Text>();
         txtReloadTime = GameObject.Find("txtReloadTimeVal").GetComponent<TMP_Text>();

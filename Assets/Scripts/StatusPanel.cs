@@ -17,7 +17,7 @@ public class StatusPanel : IInitializable {
 
         pnlStausPanel = GameObject.Find("pnlStatus");
 
-        txtName = GameObject.Find("txtName").GetComponent<TMP_Text>();
+        txtName = GameObject.Find("txtStatusName").GetComponent<TMP_Text>();
         txtCurrentHealth = GameObject.Find("txtHealthCurrentVal").GetComponent<TMP_Text>();
         txtMaxHealth = GameObject.Find("txtHealthMaxVal").GetComponent<TMP_Text>();
         txtArmor = GameObject.Find("txtArmorVal").GetComponent<TMP_Text>();

@@ -164,7 +164,7 @@ public class WaveManager : IInitializable, IDisposable {
                 asyncProcessor.StopCoroutine(nextWaveCountDown);
                 nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
             }
-            //  Otherwise if the last wave is defeated
+            //  Otherwise the last wave is defeated
             else {
                 lastWaveFinishedSpawning = true;
             }
