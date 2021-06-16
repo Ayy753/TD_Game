@@ -6764,7 +6764,7 @@ GameObject:
   - component: {fileID: 865299039}
   - component: {fileID: 865299043}
   m_Layer: 5
-  m_Name: btnDemolish
+  m_Name: btnSell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

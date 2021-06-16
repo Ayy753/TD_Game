@@ -286,6 +286,11 @@ public class BuildManager : IInitializable, IDisposable {
         radiusRenderer.HideRadius();
         Debug.Log("Exited build mode");
     }
+
+    public void SellTower(Tower tower) {
+        Vector3Int pos = Vector3Int.FloorToInt(tower.gameObject.transform.position);
+        DemolishStructure(pos);
+    }
 }
 
 public class StructureChangedEventArgs : EventArgs {

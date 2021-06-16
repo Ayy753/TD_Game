@@ -5,11 +5,12 @@ using Zenject;
 
 public class TowerPanel : IInitializable {
     [Inject] IWallet wallet;
+    [Inject] BuildManager buildManager;
     
     GameObject pnlTowerPanel;
     
     TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue;
-    Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom;
+    Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom, btnSell;
     Button[] targetButtons;
 
     Tower currentlySelectedTower;
@@ -30,6 +31,7 @@ public class TowerPanel : IInitializable {
         btnLowHP = GameObject.Find("btnLowest").GetComponent<Button>();
         btnHighHP = GameObject.Find("btnHighest").GetComponent<Button>();
         btnRandom = GameObject.Find("btnRandom").GetComponent<Button>();
+        btnSell = GameObject.Find("btnSell").GetComponent<Button>();
 
         targetButtons = new Button[] { btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom };
 
@@ -40,6 +42,7 @@ public class TowerPanel : IInitializable {
         btnLowHP.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.LowestHealth); });
         btnHighHP.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.HighestHealth); });
         btnRandom.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Random); });
+        btnSell.onClick.AddListener(delegate { SellTower(); });
 
         pnlTowerPanel.SetActive(false);
     }
@@ -88,6 +91,19 @@ public class TowerPanel : IInitializable {
         }
 
         selectedBtn.image.color = selectedBtn.colors.selectedColor;
+    }
+
+    /// <summary>
+    /// Sells the currently selected tower
+    /// </summary>
+    private void SellTower() {
+        if (currentlySelectedTower != null) {
+            buildManager.SellTower(currentlySelectedTower);
+            ClearTarget();
+        }
+        else {
+            Debug.LogError("It should be impossible to call this function when no tower is selected");
+        }
     }
 
     public void SetTargetMode(Tower.TargetMode targetMode) {
