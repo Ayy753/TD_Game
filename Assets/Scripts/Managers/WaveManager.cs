@@ -157,13 +157,17 @@ public class WaveManager : IInitializable, IDisposable {
             yield return new WaitForSeconds(LevelData.waves[thisWaveNum].TimebetweenGroups);
         }
 
-        //  If there are more waves, launch next wave
-        if (currentWave < NumberOfWaves) {
-            nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
-        }
-        //  Otherwise if the last wave is defeated
-        else if(currentWave - 1 == thisWaveNum) {
-            lastWaveFinishedSpawning = true;
+        //  If this is the most recent wave
+        if (currentWave - 1 == thisWaveNum) {
+            //  If there are more waves, launch next wave
+            if (currentWave < NumberOfWaves) {
+                asyncProcessor.StopCoroutine(nextWaveCountDown);
+                nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
+            }
+            //  Otherwise if the last wave is defeated
+            else {
+                lastWaveFinishedSpawning = true;
+            }
         }
     }
 
