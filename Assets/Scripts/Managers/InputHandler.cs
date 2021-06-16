@@ -21,6 +21,11 @@ public class InputHandler : MonoBehaviour{
         IncreaseGameSpeed
     }
 
+    /// <summary>
+    /// Assign a hotkey to a command
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="key"></param>
     public void SetControl(Command command, KeyCode key) {
         switch (command) {
             case Command.TogglePause:
@@ -35,6 +40,26 @@ public class InputHandler : MonoBehaviour{
             case Command.IncreaseGameSpeed:
                 increaseGameSpeed = key;
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Get the hotkey assigned to a command
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns></returns>
+    public KeyCode GetCommand(Command command) {
+        switch (command) {
+            case Command.TogglePause:
+                return togglePause;
+            case Command.FocusTarget:
+                return focusTarget;
+            case Command.DecreaseGameSpeed:
+                return slowGameSpeed;
+            case Command.IncreaseGameSpeed:
+                return increaseGameSpeed;
+            default:
+                return KeyCode.None;
         }
     }
 

@@ -56,5 +56,8 @@ public class UntitledInstaller : MonoInstaller
 
         Container.Bind<FPSCounter>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable)).To<FPSCounter>().FromResolve();
+
+        Container.Bind<ControlsPanel>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable)).To<ControlsPanel>().FromResolve();
     }
 }
