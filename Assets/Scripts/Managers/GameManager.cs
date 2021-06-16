@@ -17,6 +17,8 @@ public class GameManager: IInitializable, IDisposable {
     private const float speedIncrement = 1f;
     private float currentGameSpeed;
 
+    private const int targetFrameRate = 60;
+
     public GameManager(IGUIManager guiController, IMessageSystem messageSystem) {
         this.guiController = guiController;
         this.messageSystem = messageSystem;
@@ -36,6 +38,7 @@ public class GameManager: IInitializable, IDisposable {
         InputHandler.OnCommandEntered += HandlekeyboardInput;
         currentGameSpeed = minSpeed;
         SetState(State.Running);
+        LimitFramerate();
     }
 
     public void Dispose() {
@@ -108,6 +111,11 @@ public class GameManager: IInitializable, IDisposable {
 
     private void TogglePause() {
         SetState(CurrentState == State.Paused ? State.Running : State.Paused);
+    }
+
+    private void LimitFramerate() {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = targetFrameRate;
     }
 
     /// <summary>
