@@ -39,6 +39,11 @@ public class NormalProjectile : Projectile {
 
         //  If it hit a unit, and hasn't damaged anything yet (to prevent it from damaging multiple units at the same time)
         if (unit != null && dealtDamage == false) {
+
+            foreach (var item in ProjectileData.damageTypesAndAmounts) {
+                Debug.Log(string.Format("type: {0} amount: {1}", item.type, item.amount));
+            }
+
             //  If the unit is the target
             if (unit.GetTransform() == Target) {
                 dealtDamage = true;

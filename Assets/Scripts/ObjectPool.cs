@@ -70,6 +70,9 @@ public class ObjectPool : IInitializable
                 case "SplashProjectile":
                     projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Splash, prefab);
                     break;
+                case "SniperProjectile":
+                    projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Sniper, prefab);
+                    break;
                 default:
                     throw new System.Exception(string.Format("Projectile prefab name \"{0}\" does not match any ProjectileData.ProjectileType values", prefab.name));
             }

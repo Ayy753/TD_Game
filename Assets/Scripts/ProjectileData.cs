@@ -11,7 +11,8 @@ public class ProjectileData : ScriptableObject{
 
     public enum ProjectileType {
         Splash,
-        Normal
+        Normal,
+        Sniper
     }
 
     /// <summary>

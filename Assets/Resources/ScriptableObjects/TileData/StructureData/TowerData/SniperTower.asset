@@ -22,5 +22,5 @@ MonoBehaviour:
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 150
-  <ProjectileData>k__BackingField: {fileID: 11400000, guid: 226046c0e53968c4aabceb3b770c5ffd,
+  <ProjectileData>k__BackingField: {fileID: 11400000, guid: ff3445b15080c3747a9673443536e0ca,
     type: 2}
