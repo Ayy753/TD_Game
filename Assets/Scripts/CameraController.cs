@@ -20,10 +20,12 @@ public class CameraController : MonoBehaviour {
 
     private void OnEnable() {
         InputHandler.OnCommandEntered += HandleCommandEntered;
+        MouseManager.OnRightMouseUp += HandleRightButtonUp;
     }
 
     private void OnDisable() {
         InputHandler.OnCommandEntered -= HandleCommandEntered;
+        MouseManager.OnRightMouseUp -= HandleRightButtonUp;
     }
 
     void Update() {
@@ -65,6 +67,10 @@ public class CameraController : MonoBehaviour {
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + -Input.mouseScrollDelta.y * scrollSpeed, minZoom, maxZoom);
     }
 
+    /// <summary>
+    /// Follows target if one exists
+    /// </summary>
+    /// <param name="command"></param>
     private void HandleCommandEntered(InputHandler.Command command) {
         if (command == InputHandler.Command.FocusTarget) {
             Itargetable target = targetManager.GetTarget();
@@ -73,5 +79,12 @@ public class CameraController : MonoBehaviour {
                 focusedTarget = target.GetTransform();
             }
         }
+    }
+
+    /// <summary>
+    /// Clears focused target
+    /// </summary>
+    private void HandleRightButtonUp() {
+        focusedTarget = null;
     }
 }
