@@ -7,7 +7,7 @@ using UnityEngine;
 public class ProjectileData : ScriptableObject{
     public float Speed;
     public ProjectileType type;
-    public Damage.DamageTypeAndAmount[] damageTypesAndAmounts;
+    //public Damage.DamageTypeAndAmount[] damageTypesAndAmounts;
 
     public enum ProjectileType {
         Splash,
@@ -24,9 +24,9 @@ public class ProjectileData : ScriptableObject{
     public string RawTotalDamage() {
         float total = 0;
 
-        foreach (Damage.DamageTypeAndAmount damageType in damageTypesAndAmounts) {
-            total += damageType.amount;
-        }
+        //foreach (Damage.DamageTypeAndAmount damageType in damageTypesAndAmounts) {
+        //    total += damageType.amount;
+        //}
 
         return total.ToString();
     }

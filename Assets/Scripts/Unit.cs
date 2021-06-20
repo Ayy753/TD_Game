@@ -14,7 +14,7 @@ public abstract class Unit : MonoBehaviour, Itargetable
 
     public abstract Status GetStatus();
 
-    public abstract void ApplyDamage(Damage.DamageTypeAndAmount[] damages);
+    //public abstract void ApplyDamage(Damage.DamageTypeAndAmount[] damages);
 
     /// <summary>
     /// Get the transform component of the unit's gameobject

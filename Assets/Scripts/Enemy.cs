@@ -63,12 +63,12 @@ public class Enemy : Unit {
         return status;
     }
 
-    public override void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
-        float damage = Damage.CalculateDamage(status, damages);
-        status.ModifyDamage(damage);
-        messageSystem.DisplayMessageAt(transform.position, Math.Round(damage, 1).ToString(), Color.red, 0.33f);
-        healthBar.UpdateHealthBar();
-    }
+    //public override void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
+    //    float damage = Damage.CalculateDamage(status, damages);
+    //    status.ModifyDamage(damage);
+    //    messageSystem.DisplayMessageAt(transform.position, Math.Round(damage, 1).ToString(), Color.red, 0.33f);
+    //    healthBar.UpdateHealthBar();
+    //}
 
     public override Transform GetTransform() {
         return transform;
