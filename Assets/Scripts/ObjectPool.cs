@@ -145,7 +145,7 @@ public class ObjectPool : IInitializable
     public Projectile CreateProjectile(ProjectileData.ProjectileType type) {
         //  find available projectile of prefab type
         foreach (Projectile projectile in instantiatedProjectiles) {
-            if (projectile.ProjectileData.type == type && projectile.gameObject.activeInHierarchy == false) {
+            if (/*projectile.ProjectileData.type == type && */projectile.gameObject.activeInHierarchy == false) {
                 projectile.gameObject.SetActive(true);
                 return projectile;
             }
