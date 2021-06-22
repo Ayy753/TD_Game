@@ -6,7 +6,7 @@ public class Buff : MonoBehaviour, IStatusEffect, IStatMod{
     public Status.StatType Type { get; private set; }
 
     public void Apply(Unit unit) {
-        unit.GetStatus().ApplyStatusEffect(this);
+        unit.GetStatus().AddStatusEffect(this);
     }
 
     public void OnTick() {

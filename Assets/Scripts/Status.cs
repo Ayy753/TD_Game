@@ -12,16 +12,17 @@ public class Status{
     public enum StatType {
         Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed, Max
     }
-    public float[] StatMods = new float[(int)StatType.Max];
-    
-    public float MaxHealth { get { return characterData.BaseHealth + StatMods[(int)StatType.Health]; } }
+    public float[] statMods = new float[(int)StatType.Max];
+    public float[] effectiveStats;
+
+    public float Armor { get { return characterData.BaseArmor + statMods[(int)StatType.Armor]; } }
+    public float ColdResist { get { return characterData.BaseColdResist + statMods[(int)StatType.ColdResist]; } }
+    public float FireResist { get { return characterData.BaseFireResist + statMods[(int)StatType.FireResist]; } }
+    public float PoisonResist { get { return characterData.BasePoisonResist + statMods[(int)StatType.PoisonResist]; } }
+    public float LightningResist { get { return characterData.BaseLightningResist + statMods[(int)StatType.LightningResist]; } }
     public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
-    public float Speed { get { return characterData.BaseSpeed + StatMods[(int)StatType.Speed]; } }
-    public float FireResist { get { return characterData.BaseFireResist + StatMods[(int)StatType.FireResist]; } }
-    public float ColdResist { get { return characterData.BaseColdResist + StatMods[(int)StatType.ColdResist]; } }
-    public float PoisonResist { get { return characterData.BasePoisonResist + StatMods[(int)StatType.PoisonResist]; } }
-    public float LightningResist { get { return characterData.BaseLightningResist + StatMods[(int)StatType.LightningResist]; } }
-    public float Armor { get { return characterData.BaseArmor + StatMods[(int)StatType.Armor]; } }
+    public float Speed { get { return characterData.BaseSpeed + statMods[(int)StatType.Speed]; } }
+    public float MaxHealth { get { return characterData.BaseHealth + statMods[(int)StatType.Health]; } }
 
     /// <summary>
     /// The current amount of damage inflicted on unit.
@@ -61,6 +62,7 @@ public class Status{
     public event ClearStatus OnStatusCleared;
 
     public Status(CharacterData characterData, Unit unit) {
+        effectiveStats = new float[] { Armor, ColdResist, FireResist, PoisonResist, LightningResist, CurrentHealth, Speed };
         this.characterData = characterData;
         this.unit = unit;
         statusEffects = new List<IStatusEffect>();
@@ -79,10 +81,20 @@ public class Status{
     }
 
     public void ModifyStat(StatType type, float amount) {
-        StatMods[(int)type] += amount;
+        statMods[(int)type] += amount;
     }
 
-    public void ApplyStatusEffect(IStatusEffect statusEffect) {
+    private void OnTick() {
+        foreach (IStatusEffect statusEffect in statusEffects) {
+            statusEffect.OnTick();
+        }
+    }
+
+    /// <summary>
+    /// Adds status effect to list of status effects
+    /// </summary>
+    /// <param name="statusEffect"></param>
+    public void AddStatusEffect(IStatusEffect statusEffect) {
         statusEffects.Add(statusEffect);
     }
 
@@ -90,7 +102,7 @@ public class Status{
     public void Initialize() {
         //  Clear all stat modifications
         for (int i = 0; i < (int)StatType.Max; i++) {
-            StatMods[i] = 0;
+            statMods[i] = 0;
         }
 
         DamageInflicted = 0;
