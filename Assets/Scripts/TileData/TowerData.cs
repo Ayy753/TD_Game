@@ -23,6 +23,10 @@ public class TowerData : StructureData
     [field: SerializeField]
     public ProjectileData ProjectileData { get; protected set; }
 
+
+    [field: SerializeField]
+    public IEffect[] effects;
+
     public enum TowerType {
         Bullet,
         Splash,

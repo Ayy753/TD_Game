@@ -5,12 +5,7 @@ public interface IEffect {
     public float Potency { get; }
 
     /// <summary>
-    /// The Unit's Status this effect applies to
-    /// </summary>
-    public Status UnitStatus { get; }
-
-    /// <summary>
     /// Apply the effect to Unit
     /// </summary>
-    public void Apply();
+    public void Apply(Unit unit);
 }

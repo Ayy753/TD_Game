@@ -8,5 +8,5 @@ public interface IDamage : IEffect {
     /// <summary>
     /// Calculates the amount of damage done to the unit based on the damage type/potency and the unit's resistance to that type
     /// </summary>
-    public float CalculateDamage();
+    public float CalculateDamage(Status unitStatus);
 }

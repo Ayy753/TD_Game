@@ -8,6 +8,8 @@ public class ProjectileData : ScriptableObject{
     public float Speed;
     public ProjectileType type;
     //public Damage.DamageTypeAndAmount[] damageTypesAndAmounts;
+    public IEffect effect;
+
 
     public enum ProjectileType {
         Splash,

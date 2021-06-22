@@ -17,6 +17,8 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     [field: SerializeField] public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
 
+    IEffect[] effects;
+
     public enum TargetMode {
         Closest,
         Furthest,
@@ -46,7 +48,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
             //  Fire projectile
             Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectileData.type);
-            projectile.Initialize(transform.position, target.transform);
+            projectile.Initialize(transform.position, target.transform, effects);
 
             timeSinceLastShot = 0;
         }
@@ -166,11 +168,11 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                float health = enemy.GetStatus().CurrentHealth;
-                if (health < lowestHealth) {
-                    lowestHealth = health;
-                    lowestEnemy = enemy;
-                }
+                //float health = enemy.GetStatus().CurrentHealth;
+                //if (health < lowestHealth) {
+                //    lowestHealth = health;
+                //    lowestEnemy = enemy;
+                //}
             }
         }
         return lowestEnemy;
@@ -186,11 +188,11 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                float health = enemy.GetStatus().CurrentHealth;
-                if (health > highestHealth) {
-                    highestHealth = health;
-                    highestEnemy = enemy;
-                }
+                //float health = enemy.GetStatus().CurrentHealth;
+                //if (health > highestHealth) {
+                //    highestHealth = health;
+                //    highestEnemy = enemy;
+                //}
             }
         }
         return highestEnemy;

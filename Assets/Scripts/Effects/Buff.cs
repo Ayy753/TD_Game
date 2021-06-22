@@ -3,11 +3,10 @@ using UnityEngine;
 public class Buff : MonoBehaviour, IStatusEffect, IStatMod{
     public float Duration { get; private set; }
     public float Potency { get; private set; }
-    public Status UnitStatus { get; private set; }
     public Status.StatType Type { get; private set; }
 
-    public void Apply() {
-        throw new System.NotImplementedException();
+    public void Apply(Unit unit) {
+        unit.GetStatus().ApplyStatusEffect(this);
     }
 
     public void OnTick() {
