@@ -1,7 +1,9 @@
+using UnityEngine;
 
-public class Damage : IDamage {
-    public IDamage.DamageType Type { get; private set; }
-    public float Potency { get; private set; }
+[CreateAssetMenu(fileName = "New Damage", menuName = "Effect/Damage")]
+public class Damage : ScriptableObject, IDamage {
+    [field: SerializeField] public float Potency { get; private set; }
+    [field: SerializeField] public IDamage.DamageType Type { get; private set; }
     public void Apply(Unit unit) {
         Status status = unit.GetStatus();
         float effectiveDamage = CalculateDamage(status);

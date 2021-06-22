@@ -12,7 +12,7 @@ public class Status{
     public enum StatType {
         Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed, Max
     }
-    public float[] statMods = new float[(int)StatType.Max];
+    private float[] statMods = new float[(int)StatType.Max];
     public float[] effectiveStats;
 
     public float Armor { get { return characterData.BaseArmor + statMods[(int)StatType.Armor]; } }
@@ -87,16 +87,19 @@ public class Status{
     private void OnTick() {
         foreach (IStatusEffect statusEffect in statusEffects) {
             statusEffect.OnTick();
+            if (statusEffect.RemainingDuration >= 0) {
+                statusEffects.Remove(statusEffect);
+            }
         }
     }
 
-    /// <summary>
-    /// Adds status effect to list of status effects
-    /// </summary>
-    /// <param name="statusEffect"></param>
-    public void AddStatusEffect(IStatusEffect statusEffect) {
-        statusEffects.Add(statusEffect);
-    }
+    ///// <summary>
+    ///// Adds status effect to list of status effects
+    ///// </summary>
+    ///// <param name="statusEffect"></param>
+    //public void AddStatusEffect(IStatusEffect statusEffect) {
+    //    statusEffects.Add(statusEffect);
+    //}
 
     //  Reset status
     public void Initialize() {

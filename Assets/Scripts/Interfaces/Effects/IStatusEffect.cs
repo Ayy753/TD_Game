@@ -1,8 +1,8 @@
 public interface IStatusEffect : IEffect {
     /// <summary>
-    /// The initial duration of the effect
+    /// The remaining duration of the effect
     /// </summary>
-    public float Duration { get; }
+    public float RemainingDuration { get; }
 
     /// <summary>
     /// Remove the effect from Unit

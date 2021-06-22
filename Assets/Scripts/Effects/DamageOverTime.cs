@@ -1,9 +1,11 @@
 using UnityEngine;
 
-public class DamageOverTime : MonoBehaviour, IStatusEffect, IDamage{
-    public float Duration { get; private set; }
-    public float Potency { get; private set; }
-    public IDamage.DamageType Type { get; private set; }
+[CreateAssetMenu(fileName = "New Damage Over Time", menuName = "Effect/DamageOverTime")]
+public class DamageOverTime : ScriptableObject, IStatusEffect, IDamage{
+    [field: SerializeField] public float Duration { get; private set; }
+    [field: SerializeField] public float Potency { get; private set; }
+    [field: SerializeField] public IDamage.DamageType Type { get; private set; }
+    public float RemainingDuration { get; private set; }
 
     private Status unitStatus;
 
@@ -11,7 +13,7 @@ public class DamageOverTime : MonoBehaviour, IStatusEffect, IDamage{
     private static float damageRatio = 1 / 10;
 
     public void Apply(Unit unit) {
-        unit.GetStatus().AddStatusEffect(this);
+        //  Does nothing for now
     }
 
     public float CalculateDamage(Status unitStatus) {
@@ -23,9 +25,10 @@ public class DamageOverTime : MonoBehaviour, IStatusEffect, IDamage{
     public void OnTick() {
         float effectiveDamage = CalculateDamage(unitStatus);
         unitStatus.TakeDamage(effectiveDamage);
+        RemainingDuration -= TickManager.tickFrequency;
     }
 
     public void Remove() {
-        throw new System.NotImplementedException();
+        //  Does nothing for now
     }
 }
