@@ -17,8 +17,6 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     [field: SerializeField] public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
 
-    IEffect[] effects;
-
     public enum TargetMode {
         Closest,
         Furthest,
@@ -48,7 +46,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
             //  Fire projectile
             Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectileData.type);
-            projectile.Initialize(transform.position, target.transform, effects);
+            projectile.Initialize(transform.position, target.transform, TowerData.effects);
 
             timeSinceLastShot = 0;
         }
