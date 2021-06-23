@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<Projectiles>
+  <FrostProjectile>
+    <Name>Frost Projectile</Name>
+    <Description>Slows target</Description>
+    <Effects>
+      <Buff>
+        <StatType>Speed</StatType>
+        <Potency>-50</Potency>
+        <Duration>3</Duration>
+      </Buff>
+      <Damage>
+        <DamageType>1</DamageType>
+        <Potency>1.5</Potency>
+      </Damage>
+      <Damage>
+        <DamageType>0</DamageType>
+        <Potency>1.5</Potency>
+      </Damage>
+    </Effects>
+  </FrostProjectile>
+  <PoisonProjectile>
+    <Name>Poison Projectile</Name>
+    <Description>Poisons target</Description>
+    <Effects>
+      <DamageOverTime>
+        <DamageType>3</DamageType>
+        <Potency>3</Potency>
+        <Duration>3</Duration>
+      </DamageOverTime>
+      <Damage>
+        <DamageType>0</DamageType>
+        <Potency>1.5</Potency>
+      </Damage>
+    </Effects>
+  </PoisonProjectile>
+</Projectiles>
