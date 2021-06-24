@@ -1,6 +1,12 @@
 public class Damage : IDamage {
     public float Potency { get; private set; }
     public IDamage.DamageType Type { get; private set; }
+
+    public Damage(float potency, IDamage.DamageType damageType) {
+        Potency = potency;
+        Type = damageType;
+    }
+
     public void Apply(Unit unit) {
         Status status = unit.GetStatus();
         float effectiveDamage = CalculateDamage(status);

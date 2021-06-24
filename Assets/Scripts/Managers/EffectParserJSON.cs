@@ -1,41 +1,19 @@
 using Newtonsoft.Json;
 using UnityEngine;
 using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
+using UnityEditor;
 
 public class EffectParserJSON : MonoBehaviour {
     private const string FilePath = "effects";
+    private List<ProjectileData> projectileDatas = new List<ProjectileData>();
 
     enum EffectType {
         Buff, Damage, DOT, StatMod
     }
 
     void Start() {
-        string jsonText = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
-        Root root = JsonConvert.DeserializeObject<Root>(jsonText);
-
-        foreach (ParsedProjectile projectile in root.Projectiles) {
-            Debug.Log(string.Format("Name: {0}, Description: {1}", projectile.Name, projectile.Description));
-            foreach (ParsedEffect effect in projectile.Effects) {
-                string output = string.Format("Type: {0}, Potency: {1}", effect.Type, effect.Potency);
-                switch (effect.Type) {
-                    case EffectType.Buff:
-                        output += string.Format("StatType:{0}, Duration:{1}", effect.StatType, effect.Duration);
-                        break;
-                    case EffectType.Damage:
-                        output += string.Format("DamageType:{0}", effect.DamageType);
-                        break;
-                    case EffectType.DOT:
-                        output += string.Format("DamageType:{0}, Duration:{1}", effect.DamageType, effect.Duration);
-                        break;
-                    case EffectType.StatMod:
-                        output += string.Format("StatType:{0}", effect.StatType);
-                        break;
-                    default:
-                        break;
-                }
-                Debug.Log(output);
-            }
-        }
+        CreateProjectileDataAssets();
     }
 
     private class Root {
@@ -63,14 +41,60 @@ public class EffectParserJSON : MonoBehaviour {
         public float Potency { get; set; }
 
         [JsonProperty("duration", NullValueHandling = NullValueHandling.Ignore)]
-        public float? Duration { get; set; }
+        public float Duration { get; set; }
 
         [JsonProperty("damageType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
-        public IDamage.DamageType? DamageType { get; set; }
+        public IDamage.DamageType DamageType { get; set; }
 
         [JsonProperty("statType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
         public Status.StatType StatType { get; set; }
+    }
+
+    /// <summary>
+    /// Loads projectile data from json file and creates/saves ProjectileData scriptable object assets
+    /// </summary>
+    private void CreateProjectileDataAssets() {
+        string jsonText = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
+        Root root = JsonConvert.DeserializeObject<Root>(jsonText);
+
+        foreach (ParsedProjectile projectile in root.Projectiles) {
+            ProjectileData projectileData = loadProjectileData(projectile);
+            AssetDatabase.CreateAsset(projectileData, "Assets/Resources/ScriptableObjects/ProjectileData/" + projectileData.Name + ".asset");
+        }
+    }
+
+    /// <summary>
+    /// Converts parsed json data into projectile data
+    /// </summary>
+    /// <param name="projectile"></param>
+    /// <returns></returns>
+    private ProjectileData loadProjectileData(ParsedProjectile projectile) {
+        int effectsLen = projectile.Effects.Length;
+        IEffect[] effects = new IEffect[effectsLen];
+
+        for (int i = 0; i < effectsLen; i++) {
+            ParsedEffect currentEffect = projectile.Effects[i];
+            switch (currentEffect.Type) {
+                case EffectType.Buff:
+                    effects[i] = new Buff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType);
+                    break;
+                case EffectType.Damage:
+                    effects[i] = new Damage(currentEffect.Potency, currentEffect.DamageType);
+                    break;
+                case EffectType.DOT:
+                    effects[i] = new DamageOverTime(currentEffect.Potency, currentEffect.Duration, currentEffect.DamageType);
+                    break;
+                case EffectType.StatMod:
+                    effects[i] = new StatMod(currentEffect.Potency, currentEffect.StatType);
+                    break;
+                default:
+                    throw new System.Exception("The effect type " + currentEffect.Type + " is not valid");
+            }
+        }
+        ProjectileData projectileData = ScriptableObject.CreateInstance("ProjectileData") as ProjectileData;
+        projectileData.Init(projectile.Name, projectile.Description, effects);
+        return projectileData;
     }
 }

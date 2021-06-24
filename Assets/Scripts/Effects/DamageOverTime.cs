@@ -9,8 +9,14 @@ public class DamageOverTime : IStatusEffect, IDamage{
     //  Deals 1/nth the potency in damage every tick
     private static float damageRatio = 1 / 10;
 
+    public DamageOverTime(float potency, float duration, IDamage.DamageType damageType) {
+        Duration = duration;
+        Potency = potency;
+        Type = damageType;
+    }
+
     public void Apply(Unit unit) {
-        //  Does nothing for now
+        Status unitStatus = unit.GetStatus();
     }
 
     public float CalculateDamage(Status unitStatus) {

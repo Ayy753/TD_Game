@@ -6,7 +6,13 @@ public class Buff : IStatusEffect, IStatMod{
     
     private Status unitStatus;
 
+    public Buff(float potency, float duration, Status.StatType statType) {
+        Potency = potency;
+        Type = statType;
+    }
+
     public void Apply(Unit unit) {
+        Status unitStatus = unit.GetStatus();
         unitStatus.ModifyStat(Type, Potency);
     }
 
