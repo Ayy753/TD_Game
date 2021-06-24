@@ -1,19 +1,18 @@
 using Newtonsoft.Json;
-using UnityEngine;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 public class EffectParserJSON : MonoBehaviour {
     private const string FilePath = "effects";
-    private List<ProjectileData> projectileDatas = new List<ProjectileData>();
 
     enum EffectType {
         Buff, Damage, DOT, StatMod
     }
 
     void Start() {
-        CreateProjectileDataAssets();
+        LoadProjectileData();
     }
 
     private class Root {
@@ -53,29 +52,27 @@ public class EffectParserJSON : MonoBehaviour {
     }
 
     /// <summary>
-    /// Loads projectile data from json file and creates/saves ProjectileData scriptable object assets
+    /// Loads projectile data from json file and creates ProjectileData ScriptableObject assets
     /// </summary>
-    private void CreateProjectileDataAssets() {
+    private void LoadProjectileData() {
         string jsonText = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
         Root root = JsonConvert.DeserializeObject<Root>(jsonText);
 
-        foreach (ParsedProjectile projectile in root.Projectiles) {
-            ProjectileData projectileData = loadProjectileData(projectile);
-            AssetDatabase.CreateAsset(projectileData, "Assets/Resources/ScriptableObjects/ProjectileData/" + projectileData.Name + ".asset");
+        foreach (ParsedProjectile parsedProjectile in root.Projectiles) {
+            CreateProjectileDataAsset(parsedProjectile);
         }
     }
 
     /// <summary>
-    /// Converts parsed json data into projectile data
+    /// Converts parsed json data into projectile data asset
     /// </summary>
-    /// <param name="projectile"></param>
-    /// <returns></returns>
-    private ProjectileData loadProjectileData(ParsedProjectile projectile) {
-        int effectsLen = projectile.Effects.Length;
+    /// <param name="parsedProjectile">Parsed projectile data</param>
+    private void CreateProjectileDataAsset(ParsedProjectile parsedProjectile) {
+        int effectsLen = parsedProjectile.Effects.Length;
         IEffect[] effects = new IEffect[effectsLen];
 
         for (int i = 0; i < effectsLen; i++) {
-            ParsedEffect currentEffect = projectile.Effects[i];
+            ParsedEffect currentEffect = parsedProjectile.Effects[i];
             switch (currentEffect.Type) {
                 case EffectType.Buff:
                     effects[i] = new Buff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType);
@@ -94,7 +91,7 @@ public class EffectParserJSON : MonoBehaviour {
             }
         }
         ProjectileData projectileData = ScriptableObject.CreateInstance("ProjectileData") as ProjectileData;
-        projectileData.Init(projectile.Name, projectile.Description, effects);
-        return projectileData;
+        projectileData.Init(parsedProjectile.Name, parsedProjectile.Description, effects);
+        AssetDatabase.CreateAsset(projectileData, "Assets/Resources/ScriptableObjects/ProjectileData/" + projectileData.Name + ".asset");
     }
 }
