@@ -61,6 +61,8 @@ public class EffectParserJSON : MonoBehaviour {
         foreach (ParsedProjectile parsedProjectile in root.Projectiles) {
             CreateProjectileDataAsset(parsedProjectile);
         }
+
+        AssetDatabase.SaveAssets();
     }
 
     /// <summary>
