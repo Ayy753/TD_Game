@@ -20,7 +20,7 @@ public class DamageOverTime : IStatusEffect, IDamage{
     }
 
     public float CalculateDamage(Status unitStatus) {
-        float resistence = unitStatus.effectiveStats[(int)Type];
+        float resistence = unitStatus.GetStat((Status.StatType)Type);
         float effectiveDamage = (1 - resistence / 100) * Potency * damageRatio;
         return effectiveDamage;
     }

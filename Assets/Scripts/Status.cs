@@ -10,41 +10,11 @@ public class Status{
     private CharacterData characterData;
 
     public enum StatType {
-        Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed, Max
-    }
-    private float[] statMods = new float[(int)StatType.Max];
-    public float[] effectiveStats;
-
-    public float Armor { get { return characterData.BaseArmor + statMods[(int)StatType.Armor]; } }
-    public float ColdResist { get { return characterData.BaseColdResist + statMods[(int)StatType.ColdResist]; } }
-    public float FireResist { get { return characterData.BaseFireResist + statMods[(int)StatType.FireResist]; } }
-    public float PoisonResist { get { return characterData.BasePoisonResist + statMods[(int)StatType.PoisonResist]; } }
-    public float LightningResist { get { return characterData.BaseLightningResist + statMods[(int)StatType.LightningResist]; } }
-    public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
-    public float Speed { get { return characterData.BaseSpeed + statMods[(int)StatType.Speed]; } }
-    public float MaxHealth { get { return characterData.BaseHealth + statMods[(int)StatType.Health]; } }
-
-    /// <summary>
-    /// The current amount of damage inflicted on unit.
-    /// Dealing negative damage heals the unit. 
-    /// The total inflicted damage will always be >= 0
-    /// </summary>
-    public float DamageInflicted {
-        get {
-            return damageInflicted;
-        }
-        private set {
-            damageInflicted = value;
-            if (damageInflicted < 0) {
-                damageInflicted = 0;
-            }
-        }
+        Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, MaxHealth, Speed, Max
     }
 
-    //  The amount of damage the unit currently has. Value will never be negative
-    private float damageInflicted;
-
-    public List<IStatusEffect> statusEffects;
+    private float[] stats = new float[(int)StatType.Max];
+    private List<IStatusEffect> statusEffects;
 
     public delegate void StatusChanged();
     public delegate void ClearStatus();
@@ -62,26 +32,50 @@ public class Status{
     public event ClearStatus OnStatusCleared;
 
     public Status(CharacterData characterData, Unit unit) {
-        effectiveStats = new float[] { Armor, ColdResist, FireResist, PoisonResist, LightningResist, CurrentHealth, Speed };
         this.characterData = characterData;
         this.unit = unit;
         statusEffects = new List<IStatusEffect>();
     }
 
-    public void TakeDamage(float effectiveDamage) {
-        DamageInflicted += effectiveDamage;
+    public void Initialize() {
+        stats[(int)StatType.Armor] = characterData.BaseArmor;
+        stats[(int)StatType.ColdResist] = characterData.BaseColdResist;
+        stats[(int)StatType.FireResist] = characterData.BaseFireResist;
+        stats[(int)StatType.Health] = characterData.BaseHealth;
+        stats[(int)StatType.MaxHealth] = characterData.BaseHealth;
+        stats[(int)StatType.LightningResist] = characterData.BaseLightningResist;
+        stats[(int)StatType.PoisonResist] = characterData.BasePoisonResist;
+        stats[(int)StatType.Speed] = characterData.BaseSpeed;
+    }
 
-        if (CurrentHealth <= 0) {
+    public void TakeDamage(float amount) {
+        ModifyStat(StatType.Health, -amount);
+
+        if (GetStat(StatType.Health) <= 0) {
             unit.Died();
         }
     }
 
     public void RestoreHealth(float amount) {
-        DamageInflicted -= amount;
+        ModifyStat(StatType.Health, amount);
     }
 
+    /// <summary>
+    /// Returns value of specified stat
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public float GetStat(StatType type) {
+        return stats[(int)type];
+    }
+
+    /// <summary>
+    /// Addsa/subtracts amount from specified stat
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="amount"></param>
     public void ModifyStat(StatType type, float amount) {
-        statMods[(int)type] += amount;
+        stats[(int)type] += amount;
     }
 
     private void OnTick() {
@@ -91,25 +85,6 @@ public class Status{
                 statusEffects.Remove(statusEffect);
             }
         }
-    }
-
-    ///// <summary>
-    ///// Adds status effect to list of status effects
-    ///// </summary>
-    ///// <param name="statusEffect"></param>
-    //public void AddStatusEffect(IStatusEffect statusEffect) {
-    //    statusEffects.Add(statusEffect);
-    //}
-
-    //  Reset status
-    public void Initialize() {
-        //  Clear all stat modifications
-        for (int i = 0; i < (int)StatType.Max; i++) {
-            statMods[i] = 0;
-        }
-
-        DamageInflicted = 0;
-        //  Todo: remove all status effects
     }
 
     //public void ApplyStatusEffect(StatusEffect newEffect)
