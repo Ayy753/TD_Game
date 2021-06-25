@@ -1,35 +1,21 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Projectile Data", menuName = "Projectile Data")]
 public class ProjectileData : ScriptableObject{
-    public float Speed;
-    public ProjectileType type;
-    //public Damage.DamageTypeAndAmount[] damageTypesAndAmounts;
-    public IEffect effect;
+    [field: SerializeField]
+    public string Name { get; private set; }
+    [field: SerializeField]
+    public string Description { get; private set; }
 
+    [SerializeReference]
+    public IEffect[] effects;
 
-    public enum ProjectileType {
-        Splash,
-        Normal,
-        Sniper
-    }
+    public void Init(string name, string description, IEffect[] effects) {
+        Name = name;
+        Description = description;
 
-    /// <summary>
-    /// Should only be used to display raw total damage.
-    /// Actual damage inflicted should be calculated through the Damage class
-    /// as unit's resistances impact the final value
-    /// </summary>
-    /// <returns></returns>
-    public string RawTotalDamage() {
-        float total = 0;
-
-        //foreach (Damage.DamageTypeAndAmount damageType in damageTypesAndAmounts) {
-        //    total += damageType.amount;
-        //}
-
-        return total.ToString();
+        this.effects = new IEffect[effects.Length];
+        for (int i = 0; i < effects.Length; i++) {
+            this.effects[i] = effects[i];
+        }
     }
 }

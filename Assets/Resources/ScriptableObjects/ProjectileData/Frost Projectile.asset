@@ -12,3 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a230cee7bf86164c9d460bdd6149cb5, type: 3}
   m_Name: Frost Projectile
   m_EditorClassIdentifier: 
+  <Name>k__BackingField: Frost Projectile
+  <Description>k__BackingField: Slows target
+  Effects:
+  - id: 0
+  - id: 1
+  - id: 2
+  references:
+    version: 1
+    00000000:
+      type: {class: Buff, ns: , asm: Assembly-CSharp}
+    00000001:
+      type: {class: Damage, ns: , asm: Assembly-CSharp}
+    00000002:
+      type: {class: Damage, ns: , asm: Assembly-CSharp}

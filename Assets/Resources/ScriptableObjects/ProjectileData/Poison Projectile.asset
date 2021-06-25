@@ -12,3 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a230cee7bf86164c9d460bdd6149cb5, type: 3}
   m_Name: Poison Projectile
   m_EditorClassIdentifier: 
+  <Name>k__BackingField: Poison Projectile
+  <Description>k__BackingField: Poisons target
+  Effects:
+  - id: 0
+  - id: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: DamageOverTime, ns: , asm: Assembly-CSharp}
+    00000001:
+      type: {class: Damage, ns: , asm: Assembly-CSharp}
