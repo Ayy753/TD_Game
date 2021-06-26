@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName ="New Tower", menuName ="Tower")]
-public class TowerData : StructureData
-{
+[CreateAssetMenu(fileName = "New Tower", menuName = "Tower")]
+public class TowerData : StructureData {
     [field: SerializeField]
     public override string Name { get; protected set; }
     [field: SerializeField]
@@ -20,12 +19,10 @@ public class TowerData : StructureData
     public override TileBase TileBase { get; protected set; }
     [field: SerializeField]
     public override int Cost { get; protected set; }
-    [field: SerializeField]
+    //[field: SerializeField]
     public ProjectileData ProjectileData { get; protected set; }
-
-
-    [SerializeReference]
-    public IEffect[] effects;
+    [field: SerializeField]
+    public string ProjectileName { get; protected set; }
 
     public enum TowerType {
         Bullet,
@@ -33,8 +30,12 @@ public class TowerData : StructureData
         Sniper
     }
 
-    public override string ToString()
-    {
-        return base.ToString() + string.Format("\n<b>Raw Damage</b>: {0}\n<b>Range</b>: {1}\n<b>Cost</b>: {2}\n<b>Shots per second</b>: {3}", ProjectileData.RawTotalDamage(), Range, Cost, 1/ReloadTime);
+    public override string ToString() {
+        return "";
+        //return base.ToString() + string.Format("\n<b>Raw Damage</b>: {0}\n<b>Range</b>: {1}\n<b>Cost</b>: {2}\n<b>Shots per second</b>: {3}", ProjectileData.RawTotalDamage(), Range, Cost, 1/ReloadTime);
+    }
+
+    public void SetProjectileData(ProjectileData projectileData) {
+        ProjectileData = projectileData;
     }
 }

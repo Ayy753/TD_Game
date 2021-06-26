@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class EffectParserJSON : MonoBehaviour {
     private const string FilePath = "effects";
+    private List<ProjectileData> projectileDatas = new List<ProjectileData>();
 
     enum EffectType {
         Buff, Damage, DOT, StatMod
@@ -61,8 +62,6 @@ public class EffectParserJSON : MonoBehaviour {
         foreach (ParsedProjectile parsedProjectile in root.Projectiles) {
             CreateProjectileDataAsset(parsedProjectile);
         }
-
-        AssetDatabase.SaveAssets();
     }
 
     /// <summary>
@@ -94,6 +93,15 @@ public class EffectParserJSON : MonoBehaviour {
         }
         ProjectileData projectileData = ScriptableObject.CreateInstance("ProjectileData") as ProjectileData;
         projectileData.Init(parsedProjectile.Name, parsedProjectile.Description, effects);
-        AssetDatabase.CreateAsset(projectileData, "Assets/Resources/ScriptableObjects/ProjectileData/" + projectileData.Name + ".asset");
+        projectileDatas.Add(projectileData);
+    }
+
+    public ProjectileData GetProjectileData(string name) {
+        foreach (ProjectileData projectileData in projectileDatas) {
+            if (projectileData.Name == name) {
+                return projectileData;
+            }
+        }
+        throw new System.Exception("The projectiledata named " + name + " does not exist");
     }
 }

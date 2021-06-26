@@ -1,6 +1,6 @@
 public class DamageOverTime : IStatusEffect, IDamage{
     public float Duration { get; private set; }
-    public float Potency { get; private set; }
+    public float Potency { get; }
     public IDamage.DamageType Type { get; private set; }
     public float RemainingDuration { get; private set; }
 

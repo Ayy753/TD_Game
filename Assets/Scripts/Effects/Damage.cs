@@ -1,16 +1,21 @@
+using UnityEngine;
+
 public class Damage : IDamage {
-    public float Potency { get; private set; }
+    public float Potency { get; }
     public IDamage.DamageType Type { get; private set; }
 
     public Damage(float potency, IDamage.DamageType damageType) {
         Potency = potency;
         Type = damageType;
+        Debug.Log("created damage object with potency of " + potency);
     }
 
     public void Apply(Unit unit) {
         Status status = unit.GetStatus();
         float effectiveDamage = CalculateDamage(status);
         status.TakeDamage(effectiveDamage);
+
+        Debug.Log("dealt damage: " + effectiveDamage);
     }
 
     public float CalculateDamage(Status unitStatus) {

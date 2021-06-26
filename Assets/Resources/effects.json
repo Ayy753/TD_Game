@@ -7,7 +7,7 @@
             {
                "type":"Buff",
 			   "statType":"Speed",
-               "potency":-50,
+               "potency":-0.5,
                "duration":3
             },
             {
