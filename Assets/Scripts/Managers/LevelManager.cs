@@ -16,6 +16,7 @@ public class LevelManager : IInitializable, IDisposable{
     private string filePath = "LevelData/PlayerProgress";
 
     public void Initialize() {
+        Debug.Log("starting levelmanager");
         LoadLevelData();
     }
      
@@ -29,6 +30,8 @@ public class LevelManager : IInitializable, IDisposable{
     private void LoadLevelData() {
         string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
         levelData = JsonConvert.DeserializeObject<Root>(jsonText).LevelData;
+
+        Debug.Log("leveldata length: " + levelData.Count);
     }
 
     /// <summary>
@@ -58,6 +61,10 @@ public class LevelManager : IInitializable, IDisposable{
 
     public int GetLevelData(int level) {
         return levelData[level].Score;
+    }
+
+    public List<LevelData> GetLevelData() {
+        return levelData;
     }
 
     //  Json objects
