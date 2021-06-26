@@ -9,13 +9,9 @@ public class ProjectileData : ScriptableObject{
     [SerializeReference]
     public IEffect[] effects;
 
-    public void Init(string name, string description, IEffect[] effects) {
+    public void Init(string name, string description, IEffect[] effect) {
         Name = name;
         Description = description;
-
-        this.effects = new IEffect[effects.Length];
-        for (int i = 0; i < effects.Length; i++) {
-            this.effects[i] = effects[i];
-        }
+        this.effects = effect;
     }
 }
