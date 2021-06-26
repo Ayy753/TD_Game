@@ -59,5 +59,7 @@ public class UntitledInstaller : MonoInstaller
 
         Container.Bind<ControlsPanel>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable)).To<ControlsPanel>().FromResolve();
+
+        Container.Bind<EffectParserJSON>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
     }
 }

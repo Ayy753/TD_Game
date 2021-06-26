@@ -47,7 +47,7 @@ public class UnitMovement : IUnitMovement
         Vector3 nextTileWithOffset = nextTile + TILEMAP_OFFSET;
         
         if (transform.position != nextTileWithOffset) {
-            //transform.position = Vector3.MoveTowards(transform.position, nextTileWithOffset, unitStatus.Speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, nextTileWithOffset, unitStatus.GetStat(Status.StatType.Speed) * Time.deltaTime);
         }
         else {
             unitInput.ReachedNextTile();

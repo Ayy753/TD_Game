@@ -76,6 +76,10 @@ public class Status{
     /// <param name="amount"></param>
     public void ModifyStat(StatType type, float amount) {
         stats[(int)type] += amount;
+
+        if (OnStatusChanged != null) {
+            OnStatusChanged.Invoke();
+        }
     }
 
     private void OnTick() {
@@ -120,7 +124,7 @@ public class Status{
     //    yield return new WaitForSeconds(0.3f);
     //}
 
-    //public Unit GetUnit() {
-    //    return unit;
-    //}
+    public Unit GetUnit() {
+        return unit;
+    }
 }

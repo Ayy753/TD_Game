@@ -6,6 +6,7 @@ using Zenject;
 
 public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     [Inject] private ObjectPool objectPool;
+    [Inject] private EffectParserJSON effectParser;
 
     private List<Enemy> enemiesInRange = new List<Enemy>();
     private float timeSinceLastShot = float.MaxValue;
@@ -29,6 +30,9 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
         turret = transform.Find("Turret");
         StartCoroutine(TurretTracking());
         StartCoroutine(TargetFinder());
+
+        ProjectileData projectileData = effectParser.GetProjectileData(TowerData.ProjectileName);
+        TowerData.SetProjectileData(projectileData);
     }
 
     private void Update() {
@@ -45,8 +49,9 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
             //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
 
             //  Fire projectile
-            Projectile projectile = objectPool.CreateProjectile(TowerData.ProjectileData.type);
-            projectile.Initialize(transform.position, target.transform, TowerData.effects);
+            Projectile projectile = objectPool.CreateProjectile();
+            projectile.Initialize(transform.position, target.transform, TowerData.ProjectileData);
+            Debug.Log("firing " + TowerData.ProjectileData.Name);
 
             timeSinceLastShot = 0;
         }

@@ -20,8 +20,8 @@ public class Enemy : Unit {
 
     private void Awake() {
         unitInput = new UnitAI(this, pathFinder);
-        //status = new Status(enemyData, this);
-        //unitMovement = new UnitMovement(transform.parent.transform, status, unitInput, transform);
+        status = new Status(enemyData, this);
+        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput, transform);
         healthBar = transform.parent.GetComponentInChildren<HealthBar>();
     }
         
@@ -33,7 +33,7 @@ public class Enemy : Unit {
 
     public void Spawn() {
         unitInput.Initialize();
-        //status.Initialize();
+        status.Initialize();
         unitMovement.Initialize();
         healthBar.Initialize(status);
     }

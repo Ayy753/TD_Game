@@ -1,11 +1,9 @@
 using UnityEngine;
-using Zenject;
 
 public class Projectile : MonoBehaviour {
     public Transform Target { get; private set; }
     public Vector3 LastTargetPosition { get; private set; }
-
-    private IEffect[] effects;
+    private ProjectileData projectileData;
 
     private bool targetDied;
     private bool dealtDamage;
@@ -14,12 +12,12 @@ public class Projectile : MonoBehaviour {
         MoveTowardsTarget();
     }
 
-    public void Initialize(Vector3 startPos, Transform target, IEffect[] effects) {
+    public void Initialize(Vector3 startPos, Transform target, ProjectileData projectileData) {
         transform.position = startPos;
         Target = target;
         targetDied = false;
         dealtDamage = false;
-        this.effects = effects;
+        this.projectileData = projectileData;
     }
 
     protected void MoveTowardsTarget() {
@@ -30,10 +28,10 @@ public class Projectile : MonoBehaviour {
 
         if (targetDied != true) {
             LastTargetPosition = Target.position;
-            //transform.position = Vector3.MoveTowards(transform.position, Target.position, ProjectileData.Speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Target.position, 5f * Time.deltaTime);
         }
         else {
-            //transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, ProjectileData.Speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, 5f * Time.deltaTime);
             if (transform.position == LastTargetPosition)
                 gameObject.SetActive(false);
         }
@@ -65,10 +63,8 @@ public class Projectile : MonoBehaviour {
     /// </summary>
     /// <param name="unit"></param>
     private void ApplyEffects(Unit unit) {
-        foreach (IEffect effect in effects) {
+        foreach (IEffect effect in projectileData.effects) {
             effect.Apply(unit);
         }
     }
-
-    public class Factory : PlaceholderFactory<ProjectileData.ProjectileType, Projectile> { }
 }

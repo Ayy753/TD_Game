@@ -52,9 +52,9 @@ public class TowerPanel : IInitializable {
 
         txtName.text = towerData.Name;
         txtRange.text = towerData.Range.ToString();
-        txtDamage.text = towerData.ProjectileData.RawTotalDamage().ToString();
+        //txtDamage.text = towerData.ProjectileData.RawTotalDamage().ToString();
         txtReloadTime.text = towerData.ReloadTime.ToString();
-        txtProjectileType.text = towerData.ProjectileData.type.ToString();
+        //txtProjectileType.text = towerData.ProjectileData.type.ToString();
 
         int sellValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
         txtSellValue.text = sellValue.ToString();

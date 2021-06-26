@@ -10,10 +10,9 @@ public class ObjectPool : IInitializable
     private GameObject enemyContainer;
     private Dictionary<EnemyData.Type, GameObject> enemyTypeToPrefab;
 
-    private readonly GameObject[] projectilePrefabs;
+    private readonly GameObject projectilePrefab;
     private List<Projectile> instantiatedProjectiles;
     private GameObject projectileContainer;
-    private Dictionary<ProjectileData.ProjectileType, GameObject> projectileTypeToPrefab;
 
     private readonly GameObject[] towerPrefabs;
     private Dictionary<TowerData.TowerType, GameObject> towerTypeToPrefab;
@@ -24,7 +23,7 @@ public class ObjectPool : IInitializable
     public ObjectPool(DiContainer container) {
         _container = container;
         enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
-        projectilePrefabs = Resources.LoadAll<GameObject>("Prefabs/Projectiles");
+        projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/NormalProjectile");
         towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
         floatingTextPrefab = Resources.Load<GameObject>("Prefabs/FloatingText");
     }
@@ -36,7 +35,6 @@ public class ObjectPool : IInitializable
         enemyTypeToPrefab = new Dictionary<EnemyData.Type, GameObject>();
 
         instantiatedProjectiles = new List<Projectile>();
-        projectileTypeToPrefab = new Dictionary<ProjectileData.ProjectileType, GameObject>();
 
         towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
 
@@ -57,24 +55,6 @@ public class ObjectPool : IInitializable
                     break;
                 default:
                     throw new System.Exception(string.Format("Enemy prefab name \"{0}\" does not match any Enemy.Type values ", prefab.name));
-            }
-        }
-
-        //  Link projectile types to prefabs
-        for (int i = 0; i < projectilePrefabs.Length; i++) {
-            GameObject prefab = projectilePrefabs[i];
-            switch (prefab.name) {
-                case "NormalProjectile":
-                    projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Normal, prefab);
-                    break;
-                case "SplashProjectile":
-                    projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Splash, prefab);
-                    break;
-                case "SniperProjectile":
-                    projectileTypeToPrefab.Add(ProjectileData.ProjectileType.Sniper, prefab);
-                    break;
-                default:
-                    throw new System.Exception(string.Format("Projectile prefab name \"{0}\" does not match any ProjectileData.ProjectileType values", prefab.name));
             }
         }
 
@@ -106,12 +86,12 @@ public class ObjectPool : IInitializable
             }
         }
 
-        //  Preload some projectiles
-        foreach (ProjectileData.ProjectileType type in projectileTypeToPrefab.Keys) {
-            for (int j = 0; j < 5; j++) {
-                CreateProjectile(type);
-            }
-        }
+        ////  Preload some projectiles
+        //foreach (ProjectileData.ProjectileType type in projectileTypeToPrefab.Keys) {
+        //    for (int j = 0; j < 5; j++) {
+        //        CreateProjectile(type);
+        //    }
+        //}
 
         //  Disable preloaded enemies
         foreach (Enemy enemy in instantiatedEnemies) {
@@ -142,17 +122,16 @@ public class ObjectPool : IInitializable
         return newEnemy;
     }
 
-    public Projectile CreateProjectile(ProjectileData.ProjectileType type) {
-        //  find available projectile of prefab type
+    public Projectile CreateProjectile() {
         foreach (Projectile projectile in instantiatedProjectiles) {
-            if (/*projectile.ProjectileData.type == type && */projectile.gameObject.activeInHierarchy == false) {
+            if (projectile.gameObject.activeInHierarchy == false) {
                 projectile.gameObject.SetActive(true);
                 return projectile;
             }
         }
 
         //  instanteiate new projectile if none are available in pool
-        GameObject prefab = projectileTypeToPrefab[type];
+        GameObject prefab = projectilePrefab;
         Projectile newProjectile = _container.InstantiatePrefabForComponent<Projectile>(prefab);
 
         newProjectile.transform.parent = projectileContainer.transform;

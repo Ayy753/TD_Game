@@ -16,10 +16,10 @@ public class HealthBar : MonoBehaviour{
     }
 
     public void UpdateHealthBar() {
-        //float healthPercent = status.CurrentHealth / status.MaxHealth;
-        //if (healthPercent < 0) {
-        //    healthPercent = 0;
-        //}
-        //healthBarForeground.gameObject.transform.localScale = new Vector3(healthPercent, 0.25f, 1);
+        float healthPercent = status.GetStat(Status.StatType.Health) / status.GetStat(Status.StatType.MaxHealth);
+        if (healthPercent < 0) {
+            healthPercent = 0;
+        }
+        healthBarForeground.gameObject.transform.localScale = new Vector3(healthPercent, 0.25f, 1);
     }
 }
