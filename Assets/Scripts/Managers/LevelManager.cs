@@ -42,7 +42,6 @@ public class LevelManager : IInitializable, IDisposable{
         root.LevelData = levelData;
         string jsonText = JsonConvert.SerializeObject(root);
         File.WriteAllText(Application.dataPath + "/Resources/" +  filePath + ".txt", jsonText);
-        AssetDatabase.Refresh();
     }
 
     /// <summary>
@@ -76,10 +75,4 @@ public class LevelManager : IInitializable, IDisposable{
     public class Root {
         public List<LevelData> LevelData { get; set; }
     }
-}
-
-
-
-public class LevelButton : MonoBehaviour {
-    public int levelNum;
 }
