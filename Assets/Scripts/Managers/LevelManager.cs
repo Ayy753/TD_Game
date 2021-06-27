@@ -5,19 +5,26 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 /// <summary>
 /// Saves and loads user's level progress
 /// </summary>
 public class LevelManager : IInitializable, IDisposable{
-    //private Dictionary<int, int> levelScores;
     List<LevelData> levelData;
     private string filePath = "LevelData/PlayerProgress";
+    public int CurrentLevel { get; private set; }
 
     public void Initialize() {
         Debug.Log("starting levelmanager");
         LoadLevelData();
+
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName != "LevelSelect") {
+            CurrentLevel = int.Parse(sceneName.Split('_')[1]);
+        }
     }
      
     public void Dispose() {

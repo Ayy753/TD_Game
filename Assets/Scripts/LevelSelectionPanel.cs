@@ -9,7 +9,6 @@ using Zenject;
 public class LevelSelectionPanel : MonoBehaviour, IInitializable {
     [Inject] private LevelManager levelManager;
 
-    private List<GameObject> levelSelectButtons = new List<GameObject>();
     private GameObject levelButtonPrefab;
     private Transform pnlGrid;
 
@@ -35,6 +34,6 @@ public class LevelSelectionPanel : MonoBehaviour, IInitializable {
     /// Button's onclick will call this function
     /// </summary>
     public void LoadLevel(int levelNum) {
-        SceneManager.LoadScene("level" + levelNum);
+        SceneManager.LoadScene("level_" + levelNum);
     }
 }
