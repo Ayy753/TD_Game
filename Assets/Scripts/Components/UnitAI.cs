@@ -7,7 +7,7 @@ using Zenject;
 /// <summary>
 /// Moves through the path
 /// </summary>
-public class UnitAI : IUnitInput {
+public class UnitAI : MonoBehaviour, IUnitInput {
     IPathfinder pathFinder;
     IUnit unit;
 
@@ -21,14 +21,12 @@ public class UnitAI : IUnitInput {
 
     private Vector3Int nextTilePosition;
 
-    //  TODO find own reference to pathfinder
-    //  injection apparently doesn't work at runtime so I have to pass in pathfinder for now
-    public UnitAI(IUnit unit, IPathfinder pathFinder) {
-        this.unit = unit;
-        this.pathFinder = pathFinder;
+    private void Awake() {
+        pathFinder = GameObject.Find("PathFinder").GetComponent<IPathfinder>();
+        unit = GetComponent<IUnit>();
     }
 
-    public void Initialize() {
+    private void OnEnable() {
         mainPath = pathFinder.GetMainPath();
 
         if (mainPath.Count == 0)
@@ -40,6 +38,7 @@ public class UnitAI : IUnitInput {
         onMainPath = true;
 
         pathFinder.PathRecalculated += OnPathRecalculated;
+
     }
 
     private void OnPathRecalculated(object sender, EventArgs e) {

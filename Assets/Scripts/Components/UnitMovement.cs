@@ -2,25 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitMovement : IUnitMovement
-{
+public class UnitMovement : MonoBehaviour, IUnitMovement {
     IUnitInput unitInput;
     private static readonly Vector3 TILEMAP_OFFSET = new Vector3(0.5f, 0.5f, 0);
-    private readonly Transform transform;
     private Vector3Int nextTile;
     private Status unitStatus;
-    private Transform body;
 
-    public UnitMovement(Transform transform, Status unitStatus, IUnitInput unitInput, Transform body) {
-        this.transform = transform;
-        this.unitStatus = unitStatus;
-        this.unitInput = unitInput;
-        this.body = body;
+    private void Awake() {
+        unitInput = transform.GetComponent<IUnitInput>();
+        unitStatus = transform.GetComponent<Status>();
     }
 
-    public void Initialize() {
+    private void OnEnable() {
         nextTile = unitInput.GetNextTile();
         transform.position = nextTile + TILEMAP_OFFSET;
+    }
+
+    private void Update() {
+        Move();
     }
 
     /// <summary>
@@ -28,24 +27,24 @@ public class UnitMovement : IUnitMovement
     /// </summary>
     private void FaceNextNode(Vector3Int nextNodePos) {
         //  Rotate unit to face direction of next tile in path
-        Vector3 posNoOffset = body.position - TILEMAP_OFFSET;
+        Vector3 posNoOffset = transform.position - TILEMAP_OFFSET;
         if (nextNodePos.x < posNoOffset.x) {
-            body.rotation = Quaternion.Euler(0, 0, 180);
+            transform.rotation = Quaternion.Euler(0, 0, 180);
         }
         else if (nextNodePos.y < posNoOffset.y) {
-            body.rotation = Quaternion.Euler(0, 0, -90);
+            transform.rotation = Quaternion.Euler(0, 0, -90);
         }
         else if (nextNodePos.y > posNoOffset.y) {
-            body.rotation = Quaternion.Euler(0, 0, 90);
+            transform.rotation = Quaternion.Euler(0, 0, 90);
         }
         if (nextNodePos.x > posNoOffset.x) {
-            body.rotation = Quaternion.Euler(0, 0, 0);
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
     public void Move() {
         Vector3 nextTileWithOffset = nextTile + TILEMAP_OFFSET;
-        
+
         if (transform.position != nextTileWithOffset) {
             transform.position = Vector3.MoveTowards(transform.position, nextTileWithOffset, unitStatus.Speed * Time.deltaTime);
         }

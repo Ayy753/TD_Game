@@ -33,7 +33,7 @@ public class StatusPanel : IInitializable {
     }
 
     private void UpdateStatusPanel() {
-        txtName.text = targetStatus.GetUnit().GetName();
+        txtName.text = targetStatus.GetName();
         txtCurrentHealth.text = Math.Round(targetStatus.CurrentHealth, 1).ToString();
         txtMaxHealth.text = Math.Round(targetStatus.MaxHealth, 1).ToString();
         txtArmor.text = targetStatus.Armor.ToString();

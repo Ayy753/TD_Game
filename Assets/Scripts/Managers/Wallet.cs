@@ -24,7 +24,7 @@ public class Wallet : IWallet, IInitializable, IDisposable {
     }
 
     private void HandleEnemyDied(Enemy enemy) {
-        float value = enemy.enemyData.BaseValue;
+        float value = enemy.GetValue();
         GainMoney(value);
         messageSystem.DisplayMessageAt(enemy.transform.position, string.Format("+{0}g", value), Color.yellow);
     }

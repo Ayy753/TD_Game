@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,13 +6,13 @@ using UnityEngine;
 /// <summary>
 /// Handles status effects on an unit
 /// </summary>
-public class Status{
-    private CharacterData characterData;
+public class Status : MonoBehaviour {
+    [SerializeField] private CharacterData characterData;
     private IUnit unit;
 
     //  Additive modifications to base stats
     //  These can either be positive or negative values and are the result of buffs/debuffs
-    private float addHealth;    
+    private float addHealth;
     private float addFireResist;
     private float addColdResist;
     private float addPoisonResist;
@@ -22,7 +23,7 @@ public class Status{
     //  The amount of damage the unit currently has.
     //  Value will never be negative
     private float damageInflicted;
-    
+
     /// <summary>
     /// The current amount of damage inflicted on unit.
     /// Dealing negative damage heals the unit. 
@@ -36,7 +37,7 @@ public class Status{
             damageInflicted = value;
             if (damageInflicted < 0) {
                 damageInflicted = 0;
-            } 
+            }
         }
     }
 
@@ -44,6 +45,10 @@ public class Status{
     //  Unit dies when current health <= 0
     public float MaxHealth { get { return characterData.BaseHealth + addHealth; } }
     public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
+
+    internal string GetName() {
+        return characterData.name;
+    }
 
     public float Speed { get { return characterData.BaseSpeed + addSpeed; } }
 
@@ -71,16 +76,12 @@ public class Status{
     /// </summary>
     public event ClearStatus OnStatusCleared;
 
-
-    public Status(CharacterData characterData, IUnit unit){
-        this.characterData = characterData;
-        this.unit = unit;
+    private void Awake() {
+        unit = transform.GetComponent<IUnit>();
         statusEffects = new List<StatusEffect>();
     }
 
-    //  Reset status
-    public void Initialize() 
-    {
+    private void OnEnable() {
         addHealth = 0;
         addFireResist = 0;
         addColdResist = 0;
@@ -93,32 +94,25 @@ public class Status{
         //  Todo: remove all status effects
     }
 
-    public void ApplyStatusEffect(StatusEffect newEffect)
-    {
-        foreach (StatusEffect effect in statusEffects)
-        {
-            if (effect.GetType() == newEffect.GetType())
-            {
+    public void ApplyStatusEffect(StatusEffect newEffect) {
+        foreach (StatusEffect effect in statusEffects) {
+            if (effect.GetType() == newEffect.GetType()) {
                 effect.StrengthenEffect(newEffect);
             }
         }
         OnStatusChanged.Invoke();
     }
 
-    public void RemoveStatusEffect(StatusEffect effect)
-    {
+    public void RemoveStatusEffect(StatusEffect effect) {
         statusEffects.Remove(effect);
         OnStatusChanged.Invoke();
     }
 
-    public IEnumerator OnTick()
-    {
-        foreach (StatusEffect effect in statusEffects)
-        {
+    public IEnumerator OnTick() {
+        foreach (StatusEffect effect in statusEffects) {
             effect.OnTick();
 
-            if (effect.RemainingDuration <= 0)
-            {
+            if (effect.RemainingDuration <= 0) {
                 RemoveStatusEffect(effect);
             }
         }
@@ -146,7 +140,7 @@ public class Status{
         }
     }
 
-    public IUnit GetUnit() {
-        return unit;
+    public CharacterData GetCharacterData() {
+        return characterData;
     }
 }

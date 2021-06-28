@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class PathFinder : IPathfinder, IInitializable {
+public class PathFinder : MonoBehaviour, IPathfinder, IInitializable {
     private List<Vector3Int> currentPath;
     private Transform entrance, exit;
 

@@ -8,6 +8,7 @@ public class HealthBar : MonoBehaviour{
 
     private void Awake() {
         healthBarForeground = transform.Find("HealthbarFront");
+        status = transform.parent.GetComponent<Status>();
     }
 
     public void Initialize(Status status) {

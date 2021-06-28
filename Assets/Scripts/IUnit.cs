@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 public interface IUnit : Itargetable {
     /// <summary>
     /// Used by IUnitInput to alert IUnit it reached destination
@@ -9,6 +12,4 @@ public interface IUnit : Itargetable {
     public Status GetStatus();
 
     public void ApplyDamage(Damage.DamageTypeAndAmount[] damages);
-
-    public string GetName();
 }
