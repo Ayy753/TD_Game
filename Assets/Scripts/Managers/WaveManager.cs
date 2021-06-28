@@ -12,9 +12,9 @@ public class WaveManager : IInitializable, IDisposable {
     [Inject] private GameManager gameManager;
     [Inject] private IMessageSystem messageSystem;
     [Inject] private IGUIManager guiController;
+    [Inject] private LevelManager levelManager;
 
-    private const string FilePath = "LevelData/WaveData/demo_waves";
-    //private const string FilePath = "LevelData/WaveData/dummy_waves";
+    private const string FolderPath = "LevelData/WaveData/";
     private Root LevelData;
 
     private List<Enemy> activeEnemies;
@@ -60,7 +60,8 @@ public class WaveManager : IInitializable, IDisposable {
     }
 
     private void LoadWaveData() {
-        string jsonText = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
+        string filePath = FolderPath + "Level_" + levelManager.CurrentLevel;
+        string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
         LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
         NumberOfWaves = LevelData.waves.Count;
     }

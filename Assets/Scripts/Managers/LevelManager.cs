@@ -5,18 +5,26 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 /// <summary>
 /// Saves and loads user's level progress
 /// </summary>
 public class LevelManager : IInitializable, IDisposable{
-    //private Dictionary<int, int> levelScores;
     List<LevelData> levelData;
     private string filePath = "LevelData/PlayerProgress";
+    public int CurrentLevel { get; private set; }
 
     public void Initialize() {
+        Debug.Log("starting levelmanager");
         LoadLevelData();
+
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName != "LevelSelect") {
+            CurrentLevel = int.Parse(sceneName.Split('_')[1]);
+        }
     }
      
     public void Dispose() {
@@ -29,6 +37,8 @@ public class LevelManager : IInitializable, IDisposable{
     private void LoadLevelData() {
         string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
         levelData = JsonConvert.DeserializeObject<Root>(jsonText).LevelData;
+
+        Debug.Log("leveldata length: " + levelData.Count);
     }
 
     /// <summary>
@@ -39,7 +49,6 @@ public class LevelManager : IInitializable, IDisposable{
         root.LevelData = levelData;
         string jsonText = JsonConvert.SerializeObject(root);
         File.WriteAllText(Application.dataPath + "/Resources/" +  filePath + ".txt", jsonText);
-        AssetDatabase.Refresh();
     }
 
     /// <summary>
@@ -60,6 +69,10 @@ public class LevelManager : IInitializable, IDisposable{
         return levelData[level].Score;
     }
 
+    public List<LevelData> GetLevelData() {
+        return levelData;
+    }
+
     //  Json objects
     public class LevelData {
         public int LevelNum { get; set; }
@@ -69,10 +82,4 @@ public class LevelManager : IInitializable, IDisposable{
     public class Root {
         public List<LevelData> LevelData { get; set; }
     }
-}
-
-
-
-public class LevelButton : MonoBehaviour {
-    public int levelNum;
 }

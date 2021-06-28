@@ -1,1 +1,1 @@
-{"LevelData":[{"LevelNum":0,"Score":0},{"LevelNum":3,"Score":5}]}
+{"LevelData":[{"LevelNum":1,"Score":0},{"LevelNum":2,"Score":0},{"LevelNum":3,"Score":0},{"LevelNum":4,"Score":0},{"LevelNum":5,"Score":0},{"LevelNum":6,"Score":0}]}

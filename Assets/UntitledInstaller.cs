@@ -11,6 +11,9 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind(typeof(IInitializable)).To<ObjectPool>().FromResolve();
         Container.BindIFactory<Enemy, Enemy.Factory>();
 
+        Container.Bind<LevelManager>().AsSingle().NonLazy();
+        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<LevelManager>().FromResolve();
+
         Container.Bind<WaveManager>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<WaveManager>().FromResolve();
 
