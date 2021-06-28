@@ -53,7 +53,7 @@ public class TargetManager: IInitializable, IDisposable{
     /// <param name="gameObject"></param>
     private void Target(GameObject gameObject) {
         Tower tower = gameObject.GetComponent<Tower>();
-        Unit unit = gameObject.GetComponentInChildren<Unit>();
+        IUnit unit = gameObject.GetComponentInChildren<IUnit>();
 
         if (tower != null) {
             towerPanel.TargetTower(tower);
@@ -80,7 +80,7 @@ public class TargetManager: IInitializable, IDisposable{
         if (target is Tower) {
             towerPanel.ClearTarget();
         }
-        else if (target is Unit) {
+        else if (target is IUnit) {
             statusPanel.ClearTarget();
         }
 

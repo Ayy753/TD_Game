@@ -9,7 +9,7 @@ using Zenject;
 /// </summary>
 public class UnitAI : IUnitInput {
     IPathfinder pathFinder;
-    Unit unit;
+    IUnit unit;
 
     private List<Vector3Int> mainPath;
     private int pathIndex;
@@ -23,7 +23,7 @@ public class UnitAI : IUnitInput {
 
     //  TODO find own reference to pathfinder
     //  injection apparently doesn't work at runtime so I have to pass in pathfinder for now
-    public UnitAI(Unit unit, IPathfinder pathFinder) {
+    public UnitAI(IUnit unit, IPathfinder pathFinder) {
         this.unit = unit;
         this.pathFinder = pathFinder;
     }
@@ -43,7 +43,7 @@ public class UnitAI : IUnitInput {
     }
 
     private void OnPathRecalculated(object sender, EventArgs e) {
-        Vector3Int currentPosition = Vector3Int.FloorToInt(unit.transform.position);
+        Vector3Int currentPosition = Vector3Int.FloorToInt(unit.GetTransform().position);
 
         if (pathFinder.IsOnMainPath(currentPosition) == false) {
             (List<Vector3Int>, int) item = pathFinder.GetRouteToMainPath(currentPosition);
@@ -66,7 +66,6 @@ public class UnitAI : IUnitInput {
     }
 
     public void ReachedNextTile() {
-
         if (onMainPath) {
             pathIndex++;
             if (pathIndex < mainPath.Count) {
@@ -86,7 +85,6 @@ public class UnitAI : IUnitInput {
                 onMainPath = true;
             }
         }
-
     }
 
     public Vector3Int GetNextTile() {

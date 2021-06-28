@@ -46,7 +46,7 @@ public class StatusPanel : IInitializable {
         healthBar.UpdateHealthBar();
     }
 
-    public void TargetUnit(Unit unit) {
+    public void TargetUnit(IUnit unit) {
         //  If a unit is already targetted, untarget it first
         if (targetStatus != null) {
             ClearTarget();
