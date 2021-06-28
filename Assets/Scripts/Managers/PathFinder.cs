@@ -34,9 +34,9 @@ public class PathFinder : IPathfinder, IInitializable {
 
     private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
         if (e.changeType == StructureChangedEventArgs.Type.build) {
-            if (IsOnMainPath(e.position)) {
+            //if (IsOnMainPath(e.position)) {
                 asyncProcessor.StartCoroutine(CalculateMainPath());
-            }
+            //}
         }
         else if (e.changeType == StructureChangedEventArgs.Type.demolish) {
             asyncProcessor.StartCoroutine(CalculateMainPath());

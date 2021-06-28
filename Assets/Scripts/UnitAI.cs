@@ -7,11 +7,9 @@ using Zenject;
 /// <summary>
 /// Moves through the path
 /// </summary>
-public class UnitAI : IUnitInput
-{
+public class UnitAI : IUnitInput {
     IPathfinder pathFinder;
     Unit unit;
-
 
     private List<Vector3Int> mainPath;
     private int pathIndex;
@@ -45,10 +43,10 @@ public class UnitAI : IUnitInput
     }
 
     private void OnPathRecalculated(object sender, EventArgs e) {
-        Vector3Int currentPosition = mainPath[pathIndex];
+        Vector3Int currentPosition = Vector3Int.FloorToInt(unit.transform.position);
 
         if (pathFinder.IsOnMainPath(currentPosition) == false) {
-            (List<Vector3Int>, int) item =  pathFinder.GetRouteToMainPath(currentPosition);
+            (List<Vector3Int>, int) item = pathFinder.GetRouteToMainPath(currentPosition);
 
             routeToMainPath = item.Item1;
 
@@ -94,8 +92,6 @@ public class UnitAI : IUnitInput
     public Vector3Int GetNextTile() {
         return nextTilePosition;
     }
-
-
 }
 
 
