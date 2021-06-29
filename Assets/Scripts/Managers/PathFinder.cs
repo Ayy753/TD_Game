@@ -83,8 +83,6 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable {
 
         Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
 
-        int counter = 0;
-
         //  initialize with entrance coordinate
         PathNode initialStep = new PathNode(entranceCoordinate);
         openList.Add(initialStep);
@@ -167,13 +165,6 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable {
                             }
                         }
 
-                        //  Pause coroutine every 1500 tiles processed to allow other processes to run in the meantime
-                        //  Using a resetting counter is probably a lot faster than the modulus operator 
-                        counter++;
-                        if (counter > 1500) {
-                            counter = 0;
-                            yield return null;
-                        }
                     }
                 }
             }
