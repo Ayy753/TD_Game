@@ -15,7 +15,7 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
 
     private void OnEnable() {
         nextTile = unitInput.GetNextTile();
-        transform.position = nextTile + TILEMAP_OFFSET;
+        transform.parent.position = nextTile + TILEMAP_OFFSET;
     }
 
     private void Update() {
@@ -45,8 +45,10 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
     public void Move() {
         Vector3 nextTileWithOffset = nextTile + TILEMAP_OFFSET;
 
-        if (transform.position != nextTileWithOffset) {
-            transform.position = Vector3.MoveTowards(transform.position, nextTileWithOffset, unitStatus.Speed * Time.deltaTime);
+        //Debug.Log(string.Format("pos: {0} parentpos: {1}", transform.position, transform.parent.position));
+
+        if (transform.parent.position != nextTileWithOffset) {
+            transform.parent.position = Vector3.MoveTowards(transform.parent.position, nextTileWithOffset, unitStatus.Speed * Time.deltaTime);
         }
         else {
             unitInput.ReachedNextTile();

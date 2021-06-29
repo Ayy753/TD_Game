@@ -23,7 +23,7 @@ public class UnitAI : MonoBehaviour, IUnitInput {
 
     private void Awake() {
         pathFinder = GameObject.Find("PathFinder").GetComponent<IPathfinder>();
-        unit = GetComponent<IUnit>();
+        unit = transform.GetComponent<IUnit>();
     }
 
     private void OnEnable() {

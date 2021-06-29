@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour, IUnit {
     public event EventHandler TargetDisabled;
 
     private void Awake() {
-        healthBar = transform.GetComponentInChildren<HealthBar>();
+        healthBar = transform.parent.GetComponentInChildren<HealthBar>();
         status = transform.GetComponent<Status>();
     }
         
@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour, IUnit {
         if (TargetDisabled != null) {
             TargetDisabled.Invoke(this, EventArgs.Empty);
         }
-        transform.gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(false);
     }
 
     public Status GetStatus() {

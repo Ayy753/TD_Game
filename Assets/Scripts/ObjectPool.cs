@@ -115,7 +115,7 @@ public class ObjectPool : IInitializable
 
         //  Disable preloaded enemies
         foreach (Enemy enemy in instantiatedEnemies) {
-            enemy.transform.gameObject.SetActive(false);
+            enemy.transform.parent.gameObject.SetActive(false);
         }
 
         //  Disable preloaded projectiles
@@ -128,7 +128,7 @@ public class ObjectPool : IInitializable
         //  Find available enemy of a prefab type
         foreach (Enemy enemy in instantiatedEnemies) {
             if (enemy.GetType() == type && enemy.gameObject.activeInHierarchy == false) {
-                enemy.transform.gameObject.SetActive(true);
+                enemy.transform.parent.gameObject.SetActive(true);
                 return enemy;
             }
         }
@@ -137,7 +137,7 @@ public class ObjectPool : IInitializable
         GameObject prefab = enemyTypeToPrefab[type];
         Enemy newEnemy = _container.InstantiatePrefabForComponent<Enemy>(prefab);
 
-        newEnemy.transform.parent = enemyContainer.transform;
+        newEnemy.transform.parent.parent = enemyContainer.transform;
         instantiatedEnemies.Add(newEnemy);
         return newEnemy;
     }
