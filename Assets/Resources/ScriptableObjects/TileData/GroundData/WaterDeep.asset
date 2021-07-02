@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Deep Water Tile
   <Description>k__BackingField: Deep water
-  <Icon>k__BackingField: {fileID: 21300000, guid: f9ac813608c9c4e4492f13a117b40ccb,
+  <Icon>k__BackingField: {fileID: 21300214, guid: fd104c8cb6a94e1395fffa05d7783f58,
     type: 3}
   <TileBase>k__BackingField: {fileID: 11400000, guid: 58ab7a527bfb1a143a56ea12bbf9ed22,
     type: 2}

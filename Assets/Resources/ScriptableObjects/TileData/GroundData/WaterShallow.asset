@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Shallow Water Tile
   <Description>k__BackingField: The water is shallow
-  <Icon>k__BackingField: {fileID: 21300000, guid: dcafc83a3bbf7eb45b39b20215f6122e,
+  <Icon>k__BackingField: {fileID: 21300026, guid: fd104c8cb6a94e1395fffa05d7783f58,
     type: 3}
-  <TileBase>k__BackingField: {fileID: 11400000, guid: 2c7f96234e3c1fe41914ade0f7a8948e,
+  <TileBase>k__BackingField: {fileID: 11400000, guid: 55d7d8be7bb0c472dfba277d089eac3d,
     type: 2}
   <WalkCost>k__BackingField: 5
   <IsSolid>k__BackingField: 0
