@@ -6,10 +6,7 @@ using UnityEngine.Tilemaps;
 using Zenject;
 
 public class MapManager : IMapManager, IInitializable {
-    private Tilemap groundLayer;
-    private Tilemap decoreLayer;
-    private Tilemap structureLayer;
-    private Tilemap platformLayer;
+    private Tilemap groundLayer, decoreLayer, structureLayer, platformLayer, level1, level2, level3, level4;
 
     TileData[] tileDatas;
     private Dictionary<TileBase, TileData> dataFromTiles;
@@ -28,6 +25,11 @@ public class MapManager : IMapManager, IInitializable {
         decoreLayer = GameObject.Find("DecorationLayer").GetComponent<Tilemap>();
         structureLayer = GameObject.Find("StructureLayer").GetComponent<Tilemap>();
         platformLayer = GameObject.Find("PlatformLayer").GetComponent<Tilemap>();
+
+        level1 = GameObject.Find("Level1").GetComponent<Tilemap>();
+        level2 = GameObject.Find("Level2").GetComponent<Tilemap>();
+        level3 = GameObject.Find("Level3").GetComponent<Tilemap>();
+        level4 = GameObject.Find("Level4").GetComponent<Tilemap>();
 
         if (groundLayer == null || decoreLayer == null || structureLayer == null || platformLayer == null) {
             Debug.LogError("One of the tilemap layers is missing");
@@ -65,8 +67,16 @@ public class MapManager : IMapManager, IInitializable {
                 return platformLayer;
             case IMapManager.Layer.StructureLayer:
                 return structureLayer;
+            case IMapManager.Layer.Level1:
+                return level1;
+            case IMapManager.Layer.Level2:
+                return level2;
+            case IMapManager.Layer.Level3:
+                return level3;
+            case IMapManager.Layer.Level4:
+                return level4;
             default:
-                Debug.LogError("Layer not found");
+                Debug.LogError("Layer " + layer + " not found");
                 return null;
         }
     }
@@ -157,6 +167,22 @@ public class MapManager : IMapManager, IInitializable {
                 highlightedTiles.Remove(tile);
                 GetLayer(layer).SetColor(position, Color.white);
                 break;
+            }
+        }
+    }
+
+    public void HighlightTopTile(Vector3Int position, Color color) {
+        for (int i = (int)IMapManager.Layer.Max - 1; i >= 0; i--) {
+            if (ContainsTileAt((IMapManager.Layer)i, position)) {
+                HighlightTile((IMapManager.Layer)i, position, color);
+            }
+        }
+    }
+
+    public void UnhighlightTopTile(Vector3Int position) {
+        for (int i = (int)IMapManager.Layer.Max - 1; i >= 0; i--) {
+            if (ContainsTileAt((IMapManager.Layer)i, position)) {
+                UnhighlightTile((IMapManager.Layer)i, position);
             }
         }
     }

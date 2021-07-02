@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e6146de44e524cbd1bd618fe96370, type: 3}
+  m_Name: InvisibleWall
+  m_EditorClassIdentifier: 
+  <Cost>k__BackingField: 0
+  <Name>k__BackingField: Invisible Wall
+  <Description>k__BackingField: Blocks path
+  <Icon>k__BackingField: {fileID: 21300000, guid: 399fb4e4314880447ae2eadf773ebfe1,
+    type: 3}
+  <TileBase>k__BackingField: {fileID: 11400000, guid: 00b45e61dc6c6464a8ba3074e7e33483,
+    type: 2}

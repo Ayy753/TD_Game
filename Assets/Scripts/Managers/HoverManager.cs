@@ -48,12 +48,7 @@ public class HoverManager : IInitializable, IDisposable {
             UnhoverTowerGrid(lastHoveredPosition);
         }
         else {
-            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, lastHoveredPosition) == true) {
-                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, lastHoveredPosition, Color.white);
-            }
-            else {
-                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, lastHoveredPosition, Color.white);
-            }
+            mapManager.UnhighlightTopTile(lastHoveredPosition);
         }
     }
 
@@ -77,10 +72,7 @@ public class HoverManager : IInitializable, IDisposable {
             }
             else {
                 lastSelectedStructureWasTower = false;
-                if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) 
-                    mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, highlightColor);
-                else 
-                    mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, highlightColor);
+                mapManager.HighlightTopTile(position, highlightColor);
             }
         }
         else if (buildMode == BuildManager.BuildMode.Demolish) {
@@ -88,18 +80,14 @@ public class HoverManager : IInitializable, IDisposable {
                 highlightColor = Color.green;
             else
                 highlightColor = Color.red;
-
-            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) 
-                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, highlightColor);
-            else
-                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, position, highlightColor);
+            mapManager.HighlightTopTile(position, highlightColor);
         }
     }
 
     private void HoverGrid(Vector3Int start, Vector3Int end, Color color) {
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
-                mapManager.HighlightTile(IMapManager.Layer.GroundLayer, new Vector3Int(x, y, 0), color);
+                mapManager.HighlightTopTile(new Vector3Int(x, y, 0), color);
             }
         }
     }
@@ -108,6 +96,7 @@ public class HoverManager : IInitializable, IDisposable {
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
                 mapManager.HighlightTile(IMapManager.Layer.GroundLayer, new Vector3Int(x, y, 0), Color.white);
+                mapManager.UnhighlightTopTile(new Vector3Int(x, y, 0));
             }
         }
     }
