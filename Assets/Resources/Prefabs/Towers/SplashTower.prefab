@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 8661512472336806795}
   - component: {fileID: 2081856905393847634}
   m_Layer: 0
-  m_Name: RedTowerBase
+  m_Name: SplashTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,7 +134,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 250
   m_Sprite: {fileID: 21300000, guid: 71ee6c5694afbdb45abb6bdfd307741d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -256,7 +256,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 252
   m_Sprite: {fileID: 21300000, guid: baa1d55396ead7e41870ecebdcf8d83e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
