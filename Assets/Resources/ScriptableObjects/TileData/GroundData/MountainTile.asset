@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: 
   <Description>k__BackingField: 
-  <Icon>k__BackingField: {fileID: 0}
-  <TileBase>k__BackingField: {fileID: 0}
-  <WalkCost>k__BackingField: 0
-  <IsSolid>k__BackingField: 0
+  <Icon>k__BackingField: {fileID: 21300210, guid: fd104c8cb6a94e1395fffa05d7783f58,
+    type: 3}
+  <TileBase>k__BackingField: {fileID: 11400000, guid: 4bd65fd909a29d2d5fb4dc767416fbe7,
+    type: 2}
+  <WalkCost>k__BackingField: 1
+  <IsSolid>k__BackingField: 1
