@@ -4,11 +4,11 @@ using UnityEngine;
 public interface IMapManager {
     public enum Layer {
         GroundLayer,
-        StructureLayer,
         Level1,
         Level2,
         Level3,
         Level4,
+        StructureLayer,
         PlatformLayer,
         DecoreLayer,
         Max

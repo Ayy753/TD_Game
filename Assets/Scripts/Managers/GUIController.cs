@@ -53,15 +53,17 @@ public class GUIController : MonoBehaviour, IGUIManager {
         GameObject scrollViewContentBox = GameObject.Find("Scroll View/Viewport/Content");
 
         foreach (StructureData structure in structureDatas) {
-            GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
-            newButton.transform.SetParent(scrollViewContentBox.transform);
-            newButton.GetComponent<Image>().sprite = structure.Icon;
-            newButton.name = structure.Name;
+            if (structure.Buildable == true) {
+                GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
+                newButton.transform.SetParent(scrollViewContentBox.transform);
+                newButton.GetComponent<Image>().sprite = structure.Icon;
+                newButton.name = structure.Name;
 
-            //  Not sure why but the scale gets messed up, so this is a fix
-            newButton.transform.localScale = new Vector3(1, 1, 1);
+                //  Not sure why but the scale gets messed up, so this is a fix
+                newButton.transform.localScale = new Vector3(1, 1, 1);
 
-            newButton.GetComponent<BuildMenuButton>().Initialize(structure, this);
+                newButton.GetComponent<BuildMenuButton>().Initialize(structure, this);
+            }
         }
     }
 

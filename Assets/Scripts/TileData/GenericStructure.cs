@@ -13,4 +13,8 @@ public class GenericStructure : StructureData {
     public override Sprite Icon { get; protected set; }
     [field: SerializeField]
     public override TileBase TileBase { get; protected set; }
+    [field: SerializeField]
+    public override bool Demolishable { get; protected set; }
+    [field: SerializeField]
+    public override bool Buildable { get; protected set; }
 }
