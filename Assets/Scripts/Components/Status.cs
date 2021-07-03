@@ -7,7 +7,7 @@ using UnityEngine;
 /// Handles status effects on an unit
 /// </summary>
 public class Status : MonoBehaviour {
-    [SerializeField] private CharacterData characterData;
+    [field: SerializeField] public CharacterData characterData { get; private set; }
     private IUnit unit;
 
     //  Additive modifications to base stats
@@ -45,11 +45,6 @@ public class Status : MonoBehaviour {
     //  Unit dies when current health <= 0
     public float MaxHealth { get { return characterData.BaseHealth + addHealth; } }
     public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
-
-    internal string GetName() {
-        return characterData.name;
-    }
-
     public float Speed { get { return characterData.BaseSpeed + addSpeed; } }
 
     //  Resists/armor are in percentages (value of 100 nullifies all damage of that type, value > 100 heals unit, value below 0 deals additional damage)

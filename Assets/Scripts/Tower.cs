@@ -251,5 +251,13 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
         return transform;
     }
 
+    public string GetDescription() {
+        return TowerData.Description;
+    }
+
+    public string GetName() {
+        return TowerData.Name;
+    }
+
     public class Factory : PlaceholderFactory<Tower> { }
 }

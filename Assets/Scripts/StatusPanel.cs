@@ -7,10 +7,11 @@ using Zenject;
 
 public class StatusPanel : IInitializable {
     GameObject pnlStausPanel;
-    TMP_Text txtName, txtCurrentHealth, txtMaxHealth, txtArmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist;
+    TMP_Text txtName, txtCurrentHealth, txtMaxHealth, txtArmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist, txtUnitDescription;
     HealthBar healthBar;
 
     private Status targetStatus;
+    private IUnit targetUnit;
 
     public void Initialize() {
         Debug.Log("initializing status panel");
@@ -26,6 +27,7 @@ public class StatusPanel : IInitializable {
         txtSpeed = GameObject.Find("txtSpeedVal").GetComponent<TMP_Text>();
         txtPoisonResist = GameObject.Find("txtPoisonResistVal").GetComponent<TMP_Text>();
         txtLightningResist = GameObject.Find("txtLightningResistVal").GetComponent<TMP_Text>();
+        txtUnitDescription = GameObject.Find("txtUnitDescription").GetComponent<TMP_Text>();
 
         healthBar = GameObject.Find("pnlStatus").GetComponentInChildren<HealthBar>();
 
@@ -33,7 +35,7 @@ public class StatusPanel : IInitializable {
     }
 
     private void UpdateStatusPanel() {
-        txtName.text = targetStatus.GetName();
+        txtName.text = targetUnit.GetName();
         txtCurrentHealth.text = Math.Round(targetStatus.CurrentHealth, 1).ToString();
         txtMaxHealth.text = Math.Round(targetStatus.MaxHealth, 1).ToString();
         txtArmor.text = targetStatus.Armor.ToString();
@@ -42,7 +44,7 @@ public class StatusPanel : IInitializable {
         txtSpeed.text = targetStatus.Speed.ToString();
         txtPoisonResist.text = targetStatus.PoisonResist.ToString();
         txtLightningResist.text = targetStatus.LightningResist.ToString();
-
+        txtUnitDescription.text = targetUnit.GetDescription();
         healthBar.UpdateHealthBar();
     }
 
@@ -54,6 +56,7 @@ public class StatusPanel : IInitializable {
 
         pnlStausPanel.SetActive(true);
 
+        targetUnit = unit;
         targetStatus = unit.GetStatus();
         healthBar.Initialize(targetStatus);
         UpdateStatusPanel();

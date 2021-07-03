@@ -9,7 +9,7 @@ public class TowerPanel : IInitializable {
     
     GameObject pnlTowerPanel;
     
-    TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue;
+    TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue, txtTowerDescription;
     Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom, btnSell;
     Button[] targetButtons;
 
@@ -25,6 +25,7 @@ public class TowerPanel : IInitializable {
         txtDamage = GameObject.Find("txtDamageVal").GetComponent<TMP_Text>();
         txtReloadTime = GameObject.Find("txtReloadTimeVal").GetComponent<TMP_Text>();
         txtProjectileType = GameObject.Find("txtProjectileTypeVal").GetComponent<TMP_Text>();
+        txtTowerDescription = GameObject.Find("txtTowerDescription").GetComponent<TMP_Text>();
 
         btnClosest = GameObject.Find("btnClosest").GetComponent<Button>();
         btnFurthest = GameObject.Find("btnFurthest").GetComponent<Button>();
@@ -55,6 +56,7 @@ public class TowerPanel : IInitializable {
         txtDamage.text = towerData.ProjectileData.RawTotalDamage().ToString();
         txtReloadTime.text = towerData.ReloadTime.ToString();
         txtProjectileType.text = towerData.ProjectileData.type.ToString();
+        txtTowerDescription.text = towerData.Description;
 
         int sellValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
         txtSellValue.text = sellValue.ToString();

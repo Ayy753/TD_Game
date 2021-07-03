@@ -67,5 +67,13 @@ public class Enemy : MonoBehaviour, IUnit {
         return ((EnemyData)GetStatus().GetCharacterData()).MyType;
     }
 
+    public string GetDescription() {
+        return ((EnemyData)status.characterData).Description;
+    }
+
+    public string GetName() {
+        return ((EnemyData)status.characterData).Name;
+    }
+
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
 }
