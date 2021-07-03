@@ -75,6 +75,7 @@ public class LevelManager : IInitializable, IDisposable{
 
     //  Json objects
     public class LevelData {
+        public string LevelName { get; set; }
         public int LevelNum { get; set; }
         public int Score { get; set; }
     }
