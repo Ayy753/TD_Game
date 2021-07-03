@@ -39,11 +39,35 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Ground
+    uniqueID: 481144499
+    locked: 0
+  - name: Level1
+    uniqueID: 2162818955
+    locked: 0
+  - name: Level2
+    uniqueID: 2769453691
+    locked: 0
+  - name: Level3
+    uniqueID: 2851009723
+    locked: 0
+  - name: Level4
+    uniqueID: 683636827
+    locked: 0
+  - name: Structures
+    uniqueID: 2468381851
+    locked: 0
+  - name: Platforms
+    uniqueID: 2088701345
+    locked: 0
+  - name: Decore
+    uniqueID: 2556452261
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Collision
-    uniqueID: 481144499
+  - name: Objects
+    uniqueID: 4265455747
     locked: 0
   - name: Particles
     uniqueID: 3964109383
