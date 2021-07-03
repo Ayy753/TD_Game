@@ -133,4 +133,8 @@ public class GameManager: IInitializable, IDisposable {
     public void Restart() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void LevelSelect() {
+        SceneManager.LoadScene("LevelSelect");
+    }
 }

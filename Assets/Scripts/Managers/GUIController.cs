@@ -109,6 +109,10 @@ public class GUIController : MonoBehaviour, IGUIManager {
         gameManager.ExitGame();
     }
 
+    public void LevelSelect() {
+        gameManager.LevelSelect();
+    }
+
     public void UpdateWaveNumber(int current, int total) {
         txtCurrentWave.text = current.ToString();
         txtTotalWaves.text = total.ToString();
