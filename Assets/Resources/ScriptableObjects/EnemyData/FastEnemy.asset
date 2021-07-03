@@ -16,9 +16,11 @@ MonoBehaviour:
   <BaseFireResist>k__BackingField: 0
   <BaseColdResist>k__BackingField: 0
   <BasePoisonResist>k__BackingField: 0
+  <BaseLightningResist>k__BackingField: 0
   <BaseArmor>k__BackingField: 0
   <BaseSpeed>k__BackingField: 3
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Fast Enemy
-  <Description>k__BackingField: A fast enemy
-  <Type>k__BackingField: 0
+  <Description>k__BackingField: A weak enemy that moves fast and can overwhelm defenses
+    in large numbers.
+  <MyType>k__BackingField: 0
