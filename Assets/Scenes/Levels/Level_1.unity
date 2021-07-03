@@ -6808,7 +6808,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 1
+  m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!114 &259478165
@@ -20421,7 +20421,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 2
-      m_TileSpriteIndex: 6
+      m_TileSpriteIndex: 17
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -31364,8 +31364,8 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: 21300120, guid: fd104c8cb6a94e1395fffa05d7783f58, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 586
     m_Data: {fileID: 21300000, guid: 0ea65320f5db26649bedb5b710b1687e, type: 3}
   - m_RefCount: 1069
@@ -31386,8 +31386,8 @@ Tilemap:
     m_Data: {fileID: 21300044, guid: fd104c8cb6a94e1395fffa05d7783f58, type: 3}
   - m_RefCount: 40
     m_Data: {fileID: 21300000, guid: 8e20986f624e85e4591a3301902553c6, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 21300120, guid: fd104c8cb6a94e1395fffa05d7783f58, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 21300094, guid: fd104c8cb6a94e1395fffa05d7783f58, type: 3}
   - m_RefCount: 1
@@ -34491,7 +34491,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: 36.75
   m_PreferredHeight: -1
-  m_FlexibleWidth: -1
+  m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!114 &1314589385
@@ -34548,7 +34548,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -35175,7 +35175,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 1
+  m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!114 &1366211112
@@ -36788,7 +36788,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: 36.75
   m_PreferredHeight: -1
-  m_FlexibleWidth: -1
+  m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!114 &1498387363
@@ -36845,7 +36845,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
