@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,9 +13,38 @@ public class Status{
     public enum StatType {
         Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, MaxHealth, Speed, Max
     }
+    private float[] statMods = new float[(int)StatType.Max];
 
-    private float[] stats = new float[(int)StatType.Max];
-    private List<IStatusEffect> statusEffects;
+    public float Armor { get { return characterData.BaseArmor + statMods[(int)StatType.Armor]; } }
+    public float ColdResist { get { return characterData.BaseColdResist + statMods[(int)StatType.ColdResist]; } }
+    public float FireResist { get { return characterData.BaseFireResist + statMods[(int)StatType.FireResist]; } }
+    public float PoisonResist { get { return characterData.BasePoisonResist + statMods[(int)StatType.PoisonResist]; } }
+    public float LightningResist { get { return characterData.BaseLightningResist + statMods[(int)StatType.LightningResist]; } }
+    public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
+    public float Speed { get { return characterData.BaseSpeed + statMods[(int)StatType.Speed]; } }
+    public float MaxHealth { get { return characterData.BaseHealth + statMods[(int)StatType.Health]; } }
+
+    /// <summary>
+    /// The current amount of damage inflicted on unit.
+    /// Dealing negative damage heals the unit. 
+    /// The total inflicted damage will always be >= 0
+    /// </summary>
+    public float DamageInflicted {
+        get {
+            return damageInflicted;
+        }
+        private set {
+            damageInflicted = value;
+            if (damageInflicted < 0) {
+                damageInflicted = 0;
+            }
+        }
+    }
+
+    //  The amount of damage the unit currently has. Value will never be negative
+    private float damageInflicted;
+
+    public List<IStatusEffect> statusEffects;
 
     public delegate void StatusChanged();
     public delegate void ClearStatus();
@@ -32,50 +62,26 @@ public class Status{
     public event ClearStatus OnStatusCleared;
 
     public Status(CharacterData characterData, Unit unit) {
+        statMods = new float[(int)StatType.Max];
         this.characterData = characterData;
         this.unit = unit;
         statusEffects = new List<IStatusEffect>();
     }
 
-    public void Initialize() {
-        stats[(int)StatType.Armor] = characterData.BaseArmor;
-        stats[(int)StatType.ColdResist] = characterData.BaseColdResist;
-        stats[(int)StatType.FireResist] = characterData.BaseFireResist;
-        stats[(int)StatType.Health] = characterData.BaseHealth;
-        stats[(int)StatType.MaxHealth] = characterData.BaseHealth;
-        stats[(int)StatType.LightningResist] = characterData.BaseLightningResist;
-        stats[(int)StatType.PoisonResist] = characterData.BasePoisonResist;
-        stats[(int)StatType.Speed] = characterData.BaseSpeed;
-    }
+    public void TakeDamage(float effectiveDamage) {
+        DamageInflicted += effectiveDamage;
 
-    public void TakeDamage(float amount) {
-        ModifyStat(StatType.Health, -amount);
-
-        if (GetStat(StatType.Health) <= 0) {
+        if (CurrentHealth <= 0) {
             unit.Died();
         }
     }
 
     public void RestoreHealth(float amount) {
-        ModifyStat(StatType.Health, amount);
+        DamageInflicted -= amount;
     }
 
-    /// <summary>
-    /// Returns value of specified stat
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public float GetStat(StatType type) {
-        return stats[(int)type];
-    }
-
-    /// <summary>
-    /// Addsa/subtracts amount from specified stat
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="amount"></param>
     public void ModifyStat(StatType type, float amount) {
-        stats[(int)type] += amount;
+        statMods[(int)type] += amount;
 
         if (OnStatusChanged != null) {
             OnStatusChanged.Invoke();
@@ -91,40 +97,41 @@ public class Status{
         }
     }
 
-    //public void ApplyStatusEffect(StatusEffect newEffect)
-    //{
-    //    foreach (StatusEffect effect in statusEffects)
-    //    {
-    //        if (effect.GetType() == newEffect.GetType())
-    //        {
-    //            effect.StrengthenEffect(newEffect);
-    //        }
-    //    }
-    //    OnStatusChanged.Invoke();
-    //}
+    //  Reset status
+    public void Initialize() {
+        //  Clear all stat modifications
+        for (int i = 0; i < (int)StatType.Max; i++) {
+            statMods[i] = 0;
+        }
 
-    //public void RemoveStatusEffect(StatusEffect effect)
-    //{
-    //    statusEffects.Remove(effect);
-    //    OnStatusChanged.Invoke();
-    //}
-
-    //public IEnumerator OnTick()
-    //{
-    //    foreach (StatusEffect effect in statusEffects)
-    //    {
-    //        effect.OnTick();
-
-    //        if (effect.RemainingDuration <= 0)
-    //        {
-    //            RemoveStatusEffect(effect);
-    //        }
-    //    }
-
-    //    yield return new WaitForSeconds(0.3f);
-    //}
+        DamageInflicted = 0;
+        //  Todo: remove all status effects
+    }
 
     public Unit GetUnit() {
         return unit;
+    }
+
+    public float GetStat(StatType type) {
+        switch (type) {
+            case StatType.Armor:
+                return Armor;
+            case StatType.ColdResist:
+                return ColdResist;
+            case StatType.FireResist:
+                return FireResist;
+            case StatType.PoisonResist:
+                return PoisonResist;
+            case StatType.LightningResist:
+                return LightningResist;
+            case StatType.Health:
+                return CurrentHealth;
+            case StatType.MaxHealth:
+                return MaxHealth;
+            case StatType.Speed:
+                return Speed;
+            default:
+                throw new Exception("Stat type " + type + " is not valid");
+        }
     }
 }
