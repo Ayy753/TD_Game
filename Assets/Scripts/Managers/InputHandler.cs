@@ -10,6 +10,7 @@ public class InputHandler : MonoBehaviour{
     private KeyCode focusTarget = KeyCode.F;
     private KeyCode slowGameSpeed = KeyCode.Minus;
     private KeyCode increaseGameSpeed = KeyCode.Equals;
+    private KeyCode toggleMenu = KeyCode.Escape;
 
     public delegate void KeyPressed(Command command);
     public static event KeyPressed OnCommandEntered;
@@ -18,7 +19,8 @@ public class InputHandler : MonoBehaviour{
         TogglePause,
         FocusTarget,
         DecreaseGameSpeed,
-        IncreaseGameSpeed
+        IncreaseGameSpeed,
+        ToggleMenu
     }
 
     /// <summary>
@@ -40,6 +42,9 @@ public class InputHandler : MonoBehaviour{
             case Command.IncreaseGameSpeed:
                 increaseGameSpeed = key;
                 break;
+            case Command.ToggleMenu:
+                toggleMenu = key;
+                break;
         }
     }
 
@@ -58,6 +63,8 @@ public class InputHandler : MonoBehaviour{
                 return slowGameSpeed;
             case Command.IncreaseGameSpeed:
                 return increaseGameSpeed;
+            case Command.ToggleMenu:
+                return toggleMenu;
             default:
                 return KeyCode.None;
         }
@@ -76,6 +83,9 @@ public class InputHandler : MonoBehaviour{
             }
             else if (Input.GetKeyDown(increaseGameSpeed)) {
                 OnCommandEntered.Invoke(Command.IncreaseGameSpeed);
+            }
+            else if (Input.GetKeyDown(toggleMenu)) {
+                OnCommandEntered.Invoke(Command.ToggleMenu);
             }
         }
     }

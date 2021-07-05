@@ -12,6 +12,8 @@ public interface IGUIManager{
     public void UpdateLivesLabel(int lives);
     public void ShowGameOverScreen();
     public void ShowGameWonScreen();
+    public void ShowMenu();
+    public void HideMenu();
     public void UpdateWaveNumber(int current, int total);
     public void UpdateWaveCountdown(int secondsLeft);
     public void UpdateSpeedPanel(float speed);

@@ -27,7 +27,8 @@ public class GameManager: IInitializable, IDisposable {
     public enum State {
         Running,
         Paused,
-        Ended
+        Ended,
+        Menu
     }
 
     public void Initialize() {
@@ -43,7 +44,7 @@ public class GameManager: IInitializable, IDisposable {
 
     public void Dispose() {
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
-        InputHandler.OnCommandEntered += HandlekeyboardInput;
+        InputHandler.OnCommandEntered -= HandlekeyboardInput;
     }
 
     private void HandlekeyboardInput(InputHandler.Command command) {
@@ -57,6 +58,22 @@ public class GameManager: IInitializable, IDisposable {
             case InputHandler.Command.IncreaseGameSpeed:
                 IncreaseGameSpeed();
                 break;
+            case InputHandler.Command.ToggleMenu:
+                ToggleMenu();
+                break;
+        }
+    }
+
+    private void ToggleMenu() {
+        if (CurrentState != State.Ended) {
+            if (CurrentState == State.Menu) {
+                SetState(State.Running);
+                guiController.HideMenu();
+            }
+            else {
+                SetState(State.Menu);
+                guiController.ShowMenu();
+            }
         }
     }
 
@@ -84,6 +101,9 @@ public class GameManager: IInitializable, IDisposable {
                 Time.timeScale = 0;
                 break;
             case State.Ended:
+                Time.timeScale = 0;
+                break;
+            case State.Menu:
                 Time.timeScale = 0;
                 break;
             default:

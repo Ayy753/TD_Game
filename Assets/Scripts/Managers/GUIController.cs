@@ -17,18 +17,19 @@ public class GUIController : MonoBehaviour, IGUIManager {
     TMP_Text txtGameSpeed, txtFPS;
 
     //  gameEnded panel is the parent for the other two panels
-    GameObject pnlGameEnded, pnlGameOver, pnlGameWon;
+    GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu;
     GameObject pnlWave;
 
     public void Awake() {
         CreateDynamicButtons();
-        
+
         txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
         txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
 
         pnlGameEnded = GameObject.Find("pnlGameEnded");
         pnlGameOver = GameObject.Find("pnlGameOver");
         pnlGameWon = GameObject.Find("pnlGameWon");
+        pnlMenu = GameObject.Find("pnlMenu");
 
         pnlWave = GameObject.Find("pnlWave");
 
@@ -42,6 +43,7 @@ public class GUIController : MonoBehaviour, IGUIManager {
         pnlGameEnded.SetActive(false);
         pnlGameOver.SetActive(false);
         pnlGameWon.SetActive(false);
+        pnlMenu.SetActive(false);
     }
 
     /// <summary>
@@ -100,7 +102,18 @@ public class GUIController : MonoBehaviour, IGUIManager {
         pnlGameEnded.SetActive(true);
         pnlGameWon.SetActive(true);
     }
-    
+
+    public void ShowMenu() {
+        pnlGameEnded.SetActive(true);
+        pnlMenu.SetActive(true);
+    }
+
+    public void HideMenu() {
+        pnlGameEnded.SetActive(false);
+        pnlMenu.SetActive(false);
+
+    }
+
     public void Restart() {
         gameManager.Restart();
     }
