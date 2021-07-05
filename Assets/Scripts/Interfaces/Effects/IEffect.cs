@@ -7,5 +7,5 @@ public interface IEffect {
     /// <summary>
     /// Apply the effect to Unit
     /// </summary>
-    public void Apply(Unit unit);
+    public void Apply(IUnit unit);
 }

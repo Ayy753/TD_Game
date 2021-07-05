@@ -23,7 +23,7 @@ public class ObjectPool : IInitializable
     public ObjectPool(DiContainer container) {
         _container = container;
         enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
-        projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/NormalProjectile");
+        projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/Projectile");
         towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
         floatingTextPrefab = Resources.Load<GameObject>("Prefabs/FloatingText");
     }
@@ -86,13 +86,6 @@ public class ObjectPool : IInitializable
             }
         }
 
-        ////  Preload some projectiles
-        //foreach (ProjectileData.ProjectileType type in projectileTypeToPrefab.Keys) {
-        //    for (int j = 0; j < 5; j++) {
-        //        CreateProjectile(type);
-        //    }
-        //}
-
         //  Disable preloaded enemies
         foreach (Enemy enemy in instantiatedEnemies) {
             enemy.transform.parent.gameObject.SetActive(false);
@@ -107,7 +100,7 @@ public class ObjectPool : IInitializable
     public Enemy CreateEnemy(EnemyData.Type type) {
         //  Find available enemy of a prefab type
         foreach (Enemy enemy in instantiatedEnemies) {
-            if (enemy.enemyData.MyType == type && enemy.gameObject.activeInHierarchy == false) {
+            if (enemy.GetType() == type && enemy.gameObject.activeInHierarchy == false) {
                 enemy.transform.parent.gameObject.SetActive(true);
                 return enemy;
             }
@@ -131,8 +124,7 @@ public class ObjectPool : IInitializable
         }
 
         //  instanteiate new projectile if none are available in pool
-        GameObject prefab = projectilePrefab;
-        Projectile newProjectile = _container.InstantiatePrefabForComponent<Projectile>(prefab);
+        Projectile newProjectile = _container.InstantiatePrefabForComponent<Projectile>(projectilePrefab);
 
         newProjectile.transform.parent = projectileContainer.transform;
         instantiatedProjectiles.Add(newProjectile);

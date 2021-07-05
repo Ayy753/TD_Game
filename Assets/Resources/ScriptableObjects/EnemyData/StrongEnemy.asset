@@ -20,6 +20,7 @@ MonoBehaviour:
   <BaseArmor>k__BackingField: 50
   <BaseSpeed>k__BackingField: 0.75
   <BaseValue>k__BackingField: 20
-  <Name>k__BackingField: Strong Enemy
-  <Description>k__BackingField: A strong enemy
+  <Name>k__BackingField: Crab
+  <Description>k__BackingField: A crab, moves slow but has lots of health and armor.
+    It resists physical damage
   <MyType>k__BackingField: 2

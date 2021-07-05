@@ -11,7 +11,7 @@ public class FloatingText : MonoBehaviour
     private void Start()
     {
         //  Move render order on top of sprites
-        gameObject.GetComponent<MeshRenderer>().sortingOrder = 7;
+        gameObject.GetComponent<MeshRenderer>().sortingOrder = 400;
     }
 
     private void OnEnable()

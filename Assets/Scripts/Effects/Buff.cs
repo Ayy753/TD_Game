@@ -11,7 +11,7 @@ public class Buff : IStatusEffect, IStatMod{
         Type = statType;
     }
 
-    public void Apply(Unit unit) {
+    public void Apply(IUnit unit) {
         Status unitStatus = unit.GetStatus();
         unitStatus.ModifyStat(Type, Potency);
     }

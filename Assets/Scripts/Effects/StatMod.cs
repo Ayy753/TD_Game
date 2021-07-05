@@ -7,7 +7,7 @@ public class StatMod :  IStatMod {
         Type = statType;
     }
 
-    public void Apply(Unit unit) {
+    public void Apply(IUnit unit) {
         unit.GetStatus().ModifyStat(Type, Potency);
     }
 }

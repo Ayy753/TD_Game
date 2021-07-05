@@ -38,7 +38,7 @@ public class Projectile : MonoBehaviour {
     }
 
     protected void OnTriggerEnter2D(Collider2D collision) {
-        Unit unit = collision.GetComponentInChildren<Unit>();
+        IUnit unit = collision.GetComponentInChildren<IUnit>();
 
         //  If it hit a unit, and hasn't damaged anything yet (to prevent it from damaging multiple units at the same time)
         if (unit != null && dealtDamage == false) {
@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour {
     /// Apply effect to unit
     /// </summary>
     /// <param name="unit"></param>
-    private void ApplyEffects(Unit unit) {
+    private void ApplyEffects(IUnit unit) {
         foreach (IEffect effect in projectileData.effects) {
             effect.Apply(unit);
         }

@@ -14,5 +14,5 @@ public abstract class EffectBase{
     /// <summary>
     /// Apply the effect to Unit
     /// </summary>
-    public abstract void Apply(Unit unit);
+    public abstract void Apply(IUnit unit);
 }

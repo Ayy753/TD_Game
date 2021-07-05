@@ -2,12 +2,8 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class Enemy : Unit {
-    [Inject] private readonly IPathfinder pathFinder;
+public class Enemy : MonoBehaviour, IUnit {
     [Inject] private IMessageSystem messageSystem;
-    [SerializeField] public EnemyData enemyData;
-    private IUnitInput unitInput;
-    private IUnitMovement unitMovement;
     private Status status;
     private HealthBar healthBar;
 
@@ -16,36 +12,25 @@ public class Enemy : Unit {
 
     public static event EnemyReachedGate OnEnemyReachedGate;
     public static event EnemyDied OnEnemyDied;
-    public override event EventHandler TargetDisabled;
+    public event EventHandler TargetDisabled;
 
     private void Awake() {
-        unitInput = new UnitAI(this, pathFinder);
-        status = new Status(enemyData, this);
-        unitMovement = new UnitMovement(transform.parent.transform, status, unitInput, transform);
         healthBar = transform.parent.GetComponentInChildren<HealthBar>();
+        status = transform.GetComponent<Status>();
     }
         
-    private void Update() {
-        if (unitMovement != null) {
-            unitMovement.Move();
-        }
-    }
-
     public void Spawn() {
-        unitInput.Initialize();
-        status.Initialize();
-        unitMovement.Initialize();
         healthBar.Initialize(status);
     }
 
-    public override void ReachedDestination() {
+    public void ReachedDestination() {
         Despawn();
         if (OnEnemyReachedGate != null) {
             OnEnemyReachedGate.Invoke(this);
         }
     }
 
-    public override void Died() {
+    public void Died() {
         Despawn();
         if (OnEnemyDied != null) {
             OnEnemyDied.Invoke(this);
@@ -59,7 +44,7 @@ public class Enemy : Unit {
         transform.parent.gameObject.SetActive(false);
     }
 
-    public override Status GetStatus() {
+    public Status GetStatus() {
         return status;
     }
 
@@ -70,12 +55,28 @@ public class Enemy : Unit {
     //    healthBar.UpdateHealthBar();
     //}
 
-    public override Transform GetTransform() {
+    public Transform GetTransform() {
         return transform;
     }
+    
+    public float GetValue() {
+        return ((EnemyData)GetStatus().GetCharacterData()).BaseValue;
+    }
 
-    public override string GetName() {
-        return enemyData.Name;
+    public new EnemyData.Type GetType() {
+        return ((EnemyData)GetStatus().GetCharacterData()).MyType;
+    }
+
+    public string GetDescription() {
+        return ((EnemyData)status.characterData).Description;
+    }
+
+    public string GetName() {
+        return ((EnemyData)status.characterData).Name;
+    }
+
+    public void ApplyDamage(float damage) {
+        status.TakeDamage(damage);
     }
 
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }

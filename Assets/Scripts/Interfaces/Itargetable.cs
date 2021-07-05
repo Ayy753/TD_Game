@@ -11,4 +11,6 @@ public interface Itargetable{
     public event EventHandler TargetDisabled;
 
     public Transform GetTransform();
+    public string GetName();
+    public string GetDescription();
 }

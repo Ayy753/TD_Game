@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class PathFinder : IPathfinder, IInitializable {
+public class PathFinder : MonoBehaviour, IPathfinder, IInitializable {
     private List<Vector3Int> currentPath;
     private Transform entrance, exit;
 
@@ -34,9 +34,9 @@ public class PathFinder : IPathfinder, IInitializable {
 
     private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
         if (e.changeType == StructureChangedEventArgs.Type.build) {
-            if (IsOnMainPath(e.position)) {
+            //if (IsOnMainPath(e.position)) {
                 asyncProcessor.StartCoroutine(CalculateMainPath());
-            }
+            //}
         }
         else if (e.changeType == StructureChangedEventArgs.Type.demolish) {
             asyncProcessor.StartCoroutine(CalculateMainPath());
@@ -82,8 +82,6 @@ public class PathFinder : IPathfinder, IInitializable {
         Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
 
         Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
-
-        int counter = 0;
 
         //  initialize with entrance coordinate
         PathNode initialStep = new PathNode(entranceCoordinate);
@@ -167,13 +165,6 @@ public class PathFinder : IPathfinder, IInitializable {
                             }
                         }
 
-                        //  Pause coroutine every 1500 tiles processed to allow other processes to run in the meantime
-                        //  Using a resetting counter is probably a lot faster than the modulus operator 
-                        counter++;
-                        if (counter > 1500) {
-                            counter = 0;
-                            yield return null;
-                        }
                     }
                 }
             }

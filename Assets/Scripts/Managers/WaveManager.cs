@@ -149,10 +149,10 @@ public class WaveManager : IInitializable, IDisposable {
             }
 
             for (int i = 0; i < group.NumEnemies; i++) {
-                yield return new WaitForSeconds(group.TimebetweenSpawns);
                 Enemy enemy = objectPool.CreateEnemy(groupType);
                 enemy.Spawn();
                 activeEnemies.Add(enemy);
+                yield return new WaitForSeconds(group.TimebetweenSpawns);
             }
 
             yield return new WaitForSeconds(LevelData.waves[thisWaveNum].TimebetweenGroups);

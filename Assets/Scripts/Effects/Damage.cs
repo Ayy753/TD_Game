@@ -10,7 +10,7 @@ public class Damage : IDamage {
         Debug.Log("created damage object with potency of " + potency);
     }
 
-    public void Apply(Unit unit) {
+    public void Apply(IUnit unit) {
         Status status = unit.GetStatus();
         float effectiveDamage = CalculateDamage(status);
         status.TakeDamage(effectiveDamage);

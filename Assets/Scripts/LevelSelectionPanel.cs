@@ -23,8 +23,10 @@ public class LevelSelectionPanel : MonoBehaviour, IInitializable {
         List<LevelManager.LevelData> levelData = levelManager.GetLevelData();
         foreach (var level in levelData) {
             GameObject button = GameObject.Instantiate(levelButtonPrefab);
-            TMP_Text txtLevel = button.transform.Find("txtLevel").GetComponent<TMP_Text>();
-            txtLevel.text = level.LevelNum.ToString();
+            TMP_Text txtLevelNum = button.transform.Find("pnlLevelNum/txtLevelNum").GetComponent<TMP_Text>();
+            TMP_Text txtLevelName = button.transform.Find("pnlLevelName/txtLevelName").GetComponent<TMP_Text>();
+            txtLevelNum.text = level.LevelNum.ToString();
+            txtLevelName.text = level.LevelName.ToString();
             button.transform.SetParent(pnlGrid);
             button.GetComponent<Button>().onClick.AddListener(delegate { LoadLevel(level.LevelNum); });
         }
