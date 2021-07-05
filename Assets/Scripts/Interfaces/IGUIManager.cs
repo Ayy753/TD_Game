@@ -20,4 +20,5 @@ public interface IGUIManager{
     public void IncreaseaSpeed();
     public void DecreaseSpeed();
     public void UpdateFPSCounter(int fps);
+    public void BindButtonsInScene();
 }

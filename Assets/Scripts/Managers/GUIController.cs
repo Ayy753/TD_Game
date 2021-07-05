@@ -22,6 +22,7 @@ public class GUIController : MonoBehaviour, IGUIManager {
 
     public void Awake() {
         CreateDynamicButtons();
+        BindButtonsInScene();
 
         txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
         txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
@@ -69,6 +70,24 @@ public class GUIController : MonoBehaviour, IGUIManager {
         }
     }
 
+    public void BindButtonsInScene() {
+        Button btnNextWave = GameObject.Find("btnNextWave").GetComponent<Button>();
+        Button btnbtnDecreaseSpeed = GameObject.Find("btnDecrease").GetComponent<Button>();
+        Button btnIncreaseSpeed = GameObject.Find("btnIncrease").GetComponent<Button>();
+        Button btnLevelSelect = GameObject.Find("btnLevelSelect").GetComponent<Button>();
+        Button btnRestart = GameObject.Find("btnRestart").GetComponent<Button>();
+        Button btnExit = GameObject.Find("btnExit").GetComponent<Button>();
+        Button btnDemolish = GameObject.Find("btnDemolish").GetComponent<Button>();
+
+        btnNextWave.onClick.AddListener(delegate { waveManager.StartNextWave(); });
+        btnbtnDecreaseSpeed.onClick.AddListener(delegate { gameManager.DecreaseGameSpeed(); });
+        btnIncreaseSpeed.onClick.AddListener(delegate { gameManager.IncreaseGameSpeed(); });
+        btnLevelSelect.onClick.AddListener(delegate { gameManager.LevelSelect(); });
+        btnRestart.onClick.AddListener(delegate { gameManager.Restart(); });
+        btnExit.onClick.AddListener(delegate { gameManager.ExitGame(); });
+        btnDemolish.onClick.AddListener(delegate { buildManager.EnterDemolishMode(); });
+    }
+
     public void UpdateGoldLabel(float gold) {
         txtGold.text = Mathf.RoundToInt(gold).ToString();
     }
@@ -76,7 +95,7 @@ public class GUIController : MonoBehaviour, IGUIManager {
     public void UpdateLivesLabel(int lives) {
         txtLives.text = Mathf.RoundToInt(lives).ToString();
     }
-    
+
     public void EnterBuildMode(StructureData structure) {
         buildManager.EnterBuildMode(structure);
     }
@@ -151,5 +170,3 @@ public class GUIController : MonoBehaviour, IGUIManager {
         txtFPS.text = fps.ToString();
     }
 }
-
-
