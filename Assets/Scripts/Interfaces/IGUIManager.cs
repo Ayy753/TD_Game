@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages panels and label displays 
+/// </summary>
 public interface IGUIManager{
-    public void CreateDynamicButtons();
-    public void EnterBuildMode(StructureData structure);
-    public void EnterDemolishMode();
-    public void ExitEditMode();
-    public void StartNextWave();
     public void UpdateGoldLabel(float gold);
     public void UpdateLivesLabel(int lives);
     public void ShowGameOverScreen();
@@ -17,8 +15,6 @@ public interface IGUIManager{
     public void UpdateWaveNumber(int current, int total);
     public void UpdateWaveCountdown(int secondsLeft);
     public void UpdateSpeedPanel(float speed);
-    public void IncreaseaSpeed();
-    public void DecreaseSpeed();
     public void UpdateFPSCounter(int fps);
-    public void BindButtonsInScene();
 }
+
