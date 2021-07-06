@@ -3,15 +3,16 @@ using UnityEngine;
 using Zenject;
 
 public class Wallet : IWallet, IInitializable, IDisposable {
-    [Inject] private IGUIManager guiController;
-    [Inject] private IMessageSystem messageSystem;
+    private IGUIManager guiController;
+    private IMessageSystem messageSystem;
 
     private float gold;
     private const float startingGold = 500;
     public const float resellPercentageInDecimal = 0.66f;
 
-    public Wallet(IGUIManager guiController) {
+    public Wallet(IGUIManager guiController, IMessageSystem messageSystem) {
         this.guiController = guiController;
+        this.messageSystem = messageSystem;
     }
 
     public void Initialize() {

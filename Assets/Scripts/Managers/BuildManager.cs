@@ -28,7 +28,7 @@ public class BuildManager : IInitializable, IDisposable {
     //public delegate void StructureChanged();
     //public event StructureChanged OnStructureChanged;
 
-    public EventHandler<StructureChangedEventArgs> StructureChanged;
+    public static EventHandler<StructureChangedEventArgs> StructureChanged;
 
     #endregion
 

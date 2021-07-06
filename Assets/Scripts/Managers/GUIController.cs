@@ -23,7 +23,6 @@ public class GUIController : IGUIManager, IInitializable {
         pnlGameOver = GameObject.Find("pnlGameOver");
         pnlGameWon = GameObject.Find("pnlGameWon");
         pnlMenu = GameObject.Find("pnlMenu");
-
         pnlWave = GameObject.Find("pnlWave");
 
         txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();

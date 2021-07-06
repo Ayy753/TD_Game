@@ -5,22 +5,22 @@ public class UntitledInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
+        Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+
         Container.Bind(typeof(IMapManager), typeof(IInitializable)).To<MapManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IPathfinder), typeof(IInitializable)).To<PathFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind(typeof(IPathfinder), typeof(IInitializable), typeof(IDisposable)).To<PathFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.Bind<ObjectPool>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable)).To<ObjectPool>().FromResolve();
         Container.BindIFactory<Enemy, Enemy.Factory>();
+        Container.Bind(typeof(IButtonManager), typeof(IInitializable)).To<ButtonManager>().AsSingle();
+        Container.Bind(typeof(IGUIManager), typeof(IInitializable)).To<GUIController>().AsSingle().NonLazy();
 
-        Container.Bind<LevelManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<LevelManager>().FromResolve();
+        Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle().NonLazy();
 
-        Container.Bind<WaveManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<WaveManager>().FromResolve();
+        Container.BindInterfacesAndSelfTo<WaveManager>().AsSingle().NonLazy();
 
-        Container.Bind<BuildManager>().AsSingle().NonLazy();
-        Container.Bind(typeof(IInitializable), typeof(IDisposable)).To<BuildManager>().FromResolve();
+        Container.BindInterfacesAndSelfTo<BuildManager>().AsSingle().NonLazy();
 
-        Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
         Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
@@ -38,7 +38,6 @@ public class UntitledInstaller : MonoInstaller
 
         Container.BindFactory<Tower, Tower.Factory>();
 
-        Container.Bind(typeof(IGUIManager)).To<GUIController>().FromNewComponentOnNewGameObject().AsSingle();
 
         Container.Bind<RadiusRenderer>().FromComponentInHierarchy().AsSingle();
         Container.Bind<PathRenderer>().FromComponentInHierarchy().AsSingle();

@@ -4,17 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class PathFinder : MonoBehaviour, IPathfinder, IInitializable {
+public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposable {
     private List<Vector3Int> currentPath;
     private Transform entrance, exit;
 
-    [Inject] IMapManager mapManager;
-    [Inject] AsyncProcessor asyncProcessor;
-    [Inject] BuildManager buildManager;
+    [Inject] private IMapManager mapManager;
 
     public event EventHandler PathRecalculated;
-
-
 
     public void Initialize() {
         Debug.Log("Initializing pathfinder");
@@ -26,20 +22,22 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable {
             Debug.LogError("entrance or exit not found");
         }
         else {
-            asyncProcessor.StartCoroutine(CalculateMainPath());
+            StartCoroutine(CalculateMainPath());
         }
 
-        buildManager.StructureChanged += HandleStructureChanged;
+        BuildManager.StructureChanged += HandleStructureChanged;
+    }
+
+    public void Dispose() {
+        BuildManager.StructureChanged -= HandleStructureChanged;
     }
 
     private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
         if (e.changeType == StructureChangedEventArgs.Type.build) {
-            //if (IsOnMainPath(e.position)) {
-                asyncProcessor.StartCoroutine(CalculateMainPath());
-            //}
+            StartCoroutine(CalculateMainPath());
         }
         else if (e.changeType == StructureChangedEventArgs.Type.demolish) {
-            asyncProcessor.StartCoroutine(CalculateMainPath());
+            StartCoroutine(CalculateMainPath());
         }
     }
 
