@@ -6,21 +6,23 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
-public class LevelSelectionPanel : MonoBehaviour, IInitializable {
-    [Inject] private LevelManager levelManager;
+public class LevelSelectionPanel : IInitializable {
+    private LevelManager levelManager;
 
-    private GameObject levelButtonPrefab;
-    private Transform pnlGrid;
+    public LevelSelectionPanel(LevelManager levelManager) {
+        this.levelManager = levelManager;
+    }
 
     public void Initialize() {
         Debug.Log("starting levelselectionpanel");
-        pnlGrid = GameObject.Find("pnlGrid").GetComponent < Transform>() ;
-        levelButtonPrefab = Resources.Load<GameObject>("prefabs/btnLevel");
         PopulateLevelButtons();
     }
 
     private void PopulateLevelButtons() {
+        Transform pnlGrid = GameObject.Find("pnlGrid").GetComponent<Transform>();
+        GameObject levelButtonPrefab = Resources.Load<GameObject>("prefabs/btnLevel");
         List<LevelManager.LevelData> levelData = levelManager.GetLevelData();
+
         foreach (var level in levelData) {
             GameObject button = GameObject.Instantiate(levelButtonPrefab);
             TMP_Text txtLevelNum = button.transform.Find("pnlLevelNum/txtLevelNum").GetComponent<TMP_Text>();
