@@ -25,8 +25,8 @@ public class MainInstaller : MonoInstaller {
         Container.Bind<InputHandler>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         //  Misc bindings
-        Container.Bind<RadiusRenderer>().FromComponentInHierarchy().AsSingle();
-        Container.Bind<PathRenderer>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<RadiusRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/RadiusRenderer").AsSingle();
+        Container.Bind<PathRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/PathRenderer").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<StatusPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<TowerPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<TargetManager>().AsSingle();

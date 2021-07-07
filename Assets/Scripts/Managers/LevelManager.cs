@@ -15,20 +15,37 @@ public class LevelManager : IInitializable, IDisposable{
     List<LevelData> levelData;
     private string filePath = "LevelData/PlayerProgress";
     public int CurrentLevel { get; private set; }
+    public State CurrentState { get; private set; }
+
+    public enum State {
+        InGame,
+        LevelSelection,
+        TestScene
+    }
 
     public void Initialize() {
         Debug.Log("starting levelmanager");
-        LoadLevelData();
 
         string sceneName = SceneManager.GetActiveScene().name;
 
-        if (sceneName != "LevelSelect") {
+        if (sceneName == "LevelSelect") {
+            LoadLevelData();
+            CurrentState = State.LevelSelection;
+        }
+        else if (sceneName == "TestScene") {
+            CurrentState = State.TestScene;
+        }
+        else {
+            CurrentState = State.InGame;
+            LoadLevelData();
             CurrentLevel = int.Parse(sceneName.Split('_')[1]);
         }
     }
      
     public void Dispose() {
-        SaveLevelData();
+        if (CurrentState == State.InGame) {
+            SaveLevelData();
+        }
     }
 
     /// <summary>
