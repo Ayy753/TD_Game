@@ -4,16 +4,19 @@ using UnityEngine.UI;
 using Zenject;
 
 public class TowerPanel : IInitializable {
-    [Inject] IWallet wallet;
-    [Inject] BuildManager buildManager;
+    IWallet wallet;
+    BuildManager buildManager;
     
     GameObject pnlTowerPanel;
-    
     TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue, txtTowerDescription;
     Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom, btnSell;
     Button[] targetButtons;
-
     Tower currentlySelectedTower;
+
+    public TowerPanel(IWallet wallet, BuildManager buildManager) {
+        this.wallet = wallet;
+        this.buildManager = buildManager;
+    }
 
     public void Initialize() {
         Debug.Log("initializing tower panel");

@@ -21,7 +21,7 @@ public class MainInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<Wallet>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<MessageSystem>().AsSingle().NonLazy();
         Container.Bind<EffectParserJSON>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-        Container.Bind<TooltipManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<TooltipManager>().AsSingle().NonLazy();
         Container.Bind<InputHandler>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         //  Misc bindings

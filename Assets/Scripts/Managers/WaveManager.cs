@@ -6,13 +6,12 @@ using UnityEngine;
 using Zenject;
 
 public class WaveManager : IInitializable, IDisposable {
-
-    [Inject] private ObjectPool objectPool;
-    [Inject] private AsyncProcessor asyncProcessor;
-    [Inject] private GameManager gameManager;
-    [Inject] private IMessageSystem messageSystem;
-    [Inject] private IGUIManager guiController;
-    [Inject] private LevelManager levelManager;
+    private ObjectPool objectPool;
+    private AsyncProcessor asyncProcessor;
+    private GameManager gameManager;
+    private IMessageSystem messageSystem;
+    private IGUIManager guiController;
+    private LevelManager levelManager;
 
     private const string FolderPath = "LevelData/WaveData/";
     private Root LevelData;
@@ -26,6 +25,15 @@ public class WaveManager : IInitializable, IDisposable {
     private const int timeBeforeFirstWave = 60;
     private Coroutine nextWaveCountDown;
     private bool lastWaveFinishedSpawning;
+
+    public WaveManager(ObjectPool objectPool, AsyncProcessor asyncProcessor, GameManager gameManager, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
+        this.objectPool = objectPool;
+        this.asyncProcessor = asyncProcessor;
+        this.gameManager = gameManager;
+        this.messageSystem = messageSystem;
+        this.guiController = guiController;
+        this.levelManager = levelManager;
+    }
 
     public void Initialize() {
         Debug.Log("Initializing WaveManager");

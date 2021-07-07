@@ -2,10 +2,14 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 
-public class FPSCounter : IInitializable
-{
-    [Inject] IGUIManager guiController;
-    [Inject] AsyncProcessor asyncProcessor;
+public class FPSCounter : IInitializable {
+    IGUIManager guiController;
+    AsyncProcessor asyncProcessor;
+
+    public FPSCounter(IGUIManager guiController, AsyncProcessor asyncProcessor) {
+        this.guiController = guiController;
+        this.asyncProcessor = asyncProcessor;
+    }
 
     public void Initialize() {
         asyncProcessor.StartCoroutine(FpsPoller());

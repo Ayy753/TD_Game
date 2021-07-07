@@ -1,14 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Zenject;
 
 public class ControlsPanel : IInitializable {
-    [Inject] InputHandler inputHandler;
+    InputHandler inputHandler;
     Transform pnlControls;
     GameObject controlPanelPrefab;
+
+    public ControlsPanel(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
+    }
 
     public void Initialize() {
         pnlControls = GameObject.Find("pnlControls").transform;

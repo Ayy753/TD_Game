@@ -7,16 +7,19 @@ using Zenject;
 /// <summary>
 /// Listens for IDisplayable objects getting hovered/unhovered and controls the tooltip accordingly
 /// </summary>
-public class TooltipManager : MonoBehaviour{
+public class TooltipManager: IInitializable, IDisposable{
+    ToolTip toolTip;
 
-    [Inject] ToolTip toolTip;
+    public TooltipManager(ToolTip toolTip) {
+        this.toolTip = toolTip;
+    }
 
-    private void OnEnable() {
+    public void Initialize() {
         MouseManager.OnHoveredNewTooltipable += ShowToolTip;
         MouseManager.OnUnhoveredTooltipable += HideToolTip;
     }
 
-    private void OnDisable() {
+    public void Dispose() {
         MouseManager.OnHoveredNewTooltipable -= ShowToolTip;
         MouseManager.OnUnhoveredTooltipable -= HideToolTip;
     }

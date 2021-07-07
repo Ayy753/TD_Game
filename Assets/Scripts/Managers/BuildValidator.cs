@@ -2,7 +2,7 @@ using UnityEngine;
 using Zenject;
 
 public class BuildValidator : IBuildValidator{
-    [Inject] IMapManager mapManager;
+    IMapManager mapManager;
 
     public BuildValidator(IMapManager mapManager) { 
         this.mapManager = mapManager;
