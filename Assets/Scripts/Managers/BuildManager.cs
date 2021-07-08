@@ -9,6 +9,7 @@ public class BuildManager : IInitializable, IDisposable {
 
     #region properties
     public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
+    public StructureData CurrentlySelectedStructure { get; private set; }
     #endregion
 
     #region fields
@@ -16,17 +17,12 @@ public class BuildManager : IInitializable, IDisposable {
     IBuildValidator buildValidator;
     IMessageSystem messageSystem;
     IWallet wallet;
-    HoverManager hoverManager;
     GameManager gameManager;
     ObjectPool objectPool;
     RadiusRenderer radiusRenderer;
 
-    public StructureData currentlySelectedStructure;
     private Vector3 tilemapOffset = new Vector3( 0.5f, 0.5f, 0);
     private Vector3Int lastPositionHovered;
-
-    //public delegate void StructureChanged();
-    //public event StructureChanged OnStructureChanged;
 
     public static EventHandler<StructureChangedEventArgs> StructureChanged;
 
@@ -38,14 +34,12 @@ public class BuildManager : IInitializable, IDisposable {
         None
     }
 
-    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, HoverManager hoverManager, ObjectPool objectPool, RadiusRenderer radiusRenderer) {
-        Debug.Log("build manager constructor");
+    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, ObjectPool objectPool, RadiusRenderer radiusRenderer) {        Debug.Log("build manager constructor");
         this.mapManager = mapManager;
         this.gameManager = gameManager;
         this.buildValidator = buildValidator;
         this.messageSystem = messageSystem;
         this.wallet = wallet;
-        this.hoverManager = hoverManager;
         this.objectPool = objectPool;
         this.radiusRenderer = radiusRenderer;
     }
@@ -102,10 +96,6 @@ public class BuildManager : IInitializable, IDisposable {
 
         wallet.SpendMoney(structure.Cost);
         messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structure.Cost), Color.yellow);
-
-        //  Refresh hover after building
-        hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
-
         StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
     }
 
@@ -114,9 +104,6 @@ public class BuildManager : IInitializable, IDisposable {
             return;
         }
         DemolishStructure(position);
-
-        //  Refresh hover after demolishing
-        hoverManager.NewTileHovered(position, CurrentBuildMode, currentlySelectedStructure);
     }
 
     private void DemolishStructure(Vector3Int position) {
@@ -147,13 +134,12 @@ public class BuildManager : IInitializable, IDisposable {
     /// <param name="tileCoords"></param>
     private void HandleNewTileHovered(Vector3Int tileCoords) {
         lastPositionHovered = tileCoords;
-        hoverManager.NewTileHovered(tileCoords, CurrentBuildMode, currentlySelectedStructure);
 
         Vector3 coordsWithOffset = tileCoords + tilemapOffset;
 
         if (ShouldShowRadius(tileCoords)) {
             if (CurrentBuildMode == BuildMode.Build) {
-                radiusRenderer.RenderRadius(coordsWithOffset, ((TowerData)(currentlySelectedStructure)).Range);
+                radiusRenderer.RenderRadius(coordsWithOffset, ((TowerData)(CurrentlySelectedStructure)).Range);
             }
             else {
                 radiusRenderer.RenderRadius(coordsWithOffset, GetTower(tileCoords).TowerData.Range);
@@ -196,7 +182,7 @@ public class BuildManager : IInitializable, IDisposable {
         //  If cursor isn't over a gui element
         if (EventSystem.current.IsPointerOverGameObject() == false) {
             if (CurrentBuildMode == BuildMode.Build) {
-                AttemptBuildStructure(currentlySelectedStructure, lastPositionHovered);
+                AttemptBuildStructure(CurrentlySelectedStructure, lastPositionHovered);
             }
             else if (CurrentBuildMode == BuildMode.Demolish) {
                 AttemptDemolishStructure(lastPositionHovered);
@@ -227,7 +213,7 @@ public class BuildManager : IInitializable, IDisposable {
     private bool ShouldShowRadius(Vector3Int tileCoords) {
         if (CurrentBuildMode == BuildMode.Build 
             && EventSystem.current.IsPointerOverGameObject() == false 
-            && currentlySelectedStructure.GetType() == typeof(TowerData) 
+            && CurrentlySelectedStructure.GetType() == typeof(TowerData) 
             && mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, tileCoords)) {
 
             return true;
@@ -260,7 +246,7 @@ public class BuildManager : IInitializable, IDisposable {
     /// </summary>
     /// <param name="selectedStructure"></param>
     public void EnterBuildMode(StructureData selectedStructure) {
-        currentlySelectedStructure = selectedStructure;
+        CurrentlySelectedStructure = selectedStructure;
 
         CurrentBuildMode = BuildMode.Build;
         Debug.Log("Entered buildmode for structure: " + selectedStructure.name);
@@ -272,7 +258,7 @@ public class BuildManager : IInitializable, IDisposable {
     public void EnterDemolishMode() {
 
         CurrentBuildMode = BuildMode.Demolish;
-        currentlySelectedStructure = null;
+        CurrentlySelectedStructure = null;
         Debug.Log("Entered demolish mode");
     }
 
@@ -280,9 +266,8 @@ public class BuildManager : IInitializable, IDisposable {
     /// Exits build/demolish mode
     /// </summary>
     public void ExitBuildMode() {
-        currentlySelectedStructure = null;
+        CurrentlySelectedStructure = null;
         CurrentBuildMode = BuildMode.None;
-        hoverManager.PauseHighlighting();
         radiusRenderer.HideRadius();
         Debug.Log("Exited build mode");
     }

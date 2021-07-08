@@ -6,40 +6,43 @@ using Zenject;
 public class HoverManager : IInitializable, IDisposable {
     private IMapManager mapManager;
     private IBuildValidator hoverValidator;
-    private GameManager gameManager;
+    private BuildManager buildManager;
 
     private Vector3Int lastHoveredPosition = Vector3Int.down;
     private bool lastSelectedStructureWasTower = false;
     private StructureData structureData;
     private BuildManager.BuildMode buildMode = BuildManager.BuildMode.None;
 
-    public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, GameManager gameManager) {
+    public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, BuildManager buildManager) {
         this.mapManager = mapManager;
         this.hoverValidator = hoverValidator;
-        this.gameManager = gameManager;
+        this.buildManager = buildManager;
     }
 
     public void Initialize() {
+        MouseManager.OnHoveredNewTile += HandleNewTileHovered;
+        MouseManager.OnRightMouseUp += PauseHighlighting;
     }
 
     public void Dispose() {
+        MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
+        MouseManager.OnRightMouseUp -= PauseHighlighting;
     }
 
     /// <summary>
     /// Handles logic when a new tile is hovered
     /// </summary>
     /// <param name="position"></param>
-    public void NewTileHovered(Vector3Int position, BuildManager.BuildMode currentBuildMode, StructureData currentStructureData) {
-        buildMode = currentBuildMode;
-        structureData = currentStructureData;
+    public void HandleNewTileHovered(Vector3Int tileCoords) { 
+        buildMode = buildManager.CurrentBuildMode;
+        structureData = buildManager.CurrentlySelectedStructure;
 
         if (lastHoveredPosition != Vector3Int.down) {
-            Debug.Log("un hovering last tile");
             UnhoverLastTile();
         }
-        if (currentBuildMode != BuildManager.BuildMode.None) {
-            lastHoveredPosition = position;
-            HoverTile(position);
+        if (buildMode != BuildManager.BuildMode.None) {
+            lastHoveredPosition = tileCoords;
+            HoverTile(tileCoords);
         }
     }
 
