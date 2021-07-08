@@ -6,7 +6,7 @@ using UnityEngine;
 using Zenject;
 
 public class WaveManager : IInitializable, IDisposable {
-    private ObjectPool objectPool;
+    private EnemySpawner enemySpawner;
     private AsyncProcessor asyncProcessor;
     private GameManager gameManager;
     private IMessageSystem messageSystem;
@@ -26,8 +26,8 @@ public class WaveManager : IInitializable, IDisposable {
     private Coroutine nextWaveCountDown;
     private bool lastWaveFinishedSpawning;
 
-    public WaveManager(ObjectPool objectPool, AsyncProcessor asyncProcessor, GameManager gameManager, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
-        this.objectPool = objectPool;
+    public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, GameManager gameManager, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
+        this.enemySpawner = enemySpawner;
         this.asyncProcessor = asyncProcessor;
         this.gameManager = gameManager;
         this.messageSystem = messageSystem;
@@ -40,6 +40,7 @@ public class WaveManager : IInitializable, IDisposable {
 
         Enemy.OnEnemyDied += HandleEnemyDeactivated;
         Enemy.OnEnemyReachedGate += HandleEnemyDeactivated;
+
 
         LoadWaveData();
 
@@ -157,7 +158,7 @@ public class WaveManager : IInitializable, IDisposable {
             }
 
             for (int i = 0; i < group.NumEnemies; i++) {
-                Enemy enemy = objectPool.CreateEnemy(groupType);
+                Enemy enemy = enemySpawner.SpawnEnemy(groupType);
                 enemy.Spawn();
                 activeEnemies.Add(enemy);
                 yield return new WaitForSeconds(group.TimebetweenSpawns);
