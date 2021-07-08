@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class WaveManager : IInitializable, IDisposable {
+public class WaveManager : IWaveManager, IInitializable, IDisposable {
     private EnemySpawner enemySpawner;
     private AsyncProcessor asyncProcessor;
     private GameManager gameManager;

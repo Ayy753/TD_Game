@@ -4,10 +4,10 @@ using Zenject;
 
 public class ButtonManager: IButtonManager, IInitializable {
     private BuildManager buildManager;
-    private WaveManager waveManager;
+    private IWaveManager waveManager;
     private GameManager gameManager;
 
-    public ButtonManager(BuildManager buildManager, WaveManager waveManager, GameManager gameManager) {
+    public ButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager) {
         Debug.Log("ButtonManager constuctor");
         this.buildManager = buildManager;
         this.waveManager = waveManager;

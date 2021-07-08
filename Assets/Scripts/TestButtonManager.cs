@@ -9,11 +9,11 @@ using Zenject;
 /// </summary>
 public class TestButtonManager : ButtonManager, IInitializable {
     private BuildManager buildManager;
-    private WaveManager waveManager;
+    private IWaveManager waveManager;
     private GameManager gameManager;
     private EnemySpawner enemySpawner;
 
-    public TestButtonManager(BuildManager buildManager, WaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner):base(buildManager, waveManager, gameManager) {
+    public TestButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner):base(buildManager, waveManager, gameManager) {
         Debug.Log("test build manager");
         this.enemySpawner = enemySpawner;
     }
