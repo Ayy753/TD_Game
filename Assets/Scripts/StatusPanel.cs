@@ -36,14 +36,14 @@ public class StatusPanel : IInitializable {
 
     private void UpdateStatusPanel() {
         txtName.text = targetUnit.GetName();
-        txtCurrentHealth.text = Math.Round(targetStatus.CurrentHealth, 1).ToString();
-        txtMaxHealth.text = Math.Round(targetStatus.MaxHealth, 1).ToString();
-        txtArmor.text = targetStatus.Armor.ToString();
-        txtFireResist.text = targetStatus.FireResist.ToString();
-        txtColdResist.text = targetStatus.ColdResist.ToString();
-        txtSpeed.text = targetStatus.Speed.ToString();
-        txtPoisonResist.text = targetStatus.PoisonResist.ToString();
-        txtLightningResist.text = targetStatus.LightningResist.ToString();
+        txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
+        txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
+        txtArmor.text = targetStatus.Armor.Value.ToString();
+        txtFireResist.text = targetStatus.FireResist.Value.ToString();
+        txtColdResist.text = targetStatus.ColdResist.Value.ToString();
+        txtSpeed.text = targetStatus.Speed.Value.ToString();
+        txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
+        txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
         txtUnitDescription.text = targetUnit.GetDescription();
         healthBar.UpdateHealthBar();
     }

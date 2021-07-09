@@ -9,40 +9,21 @@ using UnityEngine;
 public class Status : MonoBehaviour {
     [field: SerializeField] public CharacterData characterData { get; private set; }
     private IUnit unit;
+    private HealthBar healthBar;
 
     public enum StatType {
-        Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, MaxHealth, Speed, Max
-    }
-    private float[] statMods = new float[(int)StatType.Max];
-
-    public float Armor { get { return characterData.BaseArmor + statMods[(int)StatType.Armor]; } }
-    public float ColdResist { get { return characterData.BaseColdResist + statMods[(int)StatType.ColdResist]; } }
-    public float FireResist { get { return characterData.BaseFireResist + statMods[(int)StatType.FireResist]; } }
-    public float PoisonResist { get { return characterData.BasePoisonResist + statMods[(int)StatType.PoisonResist]; } }
-    public float LightningResist { get { return characterData.BaseLightningResist + statMods[(int)StatType.LightningResist]; } }
-    public float CurrentHealth { get { return MaxHealth - DamageInflicted; } }
-    public float Speed { get { return characterData.BaseSpeed + statMods[(int)StatType.Speed]; } }
-    public float MaxHealth { get { return characterData.BaseHealth + statMods[(int)StatType.Health]; } }
-
-    /// <summary>
-    /// The current amount of damage inflicted on unit.
-    /// Dealing negative damage heals the unit. 
-    /// The total inflicted damage will always be >= 0
-    /// </summary>
-    public float DamageInflicted {
-        get {
-            return damageInflicted;
-        }
-        private set {
-            damageInflicted = value;
-            if (damageInflicted < 0) {
-                damageInflicted = 0;
-            }
-        }
+        Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed, Max
     }
 
-    //  The amount of damage the unit currently has. Value will never be negative
-    private float damageInflicted;
+    public Stat[] Stats;
+
+    public Resistance Armor { get; private set; }
+    public Resistance ColdResist { get; private set; }
+    public Resistance FireResist { get; private set; }
+    public Resistance PoisonResist { get; private set; }
+    public Resistance LightningResist { get; private set; }
+    public Health Health { get; private set; }
+    public Speed Speed { get; private set; }
 
     public List<IStatusEffect> statusEffects;
 
@@ -63,30 +44,64 @@ public class Status : MonoBehaviour {
 
     private void Awake() {
         unit = transform.GetComponent<IUnit>();
+        healthBar = transform.parent.GetComponentInChildren<HealthBar>();
+
+        Armor = new Resistance(characterData.BaseArmor);
+        ColdResist = new Resistance(characterData.BaseColdResist);
+        FireResist = new Resistance(characterData.BaseFireResist);
+        PoisonResist = new Resistance(characterData.BasePoisonResist);
+        LightningResist = new Resistance(characterData.BaseLightningResist);
+        Health = new Health(characterData.BaseHealth);
+        Speed = new Speed(characterData.BaseSpeed);
+
+        Stats = new Stat[] {
+            Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed
+        };
+
+        for (int i = 0; i < (int)StatType.Max; i++) {
+            Debug.Log(Stats[i]);
+        }
+
     }
 
     private void OnEnable() {
         statusEffects = new List<IStatusEffect>();
-        DamageInflicted = 0;
-        statMods = new float[(int)StatType.Max];
+        for (int i = 0; i < Stats.Length; i++) {
+            Stats[i].Initialize();
+        }
     }
-    public void TakeDamage(float effectiveDamage) {
-        DamageInflicted += effectiveDamage;
 
-        if (CurrentHealth <= 0) {
+    public void TakeDamage(float effectiveDamage) {
+        Health.TakeDamage(effectiveDamage);
+        healthBar.UpdateHealthBar();
+
+        if (Health.Value <= 0) {
             unit.Died();
+        }
+
+        if (OnStatusChanged != null) {
+            OnStatusChanged.Invoke();
         }
     }
 
     public void RestoreHealth(float amount) {
-        DamageInflicted -= amount;
-    }
-
-    public void ModifyStat(StatType type, float amount) {
-        statMods[(int)type] += amount;
+        Health.Heal(amount);
+        healthBar.UpdateHealthBar();
 
         if (OnStatusChanged != null) {
             OnStatusChanged.Invoke();
+        }
+    }
+
+    public void ModifyStat(StatType type, float amount) {
+        Stats[(int)type].ModifyStat(amount);
+
+        if (OnStatusChanged != null) {
+            OnStatusChanged.Invoke();
+        }
+
+        if (type == StatType.Health) {
+            healthBar.UpdateHealthBar();
         }
     }
 
@@ -99,41 +114,12 @@ public class Status : MonoBehaviour {
         }
     }
 
-    //  Reset status
-    public void Initialize() {
-        //  Clear all stat modifications
-        for (int i = 0; i < (int)StatType.Max; i++) {
-            statMods[i] = 0;
-        }
-
-        DamageInflicted = 0;
-        //  Todo: remove all status effects
-    }
-
     public CharacterData GetCharacterData() {
         return characterData;
     }
 
-    public float GetStat(StatType type) {
-        switch (type) {
-            case StatType.Armor:
-                return Armor;
-            case StatType.ColdResist:
-                return ColdResist;
-            case StatType.FireResist:
-                return FireResist;
-            case StatType.PoisonResist:
-                return PoisonResist;
-            case StatType.LightningResist:
-                return LightningResist;
-            case StatType.Health:
-                return CurrentHealth;
-            case StatType.MaxHealth:
-                return MaxHealth;
-            case StatType.Speed:
-                return Speed;
-            default:
-                throw new Exception("Stat type " + type + " is not valid");
-        }
+    public Stat GetStat(StatType type) {
+        Debug.Log("getting type " + type);
+        return Stats[(int)type];
     }
 }
