@@ -34,7 +34,7 @@ public class StatusPanel : IInitializable {
         pnlStausPanel.SetActive(false);
     }
 
-    private void UpdateStatusPanel() {
+    private void PopulateStatusPanel() {
         txtName.text = targetUnit.GetName();
         txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
         txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
@@ -45,7 +45,33 @@ public class StatusPanel : IInitializable {
         txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
         txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
         txtUnitDescription.text = targetUnit.GetDescription();
-        healthBar.UpdateHealthBar();
+    }
+
+    private void UpdateStatusPanel(Status.StatType statType) {
+        switch (statType) {
+            case Status.StatType.Armor:
+                txtArmor.text = targetStatus.Armor.Value.ToString();
+                break;
+            case Status.StatType.ColdResist:
+                txtColdResist.text = targetStatus.ColdResist.Value.ToString();
+                break;
+            case Status.StatType.FireResist:
+                txtFireResist.text = targetStatus.FireResist.Value.ToString();
+                break;
+            case Status.StatType.PoisonResist:
+                txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
+                break;
+            case Status.StatType.LightningResist:
+                txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
+                break;
+            case Status.StatType.Health:
+                txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
+                txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
+                break;
+            case Status.StatType.Speed:
+                txtSpeed.text = targetStatus.Speed.Value.ToString();
+                break;
+        }
     }
 
     public void TargetUnit(IUnit unit) {
@@ -59,7 +85,7 @@ public class StatusPanel : IInitializable {
         targetUnit = unit;
         targetStatus = unit.GetStatus();
         healthBar.Initialize(targetStatus);
-        UpdateStatusPanel();
+        PopulateStatusPanel();
 
         targetStatus.OnStatusChanged += UpdateStatusPanel;
         targetStatus.OnStatusCleared += ClearTarget;

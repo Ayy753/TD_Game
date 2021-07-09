@@ -27,7 +27,7 @@ public class Status : MonoBehaviour {
 
     public List<IStatusEffect> statusEffects;
 
-    public delegate void StatusChanged();
+    public delegate void StatusChanged(StatType statType);
     public delegate void ClearStatus();
 
     /// <summary>
@@ -73,23 +73,21 @@ public class Status : MonoBehaviour {
 
     public void TakeDamage(float effectiveDamage) {
         Health.TakeDamage(effectiveDamage);
-        healthBar.UpdateHealthBar();
 
         if (Health.Value <= 0) {
             unit.Died();
         }
 
         if (OnStatusChanged != null) {
-            OnStatusChanged.Invoke();
+            OnStatusChanged.Invoke(StatType.Health);
         }
     }
 
     public void RestoreHealth(float amount) {
         Health.Heal(amount);
-        healthBar.UpdateHealthBar();
 
         if (OnStatusChanged != null) {
-            OnStatusChanged.Invoke();
+            OnStatusChanged.Invoke(StatType.Health);
         }
     }
 
@@ -97,11 +95,7 @@ public class Status : MonoBehaviour {
         Stats[(int)type].ModifyStat(amount);
 
         if (OnStatusChanged != null) {
-            OnStatusChanged.Invoke();
-        }
-
-        if (type == StatType.Health) {
-            healthBar.UpdateHealthBar();
+            OnStatusChanged.Invoke(type);
         }
     }
 
