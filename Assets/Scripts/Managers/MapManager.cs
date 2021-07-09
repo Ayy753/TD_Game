@@ -10,6 +10,7 @@ public class MapManager : MonoBehaviour, IMapManager, IInitializable {
 
     TileData[] tileDatas;
     private Dictionary<TileBase, TileData> dataFromTiles;
+    private Dictionary<IMapManager.Layer, Tilemap> layerToTilemap;
 
     //  Stores all the tiles that have been tinted
     private List<HighlightedTile> highlightedTiles;
@@ -49,6 +50,18 @@ public class MapManager : MonoBehaviour, IMapManager, IInitializable {
                 dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
             }
         }
+
+        layerToTilemap = new Dictionary<IMapManager.Layer, Tilemap>() {
+            {IMapManager.Layer.GroundLayer, groundLayer },
+            {IMapManager.Layer.DecoreLayer, decoreLayer },
+            {IMapManager.Layer.PlatformLayer, platformLayer },
+            {IMapManager.Layer.StructureLayer, structureLayer },
+            {IMapManager.Layer.Level1, level1 },
+            {IMapManager.Layer.Level2, level2 },
+            {IMapManager.Layer.Level3, level3 },
+            {IMapManager.Layer.Level4, level4 }
+        };
+
     }
 
     /// <summary>
@@ -57,28 +70,7 @@ public class MapManager : MonoBehaviour, IMapManager, IInitializable {
     /// <param name="layer"></param>
     /// <returns></returns>
     private Tilemap GetLayer(IMapManager.Layer layer) {
-        Tilemap selectLayer = groundLayer;
-        switch (layer) {
-            case IMapManager.Layer.GroundLayer:
-                return groundLayer;
-            case IMapManager.Layer.DecoreLayer:
-                return decoreLayer;
-            case IMapManager.Layer.PlatformLayer:
-                return platformLayer;
-            case IMapManager.Layer.StructureLayer:
-                return structureLayer;
-            case IMapManager.Layer.Level1:
-                return level1;
-            case IMapManager.Layer.Level2:
-                return level2;
-            case IMapManager.Layer.Level3:
-                return level3;
-            case IMapManager.Layer.Level4:
-                return level4;
-            default:
-                Debug.LogError("Layer " + layer + " not found");
-                return null;
-        }
+        return layerToTilemap[layer];
     }
 
     /// <summary>
