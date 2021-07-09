@@ -12,6 +12,7 @@ public class MainInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<ButtonManager>().AsSingle();
         Container.BindInterfacesAndSelfTo<GUIController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<WaveManager>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BuildManager>().AsSingle().NonLazy();
         Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();

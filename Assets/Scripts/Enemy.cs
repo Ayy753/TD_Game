@@ -3,7 +3,6 @@ using UnityEngine;
 using Zenject;
 
 public class Enemy : MonoBehaviour, IUnit {
-    [Inject] private IMessageSystem messageSystem;
     private Status status;
     private HealthBar healthBar;
 
@@ -18,8 +17,8 @@ public class Enemy : MonoBehaviour, IUnit {
         healthBar = transform.parent.GetComponentInChildren<HealthBar>();
         status = transform.GetComponent<Status>();
     }
-        
-    public void Spawn() {
+
+    private void OnEnable() {
         healthBar.Initialize(status);
     }
 
