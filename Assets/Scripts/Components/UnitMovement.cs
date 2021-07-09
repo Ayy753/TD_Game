@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour, IUnitMovement {
     IUnitInput unitInput;
+    IMapManager mapManager;
     private static readonly Vector3 TILEMAP_OFFSET = new Vector3(0.5f, 0.5f, 0);
     private Vector3Int nextTile;
     private Status unitStatus;
 
     private void Awake() {
         unitInput = transform.GetComponent<IUnitInput>();
+        mapManager = GameObject.Find("MapManager").GetComponent<IMapManager>();
         unitStatus = transform.GetComponent<Status>();
     }
 

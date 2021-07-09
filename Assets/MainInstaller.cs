@@ -6,7 +6,7 @@ public class MainInstaller : MonoInstaller {
 
         //  Manager bindings
         Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<MapManager>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<MapManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PathFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ObjectPool>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ButtonManager>().AsSingle();

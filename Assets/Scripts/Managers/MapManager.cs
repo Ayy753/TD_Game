@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
 
-public class MapManager : IMapManager, IInitializable {
+public class MapManager : MonoBehaviour, IMapManager, IInitializable {
     private Tilemap groundLayer, decoreLayer, structureLayer, platformLayer, level1, level2, level3, level4;
 
     TileData[] tileDatas;
