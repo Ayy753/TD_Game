@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,16 +9,19 @@ public class HealthBar : MonoBehaviour{
 
     private void Awake() {
         healthBarForeground = transform.Find("HealthbarFront");
-        status = transform.parent.GetComponent<Status>();
+    }
+
+    public void OnEnable() {
+        healthBarForeground.gameObject.transform.localScale = new Vector3(1, 0.25f, 1);
     }
 
     public void Initialize(Status status) {
         this.status = status;
-        healthBarForeground.gameObject.transform.localScale = new Vector3(1, 0.25f, 1);
     }
 
     public void UpdateHealthBar() {
-        float healthPercent = status.GetStat(Status.StatType.Health) / status.GetStat(Status.StatType.MaxHealth);
+        Health health = status.Health;
+        float healthPercent = health.Value / health.MaxHealth;
         if (healthPercent < 0) {
             healthPercent = 0;
         }

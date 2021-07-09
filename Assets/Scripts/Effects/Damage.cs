@@ -19,7 +19,7 @@ public class Damage : IDamage {
     }
 
     public float CalculateDamage(Status unitStatus) {
-        float resistence = unitStatus.GetStat((Status.StatType)Type);
+        float resistence = unitStatus.GetStat((Status.StatType)Type).Value;
         float effectiveDamage = (1 - resistence / 100) * Potency;
         return effectiveDamage;
     }
