@@ -6,8 +6,12 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
     IUnitInput unitInput;
     IMapManager mapManager;
     private static readonly Vector3 TILEMAP_OFFSET = new Vector3(0.5f, 0.5f, 0);
+    private Vector3Int lastTile;
     private Vector3Int nextTile;
     private Status unitStatus;
+
+    private const int maxTileCost = 15;
+    private float unitSpeed, tileCost, effectiveSpeed;
 
     private void Awake() {
         unitInput = transform.GetComponent<IUnitInput>();
@@ -16,8 +20,15 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
     }
 
     private void OnEnable() {
+        unitStatus.OnStatusChanged += HandleStatChanged;
+        lastTile = Vector3Int.FloorToInt(transform.position);
         nextTile = unitInput.GetNextTile();
         transform.parent.position = nextTile + TILEMAP_OFFSET;
+        CalculateEffectiveSpeed();
+    }
+
+    private void OnDisable() {
+        unitStatus.OnStatusChanged -= HandleStatChanged;
     }
 
     private void Update() {
@@ -44,15 +55,44 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
         }
     }
 
+    /// <summary>
+    /// Calculates and sets the unit's efffective speed based on speed stat and tile cost
+    /// </summary>
+    private void CalculateEffectiveSpeed() {
+        float tileCostMultiplier = (maxTileCost - tileCost) / maxTileCost;
+        tileCost = mapManager.GetTileCost(nextTile);
+        unitSpeed = unitStatus.Speed.Value;
+        effectiveSpeed = unitSpeed * tileCostMultiplier;
+
+        Debug.Log("effective speed set to: " + effectiveSpeed);
+    }
+
+    /// <summary>
+    /// Recalculates effective speed if unit speed stat changes
+    /// </summary>
+    /// <param name="statType"></param>
+    private void HandleStatChanged(Status.StatType statType) {
+        if (statType == Status.StatType.Speed) {
+            CalculateEffectiveSpeed();
+        }
+    }
+
     public void Move() {
         Vector3 nextTileWithOffset = nextTile + TILEMAP_OFFSET;
 
         if (transform.parent.position != nextTileWithOffset) {
-            transform.parent.position = Vector3.MoveTowards(transform.parent.position, nextTileWithOffset, unitStatus.Speed.Value * Time.deltaTime);
+            transform.parent.position = Vector3.MoveTowards(transform.parent.position, nextTileWithOffset, effectiveSpeed * Time.deltaTime);
         }
         else {
             unitInput.ReachedNextTile();
             nextTile = unitInput.GetNextTile();
+        }
+
+        //  Check if unit entered a new tile
+        Vector3Int thisTile = Vector3Int.FloorToInt(transform.position);
+        if (thisTile != lastTile) {
+            lastTile = thisTile;
+            CalculateEffectiveSpeed();
         }
 
         FaceNextNode(nextTile);
