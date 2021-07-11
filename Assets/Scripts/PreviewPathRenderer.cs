@@ -52,14 +52,18 @@ public class PreviewPathRenderer : MonoBehaviour, IPathRenderer {
     }
 
     public void RenderPath(List<Vector3Int> path) {
-        line.positionCount = path.Count;
+        if (path != null) {
+            line.positionCount = path.Count;
 
-        for (int i = 0; i < path.Count; i++) {
-            line.SetPosition(i, path[i] + tilemapOffset);
+            for (int i = 0; i < path.Count; i++) {
+                line.SetPosition(i, path[i] + tilemapOffset);
+            }
         }
     }
 
     public void ClearPath() {
-        line.positionCount = 0;
+        if (line != null) {
+            line.positionCount = 0;
+        }
     }
 }
