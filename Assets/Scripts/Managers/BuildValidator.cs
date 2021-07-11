@@ -7,10 +7,9 @@ public class BuildValidator : IBuildValidator{
     public BuildValidator(IMapManager mapManager) { 
         this.mapManager = mapManager;
     }
-    public bool CanBuildOverTile(Vector3Int position, StructureData selectedStructure) {
-        if (mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == false
-            || mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) == true
-            || mapManager.IsGroundSolid(position) == false) {
+
+    public bool CanBuildStructureOverPosition(Vector3Int position, StructureData selectedStructure) {
+        if (IsPositionBuildable(position) == false) {
             return false;
         }
 
@@ -18,7 +17,15 @@ public class BuildValidator : IBuildValidator{
             && IsTowerAtOrAdjacent(position)) {
             return false;
         }
+        return true;
+    }
 
+    public bool IsPositionBuildable(Vector3Int position) {
+        if (mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == false
+            || mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) == true
+            || mapManager.IsGroundSolid(position) == false) {
+            return false;
+        }
         return true;
     }
 

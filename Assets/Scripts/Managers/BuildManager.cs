@@ -64,7 +64,7 @@ public class BuildManager : IInitializable, IDisposable {
     private void AttemptBuildStructure(StructureData structure, Vector3Int position) {
         
         //  Validate if user can build at this position and can afford structure
-        if (buildValidator.CanBuildOverTile(position, structure) == false) {
+        if (buildValidator.CanBuildStructureOverPosition(position, structure) == false) {
             messageSystem.DisplayMessage("You cannot build here", Color.red);
             return;
         }

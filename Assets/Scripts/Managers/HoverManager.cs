@@ -64,7 +64,7 @@ public class HoverManager : IInitializable, IDisposable {
         Color highlightColor;
 
         if (buildMode == BuildManager.BuildMode.Build) {
-            if (hoverValidator.CanBuildOverTile(position, structureData))
+            if (hoverValidator.CanBuildStructureOverPosition(position, structureData))
                 highlightColor = Color.green;
             else
                 highlightColor = Color.red;
