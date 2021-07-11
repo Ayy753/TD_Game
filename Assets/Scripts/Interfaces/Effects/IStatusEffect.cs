@@ -13,4 +13,10 @@ public interface IStatusEffect : IEffect {
     /// Executes every game tick
     /// </summary>
     public void OnTick();
+
+    /// <summary>
+    /// Returns shallow clone of effect
+    /// </summary>
+    /// <returns></returns>
+    public IStatusEffect Clone();
 }

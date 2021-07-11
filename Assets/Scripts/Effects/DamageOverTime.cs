@@ -34,4 +34,8 @@ public class DamageOverTime : IStatusEffect, IDamage{
     public void Remove() {
         //  Does nothing for now
     }
+
+    public IStatusEffect Clone() {
+        return (IStatusEffect)this.MemberwiseClone();
+    }
 }

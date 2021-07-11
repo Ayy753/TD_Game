@@ -25,4 +25,8 @@ public class Buff : IStatusEffect, IStatMod{
     public void Remove() {
         unitStatus.ModifyStat(Type, -Potency);
     }
+
+    public IStatusEffect Clone() {
+        return (IStatusEffect)this.MemberwiseClone();
+    }
 }

@@ -63,8 +63,15 @@ public class Projectile : MonoBehaviour {
     /// </summary>
     /// <param name="unit"></param>
     private void ApplyEffects(IUnit unit) {
+        //  Status effects must be cloned in order to be applied to multiple units
         foreach (IEffect effect in projectileData.effects) {
-            unit.GetStatus().ApplyEffect(effect);
+            if (effect is IStatusEffect) {
+                IStatusEffect statusEffect = ((IStatusEffect)effect).Clone();
+                unit.GetStatus().ApplyEffect(statusEffect);
+            }
+            else {
+                unit.GetStatus().ApplyEffect(effect);
+            }
         }
     }
 }
