@@ -1,14 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class PathRenderer : MonoBehaviour{
-
+public class MainPathRenderer : MonoBehaviour, IPathRenderer {
     [Inject] private IPathfinder pathfinder;
     private LineRenderer line;
-    private readonly Vector3 tilemapOffset = new Vector3(0.5f,0.5f,0);
+    private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
 
     private void Awake() {
         line = GetComponent<LineRenderer>();
@@ -19,7 +17,7 @@ public class PathRenderer : MonoBehaviour{
         RenderPath(pathfinder.GetMainPath());
     }
 
-    private void RenderPath(List<Vector3Int> path) {
+    public void RenderPath(List<Vector3Int> path) {
         line.positionCount = path.Count;
 
         for (int i = 0; i < path.Count; i++) {

@@ -169,6 +169,192 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
         }
     }
 
+    public List<Vector3Int> GetBuildPreviewPath(Vector3Int positionBlocked) {
+        Debug.Log("Calculating build preview path");
+
+        List<PathNode> openList = new List<PathNode>();
+        List<PathNode> closedList = new List<PathNode>();
+
+        Vector3Int entranceCoordinate = Vector3Int.FloorToInt(entrance.transform.position);
+        Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
+
+        Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
+
+        //  initialize with entrance coordinate
+        PathNode initialStep = new PathNode(entranceCoordinate);
+        openList.Add(initialStep);
+
+        while (openList.Count > 0) {
+            //  find the lowest F cost in openList
+            PathNode currentNode = openList[0];
+            foreach (PathNode node in openList) {
+                if (node.Fcost < currentNode.Fcost) {
+                    currentNode = node;
+                }
+            }
+
+            //  Assign it as the parent to it's successors
+            PathNode parent = currentNode;
+
+            //  Remove parent from openList
+            openList.Remove(currentNode);
+
+            //  Add parent to closedList
+            closedList.Add(currentNode);
+
+            //  Return path chain if we found the exit tile
+            if (currentNode.Coordinate == exitCoordinate) {
+                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
+                PathRecalculated.Invoke(this, EventArgs.Empty);
+                return foundPath.GetPath();
+            }
+
+            //  Process neighbouring tiles
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    //  Ignore diagonal tiles (one of the coords must be zero and the other non-zero in order to be non-diagonal)
+                    if ((x == 0 && y != 0) || (x != 0 && y == 0)) {
+                        Vector3Int neighbourCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
+                        bool skipSuccessor = false;
+
+                        //  Proceed if there is an open space at this position
+                        if (IsValidTile(neighbourCoordinate) && neighbourCoordinate != positionBlocked) {
+                            // Skip this tile if its already been considered
+                            foreach (PathNode node in closedList) {
+                                if (node.Coordinate == neighbourCoordinate) {
+                                    skipSuccessor = true;
+                                    break;
+                                }
+                            }
+
+                            //  Otherwise, process this tile 
+                            if (skipSuccessor == false) {
+                                float tileCost = mapManager.GetTileCost(neighbourCoordinate);
+                                float neighGCost = tileCost + parent.Gcost;
+                                float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
+                                float neighFCost = neighGCost + neighHCost;
+
+                                //  Check if openlist already contains a path to this tile
+                                //  If it has, and the other one has a smaller F cost, update cost and parent
+                                foreach (PathNode node in openList) {
+                                    if (node.Coordinate == neighbourCoordinate) {
+                                        if (node.Fcost < neighFCost) {
+                                            node.Fcost = neighFCost;
+                                            node.ParentNode = parent;
+                                        }
+                                        skipSuccessor = true;
+                                        break;
+                                    }
+                                }
+
+                                //  Otherwise add this successor to openList
+                                if (skipSuccessor == false) {
+                                    PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
+                                    openList.Add(successor);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Vector3Int> GetDemolishPreviewPath(Vector3Int positionDemolished) {
+        Debug.Log("Calculating demolish preview path");
+
+        List<PathNode> openList = new List<PathNode>();
+        List<PathNode> closedList = new List<PathNode>();
+
+        Vector3Int entranceCoordinate = Vector3Int.FloorToInt(entrance.transform.position);
+        Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
+
+        Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
+
+        //  initialize with entrance coordinate
+        PathNode initialStep = new PathNode(entranceCoordinate);
+        openList.Add(initialStep);
+
+        while (openList.Count > 0) {
+            //  find the lowest F cost in openList
+            PathNode currentNode = openList[0];
+            foreach (PathNode node in openList) {
+                if (node.Fcost < currentNode.Fcost) {
+                    currentNode = node;
+                }
+            }
+
+            //  Assign it as the parent to it's successors
+            PathNode parent = currentNode;
+
+            //  Remove parent from openList
+            openList.Remove(currentNode);
+
+            //  Add parent to closedList
+            closedList.Add(currentNode);
+
+            //  Return path chain if we found the exit tile
+            if (currentNode.Coordinate == exitCoordinate) {
+                PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
+                PathRecalculated.Invoke(this, EventArgs.Empty);
+                return foundPath.GetPath();
+            }
+
+            //  Process neighbouring tiles
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    //  Ignore diagonal tiles (one of the coords must be zero and the other non-zero in order to be non-diagonal)
+                    if ((x == 0 && y != 0) || (x != 0 && y == 0)) {
+                        Vector3Int neighbourCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
+                        bool skipSuccessor = false;
+
+                        //  Proceed if there is an open space at this position
+                        if (IsValidTile(neighbourCoordinate) || neighbourCoordinate == positionDemolished) {
+                            // Skip this tile if its already been considered
+                            foreach (PathNode node in closedList) {
+                                if (node.Coordinate == neighbourCoordinate) {
+                                    skipSuccessor = true;
+                                    break;
+                                }
+                            }
+
+                            //  Otherwise, process this tile 
+                            if (skipSuccessor == false) {
+                                float tileCost = mapManager.GetTileCost(neighbourCoordinate);
+                                float neighGCost = tileCost + parent.Gcost;
+                                float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
+                                float neighFCost = neighGCost + neighHCost;
+
+                                //  Check if openlist already contains a path to this tile
+                                //  If it has, and the other one has a smaller F cost, update cost and parent
+                                foreach (PathNode node in openList) {
+                                    if (node.Coordinate == neighbourCoordinate) {
+                                        if (node.Fcost < neighFCost) {
+                                            node.Fcost = neighFCost;
+                                            node.ParentNode = parent;
+                                        }
+                                        skipSuccessor = true;
+                                        break;
+                                    }
+                                }
+
+                                //  Otherwise add this successor to openList
+                                if (skipSuccessor == false) {
+                                    PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
+                                    openList.Add(successor);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public List<Vector3Int> GetMainPath() {
 
 

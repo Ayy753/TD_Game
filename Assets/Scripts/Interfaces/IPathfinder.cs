@@ -11,6 +11,18 @@ public interface IPathfinder {
     public List<Vector3Int> GetMainPath();
 
     /// <summary>
+    /// A preview of the path if this position was blocked
+    /// </summary>
+    /// <returns></returns>
+    public List<Vector3Int> GetBuildPreviewPath(Vector3Int positionBlocked);
+
+    /// <summary>
+    /// A preview of the path if this position was demolished
+    /// </summary>
+    /// <returns></returns>
+    public List<Vector3Int> GetDemolishPreviewPath(Vector3Int positionDemolished);
+
+    /// <summary>
     /// Pathfinding to join main path
     /// </summary>
     /// <returns></returns>

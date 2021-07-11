@@ -27,7 +27,8 @@ public class TestInstaller : MonoInstaller {
 
         //  Misc bindings
         Container.Bind<RadiusRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/RadiusRenderer").AsSingle();
-        Container.Bind<PathRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/PathRenderer").AsSingle().NonLazy();
+        Container.Bind<MainPathRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/MainPathRenderer").AsSingle().NonLazy();
+        Container.Bind<PreviewPathRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/PreviewPathRenderer").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<StatusPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<TowerPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<TargetManager>().AsSingle();
