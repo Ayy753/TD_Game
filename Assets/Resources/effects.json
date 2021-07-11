@@ -1,43 +1,50 @@
 {
-   "projectiles":[
-      {
-         "name":"Frost Projectile",
-         "description":"Slows target",
-         "effects":[
-            {
-               "type":"Buff",
-			   "statType":"Speed",
-               "potency":-0.5,
-               "duration":3
-            },
-            {
-               "type":"Damage",
-               "damageType":"Cold",
-               "potency":1.5
-            },
-            {
-               "type":"Damage",
-               "damageType":"Physical",
-               "potency":1.5
-            }
-         ]
-      },
-      {
-         "name":"Poison Projectile",
-         "description":"Poisons target",
-         "effects":[
-            {
-               "type":"DOT",
-               "damageType":3,
-               "potency":3,
-               "duration":3
-            },
-            {
-               "type":"Damage",
-               "damageType":"Physical",
-               "potency":1.5
-            }
-         ]
-      }
-   ]
+  "projectiles": [
+    {
+      "name": "Frost Projectile",
+      "description": "Slows target",
+      "effects": [
+        {
+          "type": "Debuff",
+          "statType": "Speed",
+          "potency": 0.25,
+          "duration": 1,
+		  "resistType" : "Cold"
+        },
+        {
+          "type": "Damage",
+          "damageType": "Cold",
+          "potency": 0.5
+        },
+        {
+          "type": "Damage",
+          "damageType": "Physical",
+          "potency": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Poison Projectile",
+      "description": "Poisons target",
+      "effects": [
+        {
+          "type": "DOT",
+          "damageType": 3,
+          "potency": 3,
+          "duration": 3
+        },
+        {
+          "type": "Damage",
+          "damageType": "Physical",
+          "potency": 1.5
+        },
+        {
+          "type": "Buff",
+          "statType": "Speed",
+          "potency": 0.25,
+          "duration": 1
+        }
+      ]
+    }
+  ]
 }

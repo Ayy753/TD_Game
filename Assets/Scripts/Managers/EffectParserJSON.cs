@@ -9,7 +9,7 @@ public class EffectParserJSON : MonoBehaviour {
     private List<ProjectileData> projectileDatas = new List<ProjectileData>();
 
     enum EffectType {
-        Buff, Damage, DOT, StatMod
+        Buff, Damage, DOT, StatMod, Debuff
     }
 
     void Start() {
@@ -50,6 +50,10 @@ public class EffectParserJSON : MonoBehaviour {
         [JsonProperty("statType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
         public Status.StatType StatType { get; set; }
+
+        [JsonProperty("resistType", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public IDamage.DamageType ResistType { get; set; }
     }
 
     /// <summary>
@@ -86,6 +90,9 @@ public class EffectParserJSON : MonoBehaviour {
                     break;
                 case EffectType.StatMod:
                     effects[i] = new StatMod(currentEffect.Potency, currentEffect.StatType);
+                    break;
+                case EffectType.Debuff:
+                    effects[i] = new Debuff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType, currentEffect.ResistType);
                     break;
                 default:
                     throw new System.Exception("The effect type " + currentEffect.Type + " is not valid");
