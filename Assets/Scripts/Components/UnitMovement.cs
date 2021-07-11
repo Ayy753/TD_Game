@@ -8,10 +8,11 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
     private static readonly Vector3 TILEMAP_OFFSET = new Vector3(0.5f, 0.5f, 0);
     private Vector3Int lastTile;
     private Vector3Int nextTile;
+    Vector3 nextTileWithOffset;
     private Status unitStatus;
 
     private const int maxTileCost = 15;
-    private float unitSpeed, tileCost, effectiveSpeed;
+    private float cachedUnitSpeed, effectiveSpeed;
 
     private void Awake() {
         unitInput = transform.GetComponent<IUnitInput>();
@@ -23,7 +24,9 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
         unitStatus.OnStatusChanged += HandleStatChanged;
         lastTile = Vector3Int.FloorToInt(transform.position);
         nextTile = unitInput.GetNextTile();
+        nextTileWithOffset = nextTile + TILEMAP_OFFSET;
         transform.parent.position = nextTile + TILEMAP_OFFSET;
+        cachedUnitSpeed = unitStatus.Speed.Value;
         CalculateEffectiveSpeed();
     }
 
@@ -59,12 +62,9 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
     /// Calculates and sets the unit's efffective speed based on speed stat and tile cost
     /// </summary>
     private void CalculateEffectiveSpeed() {
+        float tileCost = mapManager.GetTileCost(nextTile);
         float tileCostMultiplier = (maxTileCost - tileCost) / maxTileCost;
-        tileCost = mapManager.GetTileCost(nextTile);
-        unitSpeed = unitStatus.Speed.Value;
-        effectiveSpeed = unitSpeed * tileCostMultiplier;
-
-        Debug.Log("effective speed set to: " + effectiveSpeed);
+        effectiveSpeed = cachedUnitSpeed * tileCostMultiplier;
     }
 
     /// <summary>
@@ -73,12 +73,19 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
     /// <param name="statType"></param>
     private void HandleStatChanged(Status.StatType statType) {
         if (statType == Status.StatType.Speed) {
+            cachedUnitSpeed = unitStatus.Speed.Value;
             CalculateEffectiveSpeed();
         }
     }
 
     public void Move() {
-        Vector3 nextTileWithOffset = nextTile + TILEMAP_OFFSET;
+
+        //  Check if unit entered a new tile
+        Vector3Int thisTile = Vector3Int.FloorToInt(transform.position);
+        if (thisTile != lastTile) {
+            lastTile = thisTile;
+            CalculateEffectiveSpeed();
+        }
 
         if (transform.parent.position != nextTileWithOffset) {
             transform.parent.position = Vector3.MoveTowards(transform.parent.position, nextTileWithOffset, effectiveSpeed * Time.deltaTime);
@@ -86,13 +93,7 @@ public class UnitMovement : MonoBehaviour, IUnitMovement {
         else {
             unitInput.ReachedNextTile();
             nextTile = unitInput.GetNextTile();
-        }
-
-        //  Check if unit entered a new tile
-        Vector3Int thisTile = Vector3Int.FloorToInt(transform.position);
-        if (thisTile != lastTile) {
-            lastTile = thisTile;
-            CalculateEffectiveSpeed();
+            nextTileWithOffset = nextTile + TILEMAP_OFFSET;
         }
 
         FaceNextNode(nextTile);
