@@ -15,8 +15,8 @@ public class DamageOverTime : IStatusEffect, IDamage{
         Type = damageType;
     }
 
-    public void Apply(IUnit unit) {
-        Status unitStatus = unit.GetStatus();
+    public void Apply(Status status) {
+        unitStatus = status;
     }
 
     public float CalculateDamage(Status unitStatus) {

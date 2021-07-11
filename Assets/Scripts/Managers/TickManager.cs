@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class TickManager : MonoBehaviour {
-    public const float tickFrequency = 1 / 3;
+    public const float tickFrequency = 1f / 3f;
     private float accumulatedTime = 0;
 
     public delegate void Tick();

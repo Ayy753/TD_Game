@@ -9,11 +9,13 @@ public class Buff : IStatusEffect, IStatMod{
     public Buff(float potency, float duration, Status.StatType statType) {
         Potency = potency;
         Type = statType;
+        Duration = duration;
     }
 
-    public void Apply(IUnit unit) {
-        Status unitStatus = unit.GetStatus();
+    public void Apply(Status status) {
+        unitStatus = status;
         unitStatus.ModifyStat(Type, Potency);
+        RemainingDuration = Duration;
     }
 
     public void OnTick() {

@@ -9,7 +9,6 @@ using UnityEngine;
 public class Status : MonoBehaviour {
     [field: SerializeField] public CharacterData characterData { get; private set; }
     private IUnit unit;
-    private HealthBar healthBar;
 
     public enum StatType {
         Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed, Max
@@ -44,7 +43,6 @@ public class Status : MonoBehaviour {
 
     private void Awake() {
         unit = transform.GetComponent<IUnit>();
-        healthBar = transform.parent.GetComponentInChildren<HealthBar>();
 
         Armor = new Resistance(characterData.BaseArmor);
         ColdResist = new Resistance(characterData.BaseColdResist);
@@ -57,18 +55,19 @@ public class Status : MonoBehaviour {
         Stats = new Stat[] {
             Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed
         };
-
-        for (int i = 0; i < (int)StatType.Max; i++) {
-            Debug.Log(Stats[i]);
-        }
-
     }
 
     private void OnEnable() {
+        TickManager.OnTick += OnTick;
+
         statusEffects = new List<IStatusEffect>();
         for (int i = 0; i < Stats.Length; i++) {
             Stats[i].Initialize();
         }
+    }
+
+    private void OnDisable() {
+        TickManager.OnTick -= OnTick;
     }
 
     public void TakeDamage(float effectiveDamage) {
@@ -99,11 +98,19 @@ public class Status : MonoBehaviour {
         }
     }
 
+    public void ApplyEffect(IEffect effect) {
+        if (effect is IStatusEffect) { 
+            statusEffects.Add((IStatusEffect)effect);
+        }
+        effect.Apply(this);
+    }
+
     private void OnTick() {
-        foreach (IStatusEffect statusEffect in statusEffects) {
-            statusEffect.OnTick();
-            if (statusEffect.RemainingDuration >= 0) {
-                statusEffects.Remove(statusEffect);
+        for (int i = 0; i < statusEffects.Count; i++) {
+            statusEffects[i].OnTick();
+            if (statusEffects[i].RemainingDuration <= 0) {
+                statusEffects[i].Remove();
+                statusEffects.Remove(statusEffects[i]);
             }
         }
     }
@@ -113,7 +120,6 @@ public class Status : MonoBehaviour {
     }
 
     public Stat GetStat(StatType type) {
-        Debug.Log("getting type " + type);
         return Stats[(int)type];
     }
 }

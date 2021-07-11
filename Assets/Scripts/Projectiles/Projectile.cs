@@ -64,7 +64,7 @@ public class Projectile : MonoBehaviour {
     /// <param name="unit"></param>
     private void ApplyEffects(IUnit unit) {
         foreach (IEffect effect in projectileData.effects) {
-            effect.Apply(unit);
+            unit.GetStatus().ApplyEffect(effect);
         }
     }
 }
