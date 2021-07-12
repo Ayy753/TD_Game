@@ -3,7 +3,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
     public Transform Target { get; private set; }
     public Vector3 LastTargetPosition { get; private set; }
-    private ProjectileData projectileData;
+    private EffectGroup effectGroup;
 
     private bool targetDied;
     private bool dealtDamage;
@@ -12,12 +12,12 @@ public class Projectile : MonoBehaviour {
         MoveTowardsTarget();
     }
 
-    public void Initialize(Vector3 startPos, Transform target, ProjectileData projectileData) {
+    public void Initialize(Vector3 startPos, Transform target, EffectGroup effectGroup) {
         transform.position = startPos;
         Target = target;
         targetDied = false;
         dealtDamage = false;
-        this.projectileData = projectileData;
+        this.effectGroup = effectGroup;
     }
 
     protected void MoveTowardsTarget() {
@@ -46,32 +46,19 @@ public class Projectile : MonoBehaviour {
             //  If the unit is the target
             if (unit.GetTransform() == Target) {
                 dealtDamage = true;
-                ApplyEffects(unit);
+                ApplyEffectGroup(unit);
                 gameObject.SetActive(false);
             }
             //  If target is already dead, it can damage another unit
             else if (targetDied == true) {
-                ApplyEffects(unit);
+                ApplyEffectGroup(unit);
                 dealtDamage = true;
                 gameObject.SetActive(false);
             }
         }
     }
 
-    /// <summary>
-    /// Apply effect to unit
-    /// </summary>
-    /// <param name="unit"></param>
-    private void ApplyEffects(IUnit unit) {
-        //  Status effects must be cloned in order to be applied to multiple units
-        foreach (IEffect effect in projectileData.effects) {
-            if (effect is IStatusEffect) {
-                IStatusEffect statusEffect = ((IStatusEffect)effect).Clone();
-                unit.GetStatus().ApplyEffect(statusEffect);
-            }
-            else {
-                unit.GetStatus().ApplyEffect(effect);
-            }
-        }
+    private void ApplyEffectGroup(IUnit unit) {
+        unit.GetStatus().ApplyEffectGroup(effectGroup);
     }
 }

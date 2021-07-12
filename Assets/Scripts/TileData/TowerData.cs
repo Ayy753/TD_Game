@@ -20,7 +20,7 @@ public class TowerData : StructureData {
     [field: SerializeField]
     public override int Cost { get; protected set; }
     //[field: SerializeField]
-    public ProjectileData ProjectileData { get; protected set; }
+    public EffectGroup EffectGroup { get; protected set; }
     [field: SerializeField]
     public string ProjectileName { get; protected set; }
 
@@ -35,7 +35,7 @@ public class TowerData : StructureData {
         //return base.ToString() + string.Format("\n<b>Raw Damage</b>: {0}\n<b>Range</b>: {1}\n<b>Cost</b>: {2}\n<b>Shots per second</b>: {3}", ProjectileData.RawTotalDamage(), Range, Cost, 1/ReloadTime);
     }
 
-    public void SetProjectileData(ProjectileData projectileData) {
-        ProjectileData = projectileData;
+    public void SetEffectGroup(EffectGroup effectGroup) {
+        EffectGroup = effectGroup;
     }
 }

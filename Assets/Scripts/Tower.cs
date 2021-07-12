@@ -31,8 +31,8 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
         StartCoroutine(TurretTracking());
         StartCoroutine(TargetFinder());
 
-        ProjectileData projectileData = effectParser.GetProjectileData(TowerData.ProjectileName);
-        TowerData.SetProjectileData(projectileData);
+        EffectGroup effectGroup = effectParser.GetEffectGroup(TowerData.ProjectileName);
+        TowerData.SetEffectGroup(effectGroup);
     }
 
     private void Update() {
@@ -50,8 +50,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
             //  Fire projectile
             Projectile projectile = objectPool.CreateProjectile();
-            projectile.Initialize(transform.position, target.transform, TowerData.ProjectileData);
-            Debug.Log("firing " + TowerData.ProjectileData.Name);
+            projectile.Initialize(transform.position, target.transform, TowerData.EffectGroup);
 
             timeSinceLastShot = 0;
         }

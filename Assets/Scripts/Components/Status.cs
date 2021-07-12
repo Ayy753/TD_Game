@@ -98,11 +98,13 @@ public class Status : MonoBehaviour {
         }
     }
 
-    public void ApplyEffect(IEffect effect) {
-        if (effect is IStatusEffect) { 
-            statusEffects.Add((IStatusEffect)effect);
+    public void ApplyEffectGroup(EffectGroup effectGroup) {
+        foreach (IEffect effect in effectGroup.GetEffects()) {
+            if (effect is IStatusEffect) {
+                statusEffects.Add((IStatusEffect)effect);
+            }
+            effect.Apply(this);
         }
-        effect.Apply(this);
     }
 
     private void OnTick() {
