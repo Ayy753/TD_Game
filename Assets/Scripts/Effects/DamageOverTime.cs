@@ -5,9 +5,7 @@ public class DamageOverTime : IStatusEffect, IDamage{
     public float RemainingDuration { get; private set; }
 
     private Status unitStatus;
-
-    //  Deals 1/nth the potency in damage every tick
-    private static float damageRatio = 1 / 10;
+    private float damagePerTick;
 
     public DamageOverTime(float potency, float duration, IDamage.DamageType damageType) {
         Duration = duration;
@@ -17,17 +15,21 @@ public class DamageOverTime : IStatusEffect, IDamage{
 
     public void Apply(Status status) {
         unitStatus = status;
+        RemainingDuration = Duration;
+        damagePerTick = CalculateDamage(unitStatus);
     }
 
     public float CalculateDamage(Status unitStatus) {
+        //  Get resistence value based on damage type
         float resistence = unitStatus.GetStat((Status.StatType)Type).Value;
-        float effectiveDamage = (1 - resistence / 100) * Potency * damageRatio;
-        return effectiveDamage;
+        float effectiveDamage = (1 - resistence / 100) * Potency;
+        float damagerPerTick = effectiveDamage / (Duration * (1 / TickManager.tickFrequency));
+
+        return damagerPerTick;
     }
 
     public void OnTick() {
-        float effectiveDamage = CalculateDamage(unitStatus);
-        unitStatus.TakeDamage(effectiveDamage);
+        unitStatus.TakeDamage(damagePerTick);
         RemainingDuration -= TickManager.tickFrequency;
     }
 

@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "DOT",
-          "damageType": 3,
+          "damageType": "Poison",
           "potency": 3,
           "duration": 3
         },
@@ -37,7 +37,13 @@
           "type": "Damage",
           "damageType": "Physical",
           "potency": 1.5
-        },
+        }
+      ]
+    },
+	{
+      "name": "Buff Projectile",
+      "description": "Poisons target",
+      "effects": [
         {
           "type": "Buff",
           "statType": "Speed",
