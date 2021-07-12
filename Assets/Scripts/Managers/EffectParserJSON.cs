@@ -1,27 +1,26 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class EffectParserJSON : MonoBehaviour {
     private const string FilePath = "effects";
-    private List<ProjectileData> projectileDatas = new List<ProjectileData>();
+    private List<EffectGroup> effectGroups = new List<EffectGroup>();
 
     enum EffectType {
         Buff, Damage, DOT, StatMod, Debuff
     }
 
     void Start() {
-        LoadProjectileData();
+        EffectGroups();
     }
 
     private class Root {
-        [JsonProperty("projectiles")]
-        public ParsedProjectile[] Projectiles { get; set; }
+        [JsonProperty("effectGroup")]
+        public ParsedEffectGroup[] effectGroups { get; set; }
     }
 
-    private class ParsedProjectile {
+    private class ParsedEffectGroup {
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -57,27 +56,27 @@ public class EffectParserJSON : MonoBehaviour {
     }
 
     /// <summary>
-    /// Loads projectile data from json file and creates ProjectileData ScriptableObject assets
+    /// Loads effect groups from json file and creates EffectGroup ScriptableObjects
     /// </summary>
-    private void LoadProjectileData() {
+    private void EffectGroups() {
         string jsonText = ((TextAsset)Resources.Load(FilePath, typeof(TextAsset))).text;
         Root root = JsonConvert.DeserializeObject<Root>(jsonText);
 
-        foreach (ParsedProjectile parsedProjectile in root.Projectiles) {
-            CreateProjectileDataAsset(parsedProjectile);
+        foreach (ParsedEffectGroup parsedEffectGroups in root.effectGroups) {
+            CreateEffectGroup(parsedEffectGroups);
         }
     }
 
     /// <summary>
-    /// Converts parsed json data into projectile data asset
+    /// Converts parsed json data into effect group object
     /// </summary>
-    /// <param name="parsedProjectile">Parsed projectile data</param>
-    private void CreateProjectileDataAsset(ParsedProjectile parsedProjectile) {
-        int effectsLen = parsedProjectile.Effects.Length;
+    /// <param name="parsedEffectGroup">Parsed effect groups</param>
+    private void CreateEffectGroup(ParsedEffectGroup parsedEffectGroup) {
+        int effectsLen = parsedEffectGroup.Effects.Length;
         IEffect[] effects = new IEffect[effectsLen];
 
         for (int i = 0; i < effectsLen; i++) {
-            ParsedEffect currentEffect = parsedProjectile.Effects[i];
+            ParsedEffect currentEffect = parsedEffectGroup.Effects[i];
             switch (currentEffect.Type) {
                 case EffectType.Buff:
                     effects[i] = new Buff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType);
@@ -98,17 +97,17 @@ public class EffectParserJSON : MonoBehaviour {
                     throw new System.Exception("The effect type " + currentEffect.Type + " is not valid");
             }
         }
-        ProjectileData projectileData = ScriptableObject.CreateInstance("ProjectileData") as ProjectileData;
-        projectileData.Init(parsedProjectile.Name, parsedProjectile.Description, effects);
-        projectileDatas.Add(projectileData);
+        EffectGroup effectGroup = ScriptableObject.CreateInstance("EffectGroup") as EffectGroup;
+        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects);
+        effectGroups.Add(effectGroup);
     }
 
-    public ProjectileData GetProjectileData(string name) {
-        foreach (ProjectileData projectileData in projectileDatas) {
-            if (projectileData.Name == name) {
-                return projectileData;
+    public EffectGroup GetEffectGroup(string name) {
+        foreach (EffectGroup effectGroup in effectGroups) {
+            if (effectGroup.Name == name) {
+                return effectGroup;
             }
         }
-        throw new System.Exception("The projectiledata named " + name + " does not exist");
+        throw new System.Exception("The effectGroup named " + name + " does not exist");
     }
 }

@@ -1,5 +1,5 @@
 {
-  "projectiles": [
+  "effectGroup": [
     {
       "name": "Frost Projectile",
       "description": "Slows target",
