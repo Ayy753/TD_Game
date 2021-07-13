@@ -13,7 +13,6 @@ public class Damage : IDamage {
     public void Apply(Status status) {
         float effectiveDamage = CalculateDamage(status);
         status.TakeDamage(effectiveDamage);
-        Debug.Log("dealt damage: " + effectiveDamage);
     }
 
     public float CalculateDamage(Status unitStatus) {

@@ -49,7 +49,6 @@ public class Health : Stat {
 
     public void TakeDamage(float amount) {
         DamageInflicted += amount;
-        Debug.Log(string.Format("baseval:{0}, mod:{1}, value:{2}, max:{3}", baseValue, modification, Value, MaxHealth));
     }
 
     public void Heal(float amount) {
