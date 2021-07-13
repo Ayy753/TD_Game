@@ -47,13 +47,6 @@ public class Enemy : MonoBehaviour, IUnit {
         return status;
     }
 
-    //public override void ApplyDamage(Damage.DamageTypeAndAmount[] damages) {
-    //    float damage = Damage.CalculateDamage(status, damages);
-    //    status.ModifyDamage(damage);
-    //    messageSystem.DisplayMessageAt(transform.position, Math.Round(damage, 1).ToString(), Color.red, 0.33f);
-    //    healthBar.UpdateHealthBar();
-    //}
-
     public Transform GetTransform() {
         return transform;
     }
@@ -72,10 +65,6 @@ public class Enemy : MonoBehaviour, IUnit {
 
     public string GetName() {
         return ((EnemyData)status.characterData).Name;
-    }
-
-    public void ApplyDamage(float damage) {
-        status.TakeDamage(damage);
     }
 
     public GameObject GetGameObject() {
