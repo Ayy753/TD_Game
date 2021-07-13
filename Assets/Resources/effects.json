@@ -41,8 +41,26 @@
       ]
     },
 	{
-      "name": "Buff Projectile",
-      "description": "Poisons target",
+      "name": "Splash Projectile",
+      "description": "Does fire and physical area damage",
+      "effects": [
+        {
+          "type": "AreaDamage",
+	      "damageType": "Fire",
+          "potency": 1.5,
+		  "radius": 3
+        },
+        {
+          "type": "AreaDamage",
+	      "damageType": "Physical",
+          "potency": 1.5,
+		  "radius": 3
+        }		
+      ]
+    },
+	{
+      "name": "Speed Buff",
+      "description": "Increases speed",
       "effects": [
         {
           "type": "Buff",
@@ -51,6 +69,6 @@
           "duration": 1
         }
       ]
-    }
+    }	
   ]
 }
