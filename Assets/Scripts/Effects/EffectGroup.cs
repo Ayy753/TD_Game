@@ -31,4 +31,24 @@ public class EffectGroup : ScriptableObject{
         }
         return effects;
     }
+
+
+    public new string ToString() {
+        string result = "";
+        foreach (IEffect effect in Effects) {
+            if (effect is Damage) {
+                result += string.Format("Deals {0} {1} damage\n", effect.Potency, ((Damage)effect).Type);
+            }
+            else if (effect is DamageOverTime) {
+                result += string.Format("Deals {0} {1} damage over {2} seconds\n", effect.Potency, ((DamageOverTime)effect).Type, ((DamageOverTime)effect).Duration);
+            }
+            else if (effect is Debuff) {
+                result += string.Format("Reduces {0} by {1} for {2} seconds\n", ((Debuff)effect).Type, effect.Potency, ((Debuff)effect).Duration);
+            }
+            else if (effect is AreaDamage) {
+                result += string.Format("Deals {0} {1} in a {2}m radius\n", effect.Potency, ((AreaDamage)effect).Type, ((AreaDamage)effect).Radius);
+            }
+        }
+        return result;
+    }
 }

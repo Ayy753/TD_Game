@@ -31,8 +31,11 @@ public class TowerData : StructureData {
     }
 
     public override string ToString() {
-        return "";
-        //return base.ToString() + string.Format("\n<b>Raw Damage</b>: {0}\n<b>Range</b>: {1}\n<b>Cost</b>: {2}\n<b>Shots per second</b>: {3}", ProjectileData.RawTotalDamage(), Range, Cost, 1/ReloadTime);
+        return base.ToString() 
+            + string.Format("\n<b>Range</b>: {0}m" +
+            "\n<b>Cost</b>: {1}g" +
+            "\n<b>Reload time</b>: {2}s" +
+            "\n\n<b>Projectile Effects</b>:\n{3}", Range, Cost, ReloadTime, EffectGroup.ToString());
     }
 
     public void SetEffectGroup(EffectGroup effectGroup) {

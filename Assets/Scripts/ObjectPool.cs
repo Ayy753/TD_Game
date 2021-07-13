@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-public class ObjectPool : IInitializable
-{
+public class ObjectPool : IInitializable{
+    EffectParserJSON effectParser;
+
     private readonly DiContainer _container;
     private readonly GameObject[] enemyPrefabs;
     private List<Enemy> instantiatedEnemies;
@@ -20,8 +20,10 @@ public class ObjectPool : IInitializable
     private readonly GameObject floatingTextPrefab;
     private List<FloatingText> instantiatedFloatingTexts;
 
-    public ObjectPool(DiContainer container) {
+    public ObjectPool(DiContainer container, EffectParserJSON effectParser) {
         _container = container;
+        this.effectParser = effectParser;
+
         enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
         projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/Projectile");
         towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
@@ -33,11 +35,8 @@ public class ObjectPool : IInitializable
 
         instantiatedEnemies = new List<Enemy>();
         enemyTypeToPrefab = new Dictionary<EnemyData.Type, GameObject>();
-
         instantiatedProjectiles = new List<Projectile>();
-
         towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
-
         instantiatedFloatingTexts = new List<FloatingText>();
 
         //  Link enemy types to prefabs
@@ -73,6 +72,11 @@ public class ObjectPool : IInitializable
                 default:
                     throw new System.Exception(string.Format("Tower name \"{0}\" does not match any TowerData.TowerType value", prefab.name));
             }
+
+            //  Set effect group for this towerdata object
+            TowerData towerData = prefab.GetComponent<Tower>().TowerData;
+            EffectGroup effectGroup = effectParser.GetEffectGroup(towerData.ProjectileName);
+            towerData.SetEffectGroup(effectGroup);
         }
 
         //  Scene hierarchy container for new enemies
