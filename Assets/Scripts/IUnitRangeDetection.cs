@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using System.Collections.Generic;
 public interface IUnitRangeDetection{
-    public void UnitEnteredRange(IUnit unit);
-    public void UnitLeftRange(IUnit unit);
-
-    public float GetRange();
+    public float Radius { get; }
+    public List<IUnit> GetUnitsInRange(Vector3 center);
 }

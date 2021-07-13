@@ -11,5 +11,7 @@ public interface IUnit : Itargetable {
 
     public Status GetStatus();
 
+    public GameObject GetGameObject();
+
     public void ApplyDamage(float damage);
 }

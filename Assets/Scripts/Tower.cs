@@ -8,7 +8,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     [Inject] private ObjectPool objectPool;
     [Inject] private EffectParserJSON effectParser;
 
-    private List<Enemy> enemiesInRange = new List<Enemy>();
+    private List<IUnit> enemiesInRange = new List<IUnit>();
     private float timeSinceLastShot = float.MaxValue;
     private Enemy target;
     private Transform turret;
@@ -17,6 +17,8 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
     [field: SerializeField] public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
+
+    public float Radius { get { return TowerData.Range; } }
 
     public enum TargetMode {
         Closest,
@@ -86,9 +88,24 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// <returns></returns>
     private IEnumerator TargetFinder() {
         while (true) {
+            enemiesInRange = GetUnitsInRange(transform.position);
             target = FindTarget();
             yield return new WaitForSeconds(0.33f);
         }
+    }
+
+    public List<IUnit> GetUnitsInRange(Vector3 center) {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
+        enemiesInRange = new List<IUnit>();
+
+        foreach (var collider in colliders) {
+            Enemy enemy = collider.GetComponent<Enemy>();
+            if (enemy != null) {
+                enemiesInRange.Add(enemy);
+            }
+        }
+
+        return enemiesInRange;
     }
 
     /// <summary>
@@ -170,11 +187,11 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                //float health = enemy.GetStatus().CurrentHealth;
-                //if (health < lowestHealth) {
-                //    lowestHealth = health;
-                //    lowestEnemy = enemy;
-                //}
+                float health = enemy.GetStatus().Health.Value;
+                if (health < lowestHealth) {
+                    lowestHealth = health;
+                    lowestEnemy = enemy;
+                }
             }
         }
         return lowestEnemy;
@@ -190,11 +207,11 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
         foreach (Enemy enemy in enemiesInRange) {
             if (enemy.isActiveAndEnabled) {
-                //float health = enemy.GetStatus().CurrentHealth;
-                //if (health > highestHealth) {
-                //    highestHealth = health;
-                //    highestEnemy = enemy;
-                //}
+                float health = enemy.GetStatus().Health.Value;
+                if (health > highestHealth) {
+                    highestHealth = health;
+                    highestEnemy = enemy;
+                }
             }
         }
         return highestEnemy;
@@ -207,7 +224,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     private Enemy FindRandomEnemy() {
         if (enemiesInRange.Count > 0) {
             int index = UnityEngine.Random.Range(0, enemiesInRange.Count);
-            return enemiesInRange[index];
+            return (Enemy)enemiesInRange[index];
         }
         return null;
     }
@@ -220,18 +237,6 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// <returns></returns>
     private float Distance(Vector3 start, Vector3 finish) {
         return Mathf.Sqrt(Mathf.Pow(finish.x - start.x, 2f) + Mathf.Pow(finish.y - start.y, 2f));
-    }
-
-    public void UnitEnteredRange(IUnit unit) {
-        if (unit.GetType() == typeof(Enemy)) {
-            enemiesInRange.Add((Enemy)unit);
-        }
-    }
-
-    public void UnitLeftRange(IUnit unit) {
-        if (unit.GetType() == typeof(Enemy)) {
-            enemiesInRange.Remove((Enemy)unit);
-        }
     }
 
     public float GetRange() {

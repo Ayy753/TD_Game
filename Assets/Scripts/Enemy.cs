@@ -78,5 +78,9 @@ public class Enemy : MonoBehaviour, IUnit {
         status.TakeDamage(damage);
     }
 
+    public GameObject GetGameObject() {
+        return gameObject;
+    }
+
     public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
 }
