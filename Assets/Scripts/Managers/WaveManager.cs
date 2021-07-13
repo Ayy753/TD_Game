@@ -159,6 +159,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
             for (int i = 0; i < group.NumEnemies; i++) {
                 Enemy enemy = enemySpawner.SpawnEnemy(groupType);
+                ApplyWaveBuff(enemy.GetStatus(), thisWaveNum);
                 activeEnemies.Add(enemy);
                 yield return new WaitForSeconds(group.TimebetweenSpawns);
             }
@@ -178,6 +179,27 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
                 lastWaveFinishedSpawning = true;
             }
         }
+    }
+
+    /// <summary>
+    /// Calculates the percentage of the unit's base health that will be added based on wave number
+    /// </summary>
+    /// <param name="waveNum"></param>
+    /// <returns></returns>
+    private float CalculateWaveBuffPercentage(int waveNum) {
+        return (float)(Math.Pow(waveNum, 2) / 20);
+    }
+
+    /// <summary>
+    /// Applies a buff to unit's health based on wave number
+    /// </summary>
+    /// <param name="status"></param>
+    /// <param name="waveNum"></param>
+    private void ApplyWaveBuff(Status status, int waveNum) {
+        float buffPercentage = CalculateWaveBuffPercentage(waveNum);
+        float baseHealth = status.Health.Value;
+        float buffAmount = buffPercentage * baseHealth;
+        status.ModifyStat(Status.StatType.Health, buffAmount);
     }
 
     public void StartNextWave() {
