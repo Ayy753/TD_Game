@@ -113,6 +113,7 @@ public class Status : MonoBehaviour {
             if (statusEffects[i].RemainingDuration <= 0) {
                 statusEffects[i].Remove();
                 statusEffects.Remove(statusEffects[i]);
+                i--;
             }
         }
     }
