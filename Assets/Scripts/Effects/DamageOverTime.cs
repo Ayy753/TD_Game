@@ -29,8 +29,10 @@ public class DamageOverTime : IStatusEffect, IDamage{
     }
 
     public void OnTick() {
-        unitStatus.TakeDamage(damagePerTick);
         RemainingDuration -= TickManager.tickFrequency;
+        if (RemainingDuration > 0) {
+            unitStatus.TakeDamage(damagePerTick);
+        }
     }
 
     public void Remove() {
