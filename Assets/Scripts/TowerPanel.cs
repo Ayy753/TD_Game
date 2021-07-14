@@ -56,10 +56,12 @@ public class TowerPanel : IInitializable {
 
         txtName.text = towerData.Name;
         txtRange.text = towerData.Range.ToString();
-        //txtDamage.text = towerData.ProjectileData.RawTotalDamage().ToString();
+        txtDamage.text = towerData.EffectGroup.GetTotalDamage().ToString();
         txtReloadTime.text = towerData.ReloadTime.ToString();
-        //txtProjectileType.text = towerData.ProjectileData.type.ToString();
-        txtTowerDescription.text = towerData.Description;
+        txtProjectileType.text = towerData.EffectGroup.Name;
+
+        string descriptionText = "<b>Description</b>:\n" + towerData.Description + "\n\n<b>Projectile Effects</b>: \n" + towerData.EffectGroup.GetEffectInfo();
+        txtTowerDescription.text = descriptionText;
 
         int sellValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
         txtSellValue.text = sellValue.ToString();

@@ -37,7 +37,8 @@ public class TowerData : StructureData {
             + string.Format("\n<b>Range</b>: {0}m" +
             "\n<b>Cost</b>: {1}g" +
             "\n<b>Reload time</b>: {2}s" +
-            "\n\n<b>Projectile Effects</b>:\n{3}", Range, Cost, ReloadTime, EffectGroup.ToString());
+            "\n<b>Total Damage</b>: {3}" +
+            "\n\n<b>Projectile Effects</b>:\n{4}", Range, Cost, ReloadTime, EffectGroup.GetTotalDamage(), EffectGroup.GetEffectInfo());
     }
 
     public void SetEffectGroup(EffectGroup effectGroup) {

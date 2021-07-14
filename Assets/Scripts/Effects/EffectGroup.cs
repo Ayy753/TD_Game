@@ -33,7 +33,7 @@ public class EffectGroup : ScriptableObject{
     }
 
 
-    public new string ToString() {
+    public string GetEffectInfo() {
         string result = "";
         foreach (IEffect effect in Effects) {
             if (effect is Damage) {
@@ -50,5 +50,21 @@ public class EffectGroup : ScriptableObject{
             }
         }
         return result;
+    }
+
+    public float GetTotalDamage() {
+        float total = 0;
+        foreach (IEffect effect in Effects) {
+            if (effect is Damage) {
+                total += ((Damage)effect).Potency;
+            }
+            else if (effect is DamageOverTime) {
+                total += ((DamageOverTime)effect).Potency;
+            }
+            else if (effect is AreaDamage) {
+                total += ((AreaDamage)effect).Potency;
+            }
+        }
+        return total;
     }
 }
