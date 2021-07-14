@@ -35,7 +35,7 @@ public class MainInstaller : MonoInstaller {
         Container.Bind<ToolTip>().FromComponentInHierarchy().AsSingle();
         Container.BindInterfacesAndSelfTo<FPSCounter>().AsSingle();
         Container.BindInterfacesAndSelfTo<ControlsPanel>().AsSingle();
-        Container.Bind<TickManager>().FromNewComponentOnNewGameObject().AsSingle();
+        Container.Bind<TickManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         //  Factory bindings
         Container.BindIFactory<Enemy, Enemy.Factory>();
