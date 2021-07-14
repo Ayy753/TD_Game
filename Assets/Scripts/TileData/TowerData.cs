@@ -27,7 +27,9 @@ public class TowerData : StructureData {
     public enum TowerType {
         Bullet,
         Splash,
-        Sniper
+        Sniper,
+        Frost,
+        Poison
     }
 
     public override string ToString() {

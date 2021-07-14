@@ -69,6 +69,12 @@ public class ObjectPool : IInitializable{
                 case "SplashTower":
                     towerTypeToPrefab.Add(TowerData.TowerType.Splash, prefab);
                     break;
+                case "FrostTower":
+                    towerTypeToPrefab.Add(TowerData.TowerType.Frost, prefab);
+                    break;
+                case "PoisonTower":
+                    towerTypeToPrefab.Add(TowerData.TowerType.Poison, prefab);
+                    break;
                 default:
                     throw new System.Exception(string.Format("Tower name \"{0}\" does not match any TowerData.TowerType value", prefab.name));
             }

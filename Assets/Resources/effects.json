@@ -7,19 +7,19 @@
         {
           "type": "Debuff",
           "statType": "Speed",
-          "potency": 0.25,
+          "potency": 0.5,
           "duration": 1,
 		  "resistType" : "Cold"
         },
         {
           "type": "Damage",
           "damageType": "Cold",
-          "potency": 0.5
+          "potency": 1
         },
         {
           "type": "Damage",
           "damageType": "Physical",
-          "potency": 0.5
+          "potency": 1
         }
       ]
     },
@@ -30,13 +30,13 @@
         {
           "type": "DOT",
           "damageType": "Poison",
-          "potency": 3,
-          "duration": 3
+          "potency": 10,
+          "duration": 8
         },
         {
           "type": "Damage",
           "damageType": "Physical",
-          "potency": 1.5
+          "potency": 1
         }
       ]
     },
@@ -47,17 +47,39 @@
         {
           "type": "AreaDamage",
 	      "damageType": "Fire",
-          "potency": 1.5,
+          "potency": 2.5,
 		  "radius": 3
         },
         {
           "type": "AreaDamage",
 	      "damageType": "Physical",
-          "potency": 1.5,
+          "potency": 2.5,
 		  "radius": 3
         }		
       ]
     },
+	{
+      "name": "Sniper Projectile",
+      "description": "Does fire and physical area damage",
+      "effects": [
+        {
+          "type": "Damage",
+          "damageType": "Physical",
+          "potency": 15
+        }		
+      ]
+    },	
+	{
+      "name": "Bullet Projectile",
+      "description": "Does fire and physical area damage",
+      "effects": [
+        {
+          "type": "Damage",
+          "damageType": "Physical",
+          "potency": 5
+        }		
+      ]
+    },		
 	{
       "name": "Speed Buff",
       "description": "Increases speed",
