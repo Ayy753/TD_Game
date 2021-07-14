@@ -24,6 +24,7 @@ public class HealthBar : MonoBehaviour{
 
     public void Initialize(Status status) {
         this.status = status;
+        UpdateHealthBar();
         status.OnStatusChanged += HandleStatChange;
     }
 
