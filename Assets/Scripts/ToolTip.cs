@@ -35,7 +35,7 @@ public class ToolTip : MonoBehaviour {
         tooltipText.text = data;
         //  Calculate the tooltip background size based on text size and padding
         float textPadding = 4f;
-        tooltipBackground.sizeDelta = new Vector2(tooltipText.preferredWidth + textPadding * 2f, tooltipText.preferredHeight + textPadding * 2f);
+        tooltipBackground.sizeDelta = new Vector2(tooltipText.preferredWidth + textPadding * 4f, tooltipText.preferredHeight + textPadding * 4f);
     }
 
     /// <summary>
