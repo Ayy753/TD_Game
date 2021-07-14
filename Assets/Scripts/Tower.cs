@@ -83,6 +83,8 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// </summary>
     /// <returns></returns>
     private IEnumerator TargetFinder() {
+        //  Prevent tower from detecting enemies before it gets moved from origin on instantiation
+        yield return new WaitForSeconds(0.33f);
         while (true) {
             enemiesInRange = GetUnitsInRange(transform.position);
             target = FindTarget();
@@ -100,7 +102,6 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
                 enemiesInRange.Add(enemy);
             }
         }
-
         return enemiesInRange;
     }
 
