@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SniperTower
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Sniper Tower
-  <Description>k__BackingField: Shoots far and deals 15 physical damage
+  <Description>k__BackingField: Shoots far but slow
   <Icon>k__BackingField: {fileID: 21300000, guid: 742568104319ba74ab40a6dd713ee9f3,
     type: 3}
   <Type>k__BackingField: 2
@@ -22,6 +22,4 @@ MonoBehaviour:
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 150
-  <ProjectileData>k__BackingField: {fileID: 11400000, guid: bc66c94da0e07a147ab0e38b5290a926,
-    type: 2}
-  <ProjectileName>k__BackingField: Frost Projectile
+  <ProjectileName>k__BackingField: Sniper Projectile
