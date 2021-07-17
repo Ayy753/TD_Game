@@ -14,7 +14,7 @@ public interface IMessageSystem{
     /// <param name="position"></param>
     /// <param name="message"></param>
     /// <param name="color"></param>
-    public void DisplayMessageAt(Vector3 position, string message, Color color, float textSize = 0.5f);
+    public void DisplayMessageAt(Vector3 position, string message, Color color, float textSize = 0.5f, float randomHorizontalOffset = 0f);
 
     /// <summary>
     /// Displays message at cursor

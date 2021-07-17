@@ -12,8 +12,14 @@ public class MessageSystem : IMessageSystem {
         DisplayMessageAt(pos, message, color, textSize);
     }
 
-    public void DisplayMessageAt(Vector3 position, string message, Color color, float textSize = 0.5f) {
-        objectPool.CreateFloatingText(position, message, color, textSize);
+    public void DisplayMessageAt(Vector3 position, string message, Color color, float textSize = 0.5f, float randomHorizontalOffset = 0) {
+        float offset = 0;
+
+        if (randomHorizontalOffset != 0) {
+            offset = Random.Range(-randomHorizontalOffset, randomHorizontalOffset);
+        }
+
+        objectPool.CreateFloatingText(position + new Vector3(offset, 0, 0), message, color, textSize);
     }
 
     public void DisplayMessageAtCursor(string message, Color color, float textSize = 0.5f) {
