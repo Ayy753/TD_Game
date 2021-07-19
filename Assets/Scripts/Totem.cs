@@ -2,23 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
-
+/// <summary>
+/// Applies positive effects to enemies within range
+/// </summary>
 public class Totem : MonoBehaviour, IUnitRangeDetection {
-    [Inject] EffectParserJSON effectParser;
-    [Inject] RadiusRenderer radiusRenderer;
     public float Radius { get { return totemData.Radius; } }
-    
-    [SerializeField] TotemData totemData;
-    private List<IUnit> enemiesInRange;
-    public event EventHandler TargetDisabled;
-    private const float buffDelay = 0.33f;
+    [field: SerializeField] public TotemData totemData { get; private set; }
 
+    private List<IUnit> enemiesInRange;
+    private const float buffDelay = 0.33f;
+    private RadiusRenderer radiusRenderer;
 
     private void Start() {
-        totemData.SetEffectGroup(effectParser.GetEffectGroup(totemData.effectName));
         StartCoroutine(ApplyEffects());
+    }
+
+    //  Can't use DI on objects created at runtime
+    public void Initialize(RadiusRenderer radiusRenderer) {
+        this.radiusRenderer = radiusRenderer;
     }
 
     private IEnumerator ApplyEffects() {
