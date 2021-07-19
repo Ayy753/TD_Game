@@ -24,6 +24,7 @@ public class TestInstaller : MonoInstaller {
         Container.Bind<EffectParserJSON>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<TooltipManager>().AsSingle().NonLazy();
         Container.Bind<InputHandler>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PrefabTileInstantiator>().AsSingle().NonLazy();
 
         //  Misc bindings
         Container.Bind<RadiusRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/RadiusRenderer").AsSingle();
