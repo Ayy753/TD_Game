@@ -97,7 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e8504bd0a17a74bbe59bb2086fe7bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totemData: {fileID: 11400000, guid: e0cf72288bd3317429d5057a17774e0e, type: 2}
+  <totemData>k__BackingField: {fileID: 11400000, guid: e0cf72288bd3317429d5057a17774e0e,
+    type: 2}
 --- !u!61 &7195697683717374568
 BoxCollider2D:
   m_ObjectHideFlags: 0
