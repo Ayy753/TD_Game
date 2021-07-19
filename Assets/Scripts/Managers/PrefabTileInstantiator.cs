@@ -38,7 +38,7 @@ public class PrefabTileInstantiator : IInitializable {
     /// </summary>
     private void InitializeTotemData() {
         foreach (TotemData totemData in totemToPrefab.Keys) {
-            EffectGroup effectGroup = effectParser.GetEffectGroup(totemData.effectName);
+            EffectGroup effectGroup = effectParser.GetEffectGroup(totemData.EffectName);
             totemData.SetEffectGroup(effectGroup);
         }
     }
