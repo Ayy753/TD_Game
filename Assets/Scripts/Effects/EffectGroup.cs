@@ -48,6 +48,9 @@ public class EffectGroup : ScriptableObject{
             else if (effect is AreaDamage) {
                 result += string.Format("Deals {0} {1} in a {2}m radius\n", effect.Potency, ((AreaDamage)effect).Type, ((AreaDamage)effect).Radius);
             }
+            else if (effect is Buff) {
+                result += string.Format("Increases {0} by {1} for {2} seconds\n", ((Buff)effect).Type, effect.Potency, ((Buff)effect).Duration);
+            }
         }
         return result;
     }
