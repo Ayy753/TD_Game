@@ -202,5 +202,20 @@ public class MapManager : MonoBehaviour, IMapManager, IInitializable {
         }
         return false;
     }
+
+    public Vector3Int[] GetTilePositionsOnLayer(IMapManager.Layer layer) {
+        Tilemap tilemap = GetLayer(layer);
+        List<Vector3Int> tilePositions = new List<Vector3Int>();
+
+        for (int x = tilemap.cellBounds.xMin; x < tilemap.cellBounds.xMax; x++) {
+            for (int y = tilemap.cellBounds.yMin; y < tilemap.cellBounds.yMax; y++) {
+                Vector3Int position = new Vector3Int(x, y, (int)tilemap.transform.position.z);
+                if (ContainsTileAt(layer, position)) {
+                    tilePositions.Add(position);
+                }
+            }
+        }
+        return tilePositions.ToArray();
+    }
 }
 
