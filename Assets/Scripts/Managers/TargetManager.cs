@@ -5,12 +5,14 @@ using Zenject;
 public class TargetManager: IInitializable, IDisposable{
     private StatusPanel statusPanel;
     private TowerPanel towerPanel;
+    private TotemPanel totemPanel;
     private GameObject targetIndicator;
     private Itargetable target;
 
-    public TargetManager(StatusPanel statusPanel, TowerPanel towerPanel) {
+    public TargetManager(StatusPanel statusPanel, TowerPanel towerPanel, TotemPanel totemPanel) {
         this.statusPanel = statusPanel;
         this.towerPanel = towerPanel;
+        this.totemPanel = totemPanel;
     }
 
     public void Initialize() {
@@ -54,6 +56,7 @@ public class TargetManager: IInitializable, IDisposable{
     private void Target(GameObject gameObject) {
         Tower tower = gameObject.GetComponent<Tower>();
         IUnit unit = gameObject.GetComponentInChildren<IUnit>();
+        Totem totem = gameObject.GetComponent<Totem>();
 
         if (tower != null) {
             towerPanel.TargetTower(tower);
@@ -62,6 +65,10 @@ public class TargetManager: IInitializable, IDisposable{
         else if (unit != null) {
             statusPanel.TargetUnit(unit);
             target = unit;
+        }
+        else if (totem != null) {
+            totemPanel.TargetTotem(totem);
+            target = totem;
         }
 
         target.TargetDisabled += HandleTargetDisabled;
@@ -82,6 +89,9 @@ public class TargetManager: IInitializable, IDisposable{
         }
         else if (target is IUnit) {
             statusPanel.ClearTarget();
+        }
+        else if (target is Totem) {
+            totemPanel.ClearTarget();
         }
 
         target = null;

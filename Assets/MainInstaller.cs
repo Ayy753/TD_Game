@@ -32,6 +32,7 @@ public class MainInstaller : MonoInstaller {
         Container.Bind<PreviewPathRenderer>().FromNewComponentOnNewPrefabResource("Prefabs/PreviewPathRenderer").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<StatusPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<TowerPanel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<TotemPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<TargetManager>().AsSingle();
         Container.Bind<ToolTip>().FromComponentInHierarchy().AsSingle();
         Container.BindInterfacesAndSelfTo<FPSCounter>().AsSingle();
