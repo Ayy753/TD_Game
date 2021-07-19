@@ -6,13 +6,14 @@ using UnityEngine;
 /// <summary>
 /// Applies positive effects to enemies within range
 /// </summary>
-public class Totem : MonoBehaviour, IUnitRangeDetection {
+public class Totem : MonoBehaviour, IUnitRangeDetection, Itargetable {
     public float Radius { get { return totemData.Radius; } }
     [field: SerializeField] public TotemData totemData { get; private set; }
 
     private List<IUnit> enemiesInRange;
-    private const float buffDelay = 0.33f;
     private RadiusRenderer radiusRenderer;
+
+    public event EventHandler TargetDisabled;
 
     private void Start() {
         StartCoroutine(ApplyEffects());
@@ -29,7 +30,7 @@ public class Totem : MonoBehaviour, IUnitRangeDetection {
             foreach (IUnit unit in enemiesInRange) {
                 unit.GetStatus().ApplyEffectGroup(totemData.EffectGroup);
             }
-            yield return new WaitForSeconds(buffDelay);
+            yield return new WaitForSeconds(totemData.EffectDelay);
         }
     }
 
@@ -50,8 +51,19 @@ public class Totem : MonoBehaviour, IUnitRangeDetection {
         radiusRenderer.RenderRadius(transform.position, Radius);
     }
 
-    // ...and the mesh finally turns white when the mouse moves away.
     void OnMouseExit() {
         radiusRenderer.HideRadius();
+    }
+
+    public Transform GetTransform() {
+        return transform;
+    }
+
+    public string GetName() {
+        return totemData.Name;
+    }
+
+    public string GetDescription() {
+        return totemData.ToString();
     }
 }
