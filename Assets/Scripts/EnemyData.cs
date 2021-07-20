@@ -6,9 +6,9 @@ public class EnemyData : CharacterData
     [field: SerializeField] public int BaseValue { get; private set; }
     [field: SerializeField] public string Name { get; private set; }
     [field: SerializeField] public string Description { get; private set; }
-    [field: SerializeField] public Type MyType { get; private set; }
+    [field: SerializeField] public EnemyType Type { get; private set; }
 
-    public enum Type {
+    public enum EnemyType {
         Fast,
         Normal,
         Strong

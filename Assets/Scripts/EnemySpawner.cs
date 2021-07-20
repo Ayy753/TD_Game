@@ -9,7 +9,7 @@ public class EnemySpawner{
         this.objectPool = objectPool;
     }
 
-    public Enemy SpawnEnemy(EnemyData.Type type) {
+    public Enemy SpawnEnemy(EnemyData.EnemyType type) {
         return objectPool.CreateEnemy(type);
     }
 }

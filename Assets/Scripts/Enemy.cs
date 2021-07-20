@@ -55,8 +55,8 @@ public class Enemy : MonoBehaviour, IUnit {
         return ((EnemyData)GetStatus().GetCharacterData()).BaseValue;
     }
 
-    public new EnemyData.Type GetType() {
-        return ((EnemyData)GetStatus().GetCharacterData()).MyType;
+    public EnemyData.EnemyType GetEnemyType() {
+        return ((EnemyData)GetStatus().GetCharacterData()).Type;
     }
 
     public string GetDescription() {
@@ -71,5 +71,5 @@ public class Enemy : MonoBehaviour, IUnit {
         return gameObject;
     }
 
-    public class Factory : PlaceholderFactory<EnemyData.Type, Enemy> { }
+    public class Factory : PlaceholderFactory<EnemyData.EnemyType, Enemy> { }
 }

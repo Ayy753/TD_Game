@@ -8,7 +8,7 @@ public class ObjectPool : IInitializable{
     private readonly GameObject[] enemyPrefabs;
     private List<Enemy> instantiatedEnemies;
     private GameObject enemyContainer;
-    private Dictionary<EnemyData.Type, GameObject> enemyTypeToPrefab;
+    private Dictionary<EnemyData.EnemyType, GameObject> enemyTypeToPrefab;
 
     private readonly GameObject projectilePrefab;
     private List<Projectile> instantiatedProjectiles;
@@ -34,7 +34,7 @@ public class ObjectPool : IInitializable{
         Debug.Log("Initializing ObjectPool");
 
         instantiatedEnemies = new List<Enemy>();
-        enemyTypeToPrefab = new Dictionary<EnemyData.Type, GameObject>();
+        enemyTypeToPrefab = new Dictionary<EnemyData.EnemyType, GameObject>();
         instantiatedProjectiles = new List<Projectile>();
         towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
         instantiatedFloatingTexts = new List<FloatingText>();
@@ -44,13 +44,13 @@ public class ObjectPool : IInitializable{
             GameObject prefab = enemyPrefabs[i];
             switch (prefab.name) {
                 case "FastEnemy":
-                    enemyTypeToPrefab.Add(EnemyData.Type.Fast, prefab);
+                    enemyTypeToPrefab.Add(EnemyData.EnemyType.Fast, prefab);
                     break;
                 case "NormalEnemy":
-                    enemyTypeToPrefab.Add(EnemyData.Type.Normal, prefab);
+                    enemyTypeToPrefab.Add(EnemyData.EnemyType.Normal, prefab);
                     break;
                 case "StrongEnemy":
-                    enemyTypeToPrefab.Add(EnemyData.Type.Strong, prefab);
+                    enemyTypeToPrefab.Add(EnemyData.EnemyType.Strong, prefab);
                     break;
                 default:
                     throw new System.Exception(string.Format("Enemy prefab name \"{0}\" does not match any Enemy.Type values ", prefab.name));
@@ -90,7 +90,7 @@ public class ObjectPool : IInitializable{
         projectileContainer = new GameObject("Projectile Container");
 
         //  Preload some enemies
-        foreach (EnemyData.Type type in enemyTypeToPrefab.Keys) {
+        foreach (EnemyData.EnemyType type in enemyTypeToPrefab.Keys) {
             for (int j = 0; j < 5; j++) {
                 CreateEnemy(type);
             }
@@ -107,10 +107,10 @@ public class ObjectPool : IInitializable{
         }
     }
 
-    public Enemy CreateEnemy(EnemyData.Type type) {
+    public Enemy CreateEnemy(EnemyData.EnemyType type) {
         //  Find available enemy of a prefab type
         foreach (Enemy enemy in instantiatedEnemies) {
-            if (enemy.GetType() == type && enemy.gameObject.activeInHierarchy == false) {
+            if (enemy.GetEnemyType() == type && enemy.gameObject.activeInHierarchy == false) {
                 enemy.transform.parent.gameObject.SetActive(true);
                 return enemy;
             }

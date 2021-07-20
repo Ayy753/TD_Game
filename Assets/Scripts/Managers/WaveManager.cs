@@ -141,17 +141,17 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         currentWave++;
  
         foreach (Group group in LevelData.waves[thisWaveNum].Groups) {
-            EnemyData.Type groupType;
+            EnemyData.EnemyType groupType;
 
             switch (group.EnemyType) {
                 case "FastEnemy":
-                    groupType = EnemyData.Type.Fast;
+                    groupType = EnemyData.EnemyType.Fast;
                     break;
                 case "NormalEnemy":
-                    groupType = EnemyData.Type.Normal;
+                    groupType = EnemyData.EnemyType.Normal;
                     break;
                 case "StrongEnemy":
-                    groupType = EnemyData.Type.Strong;
+                    groupType = EnemyData.EnemyType.Strong;
                     break;
                 default:
                     throw new System.Exception(string.Format("Enemy type \"{0}\" does not match any of the prefabs in the resource folder", group.EnemyType));
