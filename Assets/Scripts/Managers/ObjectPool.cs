@@ -43,13 +43,16 @@ public class ObjectPool : IInitializable{
         for (int i = 0; i < enemyPrefabs.Length; i++) {
             GameObject prefab = enemyPrefabs[i];
             switch (prefab.name) {
-                case "FastEnemy":
+                case "BaseEnemy":
+                    //  Ignore this because it does not get instantiated
+                    break;
+                case "FastEnemy Variant":
                     enemyTypeToPrefab.Add(EnemyData.EnemyType.Fast, prefab);
                     break;
-                case "NormalEnemy":
+                case "NormalEnemy Variant":
                     enemyTypeToPrefab.Add(EnemyData.EnemyType.Normal, prefab);
                     break;
-                case "StrongEnemy":
+                case "StrongEnemy Variant":
                     enemyTypeToPrefab.Add(EnemyData.EnemyType.Strong, prefab);
                     break;
                 default:
