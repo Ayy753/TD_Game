@@ -5,7 +5,6 @@ public class ObjectPool : IInitializable{
     EffectParserJSON effectParser;
 
     private readonly DiContainer _container;
-    private readonly GameObject[] enemyPrefabs;
     private List<Enemy> instantiatedEnemies;
     private GameObject enemyContainer;
     private Dictionary<EnemyData.EnemyType, GameObject> enemyTypeToPrefab;
@@ -14,7 +13,6 @@ public class ObjectPool : IInitializable{
     private List<Projectile> instantiatedProjectiles;
     private GameObject projectileContainer;
 
-    private readonly GameObject[] towerPrefabs;
     private Dictionary<TowerData.TowerType, GameObject> towerTypeToPrefab;
 
     private readonly GameObject floatingTextPrefab;
@@ -24,20 +22,28 @@ public class ObjectPool : IInitializable{
         _container = container;
         this.effectParser = effectParser;
 
-        enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
         projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/Projectile");
-        towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
         floatingTextPrefab = Resources.Load<GameObject>("Prefabs/FloatingText");
     }
 
     public void Initialize() {
         Debug.Log("Initializing ObjectPool");
 
-        instantiatedEnemies = new List<Enemy>();
-        enemyTypeToPrefab = new Dictionary<EnemyData.EnemyType, GameObject>();
         instantiatedProjectiles = new List<Projectile>();
-        towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
         instantiatedFloatingTexts = new List<FloatingText>();
+        instantiatedEnemies = new List<Enemy>();
+
+        InitializeEnemies();
+        InitializeTowers();
+
+        //  Scene hierarchy container for new enemies
+        enemyContainer = new GameObject("Enemy Container");
+        projectileContainer = new GameObject("Projectile Container");
+    }
+
+    private void InitializeEnemies() {
+        GameObject[] enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
+        enemyTypeToPrefab = new Dictionary<EnemyData.EnemyType, GameObject>();
 
         //  Link enemy types to prefabs
         for (int i = 0; i < enemyPrefabs.Length; i++) {
@@ -59,6 +65,11 @@ public class ObjectPool : IInitializable{
                     throw new System.Exception(string.Format("Enemy prefab name \"{0}\" does not match any Enemy.Type values ", prefab.name));
             }
         }
+    }
+
+    private void InitializeTowers() {
+        GameObject[] towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
+        towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
 
         for (int i = 0; i < towerPrefabs.Length; i++) {
             GameObject prefab = towerPrefabs[i];
@@ -86,27 +97,6 @@ public class ObjectPool : IInitializable{
             TowerData towerData = prefab.GetComponent<Tower>().TowerData;
             EffectGroup effectGroup = effectParser.GetEffectGroup(towerData.ProjectileName);
             towerData.SetEffectGroup(effectGroup);
-        }
-
-        //  Scene hierarchy container for new enemies
-        enemyContainer = new GameObject("Enemy Container");
-        projectileContainer = new GameObject("Projectile Container");
-
-        //  Preload some enemies
-        foreach (EnemyData.EnemyType type in enemyTypeToPrefab.Keys) {
-            for (int j = 0; j < 5; j++) {
-                CreateEnemy(type);
-            }
-        }
-
-        //  Disable preloaded enemies
-        foreach (Enemy enemy in instantiatedEnemies) {
-            enemy.transform.parent.gameObject.SetActive(false);
-        }
-
-        //  Disable preloaded projectiles
-        foreach (Projectile projectile in instantiatedProjectiles) {
-            projectile.transform.gameObject.SetActive(false);
         }
     }
 
