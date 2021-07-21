@@ -19,12 +19,17 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     private List<Enemy> activeEnemies;
 
     public int NumberOfWaves { get; private set; }
-    private int currentWave = 0;
+    private int mostRecentWaveNum = 0;
 
     private const int timeBetweenWaves = 30;
     private const int timeBeforeFirstWave = 60;
     private Coroutine nextWaveCountDown;
+
     private bool lastWaveFinishedSpawning;
+    private bool currentWaveFinishedSpawning;
+    private State currentState;
+    public delegate void StateChanged(State newState);
+    public static event StateChanged OnStateChanged;
 
     public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, GameManager gameManager, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
         this.enemySpawner = enemySpawner;
@@ -33,6 +38,12 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         this.messageSystem = messageSystem;
         this.guiController = guiController;
         this.levelManager = levelManager;
+    }
+
+    public enum State {
+        Waiting,
+        WaveInProgress,
+        LastWaveFinished
     }
 
     public void Initialize() {
@@ -46,14 +57,16 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
         nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
         activeEnemies = new List<Enemy>();
+        currentState = State.Waiting;
         lastWaveFinishedSpawning = false;
+        currentWaveFinishedSpawning = false;
 
-        currentWave = 0;
+        mostRecentWaveNum = 0;
 
         messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white, 1f);
 
         guiController.UpdateWaveCountdown(timeBeforeFirstWave);
-        guiController.UpdateWaveNumber(currentWave, NumberOfWaves);
+        guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
     }
 
     public void Dispose() {
@@ -63,8 +76,15 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
     private void HandleEnemyDeactivated(Enemy enemy) {
         activeEnemies.Remove(enemy);
-        if (lastWaveFinishedSpawning && activeEnemies.Count == 0) {
-            gameManager.NoEnemiesLeft();
+
+        if (activeEnemies.Count == 0 && currentWaveFinishedSpawning == true) {
+            if (lastWaveFinishedSpawning == false) {
+                nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
+                ChangeState(State.Waiting);
+            }
+            else {
+                ChangeState(State.LastWaveFinished);
+            }
         }
     }
 
@@ -117,7 +137,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     private IEnumerator NextWaveCountDown() {
         int secondsUntilNextWave;
 
-        if (currentWave == 0) {
+        if (mostRecentWaveNum == 0) {
             secondsUntilNextWave = timeBeforeFirstWave;
         }
         else {
@@ -136,11 +156,14 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         StartNextWave();
     }
 
-    private IEnumerator LaunchWave() {
-        int thisWaveNum = currentWave;
-        currentWave++;
- 
-        foreach (Group group in LevelData.waves[thisWaveNum].Groups) {
+    private IEnumerator LaunchWave(int waveNum) {
+        currentWaveFinishedSpawning = false;
+        ChangeState(State.WaveInProgress);
+
+        int numGroups = LevelData.waves[waveNum].Groups.Count;
+
+        for (int g = 0; g < numGroups; g++) {
+            Group group = LevelData.waves[waveNum].Groups[g];
             EnemyData.EnemyType groupType;
 
             switch (group.EnemyType) {
@@ -159,23 +182,24 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
             for (int i = 0; i < group.NumEnemies; i++) {
                 Enemy enemy = enemySpawner.SpawnEnemy(groupType);
-                ApplyWaveBuff(enemy.GetStatus(), thisWaveNum);
+                ApplyWaveBuff(enemy.GetStatus(), waveNum);
                 activeEnemies.Add(enemy);
-                yield return new WaitForSeconds(group.TimebetweenSpawns);
+
+                //  Don't wait after last enemy in group
+                if (i < group.NumEnemies - 1) {
+                    yield return new WaitForSeconds(group.TimebetweenSpawns);
+                }
             }
 
-            yield return new WaitForSeconds(LevelData.waves[thisWaveNum].TimebetweenGroups);
+            //  Don't wait after last group in wave
+            if (g < numGroups - 1) {
+                yield return new WaitForSeconds(LevelData.waves[waveNum].TimebetweenGroups);
+            }
         }
 
-        //  If this is the most recent wave
-        if (currentWave - 1 == thisWaveNum) {
-            //  If there are more waves, launch next wave
-            if (currentWave < NumberOfWaves) {
-                asyncProcessor.StopCoroutine(nextWaveCountDown);
-                nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
-            }
-            //  Otherwise the last wave is defeated
-            else {
+        if (waveNum == mostRecentWaveNum - 1) {
+            currentWaveFinishedSpawning = true;
+            if (waveNum == NumberOfWaves - 1) {
                 lastWaveFinishedSpawning = true;
             }
         }
@@ -202,13 +226,22 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         status.ModifyStat(Status.StatType.Health, buffAmount);
     }
 
+    private void ChangeState(State state) {
+        if (OnStateChanged != null) {
+            OnStateChanged.Invoke(state);
+        }
+        currentState = state;
+        Debug.Log("wave manager switched state to " + state);
+    }
+
     public void StartNextWave() {
-        if (currentWave < NumberOfWaves) {
+        if (mostRecentWaveNum < NumberOfWaves) {
             asyncProcessor.StopCoroutine(nextWaveCountDown);
             guiController.UpdateWaveCountdown(0);
-            messageSystem.DisplayMessage("Starting wave " + (currentWave + 1), Color.white, 1f);
-            asyncProcessor.StartCoroutine(LaunchWave());
-            guiController.UpdateWaveNumber(currentWave, NumberOfWaves);
+            messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
+            asyncProcessor.StartCoroutine(LaunchWave(mostRecentWaveNum));
+            mostRecentWaveNum++;
+            guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
         }
     }
 }
