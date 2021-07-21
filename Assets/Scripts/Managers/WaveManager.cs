@@ -114,7 +114,6 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     /// A wave containing groups of enemies
     /// </summary>
     public class Wave {
-        public int WaveNum { get; set; }
         public List<Group> Groups { get; set; }
         public int TimebetweenGroups { get; set; }
 
