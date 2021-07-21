@@ -8,7 +8,7 @@ public class GUIController : IGUIManager, IInitializable {
     TMP_Text txtGameSpeed, txtFPS;
 
     //  gameEnded panel is the parent for the other two panels
-    GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu;
+    GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlBuildMenu;
     GameObject pnlWave;
 
     public GUIController() {
@@ -24,6 +24,7 @@ public class GUIController : IGUIManager, IInitializable {
         pnlGameWon = GameObject.Find("pnlGameWon");
         pnlMenu = GameObject.Find("pnlMenu");
         pnlWave = GameObject.Find("pnlWave");
+        pnlBuildMenu = GameObject.Find("pnlBuildMenu");
 
         txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
         txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
@@ -81,5 +82,13 @@ public class GUIController : IGUIManager, IInitializable {
 
     public void UpdateFPSCounter(int fps) {
         txtFPS.text = fps.ToString();
+    }
+
+    public void HideBuildMenu() {
+        pnlBuildMenu.SetActive(false);
+    }
+
+    public void ShowBuildMenu() {
+        pnlBuildMenu.SetActive(true);
     }
 }

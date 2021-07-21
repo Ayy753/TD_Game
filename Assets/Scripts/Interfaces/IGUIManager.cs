@@ -16,5 +16,7 @@ public interface IGUIManager{
     public void UpdateWaveCountdown(int secondsLeft);
     public void UpdateSpeedPanel(float speed);
     public void UpdateFPSCounter(int fps);
+    public void HideBuildMenu();
+    public void ShowBuildMenu();
 }
 

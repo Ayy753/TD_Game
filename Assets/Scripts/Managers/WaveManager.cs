@@ -230,6 +230,20 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
             OnStateChanged.Invoke(state);
         }
         currentState = state;
+
+        switch (state) {
+            case State.Waiting:
+                guiController.ShowBuildMenu();
+                break;
+            case State.WaveInProgress:
+                guiController.HideBuildMenu();
+                break;
+            case State.LastWaveFinished:
+                break;
+            default:
+                break;
+        }
+
         Debug.Log("wave manager switched state to " + state);
     }
 
