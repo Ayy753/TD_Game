@@ -23,6 +23,7 @@ public class Status : MonoBehaviour {
     public Resistance LightningResist { get; private set; }
     public Health Health { get; private set; }
     public Speed Speed { get; private set; }
+    public bool IsDead { get; private set; }
 
     public List<IStatusEffect> statusEffects;
 
@@ -64,6 +65,7 @@ public class Status : MonoBehaviour {
         for (int i = 0; i < Stats.Length; i++) {
             Stats[i].Initialize();
         }
+        IsDead = false;
     }
 
     private void OnDisable() {
@@ -71,14 +73,17 @@ public class Status : MonoBehaviour {
     }
 
     public void TakeDamage(float effectiveDamage) {
-        Health.TakeDamage(effectiveDamage);
+        if (IsDead == false) {
+            Health.TakeDamage(effectiveDamage);
 
-        if (Health.Value <= 0) {
-            unit.Died();
-        }
+            if (Health.Value <= 0) {
+                IsDead = true;
+                unit.Died();
+            }
 
-        if (OnStatusChanged != null) {
-            OnStatusChanged.Invoke(StatType.Health);
+            if (OnStatusChanged != null) {
+                OnStatusChanged.Invoke(StatType.Health);
+            }
         }
     }
 
