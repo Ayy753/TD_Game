@@ -22,4 +22,4 @@ MonoBehaviour:
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Normal Enemy
   <Description>k__BackingField: A regular enemy with no special characteristics
-  <MyType>k__BackingField: 1
+  <Type>k__BackingField: 1
