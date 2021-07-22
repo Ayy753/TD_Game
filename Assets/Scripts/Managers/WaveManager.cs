@@ -251,9 +251,9 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         if (mostRecentWaveNum < NumberOfWaves) {
             asyncProcessor.StopCoroutine(nextWaveCountDown);
             guiController.UpdateWaveCountdown(0);
-            messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
             asyncProcessor.StartCoroutine(LaunchWave(mostRecentWaveNum));
             mostRecentWaveNum++;
+            messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
             guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
         }
     }
