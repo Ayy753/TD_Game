@@ -32,11 +32,13 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     public void Initialize() {
+        Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
+        InputHandler.OnCommandEntered += HandlekeyboardInput;
+        WaveManager.OnStateChanged += HandleWaveStateChanged;
+        
         Debug.Log("GameManager initializing");
         Lives = startingLives;
         guiController.UpdateLivesLabel(Lives);
-        Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
-        InputHandler.OnCommandEntered += HandlekeyboardInput;
         currentGameSpeed = minSpeed;
         SetState(State.Running);
         LimitFramerate();
@@ -45,6 +47,7 @@ public class GameManager: IInitializable, IDisposable {
     public void Dispose() {
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
         InputHandler.OnCommandEntered -= HandlekeyboardInput;
+        WaveManager.OnStateChanged -= HandleWaveStateChanged;
     }
 
     private void HandlekeyboardInput(InputHandler.Command command) {
@@ -83,6 +86,13 @@ public class GameManager: IInitializable, IDisposable {
         messageSystem.DisplayMessage("-1 life", Color.red);
         if (Lives <= 0) {
             guiController.ShowGameOverScreen();
+            SetState(State.Ended);
+        }
+    }
+
+    private void HandleWaveStateChanged(WaveManager.State newState) {
+        if (newState == WaveManager.State.LastWaveFinished) {
+            guiController.ShowGameWonScreen();
             SetState(State.Ended);
         }
     }
@@ -136,14 +146,6 @@ public class GameManager: IInitializable, IDisposable {
     private void LimitFramerate() {
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = targetFrameRate;
-    }
-
-    /// <summary>
-    /// used by wavemanager when there are no more waves and the last enemy died or reached gate
-    /// </summary>
-    public void NoEnemiesLeft() {
-        guiController.ShowGameWonScreen();
-        SetState(State.Ended);
     }
 
     public void ExitGame() {

@@ -22,11 +22,19 @@ public class HoverManager : IInitializable, IDisposable {
     public void Initialize() {
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
         MouseManager.OnRightMouseUp += PauseHighlighting;
+        WaveManager.OnStateChanged += HandleWaveStateChanged;
     }
 
     public void Dispose() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
         MouseManager.OnRightMouseUp -= PauseHighlighting;
+        WaveManager.OnStateChanged -= HandleWaveStateChanged;
+    }
+
+    private void HandleWaveStateChanged(WaveManager.State newState) {
+        if (newState == WaveManager.State.WaveInProgress) {
+            UnhoverLastTile();
+        }
     }
 
     /// <summary>

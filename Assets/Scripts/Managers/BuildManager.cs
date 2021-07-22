@@ -48,12 +48,14 @@ public class BuildManager : IInitializable, IDisposable {
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
         MouseManager.OnLeftMouseUp += HandleLeftMouseUp;
         MouseManager.OnRightMouseUp += HandleRightMouseUp;
+        WaveManager.OnStateChanged += HandleWaveStateChanged;
     }
 
     public void Dispose() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
         MouseManager.OnLeftMouseUp -= HandleLeftMouseUp;
         MouseManager.OnRightMouseUp -= HandleRightMouseUp;
+        WaveManager.OnStateChanged -= HandleWaveStateChanged;
     }
 
     /// <summary>
@@ -202,6 +204,12 @@ public class BuildManager : IInitializable, IDisposable {
             ExitBuildMode();
         }
 
+    }
+
+    private void HandleWaveStateChanged(WaveManager.State newState) {
+        if (newState == WaveManager.State.WaveInProgress && CurrentBuildMode != BuildMode.None) {
+            ExitBuildMode();
+        }
     }
 
     /// <summary>
