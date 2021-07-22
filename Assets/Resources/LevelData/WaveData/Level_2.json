@@ -2,35 +2,35 @@
 	"waves" : 
 	[
 		{"Groups" : [
-			{"EnemyType":"NormalEnemy", "NumEnemies":10, "TimebetweenSpawns":1}
+			{"EnemyType":"Normal", "NumEnemies":10, "TimebetweenSpawns":1}
 		], "TimebetweenGroups" : 3},
 		{"Groups" : [
-			{"EnemyType":"StrongEnemy", "NumEnemies":5, "TimebetweenSpawns":5}
+			{"EnemyType":"Strong", "NumEnemies":5, "TimebetweenSpawns":5}
 		], "TimebetweenGroups" : 3},
 		{"Groups" : [
-			{"EnemyType":"FastEnemy", "NumEnemies":12, "TimebetweenSpawns":0.75},
-			{"EnemyType":"FastEnemy", "NumEnemies":12, "TimebetweenSpawns":0.75}
+			{"EnemyType":"Fast", "NumEnemies":12, "TimebetweenSpawns":0.75},
+			{"EnemyType":"Fast", "NumEnemies":12, "TimebetweenSpawns":0.75}
 		], "TimebetweenGroups" : 4},
 		{"Groups" : [
-			{"EnemyType":"FastEnemy", "NumEnemies":14, "TimebetweenSpawns":0.5},
-			{"EnemyType":"FastEnemy", "NumEnemies":12, "TimebetweenSpawns":0.5}
+			{"EnemyType":"Fast", "NumEnemies":14, "TimebetweenSpawns":0.5},
+			{"EnemyType":"Fast", "NumEnemies":12, "TimebetweenSpawns":0.5}
 		], "TimebetweenGroups" : 3},
 		{"Groups" : [
-			{"EnemyType":"NormalEnemy", "NumEnemies":12, "TimebetweenSpawns":1},
-			{"EnemyType":"NormalEnemy", "NumEnemies":12, "TimebetweenSpawns":1}			
+			{"EnemyType":"Normal", "NumEnemies":12, "TimebetweenSpawns":1},
+			{"EnemyType":"Normal", "NumEnemies":12, "TimebetweenSpawns":1}			
 		], "TimebetweenGroups" : 3},
 		{"Groups" : [
-			{"EnemyType":"StrongEnemy", "NumEnemies":7, "TimebetweenSpawns":1.5},
-			{"EnemyType":"StrongEnemy", "NumEnemies":7, "TimebetweenSpawns":1.5}			
+			{"EnemyType":"Strong", "NumEnemies":7, "TimebetweenSpawns":1.5},
+			{"EnemyType":"Strong", "NumEnemies":7, "TimebetweenSpawns":1.5}			
 		], "TimebetweenGroups" : 3},
 		{"Groups" : [
-			{"EnemyType":"FastEnemy", "NumEnemies":17, "TimebetweenSpawns":0.5},
-			{"EnemyType":"FastEnemy", "NumEnemies":17, "TimebetweenSpawns":0.5}
+			{"EnemyType":"Fast", "NumEnemies":17, "TimebetweenSpawns":0.5},
+			{"EnemyType":"Fast", "NumEnemies":17, "TimebetweenSpawns":0.5}
 		], "TimebetweenGroups" : 2},		
 		{"Groups" : [
-			{"EnemyType":"FastEnemy", "NumEnemies":20, "TimebetweenSpawns":0.3},
-			{"EnemyType":"FastEnemy", "NumEnemies":20, "TimebetweenSpawns":0.3},
-			{"EnemyType":"FastEnemy", "NumEnemies":20, "TimebetweenSpawns":0.3}			
+			{"EnemyType":"Fast", "NumEnemies":20, "TimebetweenSpawns":0.3},
+			{"EnemyType":"Fast", "NumEnemies":20, "TimebetweenSpawns":0.3},
+			{"EnemyType":"Fast", "NumEnemies":20, "TimebetweenSpawns":0.3}			
 		], "TimebetweenGroups" : 2}
 	]	
 }
