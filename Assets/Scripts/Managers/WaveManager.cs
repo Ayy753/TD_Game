@@ -8,7 +8,6 @@ using Zenject;
 public class WaveManager : IWaveManager, IInitializable, IDisposable {
     private EnemySpawner enemySpawner;
     private AsyncProcessor asyncProcessor;
-    private GameManager gameManager;
     private IMessageSystem messageSystem;
     private IGUIManager guiController;
     private LevelManager levelManager;
@@ -27,24 +26,18 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
     private bool lastWaveFinishedSpawning;
     private bool currentWaveFinishedSpawning;
-    private State currentState;
-    public delegate void StateChanged(State newState);
-    public static event StateChanged OnStateChanged;
+    private IWaveManager.State currentState;
 
-    public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, GameManager gameManager, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
+    public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
+
+    public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
         this.enemySpawner = enemySpawner;
         this.asyncProcessor = asyncProcessor;
-        this.gameManager = gameManager;
         this.messageSystem = messageSystem;
         this.guiController = guiController;
         this.levelManager = levelManager;
     }
 
-    public enum State {
-        Waiting,
-        WaveInProgress,
-        LastWaveFinished
-    }
 
     public void Initialize() {
         Debug.Log("Initializing WaveManager");
@@ -57,7 +50,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
         nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
         activeEnemies = new List<Enemy>();
-        currentState = State.Waiting;
+        currentState = IWaveManager.State.Waiting;
         lastWaveFinishedSpawning = false;
         currentWaveFinishedSpawning = false;
 
@@ -80,10 +73,10 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         if (activeEnemies.Count == 0 && currentWaveFinishedSpawning == true) {
             if (lastWaveFinishedSpawning == false) {
                 nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
-                ChangeState(State.Waiting);
+                ChangeState(IWaveManager.State.Waiting);
             }
             else {
-                ChangeState(State.LastWaveFinished);
+                ChangeState(IWaveManager.State.LastWaveFinished);
             }
         }
     }
@@ -157,7 +150,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
     private IEnumerator LaunchWave(int waveNum) {
         currentWaveFinishedSpawning = false;
-        ChangeState(State.WaveInProgress);
+        ChangeState(IWaveManager.State.WaveInProgress);
 
         int numGroups = LevelData.waves[waveNum].Groups.Count;
 
@@ -210,20 +203,20 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         status.ModifyStat(Status.StatType.Health, buffAmount);
     }
 
-    private void ChangeState(State state) {
-        if (OnStateChanged != null) {
-            OnStateChanged.Invoke(state);
+    private void ChangeState(IWaveManager.State state) {
+        if (OnWaveStateChanged != null) {
+            OnWaveStateChanged.Invoke(this, new WaveStateChangedEventArgs(state));
         }
         currentState = state;
 
         switch (state) {
-            case State.Waiting:
+            case IWaveManager.State.Waiting:
                 guiController.ShowBuildMenu();
                 break;
-            case State.WaveInProgress:
+            case IWaveManager.State.WaveInProgress:
                 guiController.HideBuildMenu();
                 break;
-            case State.LastWaveFinished:
+            case IWaveManager.State.LastWaveFinished:
                 break;
             default:
                 break;

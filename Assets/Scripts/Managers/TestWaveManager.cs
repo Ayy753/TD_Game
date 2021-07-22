@@ -7,6 +7,10 @@ using Zenject;
 public class TestWaveManager : IWaveManager, IInitializable {
     private IMessageSystem messageSystem;
     private IGUIManager guiManager;
+
+    public event EventHandler StateChanged;
+    public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
+
     public int NumberOfWaves { get; private set; }
 
     public TestWaveManager(IMessageSystem messageSystem, IGUIManager guiManager) {
