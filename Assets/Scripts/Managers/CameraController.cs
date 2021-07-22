@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 /// <summary>
@@ -63,8 +64,11 @@ public class CameraController : MonoBehaviour {
             }
         }
 
-        //  Scroll wheel zoom
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + -Input.mouseScrollDelta.y * scrollSpeed, minZoom, maxZoom);
+        //  If cursor isn't over gui
+        if (EventSystem.current.IsPointerOverGameObject() == false) {
+            //  Scroll wheel zoom
+            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + -Input.mouseScrollDelta.y * scrollSpeed, minZoom, maxZoom);
+        }
     }
 
     /// <summary>
