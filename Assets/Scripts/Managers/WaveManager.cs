@@ -100,7 +100,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     /// A group of enemies
     /// </summary>
     public class Group {
-        public string EnemyType { get; set; }
+        public EnemyData.EnemyType EnemyType { get; set; }
         public int NumEnemies { get; set; }
         public float TimebetweenSpawns { get; set; }
 
@@ -163,24 +163,9 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
         for (int g = 0; g < numGroups; g++) {
             Group group = LevelData.waves[waveNum].Groups[g];
-            EnemyData.EnemyType groupType;
-
-            switch (group.EnemyType) {
-                case "FastEnemy":
-                    groupType = EnemyData.EnemyType.Fast;
-                    break;
-                case "NormalEnemy":
-                    groupType = EnemyData.EnemyType.Normal;
-                    break;
-                case "StrongEnemy":
-                    groupType = EnemyData.EnemyType.Strong;
-                    break;
-                default:
-                    throw new System.Exception(string.Format("Enemy type \"{0}\" does not match any of the prefabs in the resource folder", group.EnemyType));
-            }
 
             for (int i = 0; i < group.NumEnemies; i++) {
-                Enemy enemy = enemySpawner.SpawnEnemy(groupType);
+                Enemy enemy = enemySpawner.SpawnEnemy(group.EnemyType);
                 ApplyWaveBuff(enemy.GetStatus(), waveNum);
                 activeEnemies.Add(enemy);
 
