@@ -72,7 +72,7 @@ public class CameraController : MonoBehaviour {
     /// </summary>
     /// <param name="command"></param>
     private void HandleCommandEntered(InputHandler.Command command) {
-        if (command == InputHandler.Command.FocusTarget) {
+        if (command == InputHandler.Command.FollowTarget) {
             Itargetable target = targetManager.GetTarget();
 
             if (target != null) {

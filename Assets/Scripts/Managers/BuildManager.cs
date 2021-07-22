@@ -17,6 +17,7 @@ public class BuildManager : IInitializable, IDisposable {
     IBuildValidator buildValidator;
     IMessageSystem messageSystem;
     IWallet wallet;
+    IWaveManager waveManager;
     GameManager gameManager;
     ObjectPool objectPool;
     RadiusRenderer radiusRenderer;
@@ -34,7 +35,8 @@ public class BuildManager : IInitializable, IDisposable {
         None
     }
 
-    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, ObjectPool objectPool, RadiusRenderer radiusRenderer) {        Debug.Log("build manager constructor");
+    public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, ObjectPool objectPool, RadiusRenderer radiusRenderer, IWaveManager waveManager) {
+        Debug.Log("build manager constructor");
         this.mapManager = mapManager;
         this.gameManager = gameManager;
         this.buildValidator = buildValidator;
@@ -42,20 +44,21 @@ public class BuildManager : IInitializable, IDisposable {
         this.wallet = wallet;
         this.objectPool = objectPool;
         this.radiusRenderer = radiusRenderer;
+        this.waveManager = waveManager;
     }
 
     public void Initialize() {
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
         MouseManager.OnLeftMouseUp += HandleLeftMouseUp;
         MouseManager.OnRightMouseUp += HandleRightMouseUp;
-        WaveManager.OnStateChanged += HandleWaveStateChanged;
+        waveManager.OnWaveStateChanged += HandleWaveStateChanged;
     }
 
     public void Dispose() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
         MouseManager.OnLeftMouseUp -= HandleLeftMouseUp;
         MouseManager.OnRightMouseUp -= HandleRightMouseUp;
-        WaveManager.OnStateChanged -= HandleWaveStateChanged;
+        waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
     }
 
     /// <summary>
@@ -206,8 +209,8 @@ public class BuildManager : IInitializable, IDisposable {
 
     }
 
-    private void HandleWaveStateChanged(WaveManager.State newState) {
-        if (newState == WaveManager.State.WaveInProgress && CurrentBuildMode != BuildMode.None) {
+    private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
+        if (arg.newState == IWaveManager.State.WaveInProgress && CurrentBuildMode != BuildMode.None) {
             ExitBuildMode();
         }
     }

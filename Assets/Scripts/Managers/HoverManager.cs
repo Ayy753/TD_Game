@@ -7,32 +7,34 @@ public class HoverManager : IInitializable, IDisposable {
     private IMapManager mapManager;
     private IBuildValidator hoverValidator;
     private BuildManager buildManager;
+    private IWaveManager waveManager;
 
     private Vector3Int lastHoveredPosition = Vector3Int.down;
     private bool lastSelectedStructureWasTower = false;
     private StructureData structureData;
     private BuildManager.BuildMode buildMode = BuildManager.BuildMode.None;
 
-    public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, BuildManager buildManager) {
+    public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, BuildManager buildManager, IWaveManager waveManager) {
         this.mapManager = mapManager;
         this.hoverValidator = hoverValidator;
         this.buildManager = buildManager;
+        this.waveManager = waveManager;
     }
 
     public void Initialize() {
         MouseManager.OnHoveredNewTile += HandleNewTileHovered;
         MouseManager.OnRightMouseUp += PauseHighlighting;
-        WaveManager.OnStateChanged += HandleWaveStateChanged;
+        waveManager.OnWaveStateChanged += HandleWaveStateChanged;
     }
 
     public void Dispose() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
         MouseManager.OnRightMouseUp -= PauseHighlighting;
-        WaveManager.OnStateChanged -= HandleWaveStateChanged;
+        waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
     }
 
-    private void HandleWaveStateChanged(WaveManager.State newState) {
-        if (newState == WaveManager.State.WaveInProgress) {
+    private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
+        if (arg.newState == IWaveManager.State.WaveInProgress) {
             UnhoverLastTile();
         }
     }

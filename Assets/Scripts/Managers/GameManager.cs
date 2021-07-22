@@ -6,6 +6,7 @@ using Zenject;
 public class GameManager: IInitializable, IDisposable {
     IGUIManager guiController;
     IMessageSystem messageSystem;
+    IWaveManager waveManager;
     public int Lives { get; private set; }
 
     public State CurrentState { get; private set; }
@@ -19,9 +20,10 @@ public class GameManager: IInitializable, IDisposable {
 
     private const int targetFrameRate = 60;
 
-    public GameManager(IGUIManager guiController, IMessageSystem messageSystem) {
+    public GameManager(IGUIManager guiController, IMessageSystem messageSystem, IWaveManager waveManager) {
         this.guiController = guiController;
         this.messageSystem = messageSystem;
+        this.waveManager = waveManager;
     }
 
     public enum State {
@@ -34,8 +36,8 @@ public class GameManager: IInitializable, IDisposable {
     public void Initialize() {
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
         InputHandler.OnCommandEntered += HandlekeyboardInput;
-        WaveManager.OnStateChanged += HandleWaveStateChanged;
-        
+        waveManager.OnWaveStateChanged += HandleWaveStateChanged;
+
         Debug.Log("GameManager initializing");
         Lives = startingLives;
         guiController.UpdateLivesLabel(Lives);
@@ -47,7 +49,7 @@ public class GameManager: IInitializable, IDisposable {
     public void Dispose() {
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
         InputHandler.OnCommandEntered -= HandlekeyboardInput;
-        WaveManager.OnStateChanged -= HandleWaveStateChanged;
+        waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
     }
 
     private void HandlekeyboardInput(InputHandler.Command command) {
@@ -90,8 +92,8 @@ public class GameManager: IInitializable, IDisposable {
         }
     }
 
-    private void HandleWaveStateChanged(WaveManager.State newState) {
-        if (newState == WaveManager.State.LastWaveFinished) {
+    private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
+        if (arg.newState == IWaveManager.State.LastWaveFinished) {
             guiController.ShowGameWonScreen();
             SetState(State.Ended);
         }
