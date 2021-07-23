@@ -79,7 +79,7 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
         Vector3Int entranceCoordinate = Vector3Int.FloorToInt(entrance.transform.position);
         Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
 
-        Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
+        //Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
 
         //  initialize with entrance coordinate
         PathNode initialStep = new PathNode(entranceCoordinate);

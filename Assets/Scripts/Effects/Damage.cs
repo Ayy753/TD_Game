@@ -7,7 +7,7 @@ public class Damage : IDamage {
     public Damage(float potency, IDamage.DamageType damageType) {
         Potency = potency;
         Type = damageType;
-        Debug.Log("created damage object with potency of " + potency);
+        //Debug.Log("created damage object with potency of " + potency);
     }
 
     public void Apply(Status status) {

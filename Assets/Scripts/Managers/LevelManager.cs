@@ -55,7 +55,7 @@ public class LevelManager : IInitializable, IDisposable{
         string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
         levelData = JsonConvert.DeserializeObject<Root>(jsonText).LevelData;
 
-        Debug.Log("leveldata length: " + levelData.Count);
+        //Debug.Log("leveldata length: " + levelData.Count);
     }
 
     /// <summary>

@@ -7,7 +7,7 @@ public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable
     private StructureData structureData;
 
     private void Start() {
-        Debug.Log(structureData.ToString());
+        //Debug.Log(structureData.ToString());
     }
 
     public void OnPointerClick(PointerEventData eventData) {

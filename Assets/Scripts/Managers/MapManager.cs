@@ -36,7 +36,7 @@ public class MapManager : MonoBehaviour, IMapManager, IInitializable {
             Debug.LogError("One of the tilemap layers is missing");
         }
 
-        Debug.Log("tiledatas count: " + tileDatas.Length);
+        //Debug.Log("tiledatas count: " + tileDatas.Length);
 
         if (tileDatas.Length == 0) {
             Debug.LogError("There are no tiledata scriptable objects in the resource folder");
