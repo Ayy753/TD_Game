@@ -9,19 +9,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 444328968129443073, guid: 089247055ec737547ad9c65d4b8fc931,
         type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 444328968129443073, guid: 089247055ec737547ad9c65d4b8fc931,
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: cbdc43a7ac3cd944fa626c2102f94283,
         type: 3}
-      propertyPath: m_Color.g
-      value: 0.15586281
-      objectReference: {fileID: 0}
-    - target: {fileID: 444328968129443073, guid: 089247055ec737547ad9c65d4b8fc931,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1434180137614920997, guid: 089247055ec737547ad9c65d4b8fc931,
         type: 3}
       propertyPath: <characterData>k__BackingField

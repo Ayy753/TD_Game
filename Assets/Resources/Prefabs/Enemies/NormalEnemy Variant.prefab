@@ -7,6 +7,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 444328968129443073, guid: 089247055ec737547ad9c65d4b8fc931,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 51ea7dd1191abe64cba7b93c041e70f0,
+        type: 3}
     - target: {fileID: 2155516737063779844, guid: 089247055ec737547ad9c65d4b8fc931,
         type: 3}
       propertyPath: m_RootOrder
@@ -65,7 +71,7 @@ PrefabInstance:
     - target: {fileID: 5472817261975363782, guid: 089247055ec737547ad9c65d4b8fc931,
         type: 3}
       propertyPath: m_Name
-      value: NormalEnemy
+      value: NormalEnemy Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 089247055ec737547ad9c65d4b8fc931, type: 3}
