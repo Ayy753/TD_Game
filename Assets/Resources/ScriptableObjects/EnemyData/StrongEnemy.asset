@@ -24,3 +24,5 @@ MonoBehaviour:
   <Description>k__BackingField: A crab, moves slow but has lots of health and armor.
     It resists physical damage
   <Type>k__BackingField: 2
+  <Icon>k__BackingField: {fileID: 21300000, guid: 24e12947ee9a517459b328ca83117feb,
+    type: 3}
