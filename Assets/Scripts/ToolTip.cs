@@ -49,7 +49,8 @@ public class ToolTip : MonoBehaviour {
     /// Enables the tooltip
     /// </summary>
     public void ShowToolTip(IDisplayable displayable) {
-        gameObject.SetActive(true);
         SetCurrentString(displayable.GetDisplayText());
+        TrackMouse();
+        gameObject.SetActive(true);
     }
 }
