@@ -13,4 +13,8 @@ public class EnemyData : CharacterData {
         Normal,
         Strong
     }
+
+    public override string ToString() {
+        return string.Format("<b>Name</b>: {0}\n<b>Description</b>: {1}\n\n", Name, Description) + base.ToString();
+    }
 }
