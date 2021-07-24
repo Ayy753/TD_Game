@@ -37,6 +37,7 @@ public class MainInstaller : MonoInstaller {
         Container.Bind<ToolTip>().FromComponentInHierarchy().AsSingle();
         Container.BindInterfacesAndSelfTo<FPSCounter>().AsSingle();
         Container.BindInterfacesAndSelfTo<ControlsPanel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<WaveReportPanel>().AsSingle();
         Container.Bind<TickManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         //  Factory bindings
