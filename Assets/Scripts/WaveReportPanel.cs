@@ -49,29 +49,37 @@ public class WaveReportPanel : IInitializable, IDisposable{
 
     private void GenerateScoutReport() {
         Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = waveManager.GetCurrentWaveInfo();
-
-        //  Remove previous report rows
-        for (int i = 0; i < scrollViewContent.transform.childCount; i++) {
-            GameObject.Destroy(scrollViewContent.transform.GetChild(i).gameObject);
-        }
+        RemoveReportRows();
 
         if (enemyTypeToAmount != null) {
-            //  Create report row for each type of enemy
-            foreach (EnemyData.EnemyType type in enemyTypeToAmount.Keys) {
-                GameObject row = GameObject.Instantiate(reportRowPrefab, scrollViewContent.transform);
-
-                Image icon = row.transform.Find("imgIcon").GetComponent<Image>();
-                TMP_Text txtType = row.transform.Find("pnlInfo/pnlTypeAndAmount/txtType").GetComponent<TMP_Text>();
-                TMP_Text txtAmount = row.transform.Find("pnlInfo/pnlTypeAndAmount/txtAmount").GetComponent<TMP_Text>();
-
-                EnemyData enemyData = enemyTypeToEnemyData[type];
-                txtType.text = enemyData.Name;
-                txtAmount.text = enemyTypeToAmount[type].ToString();
-                icon.sprite = enemyData.Icon;
+            foreach (EnemyData.EnemyType enemyType in enemyTypeToAmount.Keys) {
+                int enemyAmount = enemyTypeToAmount[enemyType];
+                CreateReportRow(enemyType, enemyAmount);
             }
         }
         else {
             Debug.Log("collection is null, must be the last wave");
         }
+    }
+
+    private void RemoveReportRows() {
+        for (int i = 0; i < scrollViewContent.transform.childCount; i++) {
+            GameObject.Destroy(scrollViewContent.transform.GetChild(i).gameObject);
+        }
+    }
+
+    private void CreateReportRow(EnemyData.EnemyType enemyType, int enemyAmount) {
+        GameObject row = GameObject.Instantiate(reportRowPrefab, scrollViewContent.transform);
+
+        Image icon = row.transform.Find("imgIcon").GetComponent<Image>();
+        TMP_Text txtType = row.transform.Find("pnlInfo/pnlTypeAndAmount/txtType").GetComponent<TMP_Text>();
+        TMP_Text txtAmount = row.transform.Find("pnlInfo/pnlTypeAndAmount/txtAmount").GetComponent<TMP_Text>();
+
+        EnemyData enemyData = enemyTypeToEnemyData[enemyType];
+        txtType.text = enemyData.Name;
+        txtAmount.text = enemyAmount.ToString();
+        icon.sprite = enemyData.Icon;
+
+        icon.GetComponent<EnemyIcon>().enemyData = enemyData;
     }
 }
