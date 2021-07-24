@@ -8,7 +8,6 @@ public class TestWaveManager : IWaveManager, IInitializable {
     private IMessageSystem messageSystem;
     private IGUIManager guiManager;
 
-    public event EventHandler StateChanged;
     public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
 
     public int NumberOfWaves { get; private set; }
@@ -25,5 +24,10 @@ public class TestWaveManager : IWaveManager, IInitializable {
 
     public void StartNextWave() {
         messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
+    }
+
+    public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
+        Debug.LogWarning("There are no waves in this test environment");
+        return null;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public interface IWaveManager {
     public delegate void WaveStateChangedEventHandler(object sender, WaveStateChangedEventArgs args);
@@ -12,6 +13,8 @@ public interface IWaveManager {
 
     public int NumberOfWaves { get; }
     public void StartNextWave();
+
+    public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo();
 }
 
 public class WaveStateChangedEventArgs : EventArgs {

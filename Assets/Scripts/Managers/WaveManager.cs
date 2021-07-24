@@ -50,7 +50,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
         nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
         activeEnemies = new List<Enemy>();
-        currentState = IWaveManager.State.Waiting;
+        ChangeState(IWaveManager.State.Waiting);
         lastWaveFinishedSpawning = false;
         currentWaveFinishedSpawning = false;
 
@@ -150,6 +150,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
     private IEnumerator LaunchWave(int waveNum) {
         currentWaveFinishedSpawning = false;
+        mostRecentWaveNum++;
         ChangeState(IWaveManager.State.WaveInProgress);
 
         int numGroups = LevelData.waves[waveNum].Groups.Count;
@@ -230,9 +231,27 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
             asyncProcessor.StopCoroutine(nextWaveCountDown);
             guiController.UpdateWaveCountdown(0);
             asyncProcessor.StartCoroutine(LaunchWave(mostRecentWaveNum));
-            mostRecentWaveNum++;
             messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
             guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
         }
+    }
+
+    public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
+        if (mostRecentWaveNum == NumberOfWaves) {
+            return null;
+        }
+        
+        Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = new Dictionary<EnemyData.EnemyType, int>();
+
+        foreach (Group group in LevelData.waves[mostRecentWaveNum].Groups) {
+            if (enemyTypeToAmount.ContainsKey(group.EnemyType)) {
+                enemyTypeToAmount[group.EnemyType] += group.NumEnemies;
+            }
+            else {
+                enemyTypeToAmount.Add(group.EnemyType, group.NumEnemies);
+            }
+        }
+
+        return enemyTypeToAmount;
     }
 }
