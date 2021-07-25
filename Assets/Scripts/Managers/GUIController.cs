@@ -9,7 +9,7 @@ public class GUIController : IGUIManager, IInitializable {
 
     //  gameEnded panel is the parent for the other two panels
     GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlBuildMenu;
-    GameObject pnlWave;
+    GameObject imgBuildMenuLock;
 
     public GUIController() {
         Debug.Log("GUIController constuctor");
@@ -23,8 +23,8 @@ public class GUIController : IGUIManager, IInitializable {
         pnlGameOver = GameObject.Find("pnlGameOver");
         pnlGameWon = GameObject.Find("pnlGameWon");
         pnlMenu = GameObject.Find("pnlMenu");
-        pnlWave = GameObject.Find("pnlWave");
         pnlBuildMenu = GameObject.Find("pnlBuildMenu");
+        imgBuildMenuLock = GameObject.Find("imgLock");
 
         txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
         txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
@@ -37,6 +37,7 @@ public class GUIController : IGUIManager, IInitializable {
         pnlGameOver.SetActive(false);
         pnlGameWon.SetActive(false);
         pnlMenu.SetActive(false);
+        imgBuildMenuLock.SetActive(false);
     }
 
     public void UpdateGoldLabel(float gold) {
@@ -84,11 +85,11 @@ public class GUIController : IGUIManager, IInitializable {
         txtFPS.text = fps.ToString();
     }
 
-    public void HideBuildMenu() {
-        pnlBuildMenu.SetActive(false);
+    public void LockBuildMenu() {
+        imgBuildMenuLock.SetActive(true);
     }
 
-    public void ShowBuildMenu() {
-        pnlBuildMenu.SetActive(true);
+    public void UnlockBuildMenu() {
+        imgBuildMenuLock.SetActive(false);
     }
 }

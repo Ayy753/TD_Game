@@ -212,10 +212,10 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
         switch (state) {
             case IWaveManager.State.Waiting:
-                guiController.ShowBuildMenu();
+                guiController.UnlockBuildMenu();
                 break;
             case IWaveManager.State.WaveInProgress:
-                guiController.HideBuildMenu();
+                guiController.LockBuildMenu();
                 break;
             case IWaveManager.State.LastWaveFinished:
                 break;
