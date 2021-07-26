@@ -16,7 +16,7 @@ public interface IBuildValidator{
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public bool CanDemolishStructure(Vector3Int position);
+    public bool IsStructurePresentAndDemolishable(Vector3Int position);
 
     /// <summary>
     /// Checks if the user can build a generic structure over a position. Does not validate special structure-specific conditions

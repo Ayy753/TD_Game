@@ -29,7 +29,7 @@ public class BuildValidator : IBuildValidator{
         return true;
     }
 
-    public bool CanDemolishStructure(Vector3Int position) {
+    public bool IsStructurePresentAndDemolishable(Vector3Int position) {
         StructureData structureData = (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
         if (structureData != null && structureData.Demolishable == true) {
             return true;
