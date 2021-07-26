@@ -22,7 +22,7 @@ public class BuildManager : IInitializable, IDisposable {
     ObjectPool objectPool;
     RadiusRenderer radiusRenderer;
 
-    private Vector3 tilemapOffset = new Vector3( 0.5f, 0.5f, 0);
+    private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
     private Vector3Int lastPositionHovered;
 
     public static EventHandler<StructureChangedEventArgs> StructureChanged;
@@ -61,46 +61,40 @@ public class BuildManager : IInitializable, IDisposable {
         waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
     }
 
-    /// <summary>
-    /// Attempts to build a structure at a position
-    /// </summary>
-    /// <param name="structure"></param>
-    /// <param name="position"></param>
-    private void AttemptBuildStructure(StructureData structure, Vector3Int position) {
-        
-        //  Validate if user can build at this position and can afford structure
-        if (buildValidator.CanBuildStructureOverPosition(position, structure) == false) {
+    private void TryToBuyAndBuildStructureAndDisplayMessages(StructureData structureData, Vector3Int position) {
+        if (CanAffordStructure(structureData) == false) {
+            messageSystem.DisplayMessage("You cannot afford " + structureData.Cost, Color.red);
+            return;
+        }
+        else if (CanBuildStructureAtPosition(structureData, position) == false) {
             messageSystem.DisplayMessage("You cannot build here", Color.red);
             return;
         }
-        if (wallet.CanAfford(structure.Cost) == false) {
-            messageSystem.DisplayMessage("You cannot afford " + structure.Cost, Color.red);
-            return;
+        else {
+            BuyStructure(structureData);
+            BuildStructure(structureData, position);
+            messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structureData.Cost), Color.yellow);
         }
-
-        //  Build structure
-        BuildStructure(structure, position);
     }
 
-    /// <summary>
-    /// Build a structure over a ground tile
-    /// </summary>
-    /// <param name="structure"></param>
-    /// <param name="position"></param>
-    private void BuildStructure(StructureData structure, Vector3Int position) {
-        if (structure.GetType() == typeof(TowerData)) {
-            InstantiateTower((TowerData)structure, position);
-            mapManager.SetTile(position, structure);
-        }
-        else if (structure.GetType() == typeof(WallData)) {
-            mapManager.SetTile(position, structure);
-        }
-        else {
-            throw new System.Exception("Structure type " + structure.GetType() + " not implemented");
+    private bool CanAffordStructure(StructureData structureData) {
+        return wallet.CanAfford(structureData.Cost);
+    }
+
+    private bool CanBuildStructureAtPosition(StructureData structureData, Vector3Int position) {
+        return buildValidator.CanBuildStructureOverPosition(position, structureData);
+    }
+
+    private void BuyStructure(StructureData structureData) {
+        wallet.SpendMoney(structureData.Cost);
+    }
+
+    private void BuildStructure(StructureData structureData, Vector3Int position) {
+        if (structureData is TowerData) {
+            InstantiateTower((TowerData)structureData, position);
         }
 
-        wallet.SpendMoney(structure.Cost);
-        messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structure.Cost), Color.yellow);
+        mapManager.SetTile(position, structureData);
         StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
     }
 
@@ -179,21 +173,29 @@ public class BuildManager : IInitializable, IDisposable {
     /// If in build mode, it will attempt to build a structure
     /// </summary>
     private void HandleLeftMouseUp() {
-        //  Prevent building/demolishing after game ended
-        if (gameManager.CurrentState == GameManager.State.Ended) {
+        if (HasGameEnded()) {
             return;
         }
 
-        //  If cursor isn't over a gui element
-        if (EventSystem.current.IsPointerOverGameObject() == false) {
+        if (IsMouseOverGUI() == false) {
             if (CurrentBuildMode == BuildMode.Build) {
-                AttemptBuildStructure(CurrentlySelectedStructure, lastPositionHovered);
+                TryToBuyAndBuildStructureAndDisplayMessages(CurrentlySelectedStructure, lastPositionHovered);
             }
             else if (CurrentBuildMode == BuildMode.Demolish) {
                 AttemptDemolishStructure(lastPositionHovered);
             }
         }
+    }
 
+    private bool IsMouseOverGUI() {
+        return EventSystem.current.IsPointerOverGameObject();
+    }
+
+    private bool HasGameEnded() {
+        if (gameManager.CurrentState == GameManager.State.Ended) {
+            return true;
+        }
+        return false;
     }
     
     private void HandleRightMouseUp() {
