@@ -89,7 +89,7 @@ public class HoverManager : IInitializable, IDisposable {
             }
         }
         else if (buildMode == BuildManager.BuildMode.Demolish) {
-            if (hoverValidator.CanDemolishStructure(position) == true)
+            if (hoverValidator.IsStructurePresentAndDemolishable(position) == true)
                 highlightColor = Color.green;
             else
                 highlightColor = Color.red;

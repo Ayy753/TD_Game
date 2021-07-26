@@ -41,7 +41,7 @@ public class PreviewPathRenderer : MonoBehaviour, IPathRenderer {
             }
         }
         else if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Demolish) {
-            if (buildValidator.CanDemolishStructure(tileCoords)) {
+            if (buildValidator.IsStructurePresentAndDemolishable(tileCoords)) {
                 List<Vector3Int> path = pathFinder.GetDemolishPreviewPath(tileCoords);
                 RenderPath(path);
             }

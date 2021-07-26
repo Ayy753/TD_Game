@@ -1,18 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 
 public class BuildManager : IInitializable, IDisposable {
-
-    #region properties
     public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
     public StructureData CurrentlySelectedStructure { get; private set; }
-    #endregion
 
-    #region fields
     IMapManager mapManager;
     IBuildValidator buildValidator;
     IMessageSystem messageSystem;
@@ -22,12 +16,10 @@ public class BuildManager : IInitializable, IDisposable {
     ObjectPool objectPool;
     RadiusRenderer radiusRenderer;
 
-    private Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
+    private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
     private Vector3Int lastPositionHovered;
 
     public static EventHandler<StructureChangedEventArgs> StructureChanged;
-
-    #endregion
 
     public enum BuildMode {
         Build,
@@ -61,14 +53,40 @@ public class BuildManager : IInitializable, IDisposable {
         waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
     }
 
+    private void HandleLeftMouseUp() {
+        if (HasGameEnded() == false && IsMouseOverGUI() == false) {
+            if (CurrentBuildMode == BuildMode.Build) {
+                TryToBuyAndBuildStructureAndDisplayMessages(CurrentlySelectedStructure, lastPositionHovered);
+            }
+            else if (CurrentBuildMode == BuildMode.Demolish) {
+                TryToDemolishAndSellStructureAndDisplayMessages(lastPositionHovered);
+            }
+        }
+    }
+
+    private bool HasGameEnded() {
+        if (gameManager.CurrentState == GameManager.State.Ended) {
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsMouseOverGUI() {
+        return EventSystem.current.IsPointerOverGameObject();
+    }
+
+    private void HandleRightMouseUp() {
+        if (IsMouseOverGUI() == false) {
+            ExitBuildOrDemolishMode();
+        }
+    }
+
     private void TryToBuyAndBuildStructureAndDisplayMessages(StructureData structureData, Vector3Int position) {
         if (CanAffordStructure(structureData) == false) {
             messageSystem.DisplayMessage("You cannot afford " + structureData.Cost, Color.red);
-            return;
         }
         else if (CanBuildStructureAtPosition(structureData, position) == false) {
             messageSystem.DisplayMessage("You cannot build here", Color.red);
-            return;
         }
         else {
             BuyStructure(structureData);
@@ -91,70 +109,103 @@ public class BuildManager : IInitializable, IDisposable {
 
     private void BuildStructure(StructureData structureData, Vector3Int position) {
         if (structureData is TowerData) {
-            InstantiateTower((TowerData)structureData, position);
+            InstantiateTowerGameObjectAtPosition((TowerData)structureData, position);
         }
 
         mapManager.SetTile(position, structureData);
         StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
     }
 
-    private void AttemptDemolishStructure(Vector3Int position) {
-        if (buildValidator.CanDemolishStructure(position) == false) {
-            return;
-        }
-        DemolishStructure(position);
-    }
-
-    private void DemolishStructure(Vector3Int position) {
-        StructureData structureAtPos = (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
-        float structureValue;
-
-        if (structureAtPos.GetType() == typeof(TowerData)) {
-            Tower tower = GetTower(position);
-            DestroyTower(tower);
-
-            structureValue = Mathf.RoundToInt(tower.TowerData.Cost * wallet.GetResellPercentageInDecimal());
+    private void TryToDemolishAndSellStructureAndDisplayMessages(Vector3Int position) {
+        if (IsDemolishableStructureAtPosition(position) == false) {
+            messageSystem.DisplayMessage("There is no demolishable structure here", Color.red);
         }
         else {
-            structureValue = Mathf.RoundToInt(structureAtPos.Cost * wallet.GetResellPercentageInDecimal());
+            StructureData structureAtPosition = GetStructureDataAtPosition(position);
+            float sellValue = GetSellValue(structureAtPosition);
+
+            SellStructure(structureAtPosition);
+            DemolishStructureAtPosition(position);
+            messageSystem.DisplayMessageAtCursor(string.Format("+{0}g", sellValue), Color.yellow);
+        }
+    }
+
+    private bool IsDemolishableStructureAtPosition(Vector3Int position) {
+        return buildValidator.IsStructurePresentAndDemolishable(position);
+    }
+
+    private StructureData GetStructureDataAtPosition(Vector3Int position) {
+        return (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+    }
+
+    private float GetSellValue(StructureData structureData) {
+        float sellValue = structureData.Cost * wallet.GetResellPercentageInDecimal();
+        float sellValueRounded = (float)Math.Round(sellValue, 0);
+        return sellValueRounded;
+    }
+
+    private void SellStructure(StructureData structureData) {
+        float sellValue = GetSellValue(structureData);
+        wallet.GainMoney(sellValue);
+    }
+
+    private void DemolishStructureAtPosition(Vector3Int position) {
+        StructureData structureData = GetStructureDataAtPosition(position);
+        
+        if (structureData is TowerData) {
+            Tower tower = GetTowerAtPosition(position);
+            DestroyTower(tower);
         }
 
         mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-        Debug.Log("sold structure for " + structureValue);
-        wallet.GainMoney(structureValue);
-        messageSystem.DisplayMessageAtCursor(string.Format("+{0}g", structureValue), Color.yellow);
-
         StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.demolish, position));
     }
 
-    /// <summary>
-    /// Handles logic when a new tile is hovered
-    /// </summary>
-    /// <param name="tileCoords"></param>
-    private void HandleNewTileHovered(Vector3Int tileCoords) {
-        lastPositionHovered = tileCoords;
+    private void HandleNewTileHovered(Vector3Int position) {
+        lastPositionHovered = position;
 
-        Vector3 coordsWithOffset = tileCoords + tilemapOffset;
-
-        if (ShouldShowRadius(tileCoords)) {
-            if (CurrentBuildMode == BuildMode.Build) {
-                radiusRenderer.RenderRadius(coordsWithOffset, ((TowerData)(CurrentlySelectedStructure)).Range);
-            }
-            else {
-                radiusRenderer.RenderRadius(coordsWithOffset, GetTower(tileCoords).TowerData.Range);
-            }
+        if (IsTowerPresentAtPosition(position)) {
+            ShowTowerRadiusAtPosition(position);
         }
         else {
-            radiusRenderer.HideRadius();
+            HideTowerRadius();
         }
     }
 
-    /// <summary>
-    /// Instantiates and initializes a tower game object and adds it to list
-    /// </summary>
-    /// <param name="towerData"></param>
-    /// <param name="position"></param>
-    private void InstantiateTower(TowerData towerData, Vector3Int position) {
+    private bool IsTowerPresentAtPosition(Vector3Int position) {
+        Vector3 positionWithOffset = position + tilemapOffset;
+
+        if (GetTowerAtPosition(positionWithOffset) != null) { 
+            return true;
+        }
+        return false;
+    }
+
+    private Tower GetTowerAtPosition(Vector3 position) {
+        RaycastHit2D hit = Physics2D.Raycast(position, Vector2.zero);
+
+        if (hit.collider != null) {
+            return hit.collider.GetComponent<Tower>();
+        }
+        return null;
+    }
+
+    private void ShowTowerRadiusAtPosition(Vector3Int position) {
+        Vector3 positionWithOffset = position + tilemapOffset;
+
+        if (CurrentBuildMode == BuildMode.Build) {
+            radiusRenderer.RenderRadius(positionWithOffset, ((TowerData)(CurrentlySelectedStructure)).Range);
+        }
+        else {
+            radiusRenderer.RenderRadius(positionWithOffset, GetTowerAtPosition(position).TowerData.Range);
+        }
+    }
+
+    private void HideTowerRadius() {
+        radiusRenderer.HideRadius();
+    }
+
+    private void InstantiateTowerGameObjectAtPosition(TowerData towerData, Vector3Int position) {
         Tower tower = objectPool.CreateTower(towerData.Type);
         tower.gameObject.transform.position = position + tilemapOffset;
     }
@@ -168,90 +219,10 @@ public class BuildManager : IInitializable, IDisposable {
         objectPool.DestroyTower(tower);
     }
 
-    /// <summary>
-    /// Responds to a complete mouse click
-    /// If in build mode, it will attempt to build a structure
-    /// </summary>
-    private void HandleLeftMouseUp() {
-        if (HasGameEnded()) {
-            return;
-        }
-
-        if (IsMouseOverGUI() == false) {
-            if (CurrentBuildMode == BuildMode.Build) {
-                TryToBuyAndBuildStructureAndDisplayMessages(CurrentlySelectedStructure, lastPositionHovered);
-            }
-            else if (CurrentBuildMode == BuildMode.Demolish) {
-                AttemptDemolishStructure(lastPositionHovered);
-            }
-        }
-    }
-
-    private bool IsMouseOverGUI() {
-        return EventSystem.current.IsPointerOverGameObject();
-    }
-
-    private bool HasGameEnded() {
-        if (gameManager.CurrentState == GameManager.State.Ended) {
-            return true;
-        }
-        return false;
-    }
-    
-    private void HandleRightMouseUp() {
-        //  Prevent building/demolishing after game ended
-        if (gameManager.CurrentState == GameManager.State.Ended) {
-            return;
-        }
-
-        //  If cursor isn't over a gui element
-        if (EventSystem.current.IsPointerOverGameObject() == false) {
-            ExitBuildMode();
-        }
-
-    }
-
     private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
         if (arg.newState == IWaveManager.State.WaveInProgress && CurrentBuildMode != BuildMode.None) {
-            ExitBuildMode();
+            ExitBuildOrDemolishMode();
         }
-    }
-
-    /// <summary>
-    /// Returns true if user is in build mode and selected a tower and cursor is over a ground tile
-    /// Or if user is not in build mode and cursor is over a tower 
-    /// </summary>
-    /// <param name="tileCoords"></param>
-    /// <returns></returns>
-    private bool ShouldShowRadius(Vector3Int tileCoords) {
-        if (CurrentBuildMode == BuildMode.Build 
-            && EventSystem.current.IsPointerOverGameObject() == false 
-            && CurrentlySelectedStructure.GetType() == typeof(TowerData) 
-            && mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, tileCoords)) {
-
-            return true;
-        }
-        else if (CurrentBuildMode == BuildMode.None){
-            TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, tileCoords);
-            if (tileData != null && tileData.GetType() == typeof(TowerData)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Finds and returns a tower at a postiion if one exists 
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns></returns>
-    private Tower GetTower(Vector3 position) {
-        RaycastHit2D hit = Physics2D.Raycast(position, Vector2.zero);
-
-        if (hit.collider != null) {
-            return hit.collider.GetComponent<Tower>();
-        }
-        return null;
     }
 
     /// <summary>
@@ -278,16 +249,16 @@ public class BuildManager : IInitializable, IDisposable {
     /// <summary>
     /// Exits build/demolish mode
     /// </summary>
-    public void ExitBuildMode() {
+    public void ExitBuildOrDemolishMode() {
         CurrentlySelectedStructure = null;
         CurrentBuildMode = BuildMode.None;
-        radiusRenderer.HideRadius();
+        HideTowerRadius();
         Debug.Log("Exited build mode");
     }
 
     public void SellTower(Tower tower) {
-        Vector3Int pos = Vector3Int.FloorToInt(tower.gameObject.transform.position);
-        DemolishStructure(pos);
+        Vector3Int positiion = Vector3Int.FloorToInt(tower.gameObject.transform.position);
+        TryToDemolishAndSellStructureAndDisplayMessages(positiion);
     }
 }
 

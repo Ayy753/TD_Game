@@ -69,7 +69,7 @@ public class ButtonManager: IButtonManager, IInitializable {
     }
 
     public void ExitEditMode() {
-        buildManager.ExitBuildMode();
+        buildManager.ExitBuildOrDemolishMode();
     }
 
     public void StartNextWave() {
