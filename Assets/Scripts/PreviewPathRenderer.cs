@@ -8,13 +8,11 @@ public class PreviewPathRenderer : MonoBehaviour, IPathRenderer {
     [Inject] IBuildValidator buildValidator;
 
     IPathfinder pathFinder;
-    IMapManager mapManager;
     private LineRenderer line;
     private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
 
     private void Awake() {
         pathFinder = GameObject.Find("PathFinder").GetComponent<IPathfinder>();
-        mapManager = GameObject.Find("MapManager").GetComponent<IMapManager>();
         line = GetComponent<LineRenderer>();
     }
 
@@ -27,7 +25,7 @@ public class PreviewPathRenderer : MonoBehaviour, IPathRenderer {
     private void OnDisable() {
         MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
         MouseManager.OnLeftMouseUp -= ClearPath;
-        MouseManager.OnRightMouseUp += ClearPath;
+        MouseManager.OnRightMouseUp -= ClearPath;
     }
 
     private void HandleNewTileHovered(Vector3Int tileCoords) {
