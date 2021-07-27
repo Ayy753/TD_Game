@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -8,13 +6,10 @@ using Zenject;
 /// Adds additional testing functionality to ButtonManager
 /// </summary>
 public class TestButtonManager : ButtonManager, IInitializable {
-    private BuildManager buildManager;
-    private IWaveManager waveManager;
-    private GameManager gameManager;
     private EnemySpawner enemySpawner;
     private IWallet wallet;
 
-    public TestButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner, IWallet wallet):base(buildManager, waveManager, gameManager) {
+    public TestButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner, IWallet wallet, WaveReportPanel waveReportPanel) :base(buildManager, waveManager, gameManager, waveReportPanel) {
         Debug.Log("test build manager");
         this.enemySpawner = enemySpawner;
         this.wallet = wallet;

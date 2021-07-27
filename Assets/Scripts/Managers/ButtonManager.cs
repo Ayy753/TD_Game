@@ -3,26 +3,28 @@ using UnityEngine.UI;
 using Zenject;
 
 public class ButtonManager: IButtonManager, IInitializable {
-    private BuildManager buildManager;
-    private IWaveManager waveManager;
-    private GameManager gameManager;
+    protected BuildManager buildManager;
+    protected IWaveManager waveManager;
+    protected GameManager gameManager;
+    protected WaveReportPanel waveReportPanel;
 
-    public ButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager) {
+    public ButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, WaveReportPanel waveReportPanel) {
         Debug.Log("ButtonManager constuctor");
         this.buildManager = buildManager;
         this.waveManager = waveManager;
         this.gameManager = gameManager;
+        this.waveReportPanel = waveReportPanel;
     }
 
     public void Initialize() {
-        CreateDynamicButtons();
+        CreateBuildMenuButtons();
         BindButtonsInScene();
     }
 
     /// <summary>
     /// Populates build menu with structure buttons
     /// </summary>
-    public void CreateDynamicButtons() {
+    public void CreateBuildMenuButtons() {
         GameObject structureBuildBtnPrefab = Resources.Load<GameObject>("Prefabs/NewBuildMenuButton");
         StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
         GameObject scrollViewContentBox = GameObject.Find("Scroll View/Viewport/Content");
@@ -50,6 +52,8 @@ public class ButtonManager: IButtonManager, IInitializable {
         Button btnRestart = GameObject.Find("btnRestart").GetComponent<Button>();
         Button btnExit = GameObject.Find("btnExit").GetComponent<Button>();
         Button btnDemolish = GameObject.Find("btnDemolish").GetComponent<Button>();
+        Button btnToggleWaveReport = GameObject.Find("btnToggleWaveReport").GetComponent<Button>();
+        Button btnCloseWaveReport = GameObject.Find("btnCloseWaveReport").GetComponent<Button>();
 
         btnNextWave.onClick.AddListener(delegate { waveManager.StartNextWave(); });
         btnbtnDecreaseSpeed.onClick.AddListener(delegate { gameManager.DecreaseGameSpeed(); });
@@ -58,6 +62,8 @@ public class ButtonManager: IButtonManager, IInitializable {
         btnRestart.onClick.AddListener(delegate { gameManager.Restart(); });
         btnExit.onClick.AddListener(delegate { gameManager.ExitGame(); });
         btnDemolish.onClick.AddListener(delegate { buildManager.EnterDemolishMode(); });
+        btnToggleWaveReport.onClick.AddListener(delegate { waveReportPanel.ToggleWaveReport(); });
+        btnCloseWaveReport.onClick.AddListener(delegate { waveReportPanel.CloseWaveReport(); });
     }
 
     public void EnterBuildMode(StructureData structure) {

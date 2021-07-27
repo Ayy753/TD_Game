@@ -6,7 +6,7 @@ using UnityEngine;
 /// Handles user inputs via buttons
 /// </summary>
 public interface IButtonManager {
-    public void CreateDynamicButtons();
+    public void CreateBuildMenuButtons();
     public void EnterBuildMode(StructureData structure);
     public void EnterDemolishMode();
     public void ExitEditMode();

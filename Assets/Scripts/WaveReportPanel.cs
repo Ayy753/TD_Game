@@ -41,15 +41,20 @@ public class WaveReportPanel : IInitializable, IDisposable{
     }
 
     private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-        //  If a new wave is launched generate next wave report
+        //  If a new wave is launched generate next wave report and hide it
         if (arg.newState == IWaveManager.State.WaveInProgress) {
             GenerateScoutReport();
+            CloseWaveReport();
+        }
+        //  Otherwise if the wave ended, show the new report
+        else if (arg.newState == IWaveManager.State.Waiting) {
+            ShowWaveReport();
         }
     }
 
     private void GenerateScoutReport() {
         Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = waveManager.GetCurrentWaveInfo();
-        RemoveReportRows();
+        RemoveAllReportRows();
 
         if (enemyTypeToAmount != null) {
             foreach (EnemyData.EnemyType enemyType in enemyTypeToAmount.Keys) {
@@ -62,7 +67,7 @@ public class WaveReportPanel : IInitializable, IDisposable{
         }
     }
 
-    private void RemoveReportRows() {
+    private void RemoveAllReportRows() {
         for (int i = 0; i < scrollViewContent.transform.childCount; i++) {
             GameObject.Destroy(scrollViewContent.transform.GetChild(i).gameObject);
         }
@@ -81,5 +86,22 @@ public class WaveReportPanel : IInitializable, IDisposable{
         icon.sprite = enemyData.Icon;
 
         icon.GetComponent<EnemyIcon>().enemyData = enemyData;
+    }
+
+    public void ToggleWaveReport() {
+        if (pnlWaveReport.activeInHierarchy == true) {
+            pnlWaveReport.SetActive(false);
+        }
+        else {
+            pnlWaveReport.SetActive(true);
+        }
+    }
+
+    public void CloseWaveReport() {
+        pnlWaveReport.SetActive(false);
+    }
+
+    public void ShowWaveReport() {
+        pnlWaveReport.SetActive(true);
     }
 }
