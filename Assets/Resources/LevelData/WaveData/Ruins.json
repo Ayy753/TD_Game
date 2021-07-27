@@ -2,7 +2,8 @@
 	"waves" : 
 	[
 		{"Groups" : [
-			{"EnemyType":"Normal", "NumEnemies":10, "TimebetweenSpawns":1}
+			{"EnemyType":"Normal", "NumEnemies":10, "TimebetweenSpawns":1},
+			{"EnemyType":"Fast", "NumEnemies":12, "TimebetweenSpawns":0.75}
 		], "TimebetweenGroups" : 3},
 		{"Groups" : [
 			{"EnemyType":"Strong", "NumEnemies":5, "TimebetweenSpawns":5}
