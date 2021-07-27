@@ -164,7 +164,7 @@ public class BuildManager : IInitializable, IDisposable {
     private void HandleNewTileHovered(Vector3Int position) {
         lastPositionHovered = position;
 
-        if (IsTowerPresentAtPosition(position)) {
+        if (ShouldShowTowerRadiusAtPosition(position)) {
             ShowTowerRadiusAtPosition(position);
         }
         else {
@@ -172,10 +172,17 @@ public class BuildManager : IInitializable, IDisposable {
         }
     }
 
+    private bool ShouldShowTowerRadiusAtPosition(Vector3Int position) {
+        if ((CurrentBuildMode == BuildMode.Build && CurrentlySelectedStructure is TowerData) || IsTowerPresentAtPosition(position)) {
+            return true;
+        }
+        return false;
+    }
+
     private bool IsTowerPresentAtPosition(Vector3Int position) {
         Vector3 positionWithOffset = position + tilemapOffset;
 
-        if (GetTowerAtPosition(positionWithOffset) != null) { 
+        if (GetTowerAtPosition(positionWithOffset) != null) {
             return true;
         }
         return false;
