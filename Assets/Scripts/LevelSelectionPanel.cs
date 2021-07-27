@@ -25,19 +25,17 @@ public class LevelSelectionPanel : IInitializable {
 
         foreach (var level in levelData) {
             GameObject button = GameObject.Instantiate(levelButtonPrefab);
-            TMP_Text txtLevelNum = button.transform.Find("pnlLevelNum/txtLevelNum").GetComponent<TMP_Text>();
             TMP_Text txtLevelName = button.transform.Find("pnlLevelName/txtLevelName").GetComponent<TMP_Text>();
-            txtLevelNum.text = level.LevelNum.ToString();
             txtLevelName.text = level.LevelName.ToString();
             button.transform.SetParent(pnlGrid);
-            button.GetComponent<Button>().onClick.AddListener(delegate { LoadLevel(level.LevelNum); });
+            button.GetComponent<Button>().onClick.AddListener(delegate { LoadLevel(level.LevelName); });
         }
     }
 
     /// <summary>
     /// Button's onclick will call this function
     /// </summary>
-    public void LoadLevel(int levelNum) {
-        SceneManager.LoadScene("level_" + levelNum);
+    public void LoadLevel(string levelName) {
+        SceneManager.LoadScene(levelName);
     }
 }

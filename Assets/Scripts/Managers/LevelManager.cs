@@ -14,8 +14,8 @@ using Zenject;
 public class LevelManager : IInitializable, IDisposable{
     List<LevelData> levelData;
     private string filePath = "LevelData/PlayerProgress";
-    public int CurrentLevel { get; private set; }
     public State CurrentState { get; private set; }
+    public string CurrentLevelName { get; private set; }
 
     public enum State {
         InGame,
@@ -25,20 +25,19 @@ public class LevelManager : IInitializable, IDisposable{
 
     public void Initialize() {
         Debug.Log("starting levelmanager");
-
         string sceneName = SceneManager.GetActiveScene().name;
 
         if (sceneName == "LevelSelect") {
             LoadLevelData();
             CurrentState = State.LevelSelection;
         }
-        else if (sceneName == "TestScene") {
+        else if (sceneName == "Testing Environment") {
             CurrentState = State.TestScene;
         }
         else {
             CurrentState = State.InGame;
             LoadLevelData();
-            CurrentLevel = int.Parse(sceneName.Split('_')[1]);
+            CurrentLevelName = sceneName;
         }
     }
      
@@ -54,8 +53,6 @@ public class LevelManager : IInitializable, IDisposable{
     private void LoadLevelData() {
         string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
         levelData = JsonConvert.DeserializeObject<Root>(jsonText).LevelData;
-
-        //Debug.Log("leveldata length: " + levelData.Count);
     }
 
     /// <summary>
@@ -93,7 +90,6 @@ public class LevelManager : IInitializable, IDisposable{
     //  Json objects
     public class LevelData {
         public string LevelName { get; set; }
-        public int LevelNum { get; set; }
         public int Score { get; set; }
     }
 

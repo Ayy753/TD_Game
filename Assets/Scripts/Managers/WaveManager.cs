@@ -82,7 +82,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     }
 
     private void LoadWaveData() {
-        string filePath = FolderPath + "Level_" + levelManager.CurrentLevel;
+        string filePath = FolderPath + levelManager.CurrentLevelName;
         string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
         LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
         NumberOfWaves = LevelData.waves.Count;
