@@ -200,7 +200,7 @@ public class BuildManager : IInitializable, IDisposable {
     private void ShowTowerRadiusAtPosition(Vector3Int position) {
         Vector3 positionWithOffset = position + tilemapOffset;
 
-        if (CurrentBuildMode == BuildMode.Build) {
+        if (CurrentBuildMode == BuildMode.Build && CurrentlySelectedStructure is TowerData) {
             radiusRenderer.RenderRadius(positionWithOffset, ((TowerData)(CurrentlySelectedStructure)).Range);
         }
         else {
