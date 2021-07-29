@@ -142,7 +142,9 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     private void TogglePause() {
-        SetState(CurrentState == State.Paused ? State.Running : State.Paused);
+        if (CurrentState != State.Ended) {
+            SetState(CurrentState == State.Paused ? State.Running : State.Paused);
+        }
     }
 
     private void LimitFramerate() {
