@@ -146,7 +146,7 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     private void TogglePause() {
-        if (CurrentState != State.Ended) {
+        if (CurrentState != State.Ended && CurrentState != State.Menu) {
             SetState(CurrentState == State.Paused ? State.Running : State.Paused);
         }
     }
