@@ -8,7 +8,7 @@ public class GUIController : IGUIManager, IInitializable {
     TMP_Text txtGameSpeed, txtFPS;
 
     //  gameEnded panel is the parent for the other two panels
-    GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlBuildMenu;
+    GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlBuildMenu, pnlPause;
     GameObject imgBuildMenuLock;
 
     public GUIController() {
@@ -25,6 +25,7 @@ public class GUIController : IGUIManager, IInitializable {
         pnlMenu = GameObject.Find("pnlMenu");
         pnlBuildMenu = GameObject.Find("pnlBuildMenu");
         imgBuildMenuLock = GameObject.Find("imgLock");
+        pnlPause = GameObject.Find("pnlPause");
 
         txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
         txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
@@ -38,6 +39,7 @@ public class GUIController : IGUIManager, IInitializable {
         pnlGameWon.SetActive(false);
         pnlMenu.SetActive(false);
         imgBuildMenuLock.SetActive(false);
+        pnlPause.SetActive(false);
     }
 
     public void UpdateGoldLabel(float gold) {
@@ -91,5 +93,13 @@ public class GUIController : IGUIManager, IInitializable {
 
     public void UnlockBuildMenu() {
         imgBuildMenuLock.SetActive(false);
+    }
+
+    public void ShowPausePanel() {
+        pnlPause.SetActive(true);
+    }
+
+    public void HidePausePanel() {
+        pnlPause.SetActive(false);
     }
 }

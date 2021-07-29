@@ -18,5 +18,7 @@ public interface IGUIManager{
     public void UpdateFPSCounter(int fps);
     public void LockBuildMenu();
     public void UnlockBuildMenu();
+    public void ShowPausePanel();
+    public void HidePausePanel();
 }
 

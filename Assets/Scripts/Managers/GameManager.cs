@@ -109,9 +109,11 @@ public class GameManager: IInitializable, IDisposable {
             case State.Running:
                 Time.timeScale = currentGameSpeed;
                 guiController.UpdateSpeedPanel(currentGameSpeed);
+                guiController.HidePausePanel();
                 break;
             case State.Paused:
                 Time.timeScale = 0;
+                guiController.ShowPausePanel();
                 break;
             case State.Ended:
                 Time.timeScale = 0;
