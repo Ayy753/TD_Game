@@ -11,14 +11,13 @@ public class GameManager: IInitializable, IDisposable {
 
     public State CurrentState { get; private set; }
 
-    private const int startingLives = 25;
+    private const int STARTING_LIVES = 25;
+    private const float MIN_GAME_SPEED = 1f;
+    private const float MAX_GAME_SPEED = 3f;
+    private const float GAME_SPEED_INCREMENT = 1f;
+    private const int TARGET_FRAMERATE = 60;
 
-    private const float minSpeed = 1f;
-    private const float maxSpeed = 3f;
-    private const float speedIncrement = 1f;
     private float currentGameSpeed;
-
-    private const int targetFrameRate = 60;
 
     public GameManager(IGUIManager guiController, IMessageSystem messageSystem, IWaveManager waveManager) {
         this.guiController = guiController;
@@ -39,9 +38,9 @@ public class GameManager: IInitializable, IDisposable {
         waveManager.OnWaveStateChanged += HandleWaveStateChanged;
 
         Debug.Log("GameManager initializing");
-        Lives = startingLives;
+        Lives = STARTING_LIVES;
         guiController.UpdateLivesLabel(Lives);
-        currentGameSpeed = minSpeed;
+        currentGameSpeed = MIN_GAME_SPEED;
         SetState(State.Running);
         LimitFramerate();
     }
@@ -83,18 +82,20 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     private void HandleEnemyReachedGate(Enemy enemy) {
+        LoseLife();
+    }
+
+    private void LoseLife() {
         Lives -= 1;
         guiController.UpdateLivesLabel(Lives);
         messageSystem.DisplayMessage("-1 life", Color.red);
         if (Lives <= 0) {
-            guiController.ShowGameOverScreen();
             SetState(State.Ended);
         }
     }
 
     private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
         if (arg.newState == IWaveManager.State.LastWaveFinished) {
-            guiController.ShowGameWonScreen();
             SetState(State.Ended);
         }
     }
@@ -114,6 +115,7 @@ public class GameManager: IInitializable, IDisposable {
                 break;
             case State.Ended:
                 Time.timeScale = 0;
+                guiController.ShowGameWonScreen();
                 break;
             case State.Menu:
                 Time.timeScale = 0;
@@ -126,17 +128,17 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     public void IncreaseGameSpeed() {
-        currentGameSpeed +=  speedIncrement;
-        if (currentGameSpeed > maxSpeed) {
-            currentGameSpeed = maxSpeed;
+        currentGameSpeed +=  GAME_SPEED_INCREMENT;
+        if (currentGameSpeed > MAX_GAME_SPEED) {
+            currentGameSpeed = MAX_GAME_SPEED;
         }
         SetState(State.Running);
     }
 
     public void DecreaseGameSpeed() {
-        currentGameSpeed -= speedIncrement;
-        if (currentGameSpeed < minSpeed) {
-            currentGameSpeed = minSpeed;
+        currentGameSpeed -= GAME_SPEED_INCREMENT;
+        if (currentGameSpeed < MIN_GAME_SPEED) {
+            currentGameSpeed = MIN_GAME_SPEED;
         }
         SetState(State.Running);
     }
@@ -149,18 +151,18 @@ public class GameManager: IInitializable, IDisposable {
 
     private void LimitFramerate() {
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = targetFrameRate;
+        Application.targetFrameRate = TARGET_FRAMERATE;
     }
 
     public void ExitGame() {
         Application.Quit();
     }
 
-    public void Restart() {
+    public void RestartLevel() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void LevelSelect() {
+    public void LoadLevelSelectionScene() {
         SceneManager.LoadScene("LevelSelect");
     }
 }
