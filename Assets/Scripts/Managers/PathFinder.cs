@@ -22,7 +22,7 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
             Debug.LogError("entrance or exit not found");
         }
         else {
-            StartCoroutine(CalculateMainPath());
+            CalculateMainPath();
         }
 
         BuildManager.StructureChanged += HandleStructureChanged;
@@ -34,10 +34,10 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
 
     private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
         if (e.changeType == StructureChangedEventArgs.Type.build) {
-            StartCoroutine(CalculateMainPath());
+            CalculateMainPath();
         }
         else if (e.changeType == StructureChangedEventArgs.Type.demolish) {
-            StartCoroutine(CalculateMainPath());
+            CalculateMainPath();
         }
     }
 
@@ -70,24 +70,18 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
     /// Estimates the shortest path through the level using an implementation of the A* algorithm
     /// </summary>
     /// <returns>A chain of path nodes, or null if there is no valid path</returns>
-    private IEnumerator CalculateMainPath() {
-        Debug.Log("Calculating main path");
-
+    private void CalculateMainPath() {
         List<PathNode> openList = new List<PathNode>();
         List<PathNode> closedList = new List<PathNode>();
 
         Vector3Int entranceCoordinate = Vector3Int.FloorToInt(entrance.transform.position);
         Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
 
-        //Debug.Log(string.Format("entrance coordinate: {0}, exit coordinate: {1}", entranceCoordinate, exitCoordinate));
-
         //  initialize with entrance coordinate
         PathNode initialStep = new PathNode(entranceCoordinate);
         openList.Add(initialStep);
 
         while (openList.Count > 0) {
-            //Debug.Log("Openlist count:  " + openList.Count);
-
             //  find the lowest F cost in openList
             PathNode currentNode = openList[0];
             foreach (PathNode node in openList) {
@@ -110,8 +104,7 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
                 PathNode foundPath = new PathNode(currentNode.Coordinate, currentNode.Gcost, currentNode.Hcost, parent);
                 currentPath = foundPath.GetPath();
                 PathRecalculated.Invoke(this, EventArgs.Empty);
-                Debug.Log("Successfully found main path");
-                yield break;
+                break;
             }
 
             //  Process neighbouring tiles
@@ -119,54 +112,51 @@ public class PathFinder : MonoBehaviour, IPathfinder, IInitializable, IDisposabl
                 for (int y = -1; y <= 1; y++) {
                     //  Ignore diagonal tiles (one of the coords must be zero and the other non-zero in order to be non-diagonal)
                     if ((x == 0 && y != 0) || (x != 0 && y == 0)) {
-                        Vector3Int neighbourCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
-                        bool skipSuccessor = false;
-
-                        //mapManager.HighlightTile(IMapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
-                        //  Proceed if there is an open space at this position
-                        if (IsValidTile(neighbourCoordinate)) {
-                            // Skip this tile if its already been considered
-                            foreach (PathNode node in closedList) {
-                                if (node.Coordinate == neighbourCoordinate) {
-                                    skipSuccessor = true;
-                                    break;
-                                }
-                            }
-
-                            //  Otherwise, process this tile 
-                            if (skipSuccessor == false) {
-                                float tileCost = mapManager.GetTileCost(neighbourCoordinate);
-                                float neighGCost = tileCost + parent.Gcost;
-                                float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
-                                float neighFCost = neighGCost + neighHCost;
-
-                                //mapManager.HighlightTile(MapManager.Layer.GroundLayer, neighbourCoordinate, Color.yellow);
-
-                                //  Check if openlist already contains a path to this tile
-                                //  If it has, and the other one has a smaller F cost, update cost and parent
-                                foreach (PathNode node in openList) {
-                                    if (node.Coordinate == neighbourCoordinate) {
-                                        if (node.Fcost < neighFCost) {
-                                            node.Fcost = neighFCost;
-                                            node.ParentNode = parent;
-                                        }
-                                        skipSuccessor = true;
-                                        break;
-                                    }
-                                }
-
-                                //  Otherwise add this successor to openList
-                                if (skipSuccessor == false) {
-                                    PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
-                                    openList.Add(successor);
-                                }
-                            }
-                        }
-
+                        ProcessTile(new Vector3Int(x,y,0), parent, exitCoordinate, openList, closedList);
                     }
                 }
             }
         }
+    }
+
+    private void ProcessTile(Vector3Int position, PathNode parent, Vector3Int exitCoordinate, List<PathNode> openList, List<PathNode> closedList) {
+        Vector3Int neighbourCoordinate = parent.Coordinate + position;
+
+        if (IsValidTile(neighbourCoordinate) && !IsPositionInClosedList(neighbourCoordinate, closedList)) {
+            float tileCost = mapManager.GetTileCost(neighbourCoordinate);
+            float neighGCost = tileCost + parent.Gcost;
+            float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
+            float neighFCost = neighGCost + neighHCost;
+
+            bool isInOpenList = CheckIfPositionIsInOpenListAndUpdateFScore(neighbourCoordinate, parent, openList, neighFCost);
+
+            if (isInOpenList == false) {
+                PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
+                openList.Add(successor);
+            }
+        }
+    }
+
+    private bool IsPositionInClosedList(Vector3Int position, List<PathNode> closedList) {
+        foreach (PathNode node in closedList) {
+            if (node.Coordinate == position) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool CheckIfPositionIsInOpenListAndUpdateFScore(Vector3Int position, PathNode parent, List<PathNode> openList, float neighFCost) {
+        foreach (PathNode node in openList) {
+            if (node.Coordinate == position) {
+                if (node.Fcost < neighFCost) {
+                    node.Fcost = neighFCost;
+                    node.ParentNode = parent;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Vector3Int> GetBuildPreviewPath(Vector3Int positionBlocked) {
