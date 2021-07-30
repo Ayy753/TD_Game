@@ -51,13 +51,21 @@ public class GUIController : IGUIManager, IInitializable {
     }
 
     public void ShowGameOverScreen() {
+        pnlMenu.SetActive(false);
         pnlGameEnded.SetActive(true);
         pnlGameOver.SetActive(true);
     }
 
     public void ShowGameWonScreen() {
+        pnlMenu.SetActive(false);
         pnlGameEnded.SetActive(true);
         pnlGameWon.SetActive(true);
+    }
+
+    public void HideGameEndedPanel() {
+        pnlGameWon.SetActive(false);
+        pnlGameOver.SetActive(false);
+        pnlGameEnded.SetActive(false);
     }
 
     public void ShowMenu() {

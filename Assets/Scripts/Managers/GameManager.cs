@@ -85,19 +85,44 @@ public class GameManager: IInitializable, IDisposable {
         LoseLife();
     }
 
-    private void LoseLife() {
+    public void LoseLife() {
         Lives -= 1;
         guiController.UpdateLivesLabel(Lives);
         messageSystem.DisplayMessage("-1 life", Color.red);
         if (Lives <= 0) {
-            SetState(State.Ended);
+            GameLost();
+        }
+    }
+
+    public void GainLife() {
+        Lives += 1;
+        guiController.UpdateLivesLabel(Lives);
+        messageSystem.DisplayMessage("+1 life", Color.green);
+        if (Lives > 0) {
+            GameContinued();
         }
     }
 
     private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
         if (arg.newState == IWaveManager.State.LastWaveFinished) {
-            SetState(State.Ended);
+            GameWon();
         }
+    }
+
+    private void GameLost() {
+        SetState(State.Ended);
+        guiController.ShowGameOverScreen();
+    }
+
+    private void GameWon() {
+        SetState(State.Ended);
+        guiController.ShowGameWonScreen();
+    }
+
+    private void GameContinued() {
+        SetState(State.Running);
+        guiController.HideGameEndedPanel();
+
     }
 
     /// <summary>
@@ -117,7 +142,6 @@ public class GameManager: IInitializable, IDisposable {
                 break;
             case State.Ended:
                 Time.timeScale = 0;
-                guiController.ShowGameWonScreen();
                 break;
             case State.Menu:
                 Time.timeScale = 0;

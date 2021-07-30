@@ -10,6 +10,7 @@ public interface IGUIManager{
     public void UpdateLivesLabel(int lives);
     public void ShowGameOverScreen();
     public void ShowGameWonScreen();
+    public void HideGameEndedPanel();
     public void ShowMenu();
     public void HideMenu();
     public void UpdateWaveNumber(int current, int total);

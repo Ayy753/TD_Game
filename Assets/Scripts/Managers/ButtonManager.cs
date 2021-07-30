@@ -58,8 +58,8 @@ public class ButtonManager: IButtonManager, IInitializable {
         btnNextWave.onClick.AddListener(delegate { waveManager.StartNextWave(); });
         btnbtnDecreaseSpeed.onClick.AddListener(delegate { gameManager.DecreaseGameSpeed(); });
         btnIncreaseSpeed.onClick.AddListener(delegate { gameManager.IncreaseGameSpeed(); });
-        btnLevelSelect.onClick.AddListener(delegate { gameManager.LevelSelect(); });
-        btnRestart.onClick.AddListener(delegate { gameManager.Restart(); });
+        btnLevelSelect.onClick.AddListener(delegate { gameManager.LoadLevelSelectionScene(); });
+        btnRestart.onClick.AddListener(delegate { gameManager.RestartLevel(); });
         btnExit.onClick.AddListener(delegate { gameManager.ExitGame(); });
         btnDemolish.onClick.AddListener(delegate { buildManager.EnterDemolishMode(); });
         btnToggleWaveReport.onClick.AddListener(delegate { waveReportPanel.ToggleWaveReport(); });
@@ -83,7 +83,7 @@ public class ButtonManager: IButtonManager, IInitializable {
     }
 
     public void Restart() {
-        gameManager.Restart();
+        gameManager.RestartLevel();
     }
 
     public void ExitGame() {
@@ -91,7 +91,7 @@ public class ButtonManager: IButtonManager, IInitializable {
     }
 
     public void LevelSelect() {
-        gameManager.LevelSelect();
+        gameManager.LoadLevelSelectionScene();
     }
 
     public void IncreaseaSpeed() {

@@ -25,9 +25,14 @@ public class TestButtonManager : ButtonManager, IInitializable {
         Button btnSpawnNormal = GameObject.Find("btnSpawnNormalEnemy").GetComponent<Button>();
         Button btnSpawnStrong = GameObject.Find("btnSpawnStrongEnemy").GetComponent<Button>();
         Button btnAddGold = GameObject.Find("btnAddGold").GetComponent<Button>();
+        Button btnAddLife = GameObject.Find("btnAddLife").GetComponent<Button>();
+        Button btnRemoveLife = GameObject.Find("btnRemoveLife").GetComponent<Button>();
+
         btnSpawnFast.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.Fast); });
         btnSpawnNormal.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.Normal); });
         btnSpawnStrong.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.Strong); });
         btnAddGold.onClick.AddListener(delegate { wallet.GainMoney(100); });
+        btnAddLife.onClick.AddListener(delegate { gameManager.GainLife(); });
+        btnRemoveLife.onClick.AddListener(delegate { gameManager.LoseLife(); });
     }
 }
