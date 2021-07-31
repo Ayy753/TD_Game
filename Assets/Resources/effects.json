@@ -60,7 +60,7 @@
     },
 	{
       "name": "Sniper Projectile",
-      "description": "Does fire and physical area damage",
+      "description": "Deals physical damage",
       "effects": [
         {
           "type": "Damage",
@@ -71,7 +71,7 @@
     },	
 	{
       "name": "Bullet Projectile",
-      "description": "Does fire and physical area damage",
+      "description": "Deals physical damage",
       "effects": [
         {
           "type": "Damage",
@@ -87,8 +87,18 @@
         {
           "type": "Buff",
           "statType": "Speed",
-          "potency": 0.25,
+          "potency": 1,
           "duration": 1
+        }
+      ]
+    },
+	{
+      "name": "Heal",
+      "description": "Heals unit",
+      "effects": [
+        {
+          "type": "Heal",
+          "potency": 5
         }
       ]
     }	

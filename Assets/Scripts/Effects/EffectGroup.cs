@@ -51,6 +51,9 @@ public class EffectGroup : ScriptableObject{
             else if (effect is Buff) {
                 result += string.Format("Increases {0} by {1} for {2} seconds\n", ((Buff)effect).Type, effect.Potency, ((Buff)effect).Duration);
             }
+            else if (effect is Heal) {
+                result += string.Format("Restores {0} HP\n", effect.Potency);
+            }
         }
         return result;
     }

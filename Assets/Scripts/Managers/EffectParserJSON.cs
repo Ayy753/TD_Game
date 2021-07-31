@@ -8,7 +8,7 @@ public class EffectParserJSON : MonoBehaviour {
     private List<EffectGroup> effectGroups = new List<EffectGroup>();
 
     enum EffectType {
-        Buff, Damage, DOT, StatMod, Debuff, AreaDamage
+        Buff, Damage, DOT, StatMod, Debuff, AreaDamage, Heal
     }
 
     void Start() {
@@ -98,6 +98,9 @@ public class EffectParserJSON : MonoBehaviour {
                     break;
                 case EffectType.AreaDamage:
                     effects[i] = new AreaDamage(currentEffect.Potency, currentEffect.DamageType, currentEffect.Radius);
+                    break;
+                case EffectType.Heal:
+                    effects[i] = new Heal(currentEffect.Potency);
                     break;
                 default:
                     throw new System.Exception("The effect type " + currentEffect.Type + " is not valid");
