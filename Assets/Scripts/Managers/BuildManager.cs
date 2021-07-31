@@ -165,7 +165,15 @@ public class BuildManager : IInitializable, IDisposable {
         lastPositionHovered = position;
 
         if (ShouldShowTowerRadiusAtPosition(position)) {
-            ShowTowerRadiusAtPosition(position);
+            //  This occastionally throws exceptions for unknown reasons 
+            try {
+                ShowTowerRadiusAtPosition(position);
+            }
+            catch (Exception e) {
+                Debug.LogError(string.Format("Exception at position {0}: ", position, e.Message));
+                Debug.LogError(string.Format("Structure at position: {0}, Build mode: {1}, Currently selected structure: {2}", 
+                    mapManager.GetTileData(IMapManager.Layer.StructureLayer, position), CurrentBuildMode, CurrentlySelectedStructure));
+            }
         }
         else {
             HideTowerRadius();
@@ -190,7 +198,6 @@ public class BuildManager : IInitializable, IDisposable {
 
     private Tower GetTowerAtPosition(Vector3 position) {
         RaycastHit2D hit = Physics2D.Raycast(position, Vector2.zero);
-
         if (hit.collider != null) {
             return hit.collider.GetComponent<Tower>();
         }
