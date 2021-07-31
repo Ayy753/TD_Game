@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Speed Totem
   <Radius>k__BackingField: 3
-  <EffectDelay>k__BackingField: 0
+  <EffectDelay>k__BackingField: 1
   <EffectName>k__BackingField: Speed Buff
   <Description>k__BackingField: Speeds up enemies
-  <Icon>k__BackingField: {fileID: 21300000, guid: d4d29f13795d30445af863f11915007e,
+  <Icon>k__BackingField: {fileID: 21300000, guid: 8c30c6b3ebec9094ba6af7319d7b4e3d,
     type: 3}
   <TileBase>k__BackingField: {fileID: 11400000, guid: 0238fc4f3591443438b5d2fca782cea3,
     type: 2}
