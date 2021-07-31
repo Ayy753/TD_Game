@@ -26,7 +26,9 @@ public class PrefabTileInstantiator : IInitializable {
         GameObject[] totemPrefabs = Resources.LoadAll<GameObject>("Prefabs/Totems");
 
         foreach (GameObject prefab in totemPrefabs) {
-            totemToPrefab.Add(prefab.GetComponent<Totem>().totemData, prefab);
+            if (prefab.name != "BaseTotem") {
+                totemToPrefab.Add(prefab.GetComponent<Totem>().totemData, prefab);
+            }
         }
 
         InitializeTotemData();

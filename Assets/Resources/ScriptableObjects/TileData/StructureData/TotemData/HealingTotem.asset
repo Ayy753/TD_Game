@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 341d7aac5c258164bac90206fdf9b5fa, type: 3}
+  m_Name: HealingTotem
+  m_EditorClassIdentifier: 
+  <Name>k__BackingField: Healing Totem
+  <Radius>k__BackingField: 3
+  <EffectDelay>k__BackingField: 1
+  <EffectName>k__BackingField: Heal
+  <Description>k__BackingField: Heals units
+  <Icon>k__BackingField: {fileID: 21300000, guid: 5d2db3eb71916004798323a1f708fae9,
+    type: 3}
+  <TileBase>k__BackingField: {fileID: 11400000, guid: 6195bb51b06aa694f9f12536007f55b3,
+    type: 2}
