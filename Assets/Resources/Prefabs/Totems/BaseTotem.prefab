@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7195697683717374572
+--- !u!1 &9121278686081302403
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,25 +8,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7195697683717374569}
-  - component: {fileID: 7195697683717374570}
-  - component: {fileID: 7195697683717374571}
-  - component: {fileID: 7195697683717374568}
-  - component: {fileID: -5692427898065744583}
+  - component: {fileID: 9121278686081302406}
+  - component: {fileID: 9121278686081302405}
+  - component: {fileID: 9121278686081302404}
+  - component: {fileID: 9121278686081302407}
+  - component: {fileID: 3191192538889351382}
   m_Layer: 0
-  m_Name: SpeedBuffTotem
+  m_Name: TotemBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7195697683717374569
+--- !u!4 &9121278686081302406
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7195697683717374572}
+  m_GameObject: {fileID: 9121278686081302403}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -34,13 +34,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &7195697683717374570
+--- !u!212 &9121278686081302405
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7195697683717374572}
+  m_GameObject: {fileID: 9121278686081302403}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: -29511549
   m_SortingLayer: 1
   m_SortingOrder: 9001
-  m_Sprite: {fileID: 21300000, guid: d4d29f13795d30445af863f11915007e, type: 3}
+  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,27 +85,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7195697683717374571
+--- !u!114 &9121278686081302404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7195697683717374572}
+  m_GameObject: {fileID: 9121278686081302403}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35e8504bd0a17a74bbe59bb2086fe7bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <totemData>k__BackingField: {fileID: 11400000, guid: e0cf72288bd3317429d5057a17774e0e,
+  <totemData>k__BackingField: {fileID: 11400000, guid: b5b32cdb3eca4f942af369defda3d6e2,
     type: 2}
---- !u!61 &7195697683717374568
+--- !u!61 &9121278686081302407
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7195697683717374572}
+  m_GameObject: {fileID: 9121278686081302403}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -114,9 +114,9 @@ BoxCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.16, y: 0.16}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -125,13 +125,13 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!156049354 &-5692427898065744583
+--- !u!156049354 &3191192538889351382
 Grid:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7195697683717374572}
+  m_GameObject: {fileID: 9121278686081302403}
   m_Enabled: 1
   m_CellSize: {x: 1, y: 1, z: 1}
   m_CellGap: {x: 0, y: 0, z: 0}
