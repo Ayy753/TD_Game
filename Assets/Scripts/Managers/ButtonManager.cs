@@ -27,7 +27,7 @@ public class ButtonManager: IButtonManager, IInitializable {
     public void CreateBuildMenuButtons() {
         GameObject structureBuildBtnPrefab = Resources.Load<GameObject>("Prefabs/NewBuildMenuButton");
         StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
-        GameObject scrollViewContentBox = GameObject.Find("Scroll View/Viewport/Content");
+        GameObject scrollViewContentBox = GameObject.Find("pnlBuildMenu/Scroll View/Viewport/Content");
 
         foreach (StructureData structure in structureDatas) {
             if (structure.Buildable == true) {
