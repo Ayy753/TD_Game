@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,24 +13,37 @@ public class Totem : MonoBehaviour, IUnitRangeDetection, Itargetable {
     private RadiusRenderer radiusRenderer;
 
     public event EventHandler TargetDisabled;
+    private int numberOfTicksPerCooldown;
+    private int tickCounter;
 
-    private void Start() {
-        StartCoroutine(ApplyEffects());
+    private void OnEnable() {
+        TickManager.OnTick += HandleTick;
+        numberOfTicksPerCooldown = (int)(totemData.EffectDelay / TickManager.tickFrequency);
+        tickCounter = 0;
+    }
+
+    private void OnDisable() {
+        TickManager.OnTick -= HandleTick;
+    }
+
+    private void HandleTick() {
+        tickCounter++;
+        if (tickCounter == numberOfTicksPerCooldown) {
+            ApplyEffects();
+            tickCounter = 0;
+        }
+    }
+
+    private void ApplyEffects() {
+        enemiesInRange = GetUnitsInRange(transform.position);
+        foreach (IUnit unit in enemiesInRange) {
+            unit.GetStatus().ApplyEffectGroup(totemData.EffectGroup);
+        }
     }
 
     //  Can't use DI on objects created at runtime
     public void Initialize(RadiusRenderer radiusRenderer) {
         this.radiusRenderer = radiusRenderer;
-    }
-
-    private IEnumerator ApplyEffects() {
-        while (true) {
-            enemiesInRange = GetUnitsInRange(transform.position);
-            foreach (IUnit unit in enemiesInRange) {
-                unit.GetStatus().ApplyEffectGroup(totemData.EffectGroup);
-            }
-            yield return new WaitForSeconds(totemData.EffectDelay);
-        }
     }
 
     public List<IUnit> GetUnitsInRange(Vector3 center) {
