@@ -7,8 +7,9 @@ public class GameManager: IInitializable, IDisposable {
     IGUIManager guiController;
     IMessageSystem messageSystem;
     IWaveManager waveManager;
-    public int Lives { get; private set; }
+    WaveReportPanel waveReportPanel;
 
+    public int Lives { get; private set; }
     public State CurrentState { get; private set; }
 
     private const int STARTING_LIVES = 25;
@@ -19,10 +20,11 @@ public class GameManager: IInitializable, IDisposable {
 
     private float currentGameSpeed;
 
-    public GameManager(IGUIManager guiController, IMessageSystem messageSystem, IWaveManager waveManager) {
+    public GameManager(IGUIManager guiController, IMessageSystem messageSystem, IWaveManager waveManager, WaveReportPanel waveReportPanel) {
         this.guiController = guiController;
         this.messageSystem = messageSystem;
         this.waveManager = waveManager;
+        this.waveReportPanel = waveReportPanel;
     }
 
     public enum State {
@@ -63,8 +65,17 @@ public class GameManager: IInitializable, IDisposable {
                 IncreaseGameSpeed();
                 break;
             case InputHandler.Command.ToggleMenu:
-                ToggleMenu();
+                CloseReportPanelOrToggleMenu();
                 break;
+        }
+    }
+
+    private void CloseReportPanelOrToggleMenu() {
+        if (waveReportPanel.IsWaveReportOpen()) {
+            waveReportPanel.CloseWaveReport();
+        }
+        else {
+            ToggleMenu();
         }
     }
 
@@ -104,7 +115,14 @@ public class GameManager: IInitializable, IDisposable {
     }
 
     private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-        if (arg.newState == IWaveManager.State.LastWaveFinished) {
+        if (arg.newState == IWaveManager.State.WaveInProgress) {
+            waveReportPanel.GenerateScoutReport();
+            waveReportPanel.CloseWaveReport();
+        }
+        else if (arg.newState == IWaveManager.State.Waiting) {
+            waveReportPanel.ShowWaveReport();
+        }
+        else if (arg.newState == IWaveManager.State.LastWaveFinished) {
             GameWon();
         }
     }

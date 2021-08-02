@@ -18,8 +18,6 @@ public class WaveReportPanel : IInitializable, IDisposable{
     }
 
     public void Initialize() {
-        waveManager.OnWaveStateChanged += HandleWaveStateChanged;
-     
         Debug.Log("initializing wave report panel");
         pnlWaveReport = GameObject.Find("pnlWaveReport");
         scrollViewContent = GameObject.Find("pnlWaveReport/Scroll View/Viewport/Content");
@@ -37,22 +35,9 @@ public class WaveReportPanel : IInitializable, IDisposable{
     }
 
     public void Dispose() {
-        waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
     }
 
-    private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-        //  If a new wave is launched generate next wave report and hide it
-        if (arg.newState == IWaveManager.State.WaveInProgress) {
-            GenerateScoutReport();
-            CloseWaveReport();
-        }
-        //  Otherwise if the wave ended, show the new report
-        else if (arg.newState == IWaveManager.State.Waiting) {
-            ShowWaveReport();
-        }
-    }
-
-    private void GenerateScoutReport() {
+    public void GenerateScoutReport() {
         Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = waveManager.GetCurrentWaveInfo();
         RemoveAllReportRows();
 
@@ -103,5 +88,9 @@ public class WaveReportPanel : IInitializable, IDisposable{
 
     public void ShowWaveReport() {
         pnlWaveReport.SetActive(true);
+    }
+
+    public bool IsWaveReportOpen() {
+        return pnlWaveReport.activeInHierarchy;
     }
 }
