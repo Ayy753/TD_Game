@@ -9,18 +9,18 @@ EditorBuildSettings:
     path: Assets/Scenes/LevelSelect.unity
     guid: 50d0a78c5af72bd47a53c66bc7fb5362
   - enabled: 1
-    path: Assets/Scenes/TestScene.unity
+    path: Assets/Scenes/Levels/Testing Environment.unity
     guid: 3255da0705a4b734e81f29b5e6b06f45
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_1.unity
+    path: Assets/Scenes/Levels/Ruins.unity
     guid: 8819aa62b6dd04444a9206a82eaee3d0
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_2.unity
+    path: Assets/Scenes/Levels/Mountain Pass.unity
     guid: a2de32cdbbb971b48aaa517dac065447
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_3.unity
+    path: Assets/Scenes/Levels/Meme'Goro Crater.unity
     guid: 2d1b7e1d620d74b468aa193c236ef691
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_4.unity
+    path: Assets/Scenes/Levels/Crab Islands.unity
     guid: f8eeeb74ed293bb47abbf5293639ff47
   m_configObjects: {}
