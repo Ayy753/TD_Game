@@ -38,27 +38,27 @@ public class Projectile : MonoBehaviour {
     }
 
     protected void OnTriggerEnter2D(Collider2D collision) {
-        IUnit unit = collision.GetComponentInChildren<IUnit>();
+        IEffectable effectable = collision.GetComponentInChildren<IEffectable>();
 
         //  If it hit a unit, and hasn't damaged anything yet (to prevent it from damaging multiple units at the same time)
-        if (unit != null && dealtDamage == false) {
+        if (effectable != null && dealtDamage == false) {
 
             //  If the unit is the target
-            if (unit.GetTransform() == Target) {
+            if (effectable.GetTransform() == Target) {
                 dealtDamage = true;
-                ApplyEffectGroup(unit);
+                ApplyEffectGroup(effectable);
                 gameObject.SetActive(false);
             }
             //  If target is already dead, it can damage another unit
             else if (targetDied == true) {
-                ApplyEffectGroup(unit);
+                ApplyEffectGroup(effectable);
                 dealtDamage = true;
                 gameObject.SetActive(false);
             }
         }
     }
 
-    private void ApplyEffectGroup(IUnit unit) {
-        unit.GetStatus().ApplyEffectGroup(effectGroup);
+    private void ApplyEffectGroup(IEffectable effectable) {
+        effectable.ApplyEffectGroup(effectGroup);
     }
 }
