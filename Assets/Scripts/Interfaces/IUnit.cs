@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public interface IUnit : Itargetable {
+public interface IUnit : Itargetable, IEffectable {
     /// <summary>
     /// Used by IUnitInput to alert IUnit it reached destination
     /// </summary>
@@ -10,6 +10,4 @@ public interface IUnit : Itargetable {
     public void Died();
 
     public Status GetStatus();
-
-    public GameObject GetGameObject();
 }

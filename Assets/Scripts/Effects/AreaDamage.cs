@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AreaDamage : IDamage, IUnitRangeDetection {
+public class AreaDamage : IDamage, IEffectableRangeDetection {
     public float Radius { get; }
     public float Potency { get; }
     public IDamage.DamageType Type { get; private set; }
@@ -12,29 +12,29 @@ public class AreaDamage : IDamage, IUnitRangeDetection {
         Radius = radius;
     }
 
-    public List<IUnit> GetUnitsInRange(Vector3 center) {
+    public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
-        List<IUnit> enemiesInRange = new List<IUnit>();
+        List<IEffectable> EffectableObjectsInRange = new List<IEffectable>();
 
         foreach (var collider in colliders) {
-            Enemy enemy = collider.GetComponent<Enemy>();
-            if (enemy != null) {
-                enemiesInRange.Add(enemy);
+            IEffectable effectable = collider.GetComponent<IEffectable>();
+            if (effectable != null) {
+                EffectableObjectsInRange.Add(effectable);
             }
         }
 
-        return enemiesInRange;
+        return EffectableObjectsInRange;
     }
 
     public void Apply(Status status) {
         Vector3 center = status.transform.position;
-        List<IUnit> enemies = GetUnitsInRange(center);
+        List<IEffectable> effectableObjects = GetEffectableObjectsInRange(center);
 
-        foreach (Enemy enemy in enemies) {
-            float distanceRatio = CalculateDistanceRatio(center, enemy.transform.position, Radius);
-            float damage = CalculateDamage(enemy.GetStatus());
+        foreach (IEffectable effectable in effectableObjects) {
+            float distanceRatio = CalculateDistanceRatio(center, effectable.GetTransform().position, Radius);
+            float damage = CalculateDamage(effectable.GetStatus());
             float effectiveDamage = distanceRatio * damage;
-            enemy.GetStatus().TakeDamage(effectiveDamage);
+            effectable.GetStatus().TakeDamage(effectiveDamage);
         }
     }
 

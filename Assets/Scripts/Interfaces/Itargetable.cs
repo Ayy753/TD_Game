@@ -1,16 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public interface Itargetable{
+public interface Itargetable : ITransform{
 
     /// <summary>
     /// Fires when target is destroyed
     /// </summary>
     public event EventHandler TargetDisabled;
 
-    public Transform GetTransform();
     public string GetName();
     public string GetDescription();
 }

@@ -5,11 +5,11 @@ using UnityEngine;
 /// <summary>
 /// Applies positive effects to enemies within range
 /// </summary>
-public class Totem : MonoBehaviour, IUnitRangeDetection, Itargetable {
+public class Totem : MonoBehaviour, IEffectableRangeDetection, Itargetable {
     public float Radius { get { return totemData.Radius; } }
     [field: SerializeField] public TotemData totemData { get; private set; }
 
-    private List<IUnit> enemiesInRange;
+    private List<IEffectable> effectableOjbectsInRange;
     private RadiusRenderer radiusRenderer;
 
     public event EventHandler TargetDisabled;
@@ -35,9 +35,9 @@ public class Totem : MonoBehaviour, IUnitRangeDetection, Itargetable {
     }
 
     private void ApplyEffects() {
-        enemiesInRange = GetUnitsInRange(transform.position);
-        foreach (IUnit unit in enemiesInRange) {
-            unit.GetStatus().ApplyEffectGroup(totemData.EffectGroup);
+        effectableOjbectsInRange = GetEffectableObjectsInRange(transform.position);
+        foreach (IEffectable effectable in effectableOjbectsInRange) {
+            effectable.ApplyEffectGroup(totemData.EffectGroup);
         }
     }
 
@@ -46,17 +46,18 @@ public class Totem : MonoBehaviour, IUnitRangeDetection, Itargetable {
         this.radiusRenderer = radiusRenderer;
     }
 
-    public List<IUnit> GetUnitsInRange(Vector3 center) {
+    public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
-        enemiesInRange = new List<IUnit>();
+        List<IEffectable> EffectableObjectsInRange = new List<IEffectable>();
 
         foreach (var collider in colliders) {
-            Enemy enemy = collider.GetComponent<Enemy>();
-            if (enemy != null) {
-                enemiesInRange.Add(enemy);
+            IEffectable effectable = collider.GetComponent<IEffectable>();
+            if (effectable != null) {
+                EffectableObjectsInRange.Add(effectable);
             }
         }
-        return enemiesInRange;
+
+        return EffectableObjectsInRange;
     }
 
     void OnMouseOver() {

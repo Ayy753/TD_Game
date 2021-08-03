@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Collections;
 using Zenject;
 
-public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
+public class Tower : MonoBehaviour, IEffectableRangeDetection, Itargetable {
     [Inject] private ObjectPool objectPool;
 
-    private List<IUnit> enemiesInRange = new List<IUnit>();
+    private List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
     private float timeSinceLastShot = float.MaxValue;
-    private Enemy target;
+    private IEffectable target;
     private Transform turret;
 
     public event EventHandler TargetDisabled;
@@ -42,13 +42,13 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
 
         if (target != null && timeSinceLastShot >= TowerData.ReloadTime) {
             //  Ensure turret aligns with projectile when it fires
-            FaceTarget(target.transform);
+            FaceTarget(target.GetTransform());
 
             //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
 
             //  Fire projectile
             Projectile projectile = objectPool.CreateProjectile();
-            projectile.Initialize(transform.position, target.transform, TowerData.EffectGroup);
+            projectile.Initialize(transform.position, target.GetTransform(), TowerData.EffectGroup);
 
             timeSinceLastShot = 0;
         }
@@ -71,7 +71,7 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     private IEnumerator TurretTracking() {
         while (true) {
             if (target != null) {
-                FaceTarget(target.transform);
+                FaceTarget(target.GetTransform());
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -86,31 +86,32 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
         //  Prevent tower from detecting enemies before it gets moved from origin on instantiation
         yield return new WaitForSeconds(0.33f);
         while (true) {
-            enemiesInRange = GetUnitsInRange(transform.position);
+            effectableObjectsInRange = GetEffectableObjectsInRange(transform.position);
             target = FindTarget();
             yield return new WaitForSeconds(0.33f);
         }
     }
 
-    public List<IUnit> GetUnitsInRange(Vector3 center) {
+    public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
-        enemiesInRange = new List<IUnit>();
+        List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
 
         foreach (var collider in colliders) {
-            Enemy enemy = collider.GetComponent<Enemy>();
-            if (enemy != null) {
-                enemiesInRange.Add(enemy);
+            IEffectable effectable = collider.GetComponent<IEffectable>();
+            if (effectable != null) {
+                effectableObjectsInRange.Add(effectable);
             }
         }
-        return enemiesInRange;
+
+        return effectableObjectsInRange;
     }
 
     /// <summary>
     /// Selects the most suitable target based on the selected target mode
     /// </summary>
     /// <returns></returns>
-    private Enemy FindTarget() {
-        Enemy target = null;
+    private IEffectable FindTarget() {
+        IEffectable target = null;
 
         switch (CurrentTargetMode) {
             case TargetMode.Closest:
@@ -138,37 +139,33 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// Selects the enemy closest to tower, within range
     /// </summary>
     /// <returns></returns>
-    private Enemy FindClosestEnemy() {
-        Enemy closestEnemy = null;
+    private IEffectable FindClosestEnemy() {
+        IEffectable closestEffectable = null;
         float shortestDistance = float.MaxValue;
 
-        foreach (Enemy enemy in enemiesInRange) {
-            if (enemy.isActiveAndEnabled) {
-                float distance = Distance(transform.position, enemy.transform.position);
-                if (distance < shortestDistance) {
-                    shortestDistance = distance;
-                    closestEnemy = enemy;
-                }
+        foreach (IEffectable effectable in effectableObjectsInRange) {
+            float distance = Distance(transform.position, effectable.GetTransform().position);
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                closestEffectable = effectable;
             }
         }
-        return closestEnemy;
+        return closestEffectable;
     }
 
     /// <summary>
     /// Selects the enemy furthest from tower, within range
     /// </summary>
     /// <returns></returns>
-    private Enemy FindFurthestEnemy() {
-        Enemy closestEnemy = null;
+    private IEffectable FindFurthestEnemy() {
+        IEffectable closestEnemy = null;
         float furthestDistance = float.MinValue;
 
-        foreach (Enemy enemy in enemiesInRange) {
-            if (enemy.isActiveAndEnabled) {
-                float distance = Distance(transform.position, enemy.transform.position);
-                if (distance > furthestDistance) {
-                    furthestDistance = distance;
-                    closestEnemy = enemy;
-                }
+        foreach (IEffectable effectable in effectableObjectsInRange) {
+            float distance = Distance(transform.position, effectable.GetTransform().position);
+            if (distance > furthestDistance) {
+                furthestDistance = distance;
+                closestEnemy = effectable;
             }
         }
         return closestEnemy;
@@ -178,17 +175,15 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// Selects the enemy with the lowest health in range
     /// </summary>
     /// <returns></returns>
-    private Enemy FindLowestHealthEnemy() {
-        Enemy lowestEnemy = null;
+    private IEffectable FindLowestHealthEnemy() {
+        IEffectable lowestEnemy = null;
         float lowestHealth = float.MaxValue;
 
-        foreach (Enemy enemy in enemiesInRange) {
-            if (enemy.isActiveAndEnabled) {
-                float health = enemy.GetStatus().Health.Value;
-                if (health < lowestHealth) {
-                    lowestHealth = health;
-                    lowestEnemy = enemy;
-                }
+        foreach (IEffectable effectable in effectableObjectsInRange) {
+            float health = effectable.GetStatus().Health.Value;
+            if (health < lowestHealth) {
+                lowestHealth = health;
+                lowestEnemy = effectable;
             }
         }
         return lowestEnemy;
@@ -198,17 +193,15 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// Selects the enemy with the highest health in range
     /// </summary>
     /// <returns></returns>
-    private Enemy FindHighestHealthEnemy() {
-        Enemy highestEnemy = null;
+    private IEffectable FindHighestHealthEnemy() {
+        IEffectable highestEnemy = null;
         float highestHealth = float.MinValue;
 
-        foreach (Enemy enemy in enemiesInRange) {
-            if (enemy.isActiveAndEnabled) {
-                float health = enemy.GetStatus().Health.Value;
-                if (health > highestHealth) {
-                    highestHealth = health;
-                    highestEnemy = enemy;
-                }
+        foreach (IEffectable effectable in effectableObjectsInRange) {
+            float health = effectable.GetStatus().Health.Value;
+            if (health > highestHealth) {
+                highestHealth = health;
+                highestEnemy = effectable;
             }
         }
         return highestEnemy;
@@ -218,10 +211,10 @@ public class Tower : MonoBehaviour, IUnitRangeDetection, Itargetable {
     /// Selects a random enemy within range
     /// </summary>
     /// <returns></returns>
-    private Enemy FindRandomEnemy() {
-        if (enemiesInRange.Count > 0) {
-            int index = UnityEngine.Random.Range(0, enemiesInRange.Count);
-            return (Enemy)enemiesInRange[index];
+    private IEffectable FindRandomEnemy() {
+        if (effectableObjectsInRange.Count > 0) {
+            int index = UnityEngine.Random.Range(0, effectableObjectsInRange.Count);
+            return effectableObjectsInRange[index];
         }
         return null;
     }
