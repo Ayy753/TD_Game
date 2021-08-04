@@ -67,9 +67,5 @@ public class Enemy : MonoBehaviour, IUnit {
         return ((EnemyData)status.characterData).Name;
     }
 
-    public void ApplyEffectGroup(EffectGroup effectGroup) {
-        status.ApplyEffectGroup(effectGroup);
-    }
-
     public class Factory : PlaceholderFactory<EnemyData.EnemyType, Enemy> { }
 }

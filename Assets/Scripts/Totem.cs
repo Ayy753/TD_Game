@@ -6,7 +6,7 @@ using UnityEngine;
 /// Applies positive effects to enemies within range
 /// </summary>
 public class Totem : MonoBehaviour, IEffectableRangeDetection, Itargetable {
-    public float Radius { get { return totemData.Radius; } }
+    public float Radius { get { return totemData.EffectGroup.Radius; } }
     [field: SerializeField] public TotemData totemData { get; private set; }
 
     private List<IEffectable> effectableOjbectsInRange;
@@ -37,7 +37,7 @@ public class Totem : MonoBehaviour, IEffectableRangeDetection, Itargetable {
     private void ApplyEffects() {
         effectableOjbectsInRange = GetEffectableObjectsInRange(transform.position);
         foreach (IEffectable effectable in effectableOjbectsInRange) {
-            effectable.ApplyEffectGroup(totemData.EffectGroup);
+            totemData.EffectGroup.EffectArea(transform.position);
         }
     }
 

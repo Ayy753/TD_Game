@@ -1,17 +1,26 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Represents any collection of effects such as projectiles, buffs, debuffs, etc
 /// </summary>
-public class EffectGroup : ScriptableObject{
+public class EffectGroup : ScriptableObject, IEffectableRangeDetection{
     public string Name { get; private set; }
     public string Description { get; private set; }
+    public float Radius { get; private set; }
+    public TargetType Type { get; private set; }
     private IEffect[] Effects;
 
-    public void Init(string name, string description, IEffect[] effects) {
+    public enum TargetType {
+        Individual, Area
+    }
+
+    public void Init(string name, string description, IEffect[] effects, TargetType targetType, float radius = 0) {
         Name = name;
         Description = description;
         Effects = effects;
+        Type = targetType;
+        Radius = radius;
     }
 
     /// <summary>
@@ -32,7 +41,6 @@ public class EffectGroup : ScriptableObject{
         return effects;
     }
 
-
     public string GetEffectInfo() {
         string result = "";
         foreach (IEffect effect in Effects) {
@@ -44,9 +52,6 @@ public class EffectGroup : ScriptableObject{
             }
             else if (effect is Debuff) {
                 result += string.Format("Reduces {0} by {1} for {2} seconds\n", ((Debuff)effect).Type, effect.Potency, ((Debuff)effect).Duration);
-            }
-            else if (effect is AreaDamage) {
-                result += string.Format("Deals {0} {1} in a {2}m radius\n", effect.Potency, ((AreaDamage)effect).Type, ((AreaDamage)effect).Radius);
             }
             else if (effect is Buff) {
                 result += string.Format("Increases {0} by {1} for {2} seconds\n", ((Buff)effect).Type, effect.Potency, ((Buff)effect).Duration);
@@ -67,10 +72,49 @@ public class EffectGroup : ScriptableObject{
             else if (effect is DamageOverTime) {
                 total += ((DamageOverTime)effect).Potency;
             }
-            else if (effect is AreaDamage) {
-                total += ((AreaDamage)effect).Potency;
-            }
         }
         return total;
+    }
+
+    public void EffectTarget(IEffectable target) {
+        if (Type == TargetType.Area) {
+            EffectArea(target.GetTransform().position);
+        }
+        else {
+            ApplyEffectsToIndividual(target);
+        }
+    }
+
+    public void EffectArea(Vector3 center) {
+        if (Type == TargetType.Area) {
+            ApplyEffectsInArea(center);
+        }
+    }
+
+    private void ApplyEffectsInArea(Vector3 center) {
+        List<IEffectable> effectableObjectsInRange = GetEffectableObjectsInRange(center);
+
+        foreach (IEffectable effectable in effectableObjectsInRange) {
+            ApplyEffectsToIndividual(effectable);
+        }
+    }
+
+    private void ApplyEffectsToIndividual(IEffectable target) {
+        Status status = target.GetStatus();
+        status.ApplyEffectGroup(this);
+    }
+
+    public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
+        List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
+
+        foreach (var collider in colliders) {
+            IEffectable effectable = collider.GetComponent<IEffectable>();
+            if (effectable != null) {
+                effectableObjectsInRange.Add(effectable);
+            }
+        }
+
+        return effectableObjectsInRange;
     }
 }

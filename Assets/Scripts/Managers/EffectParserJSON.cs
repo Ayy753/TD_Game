@@ -8,7 +8,7 @@ public class EffectParserJSON : MonoBehaviour {
     private List<EffectGroup> effectGroups = new List<EffectGroup>();
 
     enum EffectType {
-        Buff, Damage, DOT, StatMod, Debuff, AreaDamage, Heal
+        Buff, Damage, DOT, StatMod, Debuff, Heal
     }
 
     void Start() {
@@ -27,6 +27,13 @@ public class EffectParserJSON : MonoBehaviour {
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        [JsonProperty("target type")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public EffectGroup.TargetType TargetType { get; set; }
+
+        [JsonProperty("radius", NullValueHandling = NullValueHandling.Ignore)]
+        public float Radius { get; set; } = 0;
+
         [JsonProperty("effects")]
         public ParsedEffect[] Effects { get; set; }
     }
@@ -34,7 +41,7 @@ public class EffectParserJSON : MonoBehaviour {
     private class ParsedEffect {
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public EffectType Type { get; set; }
+        public EffectType EffectType { get; set; }
 
         [JsonProperty("potency")]
         public float Potency { get; set; }
@@ -53,9 +60,6 @@ public class EffectParserJSON : MonoBehaviour {
         [JsonProperty("resistType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
         public IDamage.DamageType ResistType { get; set; }
-
-        [JsonProperty("radius", NullValueHandling = NullValueHandling.Ignore)]
-        public float Radius { get; set; }
     }
 
     /// <summary>
@@ -80,7 +84,7 @@ public class EffectParserJSON : MonoBehaviour {
 
         for (int i = 0; i < effectsLen; i++) {
             ParsedEffect currentEffect = parsedEffectGroup.Effects[i];
-            switch (currentEffect.Type) {
+            switch (currentEffect.EffectType) {
                 case EffectType.Buff:
                     effects[i] = new Buff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType);
                     break;
@@ -96,18 +100,15 @@ public class EffectParserJSON : MonoBehaviour {
                 case EffectType.Debuff:
                     effects[i] = new Debuff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType, currentEffect.ResistType);
                     break;
-                case EffectType.AreaDamage:
-                    effects[i] = new AreaDamage(currentEffect.Potency, currentEffect.DamageType, currentEffect.Radius);
-                    break;
                 case EffectType.Heal:
                     effects[i] = new Heal(currentEffect.Potency);
                     break;
                 default:
-                    throw new System.Exception("The effect type " + currentEffect.Type + " is not valid");
+                    throw new System.Exception("The effect type " + currentEffect.EffectType + " is not valid");
             }
         }
         EffectGroup effectGroup = ScriptableObject.CreateInstance("EffectGroup") as EffectGroup;
-        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects);
+        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType, parsedEffectGroup.Radius);
         effectGroups.Add(effectGroup);
     }
 

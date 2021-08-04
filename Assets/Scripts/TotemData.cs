@@ -4,7 +4,6 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "New Totem", menuName = "Totem")]
 public class TotemData : StructureData{
     [field: SerializeField] public override string Name { get; protected set; }
-    [field: SerializeField] public float Radius { get; protected set; }
     [field: SerializeField] public float EffectDelay { get; protected set; }
     [field: SerializeField] public string EffectName { get; protected set; }
     public EffectGroup EffectGroup { get; private protected set; }

@@ -3,6 +3,7 @@
     {
       "name": "Frost Projectile",
       "description": "Slows target",
+	  "target type": "Individual",
       "effects": [
         {
           "type": "Debuff",
@@ -26,6 +27,7 @@
     {
       "name": "Poison Projectile",
       "description": "Poisons target",
+	  "target type": "Individual",
       "effects": [
         {
           "type": "DOT",
@@ -43,24 +45,25 @@
 	{
       "name": "Splash Projectile",
       "description": "Does fire and physical area damage",
+	  "target type": "Area",
+	  "radius": 3,
       "effects": [
         {
-          "type": "AreaDamage",
+          "type": "Damage",
 	      "damageType": "Fire",
-          "potency": 2.5,
-		  "radius": 3
+          "potency": 2.5
         },
         {
-          "type": "AreaDamage",
+          "type": "Damage",
 	      "damageType": "Physical",
-          "potency": 2.5,
-		  "radius": 3
+          "potency": 2.5
         }		
       ]
     },
 	{
       "name": "Sniper Projectile",
       "description": "Deals physical damage",
+	  "target type": "Individual",
       "effects": [
         {
           "type": "Damage",
@@ -72,6 +75,7 @@
 	{
       "name": "Bullet Projectile",
       "description": "Deals physical damage",
+	  "target type": "Individual",
       "effects": [
         {
           "type": "Damage",
@@ -81,8 +85,10 @@
       ]
     },		
 	{
-      "name": "Speed Buff",
+      "name": "Area Speed Buff",
       "description": "Increases speed",
+	  "target type": "Area",
+	  "radius": "3",
       "effects": [
         {
           "type": "Buff",
@@ -93,8 +99,10 @@
       ]
     },
 	{
-      "name": "Heal",
-      "description": "Heals unit",
+      "name": "Area Heal",
+      "description": "Heals units",
+	  "target type": "Area",
+	  "radius": "3",
       "effects": [
         {
           "type": "Heal",

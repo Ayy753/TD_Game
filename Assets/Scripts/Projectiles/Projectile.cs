@@ -41,6 +41,7 @@ public class Projectile : MonoBehaviour {
     private void MoveToLastTargetPosition() {
         transform.position = Vector3.MoveTowards(transform.position, lastTargetPosition, PROJECTILE_SPEED * Time.deltaTime);
         if (transform.position == lastTargetPosition)
+            ApplyEffectToArea(transform.position);
             gameObject.SetActive(false);
     }
 
@@ -52,13 +53,17 @@ public class Projectile : MonoBehaviour {
             //  If the unit is the target, or the target died and something else got hit
             if (effectable.GetTransform() == target || targetDestroyed == true) {
                 dealtDamage = true;
-                ApplyEffectGroup(effectable);
+                ApplyEffectToIndividual(effectable);
                 gameObject.SetActive(false);
             }
         }
     }
 
-    private void ApplyEffectGroup(IEffectable effectable) {
-        effectable.ApplyEffectGroup(effectGroup);
+    private void ApplyEffectToIndividual(IEffectable effectable) {
+        effectGroup.EffectTarget(effectable);
+    }
+
+    private void ApplyEffectToArea(Vector3 center) {
+        effectGroup.EffectArea(center);
     }
 }
