@@ -9,6 +9,7 @@ public class MainInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<MapManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PathFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ObjectPool>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<ParticlePool>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ButtonManager>().AsSingle();
         Container.BindInterfacesAndSelfTo<GUIController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle().NonLazy();

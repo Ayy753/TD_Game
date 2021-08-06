@@ -1,55 +1,52 @@
-using UnityEngine;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 
 public class ParticlePool : MonoBehaviour{
-    private Dictionary<ParticleType, List<GameObject>> particleTypeToPrefabList;
-    private Dictionary<ParticleType, GameObject> particleTypeToPrefab;
-
-    public enum ParticleType {
-        Buff,
-        Heal,
-        Damage
-    }
+    private Dictionary<string, List<ParticleEffect>> particleNameToParticleEFfectList;
+    private Dictionary<string, GameObject> particleNameToPrefab;
 
     private void OnEnable() {
-        GameObject[] particlePrefabs = Resources.LoadAll<GameObject>("Prefabs/Particles");
-
         InitializeParticleDictionaies();
     }
 
     private void InitializeParticleDictionaies() {
-        particleTypeToPrefabList = new Dictionary<ParticleType, List<GameObject>>();
-        particleTypeToPrefab = new Dictionary<ParticleType, GameObject>();
+        GameObject[] particlePrefabs = Resources.LoadAll<GameObject>("Prefabs/Particles");
 
-        foreach (ParticleType type in Enum.GetValues(typeof(ParticleType))) {
-            particleTypeToPrefabList.Add(type, new List<GameObject>());
+        particleNameToParticleEFfectList = new Dictionary<string, List<ParticleEffect>>();
+        particleNameToPrefab = new Dictionary<string, GameObject>();
+
+        foreach (GameObject prefab in particlePrefabs) {
+            particleNameToParticleEFfectList.Add(prefab.name, new List<ParticleEffect>());
+            particleNameToPrefab.Add(prefab.name, prefab);
         }
     }
 
-    public void SpawnParticleEffectAtPosition(ParticleType particleType, Vector3 position) {
-        GameObject effect = GetAvailableParticle(particleType);
-
-        if (effect == null) {
-            effect = CreateNewParticleEffectAndAppendToList(particleType);
+    public void TryToSpawnParticleEffectAtPosition(string particleType, Vector3 position, float effectRadius) {
+        try {
+            ParticleEffect particleEffect = GetAvailableParticle(particleType);
+            if (particleEffect == null) {
+                particleEffect = CreateNewParticleEffectAndAppendToList(particleType);
+            }
+            particleEffect.Activate(position, effectRadius);
         }
-
-        effect.transform.position = position;
-        effect.SetActive(true);
+        catch (System.Exception e) {
+            Debug.LogError(e.Message);
+        }
     }
 
-    private GameObject GetAvailableParticle(ParticleType particleType) {
-        foreach (GameObject particleGameObject in particleTypeToPrefabList[particleType]) {
-            if (particleGameObject.activeInHierarchy == false) {
-                return particleGameObject;
+    private ParticleEffect GetAvailableParticle(string particleName) {
+        foreach (ParticleEffect particleEffect in particleNameToParticleEFfectList[particleName]) {
+            if (particleEffect.IsAvailable()) {
+                return particleEffect;
             }
         }
         return null;
     }
 
-    private GameObject CreateNewParticleEffectAndAppendToList(ParticleType particleType) {
-        GameObject newparticles =  GameObject.Instantiate(particleTypeToPrefab[particleType]);
-        particleTypeToPrefabList[particleType].Add(newparticles);
-        return newparticles;
+    private ParticleEffect CreateNewParticleEffectAndAppendToList(string particleName) {
+        GameObject newparticles =  GameObject.Instantiate(particleNameToPrefab[particleName]);
+        ParticleEffect particleEffect = newparticles.GetComponent<ParticleEffect>();
+        particleNameToParticleEFfectList[particleName].Add(particleEffect);
+        return particleEffect;
     }
 }

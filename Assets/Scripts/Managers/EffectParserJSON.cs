@@ -31,6 +31,9 @@ public class EffectParserJSON : MonoBehaviour {
         [JsonConverter(typeof(StringEnumConverter))]
         public EffectGroup.TargetType TargetType { get; set; }
 
+        [JsonProperty("particle effect", NullValueHandling = NullValueHandling.Ignore)]
+        public string ParticleName { get; set; }
+
         [JsonProperty("radius", NullValueHandling = NullValueHandling.Ignore)]
         public float Radius { get; set; } = 0;
 
@@ -108,7 +111,7 @@ public class EffectParserJSON : MonoBehaviour {
             }
         }
         EffectGroup effectGroup = ScriptableObject.CreateInstance("EffectGroup") as EffectGroup;
-        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType, parsedEffectGroup.Radius);
+        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType, parsedEffectGroup.ParticleName, parsedEffectGroup.Radius);
         effectGroups.Add(effectGroup);
     }
 

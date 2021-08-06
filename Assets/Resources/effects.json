@@ -46,6 +46,7 @@
       "name": "Splash Projectile",
       "description": "Does fire and physical area damage",
 	  "target type": "Area",
+	  "particle effect" : "Explosion",
 	  "radius": 3,
       "effects": [
         {
@@ -88,7 +89,8 @@
       "name": "Area Speed Buff",
       "description": "Increases speed",
 	  "target type": "Area",
-	  "radius": "3",
+	  "particle effect" : "Buff",
+	  "radius": 3,
       "effects": [
         {
           "type": "Buff",
@@ -102,7 +104,8 @@
       "name": "Area Heal",
       "description": "Heals units",
 	  "target type": "Area",
-	  "radius": "3",
+	  "particle effect" : "Heal",
+	  "radius": 3,
       "effects": [
         {
           "type": "Heal",
