@@ -32,7 +32,6 @@ public class ParticleEffect : MonoBehaviour{
     }
 
     private void EmitParticles() {
-        Debug.Log("Emitting particles");
         isAvailable = false;
         ParticleSystem.EmissionModule emission = particles.emission;
         emission.enabled = true;
@@ -40,7 +39,6 @@ public class ParticleEffect : MonoBehaviour{
     }
 
     private void StopEmittingParticles() {
-        Debug.Log("Stopped emitting particles");
         ParticleSystem.EmissionModule emission = particles.emission;
         emission.enabled = false;
         particles.Clear();
