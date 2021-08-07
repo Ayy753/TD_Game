@@ -1,16 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// A class that listens for keyput input and fires events
-/// </summary>
 public class InputHandler : MonoBehaviour{
-    private KeyCode togglePause = KeyCode.Space;
-    private KeyCode focusTarget = KeyCode.F;
-    private KeyCode slowGameSpeed = KeyCode.Minus;
-    private KeyCode increaseGameSpeed = KeyCode.Equals;
-    private KeyCode toggleMenu = KeyCode.Escape;
+    private Dictionary<Command, KeyCode> commandToHotkeyDictionary;
 
     public delegate void KeyPressed(Command command);
     public static event KeyPressed OnCommandEntered;
@@ -23,69 +15,31 @@ public class InputHandler : MonoBehaviour{
         ToggleMenu
     }
 
-    /// <summary>
-    /// Assign a hotkey to a command
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="key"></param>
-    public void SetControl(Command command, KeyCode key) {
-        switch (command) {
-            case Command.TogglePause:
-                togglePause = key;
-                break;
-            case Command.FollowTarget:
-                focusTarget = key;
-                break;
-            case Command.DecreaseGameSpeed:
-                slowGameSpeed = key;
-                break;
-            case Command.IncreaseGameSpeed:
-                increaseGameSpeed = key;
-                break;
-            case Command.ToggleMenu:
-                toggleMenu = key;
-                break;
-        }
+    private void OnEnable() {
+        //  TODO: Load this from a pref file
+        commandToHotkeyDictionary = new Dictionary<Command, KeyCode>() {
+            {Command.TogglePause, KeyCode.Space},
+            {Command.FollowTarget, KeyCode.F},
+            {Command.DecreaseGameSpeed, KeyCode.Minus},
+            {Command.IncreaseGameSpeed, KeyCode.Equals},
+            {Command.ToggleMenu, KeyCode.Escape},
+        };
+    }
+    
+    public void AssignKeyToCommand(KeyCode hotKey, Command command) {
+        commandToHotkeyDictionary[command] = hotKey;
     }
 
-    /// <summary>
-    /// Get the hotkey assigned to a command
-    /// </summary>
-    /// <param name="command"></param>
-    /// <returns></returns>
-    public KeyCode GetHotkey(Command command) {
-        switch (command) {
-            case Command.TogglePause:
-                return togglePause;
-            case Command.FollowTarget:
-                return focusTarget;
-            case Command.DecreaseGameSpeed:
-                return slowGameSpeed;
-            case Command.IncreaseGameSpeed:
-                return increaseGameSpeed;
-            case Command.ToggleMenu:
-                return toggleMenu;
-            default:
-                return KeyCode.None;
-        }
+    public KeyCode GetHotkeyByCommand(Command command) {
+        return commandToHotkeyDictionary[command];
     }
 
     void Update(){
         if (OnCommandEntered != null) {
-            if (Input.GetKeyDown(togglePause)) {
-                OnCommandEntered.Invoke(Command.TogglePause);
-            } 
-            else if (Input.GetKeyDown(focusTarget)) {
-                OnCommandEntered.Invoke(Command.FollowTarget);
-            }
-            else if (Input.GetKeyDown(slowGameSpeed)) {
-                OnCommandEntered.Invoke(Command.DecreaseGameSpeed);
-            }
-            else if (Input.GetKeyDown(increaseGameSpeed)) {
-                OnCommandEntered.Invoke(Command.IncreaseGameSpeed);
-            }
-            else if (Input.GetKeyDown(toggleMenu)) {
-                OnCommandEntered.Invoke(Command.ToggleMenu);
+            foreach (Command command in commandToHotkeyDictionary.Keys) {
+                if (Input.GetKeyDown(commandToHotkeyDictionary[command])) {
+                    OnCommandEntered.Invoke(command);
+                }
             }
         }
     }

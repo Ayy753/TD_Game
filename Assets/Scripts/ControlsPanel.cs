@@ -23,7 +23,7 @@ public class ControlsPanel : IInitializable {
             txtControlName = newControlPanel.transform.Find("txtControlName").GetComponent<TMP_Text>();
             txtControlHotkey = newControlPanel.transform.Find("txtHotkey").GetComponent<TMP_Text>();
             txtControlName.text = command.ToString();
-            txtControlHotkey.text = inputHandler.GetHotkey(command).ToString();
+            txtControlHotkey.text = inputHandler.GetHotkeyByCommand(command).ToString();
             newControlPanel.transform.SetParent(pnlControls);
         }
     }
