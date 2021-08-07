@@ -1,8 +1,10 @@
+using UnityEngine;
+
 public class DamageOverTime : IStatusEffect, IDamage{
     public float Duration { get; private set; }
     public float Potency { get; }
     public IDamage.DamageType Type { get; private set; }
-    public float RemainingDuration { get; private set; }
+    public int RemainingTicks { get; private set; }
 
     private Status unitStatus;
     private float damagePerTick;
@@ -15,7 +17,7 @@ public class DamageOverTime : IStatusEffect, IDamage{
 
     public void Apply(Status status) {
         unitStatus = status;
-        RemainingDuration = Duration;
+        RemainingTicks = Mathf.CeilToInt(Duration / TickManager.tickFrequency);
         damagePerTick = CalculateDamage(unitStatus);
     }
 
@@ -29,8 +31,8 @@ public class DamageOverTime : IStatusEffect, IDamage{
     }
 
     public void OnTick() {
-        RemainingDuration -= TickManager.tickFrequency;
-        if (RemainingDuration > 0) {
+        RemainingTicks -= 1;
+        if (RemainingTicks > 0) {
             unitStatus.TakeDamage(damagePerTick);
         }
     }

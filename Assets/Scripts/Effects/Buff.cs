@@ -1,8 +1,10 @@
+using UnityEngine;
+
 public class Buff : IStatusEffect, IStatMod{
     public float Duration { get; private set; }
     public float Potency { get; }
     public Status.StatType Type { get; private set; }
-    public float RemainingDuration { get; private set; }
+    public int RemainingTicks { get; private set; }
     
     private Status unitStatus;
 
@@ -15,11 +17,11 @@ public class Buff : IStatusEffect, IStatMod{
     public void Apply(Status status) {
         unitStatus = status;
         unitStatus.ModifyStat(Type, Potency);
-        RemainingDuration = Duration;
+        RemainingTicks = Mathf.CeilToInt(Duration / TickManager.tickFrequency);
     }
 
     public void OnTick() {
-        RemainingDuration -= TickManager.tickFrequency;
+        RemainingTicks -= 1;
     }
 
     public void Remove() {

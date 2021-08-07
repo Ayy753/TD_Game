@@ -113,7 +113,7 @@ public class Status : MonoBehaviour {
     private void OnTick() {
         for (int i = 0; i < statusEffects.Count; i++) {
             statusEffects[i].OnTick();
-            if (statusEffects[i].RemainingDuration <= 0) {
+            if (statusEffects[i].RemainingTicks <= 0) {
                 statusEffects[i].Remove();
                 statusEffects.Remove(statusEffects[i]);
                 i--;

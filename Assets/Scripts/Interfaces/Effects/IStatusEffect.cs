@@ -2,7 +2,7 @@ public interface IStatusEffect : IEffect {
     /// <summary>
     /// The remaining duration of the effect
     /// </summary>
-    public float RemainingDuration { get; }
+    public int RemainingTicks { get; }
 
     /// <summary>
     /// Remove the effect from Unit
