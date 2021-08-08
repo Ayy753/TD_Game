@@ -25,22 +25,24 @@ public class InputHandler : MonoBehaviour{
             {Command.ToggleMenu, KeyCode.Escape},
         };
     }
-    
-    public void AssignKeyToCommand(KeyCode hotKey, Command command) {
+
+    void Update(){
+        PollHotkeysDown();
+    }
+
+    private void PollHotkeysDown() {
+        foreach (Command command in commandToHotkeyDictionary.Keys) {
+            if (Input.GetKeyDown(commandToHotkeyDictionary[command])) {
+                OnCommandEntered?.Invoke(command);
+            }
+        }
+    }
+
+    public void AssignHotkeyToCommand(KeyCode hotKey, Command command) {
         commandToHotkeyDictionary[command] = hotKey;
     }
 
     public KeyCode GetHotkeyByCommand(Command command) {
         return commandToHotkeyDictionary[command];
-    }
-
-    void Update(){
-        if (OnCommandEntered != null) {
-            foreach (Command command in commandToHotkeyDictionary.Keys) {
-                if (Input.GetKeyDown(commandToHotkeyDictionary[command])) {
-                    OnCommandEntered.Invoke(command);
-                }
-            }
-        }
     }
 }
