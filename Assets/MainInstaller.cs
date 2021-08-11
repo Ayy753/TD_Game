@@ -40,6 +40,7 @@ public class MainInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<ControlsPanel>().AsSingle();
         Container.BindInterfacesAndSelfTo<WaveReportPanel>().AsSingle();
         Container.Bind<TickManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind<EffectableFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
         //  Factory bindings
         Container.BindIFactory<Enemy, Enemy.Factory>();

@@ -5,13 +5,14 @@ using UnityEngine;
 /// <summary>
 /// Represents any collection of effects such as projectiles, buffs, debuffs, etc
 /// </summary>
-public class EffectGroup : ScriptableObject, IEffectableRangeDetection{
+public class EffectGroup : ScriptableObject{
     public string Name { get; private set; }
     public string Description { get; private set; }
     public float Radius { get; private set; }
     public TargetType Type { get; private set; }
     public string ParticleName { get; private set; }
     private IEffect[] Effects;
+    private EffectableFinder effectableFinder;
 
     public static event EventHandler<OnEffectUsedEventArg> OnEffectUsed;
 
@@ -22,6 +23,10 @@ public class EffectGroup : ScriptableObject, IEffectableRangeDetection{
 
     public enum TargetType {
         Individual, Area
+    }
+
+    private void OnEnable() {
+        effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
     }
 
     public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, float radius = 0.25f ) {
@@ -111,22 +116,12 @@ public class EffectGroup : ScriptableObject, IEffectableRangeDetection{
         OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg{ position = center, radius = Radius });
     }
 
+    private List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
+        return effectableFinder.GetEffectableObjectsInRange(center, Radius);
+    }
+
     private void ApplyEffectsToIndividual(IEffectable target) {
         Status status = target.GetStatus();
         status.ApplyEffectGroup(this);
-    }
-
-    public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
-        List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
-
-        foreach (var collider in colliders) {
-            IEffectable effectable = collider.GetComponent<IEffectable>();
-            if (effectable != null) {
-                effectableObjectsInRange.Add(effectable);
-            }
-        }
-
-        return effectableObjectsInRange;
     }
 }

@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Collections;
 using Zenject;
 
-public class Tower : MonoBehaviour, IEffectableRangeDetection, Itargetable {
+public class Tower : MonoBehaviour, Itargetable {
     [Inject] private ObjectPool objectPool;
 
     private List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
     private float timeSinceLastShot = float.MaxValue;
     private IEffectable target;
     private Transform turret;
+    private EffectableFinder effectableFinder;
 
     public event EventHandler TargetDisabled;
 
@@ -29,6 +30,8 @@ public class Tower : MonoBehaviour, IEffectableRangeDetection, Itargetable {
 
     private void Awake() {
         turret = transform.Find("Turret");
+        effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
+
         StartCoroutine(TurretTracking());
         StartCoroutine(TargetFinder());
     }
@@ -92,18 +95,8 @@ public class Tower : MonoBehaviour, IEffectableRangeDetection, Itargetable {
         }
     }
 
-    public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
-        List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
-
-        foreach (var collider in colliders) {
-            IEffectable effectable = collider.GetComponent<IEffectable>();
-            if (effectable != null) {
-                effectableObjectsInRange.Add(effectable);
-            }
-        }
-
-        return effectableObjectsInRange;
+    private List<IEffectable> GetEffectableObjectsInRange(Vector3 position) {
+        return effectableFinder.GetEffectableObjectsInRange(position, Radius);
     }
 
     /// <summary>
