@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,21 +6,22 @@ using UnityEngine;
 /// Represents any collection of effects such as projectiles, buffs, debuffs, etc
 /// </summary>
 public class EffectGroup : ScriptableObject, IEffectableRangeDetection{
-    private ParticlePool particlePool;
-
     public string Name { get; private set; }
     public string Description { get; private set; }
     public float Radius { get; private set; }
     public TargetType Type { get; private set; }
     public string ParticleName { get; private set; }
     private IEffect[] Effects;
-    
-    public enum TargetType {
-        Individual, Area
+
+    public static event EventHandler<OnEffectUsedEventArg> OnEffectUsed;
+
+    public class OnEffectUsedEventArg : EventArgs {
+        public Vector3 position;
+        public float radius;
     }
 
-    private void OnEnable() {
-        particlePool = GameObject.Find("ParticlePool").GetComponent<ParticlePool>();
+    public enum TargetType {
+        Individual, Area
     }
 
     public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, float radius = 0.25f ) {
@@ -106,16 +108,12 @@ public class EffectGroup : ScriptableObject, IEffectableRangeDetection{
             ApplyEffectsToIndividual(effectable);
         }
 
-        SpawnParticles(center);
+        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg{ position = center, radius = Radius });
     }
 
     private void ApplyEffectsToIndividual(IEffectable target) {
         Status status = target.GetStatus();
         status.ApplyEffectGroup(this);
-    }
-
-    private void SpawnParticles(Vector3 position) {
-        particlePool.TryToSpawnParticleEffectAtPosition(ParticleName, position, Radius);
     }
 
     public List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {

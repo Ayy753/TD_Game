@@ -6,7 +6,17 @@ public class ParticlePool : MonoBehaviour{
     private Dictionary<string, GameObject> particleNameToPrefab;
 
     private void OnEnable() {
+        EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
+
         InitializeParticleDictionaies();
+    }
+
+    private void OnDisable() {
+        EffectGroup.OnEffectUsed -= EffectGroup_OnEffectUsed;
+    }
+
+    private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
+        TryToSpawnParticleEffectAtPosition(((EffectGroup)sender).ParticleName, e.position, e.radius);
     }
 
     private void InitializeParticleDictionaies() {
