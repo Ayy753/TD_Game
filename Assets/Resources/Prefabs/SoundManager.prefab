@@ -55,3 +55,22 @@ MonoBehaviour:
     soundType: 5
     volume: 0.712
     pitch: 0.3
+  - soundVarients:
+    - {fileID: 8300000, guid: 506228cbc7bc4734e878e7e4b9e8897d, type: 3}
+    - {fileID: 8300000, guid: a094e4eecb70c2d4a89a5bf247cb730c, type: 3}
+    - {fileID: 8300000, guid: be2eb79d079201f45b62859972d53a7f, type: 3}
+    - {fileID: 8300000, guid: 9e82899ffc6124c4eb1087524ab8e918, type: 3}
+    - {fileID: 8300000, guid: c195ba1592db5bd4a806138a6f6543d8, type: 3}
+    - {fileID: 8300000, guid: a0a7b12b582d5e24eb6f7b5de7aa5152, type: 3}
+    - {fileID: 8300000, guid: c4bf5fba4bd070b45953a7d0fab29c43, type: 3}
+    - {fileID: 8300000, guid: 0858c102729c655419bc6eb84fb2dd5a, type: 3}
+    - {fileID: 8300000, guid: d2fad9738e94dc041bba2cc929e1043b, type: 3}
+    - {fileID: 8300000, guid: eb9d0f5940c28a74bb5a42f3491b82fb, type: 3}
+    soundType: 0
+    volume: 0.712
+    pitch: 0.3
+  - soundVarients:
+    - {fileID: 8300000, guid: e71b00a1b49ff2e4f8d0b04f01b214f3, type: 3}
+    soundType: 8
+    volume: 0.712
+    pitch: 0.3
