@@ -16,7 +16,8 @@ public class ParticlePool : MonoBehaviour{
     }
 
     private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
-        TryToSpawnParticleEffectAtPosition(((EffectGroup)sender).ParticleName, e.position, e.radius);
+        EffectGroup effectGroup = (EffectGroup)sender;
+        TryToSpawnParticleEffectAtPosition(effectGroup.ParticleName, effectGroup.Radius, e.position);
     }
 
     private void InitializeParticleDictionaies() {
@@ -31,7 +32,7 @@ public class ParticlePool : MonoBehaviour{
         }
     }
 
-    public void TryToSpawnParticleEffectAtPosition(string particleType, Vector3 position, float effectRadius) {
+    public void TryToSpawnParticleEffectAtPosition(string particleType, float effectRadius, Vector3 position) {
         try {
             ParticleEffect particleEffect = GetAvailableParticle(particleType);
             if (particleEffect == null) {

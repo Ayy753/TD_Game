@@ -11,6 +11,8 @@ public class EffectGroup : ScriptableObject{
     public float Radius { get; private set; }
     public TargetType Type { get; private set; }
     public string ParticleName { get; private set; }
+    public SoundManager.SoundType SoundType { get; private set; }
+
     private IEffect[] Effects;
     private EffectableFinder effectableFinder;
 
@@ -18,7 +20,6 @@ public class EffectGroup : ScriptableObject{
 
     public class OnEffectUsedEventArg : EventArgs {
         public Vector3 position;
-        public float radius;
     }
 
     public enum TargetType {
@@ -29,13 +30,14 @@ public class EffectGroup : ScriptableObject{
         effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
     }
 
-    public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, float radius = 0.25f ) {
+    public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundManager.SoundType soundType, float radius = 0.25f ) {
         Name = name;
         Description = description;
         Effects = effects;
         Type = targetType;
         Radius = radius;
         ParticleName = particleType;
+        SoundType = soundType;
     }
 
     /// <summary>
@@ -113,7 +115,7 @@ public class EffectGroup : ScriptableObject{
             ApplyEffectsToIndividual(effectable);
         }
 
-        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg{ position = center, radius = Radius });
+        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg{ position = center });
     }
 
     private List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {

@@ -39,6 +39,9 @@ public class EffectParserJSON : MonoBehaviour {
 
         [JsonProperty("effects")]
         public ParsedEffect[] Effects { get; set; }
+
+        [JsonProperty("sound type")]
+        public SoundManager.SoundType Sound { get; set; }
     }
 
     private class ParsedEffect {
@@ -111,7 +114,7 @@ public class EffectParserJSON : MonoBehaviour {
             }
         }
         EffectGroup effectGroup = ScriptableObject.CreateInstance("EffectGroup") as EffectGroup;
-        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType, parsedEffectGroup.ParticleName, parsedEffectGroup.Radius);
+        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType, parsedEffectGroup.ParticleName, parsedEffectGroup.Sound, parsedEffectGroup.Radius);
         effectGroups.Add(effectGroup);
     }
 

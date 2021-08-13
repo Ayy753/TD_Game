@@ -11,21 +11,23 @@ public class SoundManager : MonoBehaviour {
         bluntHit,
         explosionTiny,
         arrowRelease,
-        gainGold
+        gainGold,
+        buff
     }
 
     public void OnEnable() {
-        Debug.Log("initializing soundmanager");
-        InitializeSounds();
+        EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
 
-        StartCoroutine("Test");
+        InitializeSounds();
     }
 
-    private IEnumerator Test() {
-        while (true) {
-            PlaySound(SoundType.explosionTiny);
-            yield return new WaitForSeconds(1.5f);
-        }
+    private void OnDisable() {
+        EffectGroup.OnEffectUsed -= EffectGroup_OnEffectUsed;
+    }
+
+    private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
+        EffectGroup effectGroup = (EffectGroup)sender;
+        PlaySound(effectGroup.SoundType);
     }
 
     private void InitializeSounds() {
@@ -65,7 +67,9 @@ public class SoundManager : MonoBehaviour {
         foreach (Sound sound in sounds) {
             if (sound.soundType == type) {
                 sound.GetRandomSoundVariation().Play();
+                return;
             }
         }
+        Debug.LogWarning($"No sound variants assigned for '{type}' in the SoundManager GameObject via inspector");
     }
 }
