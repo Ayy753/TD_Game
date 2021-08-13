@@ -64,11 +64,19 @@ public class CameraController : MonoBehaviour {
             }
         }
 
-        //  If cursor isn't over gui
-        if (EventSystem.current.IsPointerOverGameObject() == false) {
-            //  Scroll wheel zoom
-            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + -Input.mouseScrollDelta.y * scrollSpeed, minZoom, maxZoom);
+        if (EventSystem.current.IsPointerOverGameObject() == false && Input.mouseScrollDelta.y != 0) {
+            HandleScroll();
         }
+    }
+
+    private void HandleScroll() {
+        float newCameraDistance = Mathf.Clamp(Camera.main.orthographicSize + -Input.mouseScrollDelta.y * scrollSpeed, minZoom, maxZoom);
+        Camera.main.orthographicSize = newCameraDistance;
+
+        //  We need to move the camera's Z position in order for spacial sound to work properly
+        Vector3 cameraPosition = transform.position;
+        cameraPosition.z = -newCameraDistance;
+        transform.position = cameraPosition;
     }
 
     /// <summary>
