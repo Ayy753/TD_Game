@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,8 +18,6 @@ public class SoundManager : MonoBehaviour {
 
     public void OnEnable() {
         EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
-
-        InitializeSounds();
     }
 
     private void OnDisable() {
@@ -27,49 +26,44 @@ public class SoundManager : MonoBehaviour {
 
     private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
         EffectGroup effectGroup = (EffectGroup)sender;
-        PlaySound(effectGroup.SoundType);
+        PlaySound(effectGroup.SoundType, e.position);
     }
 
-    private void InitializeSounds() {
-        foreach (Sound sound in sounds) {
-            InitializeSoundVariations(sound);
-        }
-    }
-
-    private void InitializeSoundVariations(Sound sound) {
-        float volume;
-        float pitch;
-        AudioSource audioSource;
-
-        foreach (AudioClip audioClip in sound.GetSoundVariations()) {
-            volume = sound.volume;
-            pitch = sound.pitch;
-            audioSource = CreateAudioSourceComponent(audioClip, volume, pitch);
-
-            sound.AddAudioSource(audioSource);
-        }
-    }
-
-    private AudioSource CreateAudioSourceComponent(AudioClip audioClip, float volume, float pitch) {
-        AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.volume = volume;
-        audioSource.pitch = pitch;
-        audioSource.clip = audioClip;
-
-        return audioSource;
-    }
-
-    /// <summary>
-    /// Plays a random varient of a specified sound type
-    /// </summary>
-    /// <param name="type"></param>
     public void PlaySound(SoundType type) {
+        GameObject soundGameObject = new GameObject("Sound");
+        Sound sound = GetSound(type);
+        
+        AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
+        audioSource.volume = sound.volume;
+        audioSource.pitch = sound.pitch;
+        audioSource.PlayOneShot(sound.GetRandomAudioClip());
+
+        Destroy(soundGameObject, audioSource.clip.length);
+    }
+
+    public void PlaySound(SoundType type, Vector3 position) {
+        GameObject soundGameObject = new GameObject("Sound");
+        soundGameObject.transform.position = position;
+
+        Sound sound = GetSound(type);
+        AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
+        audioSource.volume = sound.volume;
+        audioSource.pitch = sound.pitch;
+        audioSource.clip = sound.GetRandomAudioClip();
+        audioSource.spatialBlend = 1f;
+        audioSource.maxDistance = 50f;
+        audioSource.Play();
+
+        Destroy(soundGameObject, audioSource.clip.length);
+    }
+
+    private Sound GetSound(SoundType type) {
         foreach (Sound sound in sounds) {
             if (sound.soundType == type) {
-                sound.GetRandomSoundVariation().Play();
-                return;
+                return sound;
             }
         }
         Debug.LogWarning($"No sound variants assigned for '{type}' in the SoundManager GameObject via inspector");
+        return null;
     }
 }
