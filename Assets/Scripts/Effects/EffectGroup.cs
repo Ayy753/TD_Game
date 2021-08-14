@@ -30,7 +30,7 @@ public class EffectGroup : ScriptableObject{
         effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
     }
 
-    public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundManager.SoundType soundType, float radius = 0.25f ) {
+    public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundManager.SoundType soundType, float radius ) {
         Name = name;
         Description = description;
         Effects = effects;
@@ -99,6 +99,7 @@ public class EffectGroup : ScriptableObject{
         }
         else {
             ApplyEffectsToIndividual(target);
+            OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = target.GetTransform().position });
         }
     }
 

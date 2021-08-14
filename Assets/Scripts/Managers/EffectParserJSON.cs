@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EffectParserJSON : MonoBehaviour {
+    private const float DEFAULT_RADIUS = 0.2f;
+    private const string DEFAULT_PARTICLE_NAME = "Blood";
+
     private const string FilePath = "effects";
     private List<EffectGroup> effectGroups = new List<EffectGroup>();
 
@@ -32,10 +35,10 @@ public class EffectParserJSON : MonoBehaviour {
         public EffectGroup.TargetType TargetType { get; set; }
 
         [JsonProperty("particle effect", NullValueHandling = NullValueHandling.Ignore)]
-        public string ParticleName { get; set; }
+        public string ParticleName { get; set; } = DEFAULT_PARTICLE_NAME;
 
         [JsonProperty("radius", NullValueHandling = NullValueHandling.Ignore)]
-        public float Radius { get; set; } = 0;
+        public float Radius { get; set; } = DEFAULT_RADIUS;
 
         [JsonProperty("effects")]
         public ParsedEffect[] Effects { get; set; }
@@ -114,7 +117,8 @@ public class EffectParserJSON : MonoBehaviour {
             }
         }
         EffectGroup effectGroup = ScriptableObject.CreateInstance("EffectGroup") as EffectGroup;
-        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType, parsedEffectGroup.ParticleName, parsedEffectGroup.Sound, parsedEffectGroup.Radius);
+        effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType,
+            parsedEffectGroup.ParticleName, parsedEffectGroup.Sound, parsedEffectGroup.Radius);
         effectGroups.Add(effectGroup);
     }
 

@@ -41,7 +41,7 @@ public class ParticlePool : MonoBehaviour{
             particleEffect.Activate(position, effectRadius);
         }
         catch (System.Exception e) {
-            Debug.LogError(e.Message);
+            Debug.LogError($"{e.Message} when trying to spawn particle type: {particleType}");
         }
     }
 
