@@ -94,36 +94,28 @@ public class EffectGroup : ScriptableObject{
     }
 
     public void EffectTarget(IEffectable target) {
-        if (Type == TargetType.Area) {
-            EffectArea(target.GetTransform().position);
-        }
-        else {
-            ApplyEffectsToIndividual(target);
-            OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = target.GetTransform().position });
-        }
+        ApplyEffects(target);
+        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = target.GetTransform().position });
     }
 
-    public void EffectArea(Vector3 center) {
-        if (Type == TargetType.Area) {
-            ApplyEffectsInArea(center);
-        }
+    public void EffectTarget(IEffectable target, Vector3 impactPosition) {
+        ApplyEffects(target);
+        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = impactPosition });
     }
 
-    private void ApplyEffectsInArea(Vector3 center) {
-        List<IEffectable> effectableObjectsInRange = GetEffectableObjectsInRange(center);
-
-        foreach (IEffectable effectable in effectableObjectsInRange) {
-            ApplyEffectsToIndividual(effectable);
+    public void EffectArea(Vector3 position) {
+        foreach (IEffectable target in GetEffectableObjectsInRange(position)) {
+            ApplyEffects(target);
         }
 
-        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg{ position = center });
+        OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = position });
     }
 
     private List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
         return effectableFinder.GetEffectableObjectsInRange(center, Radius);
     }
 
-    private void ApplyEffectsToIndividual(IEffectable target) {
+    private void ApplyEffects(IEffectable target) {
         Status status = target.GetStatus();
         status.ApplyEffectGroup(this);
     }

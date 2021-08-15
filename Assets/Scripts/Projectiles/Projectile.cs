@@ -60,7 +60,12 @@ public class Projectile : MonoBehaviour {
     }
 
     private void ApplyEffectToIndividual(IEffectable effectable) {
-        effectGroup.EffectTarget(effectable);
+        if (effectGroup.Type == EffectGroup.TargetType.Individual) {
+            effectGroup.EffectTarget(effectable, transform.position);
+        }
+        else {
+            effectGroup.EffectArea(transform.position);
+        }
     }
 
     private void ApplyEffectToArea(Vector3 center) {
