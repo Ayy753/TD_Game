@@ -165,14 +165,11 @@ public class BuildManager : IInitializable, IDisposable {
         lastPositionHovered = position;
 
         if (ShouldShowTowerRadiusAtPosition(position)) {
-            //  This occastionally throws exceptions for unknown reasons 
             try {
                 ShowTowerRadiusAtPosition(position);
             }
             catch (Exception e) {
-                Debug.LogError(string.Format("Exception at position {0}: ", position, e.Message));
-                Debug.LogError(string.Format("Structure at position: {0}, Build mode: {1}, Currently selected structure: {2}", 
-                    mapManager.GetTileData(IMapManager.Layer.StructureLayer, position), CurrentBuildMode, CurrentlySelectedStructure));
+                Debug.LogError($"{e}, a raycast target object must be overlapping the tower's center");
             }
         }
         else {
@@ -211,7 +208,7 @@ public class BuildManager : IInitializable, IDisposable {
             radiusRenderer.RenderRadius(positionWithOffset, ((TowerData)(CurrentlySelectedStructure)).Range);
         }
         else {
-            radiusRenderer.RenderRadius(positionWithOffset, GetTowerAtPosition(position).TowerData.Range);
+            radiusRenderer.RenderRadius(positionWithOffset, GetTowerAtPosition(positionWithOffset).TowerData.Range);
         }
     }
 
