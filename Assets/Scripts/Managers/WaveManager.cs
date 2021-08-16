@@ -63,6 +63,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
         guiController.UpdateWaveCountdown(timeBeforeFirstWave);
         guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
+        guiController.UpdateEnemiesRemainingLabel(0);
     }
 
     public void Dispose() {
@@ -72,6 +73,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
     private void HandleEnemyDeactivated(Enemy enemy) {
         activeEnemies.Remove(enemy);
+        UpdateEnemiesRemainingLabel();
 
         if (activeEnemies.Count == 0 && currentWaveFinishedSpawning == true) {
             if (lastWaveFinishedSpawning == false) {
@@ -82,6 +84,15 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
                 ChangeState(IWaveManager.State.LastWaveFinished);
             }
         }
+    }
+
+    private void UpdateEnemiesRemainingLabel() {
+        int enemiesRemaining = CalculateRemainingEnemiesSoFar();
+        guiController.UpdateEnemiesRemainingLabel(enemiesRemaining);
+    }
+
+    private int CalculateRemainingEnemiesSoFar() {
+        return numUnspawnedEnemiesSoFar + activeEnemies.Count;
     }
 
     private void LoadWaveData() {
@@ -153,7 +164,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
 
     private IEnumerator LaunchWave(int waveNum) {
         currentWaveFinishedSpawning = false;
-        numUnspawnedEnemiesSoFar += GetTotalEnemyCount(waveNum);
+        numUnspawnedEnemiesSoFar += GetTotalEnemyCountInWave(waveNum);
         mostRecentWaveNum++;
         ChangeState(IWaveManager.State.WaveInProgress);
 
@@ -188,7 +199,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
         }
     }
 
-    private int GetTotalEnemyCount(int waveNum) {
+    private int GetTotalEnemyCountInWave(int waveNum) {
         int totalEnemies = 0;
         int numGroups = LevelData.waves[waveNum].Groups.Count;
 
@@ -251,6 +262,8 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
             waveCoroutines.Add(asyncProcessor.StartCoroutine(LaunchWave(mostRecentWaveNum)));
             messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
             guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
+
+            UpdateEnemiesRemainingLabel();
         }
     }
 
@@ -261,7 +274,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
             ClearActiveEnemies();
             ChangeState(IWaveManager.State.Waiting);
 
-            //  TODO: make enemies remaining label in wavepanel
+            UpdateEnemiesRemainingLabel();
         }
     }
 
@@ -273,7 +286,7 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     }
 
     private void ApplyWaveTerminationPenalties() {
-        int totalRemainingEnemies = numUnspawnedEnemiesSoFar + activeEnemies.Count;
+        int totalRemainingEnemies = CalculateRemainingEnemiesSoFar();
         OnPlayerEndedWave?.Invoke(this, new PlayerEndedWaveEventArgs { NumEnemiesRemaining = totalRemainingEnemies });
         numUnspawnedEnemiesSoFar = 0;
     }

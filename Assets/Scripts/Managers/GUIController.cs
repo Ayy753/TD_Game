@@ -4,7 +4,7 @@ using TMPro;
 
 public class GUIController : IGUIManager, IInitializable {
     TMP_Text txtLives, txtGold;
-    TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown;
+    TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown, txtEnemiesRemaining;
     TMP_Text txtGameSpeed, txtFPS;
 
     //  gameEnded panel is the parent for the other two panels
@@ -30,6 +30,7 @@ public class GUIController : IGUIManager, IInitializable {
         txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
         txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
         txtWaveCountdown = GameObject.Find("txtWaveCountdown").GetComponent<TMP_Text>();
+        txtEnemiesRemaining = GameObject.Find("txtEnemiesRemaining").GetComponent<TMP_Text>();
 
         txtGameSpeed = GameObject.Find("txtSpeed").GetComponent<TMP_Text>();
         txtFPS = GameObject.Find("txtFPS").GetComponent<TMP_Text>();
@@ -93,6 +94,10 @@ public class GUIController : IGUIManager, IInitializable {
 
     public void UpdateFPSCounter(int fps) {
         txtFPS.text = fps.ToString();
+    }
+
+    public void UpdateEnemiesRemainingLabel(int enemiesRemaining) {
+        txtEnemiesRemaining.text = enemiesRemaining.ToString();
     }
 
     public void LockBuildMenu() {

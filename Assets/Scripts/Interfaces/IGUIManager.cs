@@ -17,6 +17,7 @@ public interface IGUIManager{
     public void UpdateWaveCountdown(int secondsLeft);
     public void UpdateSpeedPanel(float speed);
     public void UpdateFPSCounter(int fps);
+    public void UpdateEnemiesRemainingLabel(int enemiesRemaining);
     public void LockBuildMenu();
     public void UnlockBuildMenu();
     public void ShowPausePanel();
