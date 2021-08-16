@@ -38,6 +38,7 @@ public class GameManager: IInitializable, IDisposable {
         Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
         InputHandler.OnCommandEntered += HandlekeyboardInput;
         waveManager.OnWaveStateChanged += HandleWaveStateChanged;
+        waveManager.OnPlayerEndedWave += WaveManager_OnPlayerEndedWave;
 
         Debug.Log("GameManager initializing");
         Lives = STARTING_LIVES;
@@ -51,6 +52,7 @@ public class GameManager: IInitializable, IDisposable {
         Enemy.OnEnemyReachedGate -= HandleEnemyReachedGate;
         InputHandler.OnCommandEntered -= HandlekeyboardInput;
         waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
+        waveManager.OnPlayerEndedWave -= WaveManager_OnPlayerEndedWave;
     }
 
     private void HandlekeyboardInput(InputHandler.Command command) {
@@ -100,6 +102,20 @@ public class GameManager: IInitializable, IDisposable {
         Lives -= 1;
         guiController.UpdateLivesLabel(Lives);
         messageSystem.DisplayMessage("-1 life", Color.red);
+        if (Lives <= 0) {
+            GameLost();
+        }
+    }
+
+    private void WaveManager_OnPlayerEndedWave(object sender, PlayerEndedWaveEventArgs args) {
+        LoseLives(args.NumEnemiesRemaining);
+    }
+
+    private void LoseLives(int numEnemiesRemaining) {
+        Lives -= numEnemiesRemaining;
+
+        guiController.UpdateLivesLabel(Lives);
+        messageSystem.DisplayMessage($"-{numEnemiesRemaining} lives", Color.red);
         if (Lives <= 0) {
             GameLost();
         }

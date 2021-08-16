@@ -54,6 +54,7 @@ public class ButtonManager: IButtonManager, IInitializable {
         Button btnDemolish = GameObject.Find("btnDemolish").GetComponent<Button>();
         Button btnToggleWaveReport = GameObject.Find("btnToggleWaveReport").GetComponent<Button>();
         Button btnCloseWaveReport = GameObject.Find("btnCloseWaveReport").GetComponent<Button>();
+        Button btnEndWave = GameObject.Find("btnEndWave").GetComponent<Button>();
 
         btnNextWave.onClick.AddListener(delegate { waveManager.StartNextWave(); });
         btnbtnDecreaseSpeed.onClick.AddListener(delegate { gameManager.DecreaseGameSpeed(); });
@@ -64,6 +65,7 @@ public class ButtonManager: IButtonManager, IInitializable {
         btnDemolish.onClick.AddListener(delegate { buildManager.EnterDemolishMode(); });
         btnToggleWaveReport.onClick.AddListener(delegate { waveReportPanel.ToggleWaveReport(); });
         btnCloseWaveReport.onClick.AddListener(delegate { waveReportPanel.CloseWaveReport(); });
+        btnEndWave.onClick.AddListener(delegate { waveManager.EndActiveWaves(); });
     }
 
     public void EnterBuildMode(StructureData structure) {

@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour, IUnit {
         }
     }
 
-    private void Despawn() {
+    public void Despawn() {
         if (TargetDisabled != null) {
             TargetDisabled.Invoke(this, EventArgs.Empty);
         }
