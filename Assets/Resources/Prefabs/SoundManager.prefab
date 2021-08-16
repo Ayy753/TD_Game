@@ -53,7 +53,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 25eeefaa897f06044a4b078bb189c80f, type: 3}
     - {fileID: 8300000, guid: 68f96415f58052345b7b767876121cbf, type: 3}
     soundType: 5
-    volume: 0.712
+    volume: 1
     pitch: 0.3
   - soundVarients:
     - {fileID: 8300000, guid: 506228cbc7bc4734e878e7e4b9e8897d, type: 3}
@@ -67,10 +67,10 @@ MonoBehaviour:
     - {fileID: 8300000, guid: d2fad9738e94dc041bba2cc929e1043b, type: 3}
     - {fileID: 8300000, guid: eb9d0f5940c28a74bb5a42f3491b82fb, type: 3}
     soundType: 0
-    volume: 0.712
+    volume: 0.7
     pitch: 0.3
   - soundVarients:
     - {fileID: 8300000, guid: e71b00a1b49ff2e4f8d0b04f01b214f3, type: 3}
     soundType: 8
-    volume: 0.712
+    volume: 0.1
     pitch: 0.3

@@ -51,7 +51,9 @@ public class SoundManager : MonoBehaviour {
         audioSource.pitch = sound.pitch;
         audioSource.clip = sound.GetRandomAudioClip();
         audioSource.spatialBlend = 1f;
-        audioSource.maxDistance = 50f;
+        audioSource.minDistance = 5;
+        audioSource.maxDistance = 60f;
+        audioSource.rolloffMode = AudioRolloffMode.Linear;
         audioSource.Play();
 
         Destroy(soundGameObject, audioSource.clip.length);
