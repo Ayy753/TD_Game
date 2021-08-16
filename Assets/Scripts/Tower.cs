@@ -1,12 +1,10 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using Zenject;
 
 public class Tower : MonoBehaviour, Itargetable {
-    [Inject] private ObjectPool objectPool;
-
     private List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
     private float timeSinceLastShot = float.MaxValue;
     private IEffectable target;
@@ -14,6 +12,13 @@ public class Tower : MonoBehaviour, Itargetable {
     private EffectableFinder effectableFinder;
 
     public event EventHandler TargetDisabled;
+    public static event EventHandler<ProjectileFiredEventArgs> OnProjectileFired;
+
+    public class ProjectileFiredEventArgs : EventArgs {
+        public EffectGroup EffectGroup { get; set; }
+        public Vector3 Position { get; set; }
+        public Transform Target { get; set; }
+    }
 
     [field: SerializeField] public TowerData TowerData { get; private set; }
     public TargetMode CurrentTargetMode { get; private set; }
@@ -44,14 +49,10 @@ public class Tower : MonoBehaviour, Itargetable {
         timeSinceLastShot += Time.deltaTime;
 
         if (target != null && timeSinceLastShot >= TowerData.ReloadTime) {
-            //  Ensure turret aligns with projectile when it fires
             FaceTarget(target.GetTransform());
 
-            //soundManager.PlaySound(SoundManager.soundType.arrowRelease);
-
-            //  Fire projectile
-            Projectile projectile = objectPool.CreateProjectile();
-            projectile.Initialize(transform.position, target.GetTransform(), TowerData.EffectGroup);
+            OnProjectileFired?.Invoke(null, new ProjectileFiredEventArgs { 
+                EffectGroup = TowerData.EffectGroup, Position = transform.position, Target = target.GetTransform() });
 
             timeSinceLastShot = 0;
         }

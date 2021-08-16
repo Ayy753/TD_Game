@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-public class ObjectPool : IInitializable{
+using System;
+public class ObjectPool : IInitializable, IDisposable{
     EffectParserJSON effectParser;
 
     private readonly DiContainer _container;
@@ -39,6 +40,12 @@ public class ObjectPool : IInitializable{
         //  Scene hierarchy container for new enemies
         enemyContainer = new GameObject("Enemy Container");
         projectileContainer = new GameObject("Projectile Container");
+
+        Tower.OnProjectileFired += Tower_OnProjectileFired;
+    }
+
+    public void Dispose() {
+        Tower.OnProjectileFired -= Tower_OnProjectileFired;
     }
 
     private void InitializeEnemies() {
@@ -98,6 +105,11 @@ public class ObjectPool : IInitializable{
             EffectGroup effectGroup = effectParser.GetEffectGroup(towerData.ProjectileName);
             towerData.SetEffectGroup(effectGroup);
         }
+    }
+
+    private void Tower_OnProjectileFired(object sender, Tower.ProjectileFiredEventArgs e) {
+        Projectile projectile = CreateProjectile();
+        projectile.Initialize(e.Position, e.Target, e.EffectGroup);
     }
 
     public Enemy CreateEnemy(EnemyData.EnemyType type) {
