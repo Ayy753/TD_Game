@@ -255,12 +255,14 @@ public class WaveManager : IWaveManager, IInitializable, IDisposable {
     }
 
     public void EndActiveWaves() {
-        StopActiveWaves();
-        ApplyWaveTerminationPenalties();
-        ClearActiveEnemies();
-        ChangeState(IWaveManager.State.Waiting);
+        if (currentState == IWaveManager.State.WaveInProgress) {
+            StopActiveWaves();
+            ApplyWaveTerminationPenalties();
+            ClearActiveEnemies();
+            ChangeState(IWaveManager.State.Waiting);
 
-        //  TODO: make enemies remaining label in wavepanel
+            //  TODO: make enemies remaining label in wavepanel
+        }
     }
 
     private void StopActiveWaves() {

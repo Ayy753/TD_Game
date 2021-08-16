@@ -113,7 +113,6 @@ public class GameManager: IInitializable, IDisposable {
 
     private void LoseLives(int numEnemiesRemaining) {
         Lives -= numEnemiesRemaining;
-
         guiController.UpdateLivesLabel(Lives);
         messageSystem.DisplayMessage($"-{numEnemiesRemaining} lives", Color.red);
         if (Lives <= 0) {
@@ -136,7 +135,9 @@ public class GameManager: IInitializable, IDisposable {
             waveReportPanel.CloseWaveReport();
         }
         else if (arg.newState == IWaveManager.State.Waiting) {
-            waveReportPanel.ShowWaveReport();
+            if (Lives > 0) {
+                waveReportPanel.ShowWaveReport();
+            }
         }
         else if (arg.newState == IWaveManager.State.LastWaveFinished) {
             GameWon();
