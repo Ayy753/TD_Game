@@ -13,11 +13,13 @@ public class SoundManager : MonoBehaviour {
         explosionTiny,
         arrowRelease,
         gainGold,
-        buff
+        buff,
+        gunFire
     }
 
     public void OnEnable() {
         EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
+        Tower.OnProjectileFired += Tower_OnProjectileFired;
     }
 
     private void OnDisable() {
@@ -27,6 +29,10 @@ public class SoundManager : MonoBehaviour {
     private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
         EffectGroup effectGroup = (EffectGroup)sender;
         PlaySound(effectGroup.SoundType, e.position);
+    }
+
+    private void Tower_OnProjectileFired(object sender, Tower.ProjectileFiredEventArgs e) {
+        PlaySound(SoundType.gunFire, e.Position);
     }
 
     public void PlaySound(SoundType type) {
