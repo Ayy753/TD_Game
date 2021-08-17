@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+namespace DefaultNamespace.EffectSystem {
+    public class Heal : IEffect {
+        public float Potency { get; }
 
-public class Heal : IEffect {
-    public float Potency { get; }
+        public Heal(float potency) {
+            Potency = potency;
+        }
 
-    public Heal(float potency) {
-        Potency = potency;
-    }
-
-    public void Apply(Status status) {
-        status.RestoreHealth(Potency);
+        public void Apply(Status status) {
+            status.RestoreHealth(Potency);
+        }
     }
 }

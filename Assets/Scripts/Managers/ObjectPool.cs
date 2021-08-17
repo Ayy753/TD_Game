@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using System;
+using DefaultNamespace.EffectSystem;
+
 public class ObjectPool : IInitializable, IDisposable{
     EffectParserJSON effectParser;
 

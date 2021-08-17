@@ -1,23 +1,22 @@
-using UnityEngine;
+namespace DefaultNamespace.EffectSystem {
+    public class Damage : IDamage {
+        public float Potency { get; }
+        public DamageType Type { get; private set; }
 
-public class Damage : IDamage {
-    public float Potency { get; }
-    public IDamage.DamageType Type { get; private set; }
+        public Damage(float potency, DamageType damageType) {
+            Potency = potency;
+            Type = damageType;
+        }
 
-    public Damage(float potency, IDamage.DamageType damageType) {
-        Potency = potency;
-        Type = damageType;
-        //Debug.Log("created damage object with potency of " + potency);
-    }
+        public void Apply(Status status) {
+            float effectiveDamage = CalculateEffectiveDamage(status);
+            status.TakeDamage(effectiveDamage);
+        }
 
-    public void Apply(Status status) {
-        float effectiveDamage = CalculateDamage(status);
-        status.TakeDamage(effectiveDamage);
-    }
-
-    public float CalculateDamage(Status unitStatus) {
-        float resistence = unitStatus.GetStat((Status.StatType)Type).Value;
-        float effectiveDamage = (1 - resistence / 100) * Potency;
-        return effectiveDamage;
+        public float CalculateEffectiveDamage(Status effectableStatus) {
+            float resistence = effectableStatus.GetStat((Status.StatType)Type).Value;
+            float effectiveDamage = (1 - resistence / 100) * Potency;
+            return effectiveDamage;
+        }
     }
 }

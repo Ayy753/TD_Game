@@ -1,3 +1,4 @@
+using DefaultNamespace.EffectSystem;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ public class EffectParserJSON : MonoBehaviour {
 
         [JsonProperty("damageType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
-        public IDamage.DamageType DamageType { get; set; }
+        public DamageType DamageType { get; set; }
 
         [JsonProperty("statType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -68,7 +69,7 @@ public class EffectParserJSON : MonoBehaviour {
 
         [JsonProperty("resistType", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
-        public IDamage.DamageType ResistType { get; set; }
+        public DamageType ResistType { get; set; }
     }
 
     /// <summary>
