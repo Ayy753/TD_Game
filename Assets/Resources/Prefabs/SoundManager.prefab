@@ -74,3 +74,13 @@ MonoBehaviour:
     soundType: 8
     volume: 0.1
     pitch: 0.3
+  - soundVarients:
+    - {fileID: 8300000, guid: 1d6668798c8f5814d9e7066af2cb3ba6, type: 3}
+    - {fileID: 8300000, guid: eb72d2ec884e654469d4d95cb776b50c, type: 3}
+    - {fileID: 8300000, guid: af90d7314a714054d9200ad292ed03c4, type: 3}
+    - {fileID: 8300000, guid: e8d9364588335c440a8a155864c6b4f8, type: 3}
+    - {fileID: 8300000, guid: 4562fa7b077e229429c98ba99173dcfd, type: 3}
+    - {fileID: 8300000, guid: ae5fc525b108b02448dbc57478308791, type: 3}
+    soundType: 9
+    volume: 0.8
+    pitch: 0.3
