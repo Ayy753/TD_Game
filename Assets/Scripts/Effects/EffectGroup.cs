@@ -4,6 +4,7 @@ namespace DefaultNamespace.EffectSystem {
     using DefaultNamespace.StatusSystem;
     using System;
     using System.Collections.Generic;
+    using System.Text;
     using UnityEngine;
 
     public class OnEffectUsedEventArgs : EventArgs {
@@ -55,8 +56,8 @@ namespace DefaultNamespace.EffectSystem {
             //  IStatusEffect effects must be cloned
             IEffect[] effects = new IEffect[Effects.Length];
             for (int i = 0; i < Effects.Length; i++) {
-                if (Effects[i] is IStatusEffect) {
-                    effects[i] = ((IStatusEffect)Effects[i]).Clone();
+                if (Effects[i] is IStatusEffect statusEffect) {
+                    effects[i] = statusEffect.Clone();
                 }
                 else {
                     effects[i] = Effects[i];
@@ -66,35 +67,36 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public string GetEffectInfo() {
-            string result = "";
+            StringBuilder result = new StringBuilder();
+
             foreach (IEffect effect in Effects) {
-                if (effect is Damage) {
-                    result += string.Format("Deals {0} {1} damage\n", effect.Potency, ((Damage)effect).Type);
+                if (effect is Damage damage) {
+                    result.Append( string.Format("Deals {0} {1} damage\n", effect.Potency, damage.Type));
                 }
-                else if (effect is DamageOverTime) {
-                    result += string.Format("Deals {0} {1} damage over {2} seconds\n", effect.Potency, ((DamageOverTime)effect).Type, ((DamageOverTime)effect).Duration);
+                else if (effect is DamageOverTime dot) {
+                    result.Append(string.Format("Deals {0} {1} damage over {2} seconds\n", effect.Potency, dot.Type, dot.Duration));
                 }
-                else if (effect is Debuff) {
-                    result += string.Format("Reduces {0} by {1} for {2} seconds\n", ((Debuff)effect).Type, effect.Potency, ((Debuff)effect).Duration);
+                else if (effect is Debuff debuff) {
+                    result.Append(string.Format("Reduces {0} by {1} for {2} seconds\n", debuff.Type, effect.Potency, debuff.Duration));
                 }
-                else if (effect is Buff) {
-                    result += string.Format("Increases {0} by {1} for {2} seconds\n", ((Buff)effect).Type, effect.Potency, ((Buff)effect).Duration);
+                else if (effect is Buff buff) {
+                    result.Append(string.Format("Increases {0} by {1} for {2} seconds\n", buff.Type, effect.Potency, buff.Duration));
                 }
                 else if (effect is Heal) {
-                    result += string.Format("Restores {0} HP\n", effect.Potency);
+                    result.Append(string.Format("Restores {0} HP\n", effect.Potency));
                 }
             }
-            return result;
+            return result.ToString();
         }
 
         public float GetTotalDamage() {
             float total = 0;
             foreach (IEffect effect in Effects) {
-                if (effect is Damage) {
-                    total += ((Damage)effect).Potency;
+                if (effect is Damage damage) {
+                    total += damage.Potency;
                 }
-                else if (effect is DamageOverTime) {
-                    total += ((DamageOverTime)effect).Potency;
+                else if (effect is DamageOverTime dot) {
+                    total += dot.Potency;
                 }
             }
             return total;
