@@ -18,9 +18,8 @@ namespace DefaultNamespace {
             EffectGroup.OnEffectUsed -= EffectGroup_OnEffectUsed;
         }
 
-        private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
-            EffectGroup effectGroup = (EffectGroup)sender;
-            TryToSpawnParticleEffectAtPosition(effectGroup.ParticleName, effectGroup.Radius, e.position);
+        private void EffectGroup_OnEffectUsed(object sender, OnEffectUsedEventArgs e) {
+            TryToSpawnParticleEffectAtPosition(e.ParticleName, e.Radius, e.Position);
         }
 
         private void InitializeParticleDictionaies() {

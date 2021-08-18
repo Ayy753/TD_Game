@@ -6,6 +6,20 @@ namespace DefaultNamespace.EffectSystem {
     using System.Collections.Generic;
     using UnityEngine;
 
+    public class OnEffectUsedEventArgs : EventArgs {
+        public Vector3 Position { get; private set; }
+        public SoundManager.SoundType SoundType { get; private set; }
+        public float Radius { get; private set; }
+        public string ParticleName { get; set; }
+
+        public OnEffectUsedEventArgs(Vector3 position, SoundManager.SoundType soundType, float radius, string particleName) {
+            Position = position;
+            SoundType = soundType;
+            Radius = radius;
+            ParticleName = particleName;
+        }
+    }
+
     public class EffectGroup : ScriptableObject {
         public string Name { get; private set; }
         public string Description { get; private set; }
@@ -17,11 +31,7 @@ namespace DefaultNamespace.EffectSystem {
         private IEffect[] Effects;
         private EffectableFinder effectableFinder;
 
-        public static event EventHandler<OnEffectUsedEventArg> OnEffectUsed;
-
-        public class OnEffectUsedEventArg : EventArgs {
-            public Vector3 position;
-        }
+        public static event EventHandler<OnEffectUsedEventArgs> OnEffectUsed;
 
         public enum TargetType {
             Individual, Area
@@ -92,12 +102,12 @@ namespace DefaultNamespace.EffectSystem {
 
         public void EffectTarget(IEffectable target) {
             ApplyEffects(target);
-            OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = target.GetTransform().position });
+            OnEffectUsed?.Invoke(null, new OnEffectUsedEventArgs(target.GetTransform().position, SoundType, Radius, ParticleName));
         }
 
         public void EffectTarget(IEffectable target, Vector3 impactPosition) {
             ApplyEffects(target);
-            OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = impactPosition });
+            OnEffectUsed?.Invoke(null, new OnEffectUsedEventArgs(impactPosition, SoundType, Radius, ParticleName));
         }
 
         public void EffectArea(Vector3 position) {
@@ -105,7 +115,7 @@ namespace DefaultNamespace.EffectSystem {
                 ApplyEffects(target);
             }
 
-            OnEffectUsed?.Invoke(this, new OnEffectUsedEventArg { position = position });
+            OnEffectUsed?.Invoke(null, new OnEffectUsedEventArgs(position, SoundType, Radius, ParticleName));
         }
 
         private List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {

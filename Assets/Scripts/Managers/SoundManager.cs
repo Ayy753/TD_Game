@@ -27,9 +27,8 @@ namespace DefaultNamespace.SoundSystem {
             EffectGroup.OnEffectUsed -= EffectGroup_OnEffectUsed;
         }
 
-        private void EffectGroup_OnEffectUsed(object sender, EffectGroup.OnEffectUsedEventArg e) {
-            EffectGroup effectGroup = (EffectGroup)sender;
-            PlaySound(effectGroup.SoundType, e.position);
+        private void EffectGroup_OnEffectUsed(object sender, OnEffectUsedEventArgs e) {
+            PlaySound(e.SoundType, e.Position);
         }
 
         private void Tower_OnProjectileFired(object sender, Tower.ProjectileFiredEventArgs e) {
