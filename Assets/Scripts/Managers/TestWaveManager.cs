@@ -1,38 +1,40 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace {
 
-public class TestWaveManager : IWaveManager, IInitializable {
-    private IMessageSystem messageSystem;
-    private IGUIManager guiManager;
+    using DefaultNamespace.GUI;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using Zenject;
 
-    public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
-    public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
+    public class TestWaveManager : IWaveManager, IInitializable {
+        private IMessageSystem messageSystem;
+        private IGUIManager guiManager;
 
-    public int NumberOfWaves { get; private set; }
+        public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
+        public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
 
-    public TestWaveManager(IMessageSystem messageSystem, IGUIManager guiManager) {
-        this.messageSystem = messageSystem;
-        this.guiManager = guiManager;
-    }
+        public int NumberOfWaves { get; private set; }
 
-    public void Initialize() {
-        guiManager.UpdateWaveNumber(0, 0);
-        guiManager.UpdateWaveCountdown(0);
-    }
+        public TestWaveManager(IMessageSystem messageSystem, IGUIManager guiManager) {
+            this.messageSystem = messageSystem;
+            this.guiManager = guiManager;
+        }
 
-    public void StartNextWave() {
-        messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
-    }
+        public void Initialize() {
+            guiManager.UpdateWaveNumber(0, 0);
+            guiManager.UpdateWaveCountdown(0);
+        }
 
-    public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
-        Debug.LogWarning("There are no waves in this test environment");
-        return null;
-    }
+        public void StartNextWave() {
+            messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
+        }
 
-    public void EndActiveWaves() {
-        messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
+        public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
+            Debug.LogWarning("There are no waves in this test environment");
+            return null;
+        }
+
+        public void EndActiveWaves() {
+            messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
+        }
     }
 }

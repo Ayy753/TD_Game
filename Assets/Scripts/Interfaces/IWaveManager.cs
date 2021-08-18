@@ -1,34 +1,37 @@
-using System;
-using System.Collections.Generic;
+namespace DefaultNamespace {
 
-public interface IWaveManager {
-    public delegate void WaveStateChangedEventHandler(object sender, WaveStateChangedEventArgs args);
-    public event WaveStateChangedEventHandler OnWaveStateChanged;
+    using System;
+    using System.Collections.Generic;
 
-    public delegate void PlayerEndedWaveEventHandler(object sender, PlayerEndedWaveEventArgs args);
-    public event PlayerEndedWaveEventHandler OnPlayerEndedWave;
+    public interface IWaveManager {
+        public delegate void WaveStateChangedEventHandler(object sender, WaveStateChangedEventArgs args);
+        public event WaveStateChangedEventHandler OnWaveStateChanged;
 
-    public enum State {
-        Waiting,
-        WaveInProgress,
-        LastWaveFinished
+        public delegate void PlayerEndedWaveEventHandler(object sender, PlayerEndedWaveEventArgs args);
+        public event PlayerEndedWaveEventHandler OnPlayerEndedWave;
+
+        public enum State {
+            Waiting,
+            WaveInProgress,
+            LastWaveFinished
+        }
+
+        public int NumberOfWaves { get; }
+        public void StartNextWave();
+        public void EndActiveWaves();
+
+        public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo();
     }
 
-    public int NumberOfWaves { get; }
-    public void StartNextWave();
-    public void EndActiveWaves();
+    public class WaveStateChangedEventArgs : EventArgs {
+        public IWaveManager.State newState;
 
-    public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo();
-}
-
-public class WaveStateChangedEventArgs : EventArgs {
-    public IWaveManager.State newState;
-
-    public WaveStateChangedEventArgs(IWaveManager.State newState) {
-        this.newState = newState;
+        public WaveStateChangedEventArgs(IWaveManager.State newState) {
+            this.newState = newState;
+        }
     }
-}
 
-public class PlayerEndedWaveEventArgs : EventArgs {
-    public int NumEnemiesRemaining { get; set; }
+    public class PlayerEndedWaveEventArgs : EventArgs {
+        public int NumEnemiesRemaining { get; set; }
+    }
 }

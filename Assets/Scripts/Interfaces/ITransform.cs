@@ -1,5 +1,8 @@
-using UnityEngine;
+namespace DefaultNamespace {
 
-public interface ITransform{
-    public Transform GetTransform();
+    using UnityEngine;
+
+    public interface ITransform {
+        public Transform GetTransform();
+    }
 }

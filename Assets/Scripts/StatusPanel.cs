@@ -1,103 +1,106 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace.GUI {
 
-public class StatusPanel : IInitializable {
-    GameObject pnlStausPanel;
-    TMP_Text txtName, txtCurrentHealth, txtMaxHealth, txtArmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist, txtUnitDescription;
-    HealthBar healthBar;
+    using DefaultNamespace;
+    using DefaultNamespace.StatusSystem;
+    using System;
+    using TMPro;
+    using UnityEngine;
+    using Zenject;
 
-    private Status targetStatus;
-    private IUnit targetUnit;
+    public class StatusPanel : IInitializable {
+        GameObject pnlStausPanel;
+        TMP_Text txtName, txtCurrentHealth, txtMaxHealth, txtArmor, txtFireResist, txtColdResist, txtSpeed, txtPoisonResist, txtLightningResist, txtUnitDescription;
+        HealthBar healthBar;
 
-    public void Initialize() {
-        Debug.Log("initializing status panel");
+        private Status targetStatus;
+        private IUnit targetUnit;
 
-        pnlStausPanel = GameObject.Find("pnlStatus");
+        public void Initialize() {
+            Debug.Log("initializing status panel");
 
-        txtName = GameObject.Find("txtStatusName").GetComponent<TMP_Text>();
-        txtCurrentHealth = GameObject.Find("txtHealthCurrentVal").GetComponent<TMP_Text>();
-        txtMaxHealth = GameObject.Find("txtHealthMaxVal").GetComponent<TMP_Text>();
-        txtArmor = GameObject.Find("txtArmorVal").GetComponent<TMP_Text>();
-        txtFireResist = GameObject.Find("txtFireResistVal").GetComponent<TMP_Text>();
-        txtColdResist = GameObject.Find("txtColdResistVal").GetComponent<TMP_Text>();
-        txtSpeed = GameObject.Find("txtSpeedVal").GetComponent<TMP_Text>();
-        txtPoisonResist = GameObject.Find("txtPoisonResistVal").GetComponent<TMP_Text>();
-        txtLightningResist = GameObject.Find("txtLightningResistVal").GetComponent<TMP_Text>();
-        txtUnitDescription = GameObject.Find("txtUnitDescription").GetComponent<TMP_Text>();
+            pnlStausPanel = GameObject.Find("pnlStatus");
 
-        healthBar = GameObject.Find("pnlStatus").GetComponentInChildren<HealthBar>();
+            txtName = GameObject.Find("txtStatusName").GetComponent<TMP_Text>();
+            txtCurrentHealth = GameObject.Find("txtHealthCurrentVal").GetComponent<TMP_Text>();
+            txtMaxHealth = GameObject.Find("txtHealthMaxVal").GetComponent<TMP_Text>();
+            txtArmor = GameObject.Find("txtArmorVal").GetComponent<TMP_Text>();
+            txtFireResist = GameObject.Find("txtFireResistVal").GetComponent<TMP_Text>();
+            txtColdResist = GameObject.Find("txtColdResistVal").GetComponent<TMP_Text>();
+            txtSpeed = GameObject.Find("txtSpeedVal").GetComponent<TMP_Text>();
+            txtPoisonResist = GameObject.Find("txtPoisonResistVal").GetComponent<TMP_Text>();
+            txtLightningResist = GameObject.Find("txtLightningResistVal").GetComponent<TMP_Text>();
+            txtUnitDescription = GameObject.Find("txtUnitDescription").GetComponent<TMP_Text>();
 
-        pnlStausPanel.SetActive(false);
-    }
+            healthBar = GameObject.Find("pnlStatus").GetComponentInChildren<HealthBar>();
 
-    private void PopulateStatusPanel() {
-        txtName.text = targetUnit.GetName();
-        txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
-        txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
-        txtArmor.text = targetStatus.Armor.Value.ToString();
-        txtFireResist.text = targetStatus.FireResist.Value.ToString();
-        txtColdResist.text = targetStatus.ColdResist.Value.ToString();
-        txtSpeed.text = targetStatus.Speed.Value.ToString();
-        txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
-        txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
-        txtUnitDescription.text = targetUnit.GetDescription();
-    }
-
-    private void UpdateStatusPanel(Status.StatType statType) {
-        switch (statType) {
-            case Status.StatType.Armor:
-                txtArmor.text = targetStatus.Armor.Value.ToString();
-                break;
-            case Status.StatType.ColdResist:
-                txtColdResist.text = targetStatus.ColdResist.Value.ToString();
-                break;
-            case Status.StatType.FireResist:
-                txtFireResist.text = targetStatus.FireResist.Value.ToString();
-                break;
-            case Status.StatType.PoisonResist:
-                txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
-                break;
-            case Status.StatType.LightningResist:
-                txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
-                break;
-            case Status.StatType.Health:
-                txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
-                txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
-                break;
-            case Status.StatType.Speed:
-                txtSpeed.text = targetStatus.Speed.Value.ToString();
-                break;
-        }
-    }
-
-    public void TargetUnit(IUnit unit) {
-        //  If a unit is already targetted, untarget it first
-        if (targetStatus != null) {
-            ClearTarget();
+            pnlStausPanel.SetActive(false);
         }
 
-        pnlStausPanel.SetActive(true);
-
-        targetUnit = unit;
-        targetStatus = unit.GetStatus();
-        healthBar.Initialize(targetStatus);
-        PopulateStatusPanel();
-
-        targetStatus.OnStatusChanged += UpdateStatusPanel;
-        targetStatus.OnStatusCleared += ClearTarget;
-    }
-
-    public void ClearTarget() {
-        if (targetStatus != null) {
-            targetStatus.OnStatusChanged -= UpdateStatusPanel;
-            targetStatus.OnStatusCleared -= ClearTarget;
-            targetStatus = null;
+        private void PopulateStatusPanel() {
+            txtName.text = targetUnit.GetName();
+            txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
+            txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
+            txtArmor.text = targetStatus.Armor.Value.ToString();
+            txtFireResist.text = targetStatus.FireResist.Value.ToString();
+            txtColdResist.text = targetStatus.ColdResist.Value.ToString();
+            txtSpeed.text = targetStatus.Speed.Value.ToString();
+            txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
+            txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
+            txtUnitDescription.text = targetUnit.GetDescription();
         }
 
-        pnlStausPanel.SetActive(false);
+        private void UpdateStatusPanel(StatType statType) {
+            switch (statType) {
+                case StatType.Armor:
+                    txtArmor.text = targetStatus.Armor.Value.ToString();
+                    break;
+                case StatType.ColdResist:
+                    txtColdResist.text = targetStatus.ColdResist.Value.ToString();
+                    break;
+                case StatType.FireResist:
+                    txtFireResist.text = targetStatus.FireResist.Value.ToString();
+                    break;
+                case StatType.PoisonResist:
+                    txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
+                    break;
+                case StatType.LightningResist:
+                    txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
+                    break;
+                case StatType.Health:
+                    txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
+                    txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
+                    break;
+                case StatType.Speed:
+                    txtSpeed.text = targetStatus.Speed.Value.ToString();
+                    break;
+            }
+        }
+
+        public void TargetUnit(IUnit unit) {
+            //  If a unit is already targetted, untarget it first
+            if (targetStatus != null) {
+                ClearTarget();
+            }
+
+            pnlStausPanel.SetActive(true);
+
+            targetUnit = unit;
+            targetStatus = unit.GetStatus();
+            healthBar.Initialize(targetStatus);
+            PopulateStatusPanel();
+
+            targetStatus.OnStatusChanged += UpdateStatusPanel;
+            targetStatus.OnStatusCleared += ClearTarget;
+        }
+
+        public void ClearTarget() {
+            if (targetStatus != null) {
+                targetStatus.OnStatusChanged -= UpdateStatusPanel;
+                targetStatus.OnStatusCleared -= ClearTarget;
+                targetStatus = null;
+            }
+
+            pnlStausPanel.SetActive(false);
+        }
     }
 }

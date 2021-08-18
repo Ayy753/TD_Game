@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+namespace DefaultNamespace {
 
-public interface IWallet{
-    public bool CanAfford(float amount);
-    public void GainMoney(float amount);
-    public void SpendMoney(float amount);
-    public float GetResellPercentageInDecimal();
+    public interface IWallet {
+        public bool CanAfford(float amount);
+        public void GainMoney(float amount);
+        public void SpendMoney(float amount);
+        public float GetResellPercentageInDecimal();
+    }
 }

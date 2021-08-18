@@ -1,65 +1,69 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+namespace DefaultNamespace {
 
-/// <summary>
-/// Applies positive effects to enemies within range
-/// </summary>
-public class Totem : MonoBehaviour, Itargetable {
-    public float Radius { get { return totemData.EffectGroup.Radius; } }
-    [field: SerializeField] public TotemData totemData { get; private set; }
+    using DefaultNamespace.EffectSystem;
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-    private List<IEffectable> effectableOjbectsInRange;
-    private RadiusRenderer radiusRenderer;
+    /// <summary>
+    /// Applies positive effects to enemies within range
+    /// </summary>
+    public class Totem : MonoBehaviour, Itargetable {
+        public float Radius { get { return totemData.EffectGroup.Radius; } }
+        [field: SerializeField] public TotemData totemData { get; private set; }
 
-    public event EventHandler TargetDisabled;
-    private int numberOfTicksPerCooldown;
-    private int tickCounter;
+        private List<IEffectable> effectableOjbectsInRange;
+        private RadiusRenderer radiusRenderer;
 
-    private void OnEnable() {
-        TickManager.OnTick += HandleTick;
-        numberOfTicksPerCooldown = (int)(totemData.EffectDelay / TickManager.tickFrequency);
-        tickCounter = 0;
-    }
+        public event EventHandler TargetDisabled;
+        private int numberOfTicksPerCooldown;
+        private int tickCounter;
 
-    private void OnDisable() {
-        TickManager.OnTick -= HandleTick;
-    }
-
-    private void HandleTick() {
-        tickCounter++;
-        if (tickCounter == numberOfTicksPerCooldown) {
-            ApplyEffects();
+        private void OnEnable() {
+            TickManager.OnTick += HandleTick;
+            numberOfTicksPerCooldown = (int)(totemData.EffectDelay / TickManager.tickFrequency);
             tickCounter = 0;
         }
-    }
 
-    private void ApplyEffects() {
-        totemData.EffectGroup.EffectArea(transform.position);
-    }
+        private void OnDisable() {
+            TickManager.OnTick -= HandleTick;
+        }
 
-    //  Can't use DI on objects created at runtime
-    public void Initialize(RadiusRenderer radiusRenderer) {
-        this.radiusRenderer = radiusRenderer;
-    }
+        private void HandleTick() {
+            tickCounter++;
+            if (tickCounter == numberOfTicksPerCooldown) {
+                ApplyEffects();
+                tickCounter = 0;
+            }
+        }
 
-    void OnMouseOver() {
-        radiusRenderer.RenderRadius(transform.position, Radius);
-    }
+        private void ApplyEffects() {
+            totemData.EffectGroup.EffectArea(transform.position);
+        }
 
-    void OnMouseExit() {
-        radiusRenderer.HideRadius();
-    }
+        //  Can't use DI on objects created at runtime
+        public void Initialize(RadiusRenderer radiusRenderer) {
+            this.radiusRenderer = radiusRenderer;
+        }
 
-    public Transform GetTransform() {
-        return transform;
-    }
+        void OnMouseOver() {
+            radiusRenderer.RenderRadius(transform.position, Radius);
+        }
 
-    public string GetName() {
-        return totemData.Name;
-    }
+        void OnMouseExit() {
+            radiusRenderer.HideRadius();
+        }
 
-    public string GetDescription() {
-        return totemData.ToString();
+        public Transform GetTransform() {
+            return transform;
+        }
+
+        public string GetName() {
+            return totemData.Name;
+        }
+
+        public string GetDescription() {
+            return totemData.ToString();
+        }
     }
 }

@@ -1,12 +1,15 @@
-using System;
+namespace DefaultNamespace {
 
-public interface Itargetable : ITransform{
+    using System;
 
-    /// <summary>
-    /// Fires when target is destroyed
-    /// </summary>
-    public event EventHandler TargetDisabled;
+    public interface Itargetable : ITransform {
 
-    public string GetName();
-    public string GetDescription();
+        /// <summary>
+        /// Fires when target is destroyed
+        /// </summary>
+        public event EventHandler TargetDisabled;
+
+        public string GetName();
+        public string GetDescription();
+    }
 }

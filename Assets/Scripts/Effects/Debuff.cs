@@ -1,15 +1,16 @@
 namespace DefaultNamespace.EffectSystem {
+    using DefaultNamespace.StatusSystem;
     using UnityEngine;
-    
+
     public class Debuff : IStatusEffect, IStatMod {
         public float Duration { get; private set; }
         public float Potency { get; private set; }
-        public Status.StatType Type { get; private set; }
+        public StatType Type { get; private set; }
         public int RemainingTicks { get; private set; }
         public DamageType ResistType { get; private set; }
         private Status unitStatus;
 
-        public Debuff(float potency, float duration, Status.StatType statType, DamageType resistType) {
+        public Debuff(float potency, float duration, StatType statType, DamageType resistType) {
             Potency = potency;
             Type = statType;
             Duration = duration;
@@ -19,7 +20,7 @@ namespace DefaultNamespace.EffectSystem {
         public void Apply(Status status) {
             unitStatus = status;
 
-            float resistence = unitStatus.GetStat((Status.StatType)ResistType).Value;
+            float resistence = unitStatus.GetStat((StatType)ResistType).Value;
             float effectiveness = (1 - resistence / 100);
 
             if (effectiveness < 0) {

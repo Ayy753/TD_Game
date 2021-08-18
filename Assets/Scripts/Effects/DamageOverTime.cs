@@ -1,4 +1,6 @@
 namespace DefaultNamespace.EffectSystem {
+
+    using DefaultNamespace.StatusSystem;
     using UnityEngine;
 
     public class DamageOverTime : IStatusEffect, IDamage {
@@ -23,7 +25,7 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public float CalculateEffectiveDamage(Status effectableStatus) {
-            float resistence = unitStatus.GetStat((Status.StatType)Type).Value;
+            float resistence = unitStatus.GetStat((StatType)Type).Value;
             float effectiveDamage = (1 - resistence / 100) * Potency;
             float damagerPerTick = effectiveDamage / (Duration * (1 / TickManager.tickFrequency));
 

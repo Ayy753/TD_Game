@@ -1,15 +1,16 @@
 namespace DefaultNamespace.EffectSystem {
+    using DefaultNamespace.StatusSystem;
     using UnityEngine;
 
     public class Buff : IStatusEffect, IStatMod {
         public float Duration { get; private set; }
         public float Potency { get; }
-        public Status.StatType Type { get; private set; }
+        public StatType Type { get; private set; }
         public int RemainingTicks { get; private set; }
 
         private Status unitStatus;
 
-        public Buff(float potency, float duration, Status.StatType statType) {
+        public Buff(float potency, float duration, StatType statType) {
             Potency = potency;
             Type = statType;
             Duration = duration;

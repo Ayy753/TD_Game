@@ -1,67 +1,70 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace {
 
-public class PreviewPathRenderer : MonoBehaviour, IPathRenderer {
-    [Inject] BuildManager buildManager;
-    [Inject] IBuildValidator buildValidator;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using Zenject;
 
-    IPathfinder pathFinder;
-    private LineRenderer line;
-    private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
+    public class PreviewPathRenderer : MonoBehaviour, IPathRenderer {
+        [Inject] BuildManager buildManager;
+        [Inject] IBuildValidator buildValidator;
 
-    private void Awake() {
-        pathFinder = GameObject.Find("PathFinder").GetComponent<IPathfinder>();
-        line = GetComponent<LineRenderer>();
-    }
+        IPathfinder pathFinder;
+        private LineRenderer line;
+        private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
 
-    private void OnEnable() {
-        MouseManager.OnHoveredNewTile += HandleNewTileHovered;
-        MouseManager.OnLeftMouseUp += ClearPath;
-        MouseManager.OnRightMouseUp += ClearPath;
-    }
+        private void Awake() {
+            pathFinder = GameObject.Find("PathFinder").GetComponent<IPathfinder>();
+            line = GetComponent<LineRenderer>();
+        }
 
-    private void OnDisable() {
-        MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
-        MouseManager.OnLeftMouseUp -= ClearPath;
-        MouseManager.OnRightMouseUp -= ClearPath;
-    }
+        private void OnEnable() {
+            MouseManager.OnHoveredNewTile += HandleNewTileHovered;
+            MouseManager.OnLeftMouseUp += ClearPath;
+            MouseManager.OnRightMouseUp += ClearPath;
+        }
 
-    private void HandleNewTileHovered(Vector3Int tileCoords) {
-        if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Build) {
-            if (pathFinder.IsOnMainPath(tileCoords) && buildValidator.IsPositionBuildable(tileCoords)) {
-                List<Vector3Int> path = pathFinder.GetBuildPreviewPath(tileCoords);
-                RenderPath(path);
+        private void OnDisable() {
+            MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
+            MouseManager.OnLeftMouseUp -= ClearPath;
+            MouseManager.OnRightMouseUp -= ClearPath;
+        }
+
+        private void HandleNewTileHovered(Vector3Int tileCoords) {
+            if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Build) {
+                if (pathFinder.IsOnMainPath(tileCoords) && buildValidator.IsPositionBuildable(tileCoords)) {
+                    List<Vector3Int> path = pathFinder.GetBuildPreviewPath(tileCoords);
+                    RenderPath(path);
+                }
+                else {
+                    ClearPath();
+                }
             }
-            else {
-                ClearPath();
+            else if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Demolish) {
+                if (buildValidator.IsStructurePresentAndDemolishable(tileCoords)) {
+                    List<Vector3Int> path = pathFinder.GetDemolishPreviewPath(tileCoords);
+                    RenderPath(path);
+                }
+                else {
+                    ClearPath();
+                }
             }
         }
-        else if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Demolish) {
-            if (buildValidator.IsStructurePresentAndDemolishable(tileCoords)) {
-                List<Vector3Int> path = pathFinder.GetDemolishPreviewPath(tileCoords);
-                RenderPath(path);
-            }
-            else {
-                ClearPath();
-            }
-        }
-    }
 
-    public void RenderPath(List<Vector3Int> path) {
-        if (path != null) {
-            line.positionCount = path.Count;
+        public void RenderPath(List<Vector3Int> path) {
+            if (path != null) {
+                line.positionCount = path.Count;
 
-            for (int i = 0; i < path.Count; i++) {
-                line.SetPosition(i, path[i] + tilemapOffset);
+                for (int i = 0; i < path.Count; i++) {
+                    line.SetPosition(i, path[i] + tilemapOffset);
+                }
             }
         }
-    }
 
-    public void ClearPath() {
-        if (line != null) {
-            line.positionCount = 0;
+        public void ClearPath() {
+            if (line != null) {
+                line.positionCount = 0;
+            }
         }
     }
 }

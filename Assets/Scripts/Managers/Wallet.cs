@@ -1,53 +1,57 @@
-using System;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace {
 
-public class Wallet : IWallet, IInitializable, IDisposable {
-    private IGUIManager guiController;
-    private IMessageSystem messageSystem;
+    using DefaultNamespace.GUI;
+    using System;
+    using UnityEngine;
+    using Zenject;
 
-    private float gold;
-    private const float startingGold = 500;
-    public const float resellPercentageInDecimal = 0.66f;
+    public class Wallet : IWallet, IInitializable, IDisposable {
+        private IGUIManager guiController;
+        private IMessageSystem messageSystem;
 
-    public Wallet(IGUIManager guiController, IMessageSystem messageSystem) {
-        this.guiController = guiController;
-        this.messageSystem = messageSystem;
-    }
+        private float gold;
+        private const float startingGold = 500;
+        public const float resellPercentageInDecimal = 0.66f;
 
-    public void Initialize() {
-        GainMoney(startingGold);
-        Enemy.OnEnemyDied += HandleEnemyDied;
-    }
-
-    public void Dispose() {
-        Enemy.OnEnemyDied -= HandleEnemyDied;
-    }
-
-    private void HandleEnemyDied(Enemy enemy) {
-        float value = enemy.GetValue();
-        GainMoney(value);
-        messageSystem.DisplayMessageAt(enemy.transform.position, string.Format("+{0}g", value), Color.yellow);
-    }
-
-    public bool CanAfford(float amount) {
-        if (gold >= amount) {
-            return true;
+        public Wallet(IGUIManager guiController, IMessageSystem messageSystem) {
+            this.guiController = guiController;
+            this.messageSystem = messageSystem;
         }
-        return false;
-    }
 
-    public void GainMoney(float amount) {
-        gold += amount;
-        guiController.UpdateGoldLabel(gold);
-    }
+        public void Initialize() {
+            GainMoney(startingGold);
+            Enemy.OnEnemyDied += HandleEnemyDied;
+        }
 
-    public void SpendMoney(float amount) {
-        gold -= amount;
-        guiController.UpdateGoldLabel(gold);
-    }
+        public void Dispose() {
+            Enemy.OnEnemyDied -= HandleEnemyDied;
+        }
 
-    public float GetResellPercentageInDecimal() {
-        return resellPercentageInDecimal;
+        private void HandleEnemyDied(Enemy enemy) {
+            float value = enemy.GetValue();
+            GainMoney(value);
+            messageSystem.DisplayMessageAt(enemy.transform.position, string.Format("+{0}g", value), Color.yellow);
+        }
+
+        public bool CanAfford(float amount) {
+            if (gold >= amount) {
+                return true;
+            }
+            return false;
+        }
+
+        public void GainMoney(float amount) {
+            gold += amount;
+            guiController.UpdateGoldLabel(gold);
+        }
+
+        public void SpendMoney(float amount) {
+            gold -= amount;
+            guiController.UpdateGoldLabel(gold);
+        }
+
+        public float GetResellPercentageInDecimal() {
+            return resellPercentageInDecimal;
+        }
     }
 }

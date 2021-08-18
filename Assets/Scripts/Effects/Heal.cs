@@ -1,4 +1,7 @@
 namespace DefaultNamespace.EffectSystem {
+    
+    using DefaultNamespace.StatusSystem;
+
     public class Heal : IEffect {
         public float Potency { get; }
 

@@ -1,30 +1,33 @@
-using System;
-using TMPro;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace.GUI {
 
-public class ControlsPanel : IInitializable {
-    InputHandler inputHandler;
-    Transform pnlControls;
-    GameObject controlPanelPrefab;
+    using System;
+    using TMPro;
+    using UnityEngine;
+    using Zenject;
 
-    public ControlsPanel(InputHandler inputHandler) {
-        this.inputHandler = inputHandler;
-    }
+    public class ControlsPanel : IInitializable {
+        InputHandler inputHandler;
+        Transform pnlControls;
+        GameObject controlPanelPrefab;
 
-    public void Initialize() {
-        pnlControls = GameObject.Find("pnlControls").transform;
-        controlPanelPrefab = Resources.Load<GameObject>("Prefabs/pnlControl");
-        GameObject newControlPanel;
-        TMP_Text txtControlName, txtControlHotkey;
+        public ControlsPanel(InputHandler inputHandler) {
+            this.inputHandler = inputHandler;
+        }
 
-        foreach (InputHandler.Command command in Enum.GetValues(typeof(InputHandler.Command))) {
-            newControlPanel = GameObject.Instantiate(controlPanelPrefab);
-            txtControlName = newControlPanel.transform.Find("txtControlName").GetComponent<TMP_Text>();
-            txtControlHotkey = newControlPanel.transform.Find("txtHotkey").GetComponent<TMP_Text>();
-            txtControlName.text = command.ToString();
-            txtControlHotkey.text = inputHandler.GetHotkeyByCommand(command).ToString();
-            newControlPanel.transform.SetParent(pnlControls);
+        public void Initialize() {
+            pnlControls = GameObject.Find("pnlControls").transform;
+            controlPanelPrefab = Resources.Load<GameObject>("Prefabs/pnlControl");
+            GameObject newControlPanel;
+            TMP_Text txtControlName, txtControlHotkey;
+
+            foreach (InputHandler.Command command in Enum.GetValues(typeof(InputHandler.Command))) {
+                newControlPanel = GameObject.Instantiate(controlPanelPrefab);
+                txtControlName = newControlPanel.transform.Find("txtControlName").GetComponent<TMP_Text>();
+                txtControlHotkey = newControlPanel.transform.Find("txtHotkey").GetComponent<TMP_Text>();
+                txtControlName.text = command.ToString();
+                txtControlHotkey.text = inputHandler.GetHotkeyByCommand(command).ToString();
+                newControlPanel.transform.SetParent(pnlControls);
+            }
         }
     }
 }

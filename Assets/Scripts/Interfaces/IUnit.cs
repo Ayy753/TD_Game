@@ -1,13 +1,13 @@
-using System;
-using UnityEngine;
+namespace DefaultNamespace {
 
-public interface IUnit : Itargetable, IEffectable {
-    /// <summary>
-    /// Used by IUnitInput to alert IUnit it reached destination
-    /// </summary>
-    public void ReachedDestination();
+    using DefaultNamespace.EffectSystem;
+    using DefaultNamespace.StatusSystem;
 
-    public void Died();
+    public interface IUnit : Itargetable, IEffectable {
+        public void ReachedDestination();
 
-    public Status GetStatus();
+        public void Died();
+
+        public Status GetStatus();
+    }
 }

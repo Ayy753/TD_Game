@@ -1,27 +1,30 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace {
 
-public class MainPathRenderer : MonoBehaviour, IPathRenderer {
-    [Inject] private IPathfinder pathfinder;
-    private LineRenderer line;
-    private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using Zenject;
 
-    private void Awake() {
-        line = GetComponent<LineRenderer>();
-        pathfinder.PathRecalculated += OnPathRecalculated;
-    }
+    public class MainPathRenderer : MonoBehaviour, IPathRenderer {
+        [Inject] private IPathfinder pathfinder;
+        private LineRenderer line;
+        private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
 
-    private void OnPathRecalculated(object sender, EventArgs e) {
-        RenderPath(pathfinder.GetMainPath());
-    }
+        private void Awake() {
+            line = GetComponent<LineRenderer>();
+            pathfinder.PathRecalculated += OnPathRecalculated;
+        }
 
-    public void RenderPath(List<Vector3Int> path) {
-        line.positionCount = path.Count;
+        private void OnPathRecalculated(object sender, EventArgs e) {
+            RenderPath(pathfinder.GetMainPath());
+        }
 
-        for (int i = 0; i < path.Count; i++) {
-            line.SetPosition(i, path[i] + tilemapOffset);
+        public void RenderPath(List<Vector3Int> path) {
+            line.positionCount = path.Count;
+
+            for (int i = 0; i < path.Count; i++) {
+                line.SetPosition(i, path[i] + tilemapOffset);
+            }
         }
     }
 }

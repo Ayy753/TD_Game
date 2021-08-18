@@ -1,4 +1,6 @@
 namespace DefaultNamespace.EffectSystem {
+    using DefaultNamespace.StatusSystem;
+
     public class Damage : IDamage {
         public float Potency { get; }
         public DamageType Type { get; private set; }
@@ -14,7 +16,7 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public float CalculateEffectiveDamage(Status effectableStatus) {
-            float resistence = effectableStatus.GetStat((Status.StatType)Type).Value;
+            float resistence = effectableStatus.GetStat((StatType)Type).Value;
             float effectiveDamage = (1 - resistence / 100) * Potency;
             return effectiveDamage;
         }

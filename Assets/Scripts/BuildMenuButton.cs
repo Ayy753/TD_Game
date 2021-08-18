@@ -1,33 +1,36 @@
-using System;
-using UnityEngine;
-using UnityEngine.EventSystems;
+namespace DefaultNamespace.GUI {
 
-public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable {
-    private IButtonManager buttonManager;
-    private StructureData structureData;
+    using DefaultNamespace.TilemapSystem;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
 
-    private void Start() {
-        //Debug.Log(structureData.ToString());
-    }
+    public class BuildMenuButton : MonoBehaviour, IPointerClickHandler, IDisplayable {
+        private IButtonManager buttonManager;
+        private StructureData structureData;
 
-    public void OnPointerClick(PointerEventData eventData) {
-        if (structureData != null) {
-            buttonManager.EnterBuildMode(structureData);
+        private void Start() {
+            //Debug.Log(structureData.ToString());
         }
-        else {
-            throw new System.Exception("Build menu button does not have a structure class associated with it");
+
+        public void OnPointerClick(PointerEventData eventData) {
+            if (structureData != null) {
+                buttonManager.EnterBuildMode(structureData);
+            }
+            else {
+                throw new System.Exception("Build menu button does not have a structure class associated with it");
+            }
         }
-    }
 
-    public string GetDisplayText() {
-        return string.Format(structureData.ToString());
-    }
+        public string GetDisplayText() {
+            return string.Format(structureData.ToString());
+        }
 
-    /// <summary>
-    /// Initialize button with the StructureData it represents
-    /// </summary>
-    public void Initialize(StructureData structureData, IButtonManager buttonManager) {
-        this.structureData = structureData;
-        this.buttonManager = buttonManager;
+        /// <summary>
+        /// Initialize button with the StructureData it represents
+        /// </summary>
+        public void Initialize(StructureData structureData, IButtonManager buttonManager) {
+            this.structureData = structureData;
+            this.buttonManager = buttonManager;
+        }
     }
 }

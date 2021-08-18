@@ -1,19 +1,22 @@
-using UnityEngine;
+namespace DefaultNamespace {
 
-public class TickManager : MonoBehaviour {
-    public const float tickFrequency = 1f / 3f;
-    private float accumulatedTime = 0;
+    using UnityEngine;
 
-    public delegate void Tick();
-    public static event Tick OnTick;
+    public class TickManager : MonoBehaviour {
+        public const float tickFrequency = 1f / 3f;
+        private float accumulatedTime = 0;
 
-    private void Update() {
-        accumulatedTime += Time.deltaTime;
-        if (accumulatedTime >= tickFrequency) {
-            if (OnTick != null) {
-                OnTick.Invoke();
+        public delegate void Tick();
+        public static event Tick OnTick;
+
+        private void Update() {
+            accumulatedTime += Time.deltaTime;
+            if (accumulatedTime >= tickFrequency) {
+                if (OnTick != null) {
+                    OnTick.Invoke();
+                }
+                accumulatedTime = 0;
             }
-            accumulatedTime = 0;
         }
     }
 }

@@ -1,65 +1,68 @@
-using DefaultNamespace.EffectSystem;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Tilemaps;
-using Zenject;
+namespace DefaultNamespace {
 
-/// <summary>
-/// Instantiates structure gameobjects based on tilemap placeholders at initalization time
-/// </summary>
-public class PrefabTileInstantiator : IInitializable {
-    private IMapManager mapManager;
-    private EffectParserJSON effectParser;
-    private RadiusRenderer radiusRenderer;
+    using DefaultNamespace.EffectSystem;
+    using DefaultNamespace.IO;
+    using DefaultNamespace.TilemapSystem;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using Zenject;
 
-    private Dictionary<TotemData, GameObject> totemToPrefab;
-    private readonly Vector3 TILEMAP_OFFSET = new Vector3(0.5f, 0.5f, 0);
+    /// <summary>
+    /// Instantiates structure gameobjects based on tilemap placeholders at initalization time
+    /// </summary>
+    public class PrefabTileInstantiator : IInitializable {
+        private IMapManager mapManager;
+        private EffectParserJSON effectParser;
+        private RadiusRenderer radiusRenderer;
 
-    public PrefabTileInstantiator(IMapManager mapManager, EffectParserJSON effectParser, RadiusRenderer radiusRenderer) {
-        this.mapManager = mapManager;
-        this.effectParser = effectParser;
-        this.radiusRenderer = radiusRenderer;
-    }
+        private Dictionary<TotemData, GameObject> totemToPrefab;
+        private readonly Vector3 TILEMAP_OFFSET = new Vector3(0.5f, 0.5f, 0);
 
-    public void Initialize() {
-        totemToPrefab = new Dictionary<TotemData, GameObject>();
-        GameObject[] totemPrefabs = Resources.LoadAll<GameObject>("Prefabs/Totems");
+        public PrefabTileInstantiator(IMapManager mapManager, EffectParserJSON effectParser, RadiusRenderer radiusRenderer) {
+            this.mapManager = mapManager;
+            this.effectParser = effectParser;
+            this.radiusRenderer = radiusRenderer;
+        }
 
-        foreach (GameObject prefab in totemPrefabs) {
-            if (prefab.name != "BaseTotem") {
-                totemToPrefab.Add(prefab.GetComponent<Totem>().totemData, prefab);
+        public void Initialize() {
+            totemToPrefab = new Dictionary<TotemData, GameObject>();
+            GameObject[] totemPrefabs = Resources.LoadAll<GameObject>("Prefabs/Totems");
+
+            foreach (GameObject prefab in totemPrefabs) {
+                if (prefab.name != "BaseTotem") {
+                    totemToPrefab.Add(prefab.GetComponent<Totem>().totemData, prefab);
+                }
+            }
+
+            InitializeTotemData();
+            InstantiateTotems();
+        }
+
+        /// <summary>
+        /// Sets totemdata's effect group from json file
+        /// </summary>
+        private void InitializeTotemData() {
+            foreach (TotemData totemData in totemToPrefab.Keys) {
+                EffectGroup effectGroup = effectParser.GetEffectGroup(totemData.EffectName);
+                totemData.SetEffectGroup(effectGroup);
             }
         }
 
-        InitializeTotemData();
-        InstantiateTotems();
-    }
+        /// <summary>
+        /// Creates totem gameobject for each totem placeholder on tilemap
+        /// </summary>
+        private void InstantiateTotems() {
+            Vector3Int[] tilePositions = mapManager.GetTilePositionsOnLayer(IMapManager.Layer.StructureLayer);
 
-    /// <summary>
-    /// Sets totemdata's effect group from json file
-    /// </summary>
-    private void InitializeTotemData() {
-        foreach (TotemData totemData in totemToPrefab.Keys) {
-            EffectGroup effectGroup = effectParser.GetEffectGroup(totemData.EffectName);
-            totemData.SetEffectGroup(effectGroup);
-        }
-    }
+            foreach (Vector3Int position in tilePositions) {
+                TilemapSystem.TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+                if (tileData is TotemData) {
+                    GameObject gameObject = GameObject.Instantiate(totemToPrefab[(TotemData)tileData]);
+                    Totem totem = gameObject.GetComponent<Totem>();
 
-    /// <summary>
-    /// Creates totem gameobject for each totem placeholder on tilemap
-    /// </summary>
-    private void InstantiateTotems() {
-        Vector3Int[] tilePositions = mapManager.GetTilePositionsOnLayer(IMapManager.Layer.StructureLayer);
-
-        foreach (Vector3Int position in tilePositions) {
-            TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
-            if (tileData is TotemData) {
-                GameObject gameObject = GameObject.Instantiate(totemToPrefab[(TotemData)tileData]);
-                Totem totem = gameObject.GetComponent<Totem>();
-
-                totem.Initialize(radiusRenderer);
-                gameObject.transform.position = position + TILEMAP_OFFSET;
+                    totem.Initialize(radiusRenderer);
+                    gameObject.transform.position = position + TILEMAP_OFFSET;
+                }
             }
         }
     }

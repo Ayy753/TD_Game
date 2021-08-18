@@ -1,4 +1,7 @@
 namespace DefaultNamespace.EffectSystem {
+
+    using DefaultNamespace.StatusSystem;
+
     public interface IEffect {
         /// <summary>
         /// The strength of the effect

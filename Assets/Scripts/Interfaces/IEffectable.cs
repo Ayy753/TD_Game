@@ -1,3 +1,8 @@
-public interface IEffectable : ITransform{
-    public Status GetStatus();
+namespace DefaultNamespace.EffectSystem {
+
+    using DefaultNamespace.StatusSystem;
+
+    public interface IEffectable : ITransform {
+        public Status GetStatus();
+    }
 }

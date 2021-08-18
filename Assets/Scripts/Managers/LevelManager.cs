@@ -1,99 +1,100 @@
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Zenject;
+namespace DefaultNamespace {
 
-/// <summary>
-/// Saves and loads user's level progress
-/// </summary>
-public class LevelManager : IInitializable, IDisposable{
-    List<LevelData> levelData;
-    private string filePath = "LevelData/PlayerProgress";
-    public State CurrentState { get; private set; }
-    public string CurrentLevelName { get; private set; }
-
-    public enum State {
-        InGame,
-        LevelSelection,
-        TestScene
-    }
-
-    public void Initialize() {
-        Debug.Log("starting levelmanager");
-        string sceneName = SceneManager.GetActiveScene().name;
-
-        if (sceneName == "LevelSelect") {
-            LoadLevelData();
-            CurrentState = State.LevelSelection;
-        }
-        else if (sceneName == "Testing Environment") {
-            CurrentState = State.TestScene;
-        }
-        else {
-            CurrentState = State.InGame;
-            LoadLevelData();
-            CurrentLevelName = sceneName;
-        }
-    }
-     
-    public void Dispose() {
-        if (CurrentState == State.InGame) {
-            SaveLevelData();
-        }
-    }
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using UnityEngine;
+    using UnityEngine.SceneManagement;
+    using Zenject;
 
     /// <summary>
-    /// Load player's progress data
+    /// Saves and loads user's level progress
     /// </summary>
-    private void LoadLevelData() {
-        string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
-        levelData = JsonConvert.DeserializeObject<Root>(jsonText).LevelData;
-    }
+    public class LevelManager : IInitializable, IDisposable {
+        List<LevelData> levelData;
+        private string filePath = "LevelData/PlayerProgress";
+        public State CurrentState { get; private set; }
+        public string CurrentLevelName { get; private set; }
 
-    /// <summary>
-    /// Save player's progres data
-    /// </summary>
-    private void SaveLevelData() {
-        Root root = new Root();
-        root.LevelData = levelData;
-        string jsonText = JsonConvert.SerializeObject(root);
-        File.WriteAllText(Application.dataPath + "/Resources/" +  filePath + ".txt", jsonText);
-    }
-
-    /// <summary>
-    /// Sets the level's score
-    /// </summary>
-    /// <param name="level">Level index</param>
-    /// <param name="score">Score between 0 and 5</param>
-    public void SetLevelData(int level, int score) {
-        if (level < levelData.Count && level > 0) {
-            levelData[level].Score = score;
+        public enum State {
+            InGame,
+            LevelSelection,
+            TestScene
         }
-        else {
-            throw new ArgumentOutOfRangeException();
+
+        public void Initialize() {
+            Debug.Log("starting levelmanager");
+            string sceneName = SceneManager.GetActiveScene().name;
+
+            if (sceneName == "LevelSelect") {
+                LoadLevelData();
+                CurrentState = State.LevelSelection;
+            }
+            else if (sceneName == "Testing Environment") {
+                CurrentState = State.TestScene;
+            }
+            else {
+                CurrentState = State.InGame;
+                LoadLevelData();
+                CurrentLevelName = sceneName;
+            }
         }
-    }
 
-    public int GetLevelData(int level) {
-        return levelData[level].Score;
-    }
+        public void Dispose() {
+            if (CurrentState == State.InGame) {
+                SaveLevelData();
+            }
+        }
 
-    public List<LevelData> GetLevelData() {
-        return levelData;
-    }
+        /// <summary>
+        /// Load player's progress data
+        /// </summary>
+        private void LoadLevelData() {
+            string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
+            levelData = JsonConvert.DeserializeObject<Root>(jsonText).LevelData;
+        }
 
-    //  Json objects
-    public class LevelData {
-        public string LevelName { get; set; }
-        public int Score { get; set; }
-    }
+        /// <summary>
+        /// Save player's progres data
+        /// </summary>
+        private void SaveLevelData() {
+            Root root = new Root();
+            root.LevelData = levelData;
+            string jsonText = JsonConvert.SerializeObject(root);
+            File.WriteAllText(Application.dataPath + "/Resources/" + filePath + ".txt", jsonText);
+        }
 
-    public class Root {
-        public List<LevelData> LevelData { get; set; }
+        /// <summary>
+        /// Sets the level's score
+        /// </summary>
+        /// <param name="level">Level index</param>
+        /// <param name="score">Score between 0 and 5</param>
+        public void SetLevelData(int level, int score) {
+            if (level < levelData.Count && level > 0) {
+                levelData[level].Score = score;
+            }
+            else {
+                throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public int GetLevelData(int level) {
+            return levelData[level].Score;
+        }
+
+        public List<LevelData> GetLevelData() {
+            return levelData;
+        }
+
+        //  Json objects
+        public class LevelData {
+            public string LevelName { get; set; }
+            public int Score { get; set; }
+        }
+
+        public class Root {
+            public List<LevelData> LevelData { get; set; }
+        }
     }
 }

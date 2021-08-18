@@ -1,4 +1,7 @@
 namespace DefaultNamespace.EffectSystem {
+
+    using DefaultNamespace.SoundSystem;
+    using DefaultNamespace.StatusSystem;
     using System;
     using System.Collections.Generic;
     using UnityEngine;

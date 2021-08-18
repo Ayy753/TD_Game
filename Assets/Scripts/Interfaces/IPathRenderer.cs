@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
+namespace DefaultNamespace {
 
-public interface IPathRenderer{
-    public void RenderPath(List<Vector3Int> path);
+    using System.Collections.Generic;
+    using UnityEngine;
+
+    public interface IPathRenderer {
+        public void RenderPath(List<Vector3Int> path);
+    }
 }

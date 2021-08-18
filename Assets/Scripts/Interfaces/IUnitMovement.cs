@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+namespace DefaultNamespace {
 
-public interface IUnitMovement {
-    public void Move();
+    public interface IUnitMovement {
+        public void Move();
+    }
 }

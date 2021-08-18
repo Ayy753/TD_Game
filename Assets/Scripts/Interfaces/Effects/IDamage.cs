@@ -1,4 +1,7 @@
 namespace DefaultNamespace.EffectSystem {
+    
+    using DefaultNamespace.StatusSystem;
+
     public enum DamageType {
         Physical, Cold, Fire, Poison, Lightning, Max
     }

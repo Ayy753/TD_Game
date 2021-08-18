@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+namespace DefaultNamespace {
+    
+    using UnityEngine;
 
-public class EnemyIcon : MonoBehaviour, IDisplayable{
-    public EnemyData enemyData { get; set; }
+    public class EnemyIcon : MonoBehaviour, IDisplayable {
+        public EnemyData enemyData { get; set; }
 
-    public string GetDisplayText() {
-        return enemyData.ToString();
+        public string GetDisplayText() {
+            return enemyData.ToString();
+        }
     }
 }
