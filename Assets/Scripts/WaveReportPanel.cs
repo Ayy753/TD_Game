@@ -43,14 +43,9 @@ namespace DefaultNamespace.GUI {
             Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = waveManager.GetCurrentWaveInfo();
             RemoveAllReportRows();
 
-            if (enemyTypeToAmount != null) {
-                foreach (EnemyData.EnemyType enemyType in enemyTypeToAmount.Keys) {
-                    int enemyAmount = enemyTypeToAmount[enemyType];
-                    CreateReportRow(enemyType, enemyAmount);
-                }
-            }
-            else {
-                Debug.Log("collection is null, must be the last wave");
+            foreach (EnemyData.EnemyType enemyType in enemyTypeToAmount.Keys) {
+                int enemyAmount = enemyTypeToAmount[enemyType];
+                CreateReportRow(enemyType, enemyAmount);
             }
         }
 

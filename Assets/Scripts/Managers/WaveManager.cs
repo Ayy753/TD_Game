@@ -6,15 +6,16 @@ namespace DefaultNamespace {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Text;
     using UnityEngine;
     using Zenject;
 
     public class WaveManager : IWaveManager, IInitializable, IDisposable {
-        private EnemySpawner enemySpawner;
-        private AsyncProcessor asyncProcessor;
-        private IMessageSystem messageSystem;
-        private IGUIManager guiController;
-        private LevelManager levelManager;
+        private readonly EnemySpawner enemySpawner;
+        private readonly AsyncProcessor asyncProcessor;
+        private readonly IMessageSystem messageSystem;
+        private readonly IGUIManager guiController;
+        private readonly LevelManager levelManager;
 
         private const string FolderPath = "LevelData/WaveData/";
         private Root LevelData;
@@ -28,7 +29,7 @@ namespace DefaultNamespace {
         private const int timeBetweenWaves = 30;
         private const int timeBeforeFirstWave = 60;
         private Coroutine nextWaveCountDown;
-        private List<Coroutine> waveCoroutines = new List<Coroutine>();
+        private readonly List<Coroutine> waveCoroutines = new List<Coroutine>();
 
         private bool lastWaveFinishedSpawning;
         private bool currentWaveFinishedSpawning;
@@ -79,8 +80,8 @@ namespace DefaultNamespace {
             activeEnemies.Remove(enemy);
             UpdateEnemiesRemainingLabel();
 
-            if (activeEnemies.Count == 0 && currentWaveFinishedSpawning == true) {
-                if (lastWaveFinishedSpawning == false) {
+            if (activeEnemies.Count == 0 && currentWaveFinishedSpawning) {
+                if (!lastWaveFinishedSpawning) {
                     nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
                     ChangeState(IWaveManager.State.Waiting);
                 }
@@ -103,7 +104,7 @@ namespace DefaultNamespace {
             string filePath = FolderPath + levelManager.CurrentLevelName;
             string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
             LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
-            NumberOfWaves = LevelData.waves.Count;
+            NumberOfWaves = LevelData.Waves.Count;
         }
 
 
@@ -129,11 +130,12 @@ namespace DefaultNamespace {
             public int TimebetweenGroups { get; set; }
 
             public override string ToString() {
-                string result = string.Empty;
+                StringBuilder result = new StringBuilder();
+
                 foreach (Group group in Groups) {
-                    result += group.ToString() + "\n";
+                    result.Append(group.ToString() + "\n");
                 }
-                return result;
+                return result.ToString();
             }
         }
 
@@ -141,7 +143,7 @@ namespace DefaultNamespace {
         /// The root of the json file containing the array of waves for this level
         /// </summary>
         public class Root {
-            public List<Wave> waves { get; set; }
+            public List<Wave> Waves { get; set; }
         }
 
         private IEnumerator NextWaveCountDown() {
@@ -172,10 +174,10 @@ namespace DefaultNamespace {
             mostRecentWaveNum++;
             ChangeState(IWaveManager.State.WaveInProgress);
 
-            int numGroups = LevelData.waves[waveNum].Groups.Count;
+            int numGroups = LevelData.Waves[waveNum].Groups.Count;
 
             for (int g = 0; g < numGroups; g++) {
-                Group group = LevelData.waves[waveNum].Groups[g];
+                Group group = LevelData.Waves[waveNum].Groups[g];
 
                 for (int i = 0; i < group.NumEnemies; i++) {
                     Enemy enemy = enemySpawner.SpawnEnemy(group.EnemyType);
@@ -191,7 +193,7 @@ namespace DefaultNamespace {
 
                 //  Don't wait after last group in wave
                 if (g < numGroups - 1) {
-                    yield return new WaitForSeconds(LevelData.waves[waveNum].TimebetweenGroups);
+                    yield return new WaitForSeconds(LevelData.Waves[waveNum].TimebetweenGroups);
                 }
             }
 
@@ -205,10 +207,10 @@ namespace DefaultNamespace {
 
         private int GetTotalEnemyCountInWave(int waveNum) {
             int totalEnemies = 0;
-            int numGroups = LevelData.waves[waveNum].Groups.Count;
+            int numGroups = LevelData.Waves[waveNum].Groups.Count;
 
             for (int g = 0; g < numGroups; g++) {
-                Group group = LevelData.waves[waveNum].Groups[g];
+                Group group = LevelData.Waves[waveNum].Groups[g];
                 totalEnemies += group.NumEnemies;
             }
             Debug.Log($"total enemies this wave: {totalEnemies}");
@@ -303,21 +305,18 @@ namespace DefaultNamespace {
         }
 
         public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
-            if (mostRecentWaveNum == NumberOfWaves) {
-                return null;
-            }
-
             Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = new Dictionary<EnemyData.EnemyType, int>();
 
-            foreach (Group group in LevelData.waves[mostRecentWaveNum].Groups) {
-                if (enemyTypeToAmount.ContainsKey(group.EnemyType)) {
-                    enemyTypeToAmount[group.EnemyType] += group.NumEnemies;
-                }
-                else {
-                    enemyTypeToAmount.Add(group.EnemyType, group.NumEnemies);
+            if (mostRecentWaveNum < LevelData.Waves.Count) {
+                foreach (Group group in LevelData.Waves[mostRecentWaveNum].Groups) {
+                    if (enemyTypeToAmount.ContainsKey(group.EnemyType)) {
+                        enemyTypeToAmount[group.EnemyType] += group.NumEnemies;
+                    }
+                    else {
+                        enemyTypeToAmount.Add(group.EnemyType, group.NumEnemies);
+                    }
                 }
             }
-
             return enemyTypeToAmount;
         }
     }
