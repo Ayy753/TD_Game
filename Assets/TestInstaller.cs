@@ -4,6 +4,7 @@ namespace DefaultNamespace.Installers {
     using DefaultNamespace.EffectSystem;
     using DefaultNamespace.GUI;
     using DefaultNamespace.IO;
+    using DefaultNamespace.IO.WaveData;
     using DefaultNamespace.TilemapSystem;
     using Zenject;
 
@@ -29,6 +30,7 @@ namespace DefaultNamespace.Installers {
             Container.BindInterfacesAndSelfTo<Wallet>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<MessageSystem>().AsSingle().NonLazy();
             Container.Bind<EffectParserJSON>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            Container.Bind<WaveParser>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TooltipManager>().AsSingle().NonLazy();
             Container.Bind<InputHandler>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PrefabTileInstantiator>().AsSingle().NonLazy();

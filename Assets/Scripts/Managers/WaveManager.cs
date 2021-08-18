@@ -1,12 +1,11 @@
 namespace DefaultNamespace {
 
     using DefaultNamespace.GUI;
+    using DefaultNamespace.IO.WaveData;
     using DefaultNamespace.StatusSystem;
-    using Newtonsoft.Json;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Text;
     using UnityEngine;
     using Zenject;
 
@@ -15,12 +14,11 @@ namespace DefaultNamespace {
         private readonly AsyncProcessor asyncProcessor;
         private readonly IMessageSystem messageSystem;
         private readonly IGUIManager guiController;
-        private readonly LevelManager levelManager;
-
-        private const string FolderPath = "LevelData/WaveData/";
-        private Root LevelData;
+        private readonly WaveParser waveParser;
 
         private List<Enemy> activeEnemies;
+
+        private Root LevelData;
 
         public int NumberOfWaves { get; private set; }
         private int mostRecentWaveNum = 0;
@@ -38,14 +36,13 @@ namespace DefaultNamespace {
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
 
-        public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, IMessageSystem messageSystem, IGUIManager guiController, LevelManager levelManager) {
+        public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, IMessageSystem messageSystem, IGUIManager guiController, WaveParser waveParser) {
             this.enemySpawner = enemySpawner;
             this.asyncProcessor = asyncProcessor;
             this.messageSystem = messageSystem;
             this.guiController = guiController;
-            this.levelManager = levelManager;
+            this.waveParser = waveParser;
         }
-
 
         public void Initialize() {
             Debug.Log("Initializing WaveManager");
@@ -53,8 +50,8 @@ namespace DefaultNamespace {
             Enemy.OnEnemyDied += HandleEnemyDeactivated;
             Enemy.OnEnemyReachedGate += HandleEnemyDeactivated;
 
-
-            LoadWaveData();
+            LevelData = waveParser.LoadWaveData();
+            NumberOfWaves = LevelData.Waves.Count;
 
             nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
             activeEnemies = new List<Enemy>();
@@ -98,52 +95,6 @@ namespace DefaultNamespace {
 
         private int CalculateRemainingEnemiesSoFar() {
             return numUnspawnedEnemiesSoFar + activeEnemies.Count;
-        }
-
-        private void LoadWaveData() {
-            string filePath = FolderPath + levelManager.CurrentLevelName;
-            string jsonText = ((TextAsset)Resources.Load(filePath, typeof(TextAsset))).text;
-            LevelData = JsonConvert.DeserializeObject<Root>(jsonText);
-            NumberOfWaves = LevelData.Waves.Count;
-        }
-
-
-        /// <summary>
-        /// A group of enemies
-        /// </summary>
-        public class Group {
-            public EnemyData.EnemyType EnemyType { get; set; }
-            public int NumEnemies { get; set; }
-            public float TimebetweenSpawns { get; set; }
-
-            public override string ToString() {
-                return string.Format("{0} X{1}",
-                        EnemyType, NumEnemies);
-            }
-        }
-
-        /// <summary>
-        /// A wave containing groups of enemies
-        /// </summary>
-        public class Wave {
-            public List<Group> Groups { get; set; }
-            public int TimebetweenGroups { get; set; }
-
-            public override string ToString() {
-                StringBuilder result = new StringBuilder();
-
-                foreach (Group group in Groups) {
-                    result.Append(group.ToString() + "\n");
-                }
-                return result.ToString();
-            }
-        }
-
-        /// <summary>
-        /// The root of the json file containing the array of waves for this level
-        /// </summary>
-        public class Root {
-            public List<Wave> Waves { get; set; }
         }
 
         private IEnumerator NextWaveCountDown() {
