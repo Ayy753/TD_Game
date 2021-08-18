@@ -49,7 +49,7 @@ namespace DefaultNamespace.IO {
             public ParsedEffect[] Effects { get; set; }
 
             [JsonProperty("sound type")]
-            public SoundManager.SoundType Sound { get; set; }
+            public SoundType Sound { get; set; }
         }
 
         private class ParsedEffect {

@@ -6,7 +6,7 @@ namespace DefaultNamespace.SoundSystem {
     [System.Serializable]
     public class Sound {
         [SerializeField] private List<AudioClip> soundVarients;
-        public SoundManager.SoundType soundType;
+        public SoundType soundType;
         [Range(0f, 1f)]
         public float volume = 0.7f;
         [Range(.3f, 3f)]

@@ -9,11 +9,11 @@ namespace DefaultNamespace.EffectSystem {
 
     public class OnEffectUsedEventArgs : EventArgs {
         public Vector3 Position { get; private set; }
-        public SoundManager.SoundType SoundType { get; private set; }
+        public SoundType SoundType { get; private set; }
         public float Radius { get; private set; }
         public string ParticleName { get; set; }
 
-        public OnEffectUsedEventArgs(Vector3 position, SoundManager.SoundType soundType, float radius, string particleName) {
+        public OnEffectUsedEventArgs(Vector3 position, SoundType soundType, float radius, string particleName) {
             Position = position;
             SoundType = soundType;
             Radius = radius;
@@ -27,7 +27,7 @@ namespace DefaultNamespace.EffectSystem {
         public float Radius { get; private set; }
         public TargetType Type { get; private set; }
         public string ParticleName { get; private set; }
-        public SoundManager.SoundType SoundType { get; private set; }
+        public SoundType SoundType { get; private set; }
 
         private IEffect[] Effects;
         private EffectableFinder effectableFinder;
@@ -42,7 +42,7 @@ namespace DefaultNamespace.EffectSystem {
             effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
         }
 
-        public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundManager.SoundType soundType, float radius) {
+        public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundType soundType, float radius) {
             Name = name;
             Description = description;
             Effects = effects;

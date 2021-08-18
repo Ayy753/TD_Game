@@ -3,20 +3,21 @@ namespace DefaultNamespace.SoundSystem {
     using DefaultNamespace.EffectSystem;
     using UnityEngine;
 
+    public enum SoundType {
+        arrowHitFlesh,
+        arrowHitDirt,
+        arrowHitStone,
+        arrowFire,
+        bluntHit,
+        explosionTiny,
+        arrowRelease,
+        gainGold,
+        buff,
+        gunFire
+    }
+
     public class SoundManager : MonoBehaviour {
         public Sound[] sounds;
-        public enum SoundType {
-            arrowHitFlesh,
-            arrowHitDirt,
-            arrowHitStone,
-            arrowFire,
-            bluntHit,
-            explosionTiny,
-            arrowRelease,
-            gainGold,
-            buff,
-            gunFire
-        }
 
         public void OnEnable() {
             EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
