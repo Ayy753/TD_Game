@@ -6,16 +6,17 @@ namespace DefaultNamespace {
     using UnityEngine.EventSystems;
     using Zenject;
 
+    public enum BuildMode {
+        Build,
+        Demolish,
+        None
+    }
+
     public class StructureChangedEventArgs : EventArgs {
-        public Type ChangeType { get; private set; }
+        public BuildMode ChangeType { get; private set; }
         public Vector3Int Position { get; private set; }
 
-        public enum Type {
-            build,
-            demolish
-        }
-
-        public StructureChangedEventArgs(Type changeType, Vector3Int position) {
+        public StructureChangedEventArgs(BuildMode changeType, Vector3Int position) {
             ChangeType = changeType;
             Position = position;
         }
@@ -38,12 +39,6 @@ namespace DefaultNamespace {
         private Vector3Int lastPositionHovered;
 
         public static event EventHandler<StructureChangedEventArgs> OnStructureChanged;
-
-        public enum BuildMode {
-            Build,
-            Demolish,
-            None
-        }
 
         public BuildManager(IMapManager mapManager, GameManager gameManager, IBuildValidator buildValidator, IMessageSystem messageSystem, IWallet wallet, ObjectPool objectPool, RadiusRenderer radiusRenderer, IWaveManager waveManager) {
             Debug.Log("build manager constructor");
@@ -131,7 +126,7 @@ namespace DefaultNamespace {
             }
 
             mapManager.SetTile(position, structureData);
-            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
         }
 
         private void TryToDemolishAndSellStructureAndDisplayMessages(Vector3Int position) {
@@ -176,7 +171,7 @@ namespace DefaultNamespace {
             }
 
             mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(StructureChangedEventArgs.Type.demolish, position));
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
         }
 
         private void HandleNewTileHovered(Vector3Int position) {

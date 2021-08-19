@@ -31,7 +31,7 @@ namespace DefaultNamespace {
         }
 
         private void HandleNewTileHovered(Vector3Int tileCoords) {
-            if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Build) {
+            if (buildManager.CurrentBuildMode == BuildMode.Build) {
                 if (pathFinder.IsOnMainPath(tileCoords) && buildValidator.IsPositionBuildable(tileCoords)) {
                     List<Vector3Int> path = pathFinder.GetBuildPreviewPath(tileCoords);
                     RenderPath(path);
@@ -40,7 +40,7 @@ namespace DefaultNamespace {
                     ClearPath();
                 }
             }
-            else if (buildManager.CurrentBuildMode == BuildManager.BuildMode.Demolish) {
+            else if (buildManager.CurrentBuildMode == BuildMode.Demolish) {
                 if (buildValidator.IsStructurePresentAndDemolishable(tileCoords)) {
                     List<Vector3Int> path = pathFinder.GetDemolishPreviewPath(tileCoords);
                     RenderPath(path);

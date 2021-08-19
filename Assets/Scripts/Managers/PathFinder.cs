@@ -35,10 +35,10 @@ namespace DefaultNamespace {
         }
 
         private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
-            if (e.ChangeType == StructureChangedEventArgs.Type.build) {
+            if (e.ChangeType == BuildMode.Build) {
                 CalculateMainPath();
             }
-            else if (e.ChangeType == StructureChangedEventArgs.Type.demolish) {
+            else if (e.ChangeType == BuildMode.Demolish) {
                 CalculateMainPath();
             }
         }

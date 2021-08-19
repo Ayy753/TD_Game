@@ -14,7 +14,7 @@ namespace DefaultNamespace {
         private Vector3Int lastHoveredPosition = Vector3Int.down;
         private bool lastSelectedStructureWasTower = false;
         private StructureData structureData;
-        private BuildManager.BuildMode buildMode = BuildManager.BuildMode.None;
+        private BuildMode buildMode = BuildMode.None;
 
         public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, BuildManager buildManager, IWaveManager waveManager) {
             this.mapManager = mapManager;
@@ -52,7 +52,7 @@ namespace DefaultNamespace {
             if (lastHoveredPosition != Vector3Int.down) {
                 UnhoverLastTile();
             }
-            if (buildMode != BuildManager.BuildMode.None) {
+            if (buildMode != BuildMode.None) {
                 lastHoveredPosition = tileCoords;
                 HoverTile(tileCoords);
             }
@@ -75,7 +75,7 @@ namespace DefaultNamespace {
         private void HoverTile(Vector3Int position) {
             Color highlightColor;
 
-            if (buildMode == BuildManager.BuildMode.Build) {
+            if (buildMode == BuildMode.Build) {
                 if (hoverValidator.CanBuildStructureOverPosition(position, structureData))
                     highlightColor = Color.green;
                 else
@@ -90,7 +90,7 @@ namespace DefaultNamespace {
                     mapManager.HighlightTopTile(position, highlightColor);
                 }
             }
-            else if (buildMode == BuildManager.BuildMode.Demolish) {
+            else if (buildMode == BuildMode.Demolish) {
                 if (hoverValidator.IsStructurePresentAndDemolishable(position) == true)
                     highlightColor = Color.green;
                 else
@@ -159,7 +159,7 @@ namespace DefaultNamespace {
                 UnhoverLastTile();
             }
             lastHoveredPosition = Vector3Int.down;
-            buildMode = BuildManager.BuildMode.None;
+            buildMode = BuildMode.None;
         }
 
         public void ChangeTowerTint(Vector3 position, Color color) {
