@@ -30,7 +30,7 @@ namespace DefaultNamespace {
 
         public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
             Debug.LogWarning("There are no waves in this test environment");
-            return null;
+            return new Dictionary<EnemyData.EnemyType, int>();
         }
 
         public void EndActiveWaves() {
