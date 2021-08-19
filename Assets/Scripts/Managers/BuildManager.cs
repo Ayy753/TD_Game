@@ -6,23 +6,38 @@ namespace DefaultNamespace {
     using UnityEngine.EventSystems;
     using Zenject;
 
+    public class StructureChangedEventArgs : EventArgs {
+        public Type ChangeType { get; private set; }
+        public Vector3Int Position { get; private set; }
+
+        public enum Type {
+            build,
+            demolish
+        }
+
+        public StructureChangedEventArgs(Type changeType, Vector3Int position) {
+            ChangeType = changeType;
+            Position = position;
+        }
+    }
+
     public class BuildManager : IInitializable, IDisposable {
+        private readonly IMapManager mapManager;
+        private readonly IBuildValidator buildValidator;
+        private readonly IMessageSystem messageSystem;
+        private readonly IWallet wallet;
+        private readonly IWaveManager waveManager;
+        private readonly GameManager gameManager;
+        private readonly ObjectPool objectPool;
+        private readonly RadiusRenderer radiusRenderer;
+
         public BuildMode CurrentBuildMode { get; private set; } = BuildMode.None;
         public StructureData CurrentlySelectedStructure { get; private set; }
-
-        IMapManager mapManager;
-        IBuildValidator buildValidator;
-        IMessageSystem messageSystem;
-        IWallet wallet;
-        IWaveManager waveManager;
-        GameManager gameManager;
-        ObjectPool objectPool;
-        RadiusRenderer radiusRenderer;
 
         private readonly Vector3 tilemapOffset = new Vector3(0.5f, 0.5f, 0);
         private Vector3Int lastPositionHovered;
 
-        public static EventHandler<StructureChangedEventArgs> StructureChanged;
+        public static event EventHandler<StructureChangedEventArgs> OnStructureChanged;
 
         public enum BuildMode {
             Build,
@@ -57,7 +72,7 @@ namespace DefaultNamespace {
         }
 
         private void HandleLeftMouseUp() {
-            if (HasGameEnded() == false && IsMouseOverGUI() == false) {
+            if (!HasGameEnded() && !IsMouseOverGUI()) {
                 if (CurrentBuildMode == BuildMode.Build) {
                     TryToBuyAndBuildStructureAndDisplayMessages(CurrentlySelectedStructure, lastPositionHovered);
                 }
@@ -79,16 +94,16 @@ namespace DefaultNamespace {
         }
 
         private void HandleRightMouseUp() {
-            if (IsMouseOverGUI() == false) {
+            if (!IsMouseOverGUI()) {
                 ExitBuildOrDemolishMode();
             }
         }
 
         private void TryToBuyAndBuildStructureAndDisplayMessages(StructureData structureData, Vector3Int position) {
-            if (CanAffordStructure(structureData) == false) {
+            if (!CanAffordStructure(structureData)) {
                 messageSystem.DisplayMessage("You cannot afford " + structureData.Cost, Color.red);
             }
-            else if (CanBuildStructureAtPosition(structureData, position) == false) {
+            else if (!CanBuildStructureAtPosition(structureData, position)) {
                 messageSystem.DisplayMessage("You cannot build here", Color.red);
             }
             else {
@@ -111,16 +126,16 @@ namespace DefaultNamespace {
         }
 
         private void BuildStructure(StructureData structureData, Vector3Int position) {
-            if (structureData is TowerData) {
-                InstantiateTowerGameObjectAtPosition((TowerData)structureData, position);
+            if (structureData is TowerData towerData) {
+                InstantiateTowerGameObjectAtPosition(towerData, position);
             }
 
             mapManager.SetTile(position, structureData);
-            StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(StructureChangedEventArgs.Type.build, position));
         }
 
         private void TryToDemolishAndSellStructureAndDisplayMessages(Vector3Int position) {
-            if (IsDemolishableStructureAtPosition(position) == false) {
+            if (!IsDemolishableStructureAtPosition(position)) {
                 messageSystem.DisplayMessage("There is no demolishable structure here", Color.red);
             }
             else {
@@ -161,7 +176,7 @@ namespace DefaultNamespace {
             }
 
             mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
-            StructureChanged.Invoke(this, new StructureChangedEventArgs(StructureChangedEventArgs.Type.demolish, position));
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(StructureChangedEventArgs.Type.demolish, position));
         }
 
         private void HandleNewTileHovered(Vector3Int position) {
@@ -207,8 +222,8 @@ namespace DefaultNamespace {
         private void ShowTowerRadiusAtPosition(Vector3Int position) {
             Vector3 positionWithOffset = position + tilemapOffset;
 
-            if (CurrentBuildMode == BuildMode.Build && CurrentlySelectedStructure is TowerData) {
-                radiusRenderer.RenderRadius(positionWithOffset, ((TowerData)(CurrentlySelectedStructure)).Range);
+            if (CurrentBuildMode == BuildMode.Build && CurrentlySelectedStructure is TowerData towerData) {
+                radiusRenderer.RenderRadius(positionWithOffset, towerData.Range);
             }
             else {
                 radiusRenderer.RenderRadius(positionWithOffset, GetTowerAtPosition(positionWithOffset).TowerData.Range);
@@ -273,21 +288,6 @@ namespace DefaultNamespace {
         public void SellTower(Tower tower) {
             Vector3Int positiion = Vector3Int.FloorToInt(tower.gameObject.transform.position);
             TryToDemolishAndSellStructureAndDisplayMessages(positiion);
-        }
-    }
-
-    public class StructureChangedEventArgs : EventArgs {
-        public Type changeType;
-        public Vector3Int position;
-
-        public StructureChangedEventArgs(Type changeType, Vector3Int position) {
-            this.changeType = changeType;
-            this.position = position;
-        }
-
-        public enum Type {
-            build,
-            demolish
         }
     }
 }

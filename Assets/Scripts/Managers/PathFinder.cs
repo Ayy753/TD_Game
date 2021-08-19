@@ -27,18 +27,18 @@ namespace DefaultNamespace {
                 CalculateMainPath();
             }
 
-            BuildManager.StructureChanged += HandleStructureChanged;
+            BuildManager.OnStructureChanged += HandleStructureChanged;
         }
 
         public void Dispose() {
-            BuildManager.StructureChanged -= HandleStructureChanged;
+            BuildManager.OnStructureChanged -= HandleStructureChanged;
         }
 
         private void HandleStructureChanged(object sender, StructureChangedEventArgs e) {
-            if (e.changeType == StructureChangedEventArgs.Type.build) {
+            if (e.ChangeType == StructureChangedEventArgs.Type.build) {
                 CalculateMainPath();
             }
-            else if (e.changeType == StructureChangedEventArgs.Type.demolish) {
+            else if (e.ChangeType == StructureChangedEventArgs.Type.demolish) {
                 CalculateMainPath();
             }
         }
