@@ -6,14 +6,39 @@ namespace DefaultNamespace {
     using UnityEngine.SceneManagement;
     using Zenject;
 
+    public enum GameState {
+        Running,
+        Paused,
+        GameLost,
+        GameWon,
+        Menu
+    }
+
+    public class OnGameStateChangedEventArgs : EventArgs {
+        public GameState NewState { get; private set; }
+        public float GameSpeed { get; private set; }
+
+        public OnGameStateChangedEventArgs(GameState newState, float gameSpeed) {
+            NewState = newState;
+            GameSpeed = gameSpeed;
+        }
+    }
+
+    public class OnLivesChangedEventArgs : EventArgs {
+        public int CurrentLives { get; private set; }
+
+        public OnLivesChangedEventArgs(int currentLives) {
+            CurrentLives = currentLives;
+        }
+    }
+
     public class GameManager : IInitializable, IDisposable {
-        IGUIManager guiController;
-        IMessageSystem messageSystem;
-        IWaveManager waveManager;
-        WaveReportPanel waveReportPanel;
+        readonly IMessageSystem messageSystem;
+        readonly IWaveManager waveManager;
+        readonly WaveReportPanel waveReportPanel;
 
         public int Lives { get; private set; }
-        public State CurrentState { get; private set; }
+        public GameState CurrentState { get; private set; }
 
         private const int STARTING_LIVES = 25;
         private const float MIN_GAME_SPEED = 1f;
@@ -23,18 +48,13 @@ namespace DefaultNamespace {
 
         private float currentGameSpeed;
 
-        public GameManager(IGUIManager guiController, IMessageSystem messageSystem, IWaveManager waveManager, WaveReportPanel waveReportPanel) {
-            this.guiController = guiController;
+        public static event EventHandler<OnGameStateChangedEventArgs> OnGameStateChanged;
+        public static event EventHandler<OnLivesChangedEventArgs> OnLivesChanged;
+
+        public GameManager(IMessageSystem messageSystem, IWaveManager waveManager, WaveReportPanel waveReportPanel) {
             this.messageSystem = messageSystem;
             this.waveManager = waveManager;
             this.waveReportPanel = waveReportPanel;
-        }
-
-        public enum State {
-            Running,
-            Paused,
-            Ended,
-            Menu
         }
 
         public void Initialize() {
@@ -44,10 +64,9 @@ namespace DefaultNamespace {
             waveManager.OnPlayerEndedWave += WaveManager_OnPlayerEndedWave;
 
             Debug.Log("GameManager initializing");
-            Lives = STARTING_LIVES;
-            guiController.UpdateLivesLabel(Lives);
+            GainLives(STARTING_LIVES);
             currentGameSpeed = MIN_GAME_SPEED;
-            SetState(State.Running);
+            SetState(GameState.Running);
             LimitFramerate();
         }
 
@@ -85,16 +104,21 @@ namespace DefaultNamespace {
         }
 
         private void ToggleMenu() {
-            if (CurrentState != State.Ended) {
-                if (CurrentState == State.Menu) {
-                    SetState(State.Running);
-                    guiController.HideMenu();
+            if (!HasGameEnded()) {
+                if (CurrentState == GameState.Menu) {
+                    SetState(GameState.Running);
                 }
                 else {
-                    SetState(State.Menu);
-                    guiController.ShowMenu();
+                    SetState(GameState.Menu);
                 }
             }
+        }
+
+        private bool HasGameEnded() {
+            if (CurrentState != GameState.GameWon && CurrentState != GameState.GameLost) {
+                return false;
+            }
+            return true;
         }
 
         private void HandleEnemyReachedGate(Enemy enemy) {
@@ -103,33 +127,42 @@ namespace DefaultNamespace {
 
         public void LoseLife() {
             Lives -= 1;
-            guiController.UpdateLivesLabel(Lives);
             messageSystem.DisplayMessage("-1 life", Color.red);
             if (Lives <= 0) {
                 GameLost();
             }
+            OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));
         }
 
-        private void WaveManager_OnPlayerEndedWave(object sender, PlayerEndedWaveEventArgs args) {
-            LoseLives(args.NumEnemiesRemaining);
-        }
-
-        private void LoseLives(int numEnemiesRemaining) {
-            Lives -= numEnemiesRemaining;
-            guiController.UpdateLivesLabel(Lives);
-            messageSystem.DisplayMessage($"-{numEnemiesRemaining} lives", Color.red);
+        public void LoseLives(int numLives) {
+            Lives -= numLives;
+            messageSystem.DisplayMessage($"-{numLives} lives", Color.red);
             if (Lives <= 0) {
                 GameLost();
             }
+            OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));
         }
 
         public void GainLife() {
             Lives += 1;
-            guiController.UpdateLivesLabel(Lives);
             messageSystem.DisplayMessage("+1 life", Color.green);
             if (Lives > 0) {
                 GameContinued();
             }
+            OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));
+        }
+
+        public void GainLives(int numLives) {
+            Lives += numLives;
+            messageSystem.DisplayMessage($"+{numLives} lives", Color.red);
+            if (Lives > 0) {
+                GameContinued();
+            }
+            OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));
+        }
+
+        private void WaveManager_OnPlayerEndedWave(object sender, PlayerEndedWaveEventArgs args) {
+            LoseLives(args.NumEnemiesRemaining);
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
@@ -148,40 +181,32 @@ namespace DefaultNamespace {
         }
 
         private void GameLost() {
-            SetState(State.Ended);
-            guiController.ShowGameOverScreen();
+            SetState(GameState.GameLost);
         }
 
         private void GameWon() {
-            SetState(State.Ended);
-            guiController.ShowGameWonScreen();
+            SetState(GameState.GameWon);
         }
 
         private void GameContinued() {
-            SetState(State.Running);
-            guiController.HideGameEndedPanel();
-
+            SetState(GameState.Running);
         }
 
-        /// <summary>
-        /// Sets timescale based on game state
-        /// </summary>
-        /// <param name="state"></param>
-        private void SetState(State state) {
+        private void SetState(GameState state) {
             switch (state) {
-                case State.Running:
+                case GameState.Running:
                     Time.timeScale = currentGameSpeed;
-                    guiController.UpdateSpeedPanel(currentGameSpeed);
-                    guiController.HidePausePanel();
                     break;
-                case State.Paused:
-                    Time.timeScale = 0;
-                    guiController.ShowPausePanel();
-                    break;
-                case State.Ended:
+                case GameState.Paused:
                     Time.timeScale = 0;
                     break;
-                case State.Menu:
+                case GameState.GameWon:
+                    Time.timeScale = 0;
+                    break;
+                case GameState.GameLost:
+                    Time.timeScale = 0;
+                    break;
+                case GameState.Menu:
                     Time.timeScale = 0;
                     break;
                 default:
@@ -189,6 +214,7 @@ namespace DefaultNamespace {
             }
 
             CurrentState = state;
+            OnGameStateChanged?.Invoke(null, new OnGameStateChangedEventArgs(state, currentGameSpeed));
         }
 
         public void IncreaseGameSpeed() {
@@ -196,7 +222,7 @@ namespace DefaultNamespace {
             if (currentGameSpeed > MAX_GAME_SPEED) {
                 currentGameSpeed = MAX_GAME_SPEED;
             }
-            SetState(State.Running);
+            SetState(GameState.Running);
         }
 
         public void DecreaseGameSpeed() {
@@ -204,12 +230,12 @@ namespace DefaultNamespace {
             if (currentGameSpeed < MIN_GAME_SPEED) {
                 currentGameSpeed = MIN_GAME_SPEED;
             }
-            SetState(State.Running);
+            SetState(GameState.Running);
         }
 
         private void TogglePause() {
-            if (CurrentState != State.Ended && CurrentState != State.Menu) {
-                SetState(CurrentState == State.Paused ? State.Running : State.Paused);
+            if (!HasGameEnded() && CurrentState != GameState.Menu) {
+                SetState(CurrentState == GameState.Paused ? GameState.Running : GameState.Paused);
             }
         }
 

@@ -78,7 +78,7 @@ namespace DefaultNamespace {
         }
 
         private bool HasGameEnded() {
-            if (gameManager.CurrentState == GameManager.State.Ended) {
+            if (gameManager.CurrentState == GameState.GameWon || gameManager.CurrentState == GameState.GameLost) {
                 return true;
             }
             return false;

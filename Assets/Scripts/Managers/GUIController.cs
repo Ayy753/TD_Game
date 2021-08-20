@@ -3,14 +3,15 @@ namespace DefaultNamespace.GUI {
     using UnityEngine;
     using Zenject;
     using TMPro;
+    using System;
 
-    public class GUIController : IGUIManager, IInitializable {
+    public class GUIController : IGUIManager, IInitializable, IDisposable {
         TMP_Text txtLives, txtGold;
         TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown, txtEnemiesRemaining;
         TMP_Text txtGameSpeed, txtFPS;
 
         //  gameEnded panel is the parent for the other two panels
-        GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlBuildMenu, pnlPause;
+        GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlPause;
         GameObject imgBuildMenuLock;
 
         public GUIController() {
@@ -18,6 +19,9 @@ namespace DefaultNamespace.GUI {
         }
 
         public void Initialize() {
+            GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+            GameManager.OnLivesChanged += GameManager_OnLivesChanged;
+
             txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
             txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
 
@@ -25,7 +29,6 @@ namespace DefaultNamespace.GUI {
             pnlGameOver = GameObject.Find("pnlGameOver");
             pnlGameWon = GameObject.Find("pnlGameWon");
             pnlMenu = GameObject.Find("pnlMenu");
-            pnlBuildMenu = GameObject.Find("pnlBuildMenu");
             imgBuildMenuLock = GameObject.Find("imgLock");
             pnlPause = GameObject.Find("pnlPause");
 
@@ -43,6 +46,38 @@ namespace DefaultNamespace.GUI {
             pnlMenu.SetActive(false);
             imgBuildMenuLock.SetActive(false);
             pnlPause.SetActive(false);
+        }
+
+        public void Dispose() {
+            GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+            GameManager.OnLivesChanged -= GameManager_OnLivesChanged;
+        }
+
+        private void GameManager_OnGameStateChanged(object sender, OnGameStateChangedEventArgs e) {
+            switch (e.NewState) {
+                case GameState.Running:
+                    UpdateSpeedPanel(e.GameSpeed);
+                    HidePausePanel();
+                    HideMenu();
+                    HideGameEndedPanel();
+                    break;
+                case GameState.Paused:
+                    ShowPausePanel();
+                    break;
+                case GameState.GameLost:
+                    ShowGameOverScreen();
+                    break;
+                case GameState.GameWon:
+                    ShowGameWonScreen();
+                    break;
+                case GameState.Menu:
+                    ShowMenu();
+                    break;
+            }
+        }
+
+        private void GameManager_OnLivesChanged(object sender, OnLivesChangedEventArgs e) {
+            UpdateLivesLabel(e.CurrentLives);
         }
 
         public void UpdateGoldLabel(float gold) {
