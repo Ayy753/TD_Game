@@ -18,6 +18,7 @@ namespace DefaultNamespace.Installers {
             Container.BindInterfacesAndSelfTo<ObjectPool>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ParticlePool>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TestButtonManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SettingsPanel>().AsSingle();
             Container.BindInterfacesAndSelfTo<GUIController>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
