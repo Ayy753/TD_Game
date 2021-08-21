@@ -23,10 +23,13 @@ namespace DefaultNamespace.SoundSystem {
         public void OnEnable() {
             EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
             Tower.OnProjectileFired += Tower_OnProjectileFired;
+            SettingsPanel.OnVolumeChanged += SettingsPanel_OnVolumeChanged;
         }
 
         private void OnDisable() {
             EffectGroup.OnEffectUsed -= EffectGroup_OnEffectUsed;
+            Tower.OnProjectileFired -= Tower_OnProjectileFired;
+            SettingsPanel.OnVolumeChanged -= SettingsPanel_OnVolumeChanged;
         }
 
         private void EffectGroup_OnEffectUsed(object sender, OnEffectUsedEventArgs e) {
@@ -35,6 +38,14 @@ namespace DefaultNamespace.SoundSystem {
 
         private void Tower_OnProjectileFired(object sender, Tower.ProjectileFiredEventArgs e) {
             PlaySound(SoundType.gunFire, e.Position);
+        }
+
+        private void SettingsPanel_OnVolumeChanged(object sender, VolumeChangedEventArgs e) {
+            SetGlobalVolume(e.NormalizedVolume);
+        }
+
+        private void SetGlobalVolume(float normalizedVolume) {
+            globalVolume = normalizedVolume;
         }
 
         public void PlaySound(SoundType type) {
