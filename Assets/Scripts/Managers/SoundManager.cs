@@ -17,7 +17,8 @@ namespace DefaultNamespace.SoundSystem {
     }
 
     public class SoundManager : MonoBehaviour {
-        public Sound[] sounds;
+        [SerializeField] private Sound[] sounds;
+        private float globalVolume = 1f;
 
         public void OnEnable() {
             EffectGroup.OnEffectUsed += EffectGroup_OnEffectUsed;
@@ -41,8 +42,8 @@ namespace DefaultNamespace.SoundSystem {
             Sound sound = GetSound(type);
 
             AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
-            audioSource.volume = sound.volume;
-            audioSource.pitch = sound.pitch;
+            audioSource.volume = CalculateScaledVolume(sound.Volume);
+            audioSource.pitch = sound.Pitch;
             audioSource.PlayOneShot(sound.GetRandomAudioClip());
 
             Destroy(soundGameObject, audioSource.clip.length);
@@ -54,8 +55,8 @@ namespace DefaultNamespace.SoundSystem {
 
             Sound sound = GetSound(type);
             AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
-            audioSource.volume = sound.volume;
-            audioSource.pitch = sound.pitch;
+            audioSource.volume = CalculateScaledVolume(sound.Volume);
+            audioSource.pitch = sound.Pitch;
             audioSource.clip = sound.GetRandomAudioClip();
             audioSource.spatialBlend = 1f;
             audioSource.minDistance = 5;
@@ -68,12 +69,16 @@ namespace DefaultNamespace.SoundSystem {
 
         private Sound GetSound(SoundType type) {
             foreach (Sound sound in sounds) {
-                if (sound.soundType == type) {
+                if (sound.SoundType == type) {
                     return sound;
                 }
             }
             Debug.LogWarning($"No sound variants assigned for '{type}' in the SoundManager GameObject via inspector");
             return null;
+        }
+
+        private float CalculateScaledVolume(float localVolume) {
+            return localVolume * globalVolume;
         }
     }
 }

@@ -5,12 +5,23 @@ namespace DefaultNamespace.SoundSystem {
 
     [System.Serializable]
     public class Sound {
-        [SerializeField] private List<AudioClip> soundVarients;
-        public SoundType soundType;
+        [SerializeField] 
+        private List<AudioClip> soundVarients;
+        
+        [SerializeField]
         [Range(0f, 1f)]
-        public float volume = 0.7f;
+        private float volume;
+        
+        [SerializeField]
         [Range(.3f, 3f)]
-        public float pitch = .3f;
+        private float pitch;
+
+        [SerializeField]
+        private SoundType soundType;
+
+        public SoundType SoundType { get { return soundType; } }
+        public float Volume { get { return volume; } } 
+        public float Pitch { get { return pitch; } }
 
         public AudioClip GetRandomAudioClip() {
             return soundVarients[Random.Range(0, soundVarients.Count)];
