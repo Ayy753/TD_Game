@@ -44,7 +44,7 @@ namespace DefaultNamespace {
         private const float MIN_GAME_SPEED = 1f;
         private const float MAX_GAME_SPEED = 3f;
         private const float GAME_SPEED_INCREMENT = 1f;
-        private const int TARGET_FRAMERATE = 60;
+        private const int DEFAULT_FRAMERATE = 60;
 
         private float currentGameSpeed;
 
@@ -62,12 +62,13 @@ namespace DefaultNamespace {
             InputHandler.OnCommandEntered += HandlekeyboardInput;
             waveManager.OnWaveStateChanged += HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave += WaveManager_OnPlayerEndedWave;
+            SettingsPanel.OnTargetFpsChanged += SettingsPanel_OnTargetFpsChanged;
 
             Debug.Log("GameManager initializing");
             GainLives(STARTING_LIVES);
             currentGameSpeed = MIN_GAME_SPEED;
             SetState(GameState.Running);
-            LimitFramerate();
+            SetTargetFramerate(DEFAULT_FRAMERATE);
         }
 
         public void Dispose() {
@@ -75,6 +76,7 @@ namespace DefaultNamespace {
             InputHandler.OnCommandEntered -= HandlekeyboardInput;
             waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave -= WaveManager_OnPlayerEndedWave;
+            SettingsPanel.OnTargetFpsChanged -= SettingsPanel_OnTargetFpsChanged;
         }
 
         private void HandlekeyboardInput(InputHandler.Command command) {
@@ -180,6 +182,10 @@ namespace DefaultNamespace {
             }
         }
 
+        private void SettingsPanel_OnTargetFpsChanged(object sender, TargetFpsChangedEventArgs e) {
+            SetTargetFramerate(e.TargetFps);
+        }
+
         private void GameLost() {
             SetState(GameState.GameLost);
         }
@@ -239,9 +245,9 @@ namespace DefaultNamespace {
             }
         }
 
-        private void LimitFramerate() {
+        private void SetTargetFramerate(int framerate) {
             QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = TARGET_FRAMERATE;
+            Application.targetFrameRate = framerate;
         }
 
         public void ExitGame() {
