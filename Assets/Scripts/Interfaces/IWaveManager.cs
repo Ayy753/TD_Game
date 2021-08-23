@@ -25,12 +25,47 @@ namespace DefaultNamespace {
         }
     }
 
+    public class WaveCountdownEventArgs : EventArgs {
+        public int CountDown { get; private set; }
+
+        public WaveCountdownEventArgs(int countDown) {
+            CountDown = countDown;
+        }
+    }
+
+    public class WaveNumberEventArgs : EventArgs {
+        public int CurrentWaveNum { get; private set; }
+        public int MaxWaves { get; private set; }
+
+        public WaveNumberEventArgs(int currentWave, int maxWaves) {
+            CurrentWaveNum = currentWave;
+            MaxWaves = maxWaves;
+        }
+    }
+
+    public class EnemiesRemainingEventArgs : EventArgs {
+        public int EnemiesRemaining { get; private set; }
+
+        public EnemiesRemainingEventArgs(int enemiesRemaining) {
+            EnemiesRemaining = enemiesRemaining;
+        }
+    }
+
     public interface IWaveManager {
         public delegate void WaveStateChangedEventHandler(object sender, WaveStateChangedEventArgs args);
         public event WaveStateChangedEventHandler OnWaveStateChanged;
 
         public delegate void PlayerEndedWaveEventHandler(object sender, PlayerEndedWaveEventArgs args);
         public event PlayerEndedWaveEventHandler OnPlayerEndedWave;
+
+        public delegate void WaveCountDownEventHandler(object sender, WaveCountdownEventArgs args);
+        public event WaveCountDownEventHandler OnCountDownChanged;
+
+        public delegate void WaveNumberEventHandler(object sender, WaveNumberEventArgs args);
+        public event WaveNumberEventHandler OnWaveNumberChanged;
+
+        public delegate void EnemiesRemainingEventHandler(object sender, EnemiesRemainingEventArgs args);
+        public event EnemiesRemainingEventHandler OnEnemiesRemainingChanged;
 
         public int NumberOfWaves { get; }
         public void StartNextWave();

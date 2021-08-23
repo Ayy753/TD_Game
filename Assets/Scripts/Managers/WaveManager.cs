@@ -13,7 +13,6 @@ namespace DefaultNamespace {
         private readonly EnemySpawner enemySpawner;
         private readonly AsyncProcessor asyncProcessor;
         private readonly IMessageSystem messageSystem;
-        private readonly IGUIManager guiController;
         private readonly WaveParser waveParser;
 
         private List<Enemy> activeEnemies;
@@ -35,12 +34,14 @@ namespace DefaultNamespace {
 
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
+        public event IWaveManager.WaveCountDownEventHandler OnCountDownChanged;
+        public event IWaveManager.WaveNumberEventHandler OnWaveNumberChanged;
+        public event IWaveManager.EnemiesRemainingEventHandler OnEnemiesRemainingChanged;
 
-        public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, IMessageSystem messageSystem, IGUIManager guiController, WaveParser waveParser) {
+        public WaveManager(EnemySpawner enemySpawner, AsyncProcessor asyncProcessor, IMessageSystem messageSystem, WaveParser waveParser) {
             this.enemySpawner = enemySpawner;
             this.asyncProcessor = asyncProcessor;
             this.messageSystem = messageSystem;
-            this.guiController = guiController;
             this.waveParser = waveParser;
         }
 
@@ -63,9 +64,9 @@ namespace DefaultNamespace {
 
             messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white, 1f);
 
-            guiController.UpdateWaveCountdown(timeBeforeFirstWave);
-            guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
-            guiController.UpdateEnemiesRemainingLabel(0);
+            OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(timeBeforeFirstWave));
+            OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
+            OnEnemiesRemainingChanged?.Invoke(null, new EnemiesRemainingEventArgs(0));
         }
 
         public void Dispose() {
@@ -90,7 +91,7 @@ namespace DefaultNamespace {
 
         private void UpdateEnemiesRemainingLabel() {
             int enemiesRemaining = CalculateRemainingEnemiesSoFar();
-            guiController.UpdateEnemiesRemainingLabel(enemiesRemaining);
+            OnEnemiesRemainingChanged?.Invoke(null, new EnemiesRemainingEventArgs(enemiesRemaining));
         }
 
         private int CalculateRemainingEnemiesSoFar() {
@@ -113,7 +114,7 @@ namespace DefaultNamespace {
                 }
                 yield return new WaitForSeconds(1f);
                 secondsUntilNextWave--;
-                guiController.UpdateWaveCountdown(secondsUntilNextWave);
+                OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(secondsUntilNextWave));
             }
 
             StartNextWave();
@@ -200,11 +201,10 @@ namespace DefaultNamespace {
         public void StartNextWave() {
             if (mostRecentWaveNum < NumberOfWaves) {
                 asyncProcessor.StopCoroutine(nextWaveCountDown);
-                guiController.UpdateWaveCountdown(0);
+                OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
                 waveCoroutines.Add(asyncProcessor.StartCoroutine(LaunchWave(mostRecentWaveNum)));
                 messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
-                guiController.UpdateWaveNumber(mostRecentWaveNum, NumberOfWaves);
-
+                OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
                 UpdateEnemiesRemainingLabel();
             }
         }

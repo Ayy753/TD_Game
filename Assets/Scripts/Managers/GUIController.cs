@@ -14,9 +14,7 @@ namespace DefaultNamespace.GUI {
     }
 
     public class GUIController : IGUIManager, IInitializable, IDisposable {
-
-        //  TODO: use constructor injection after decoupling wavemanager from GUI 
-        [Inject] private IWaveManager waveManager;
+        private readonly IWaveManager waveManager;
         
         TMP_Text txtLives, txtGold;
         TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown, txtEnemiesRemaining;
@@ -27,14 +25,18 @@ namespace DefaultNamespace.GUI {
 
         private GuiState currentState;
 
-        public GUIController() {
+        public GUIController(IWaveManager waveManager) {
             Debug.Log("GUIController constuctor");
+            this.waveManager = waveManager;
         }
 
         public void Initialize() {
             GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
             GameManager.OnLivesChanged += GameManager_OnLivesChanged;
             waveManager.OnWaveStateChanged += WaveManager_OnWaveStateChanged;
+            waveManager.OnCountDownChanged += WaveManager_OnCountDownChanged;
+            waveManager.OnEnemiesRemainingChanged += WaveManager_OnEnemiesRemainingChanged;
+            waveManager.OnWaveNumberChanged += WaveManager_OnWaveNumberChanged;
             InputHandler.OnCommandEntered += InputHandler_OnCommandEntered;
 
             InitializeLabels();
@@ -47,6 +49,9 @@ namespace DefaultNamespace.GUI {
             GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
             GameManager.OnLivesChanged -= GameManager_OnLivesChanged;
             waveManager.OnWaveStateChanged -= WaveManager_OnWaveStateChanged;
+            waveManager.OnCountDownChanged -= WaveManager_OnCountDownChanged;
+            waveManager.OnEnemiesRemainingChanged -= WaveManager_OnEnemiesRemainingChanged;
+            waveManager.OnWaveNumberChanged -= WaveManager_OnWaveNumberChanged;
             InputHandler.OnCommandEntered -= InputHandler_OnCommandEntered;
         }
 
@@ -133,6 +138,18 @@ namespace DefaultNamespace.GUI {
                         break;
                 }
             }
+        }
+
+        private void WaveManager_OnEnemiesRemainingChanged(object sender, EnemiesRemainingEventArgs args) {
+            UpdateEnemiesRemainingLabel(args.EnemiesRemaining);
+        }
+
+        private void WaveManager_OnWaveNumberChanged(object sender, WaveNumberEventArgs args) {
+            UpdateWaveNumber(args.CurrentWaveNum, args.MaxWaves);
+        }
+
+        private void WaveManager_OnCountDownChanged(object sender, WaveCountdownEventArgs args) {
+            UpdateWaveCountdown(args.CountDown);
         }
 
         private void SetState(GuiState state) {

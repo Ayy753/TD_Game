@@ -11,6 +11,9 @@ namespace DefaultNamespace {
 
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
+        public event IWaveManager.WaveCountDownEventHandler OnCountDownChanged;
+        public event IWaveManager.WaveNumberEventHandler OnWaveNumberChanged;
+        public event IWaveManager.EnemiesRemainingEventHandler OnEnemiesRemainingChanged;
 
         public int NumberOfWaves { get; private set; }
 
