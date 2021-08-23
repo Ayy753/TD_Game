@@ -122,12 +122,12 @@ namespace DefaultNamespace.GUI {
 
         private void WaveManager_OnWaveStateChanged(object sender, WaveStateChangedEventArgs args) {
             if (currentState != GuiState.GameEnded) {
-                switch (args.newState) {
-                    case IWaveManager.State.Waiting:
+                switch (args.NewState) {
+                    case WaveState.Waiting:
                         ShowWaveReportPanel();
                         UnlockBuildMenu();
                         break;
-                    case IWaveManager.State.WaveInProgress:
+                    case WaveState.WaveInProgress:
                         HideWaveReportPanel();
                         LockBuildMenu();
                         break;

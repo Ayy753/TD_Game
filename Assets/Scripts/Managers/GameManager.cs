@@ -142,7 +142,7 @@ namespace DefaultNamespace {
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-            if (arg.newState == IWaveManager.State.LastWaveFinished) {
+            if (arg.NewState == WaveState.LastWaveFinished) {
                 GameWon();
             }
         }

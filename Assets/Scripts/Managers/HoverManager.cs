@@ -36,7 +36,7 @@ namespace DefaultNamespace {
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-            if (arg.newState == IWaveManager.State.WaveInProgress) {
+            if (arg.NewState == WaveState.WaveInProgress) {
                 UnhoverLastTile();
             }
         }

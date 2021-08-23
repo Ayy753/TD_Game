@@ -31,7 +31,7 @@ namespace DefaultNamespace {
 
         private bool lastWaveFinishedSpawning;
         private bool currentWaveFinishedSpawning;
-        private IWaveManager.State currentState;
+        private WaveState currentState;
 
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
@@ -55,7 +55,7 @@ namespace DefaultNamespace {
 
             nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
             activeEnemies = new List<Enemy>();
-            ChangeState(IWaveManager.State.Waiting);
+            ChangeState(WaveState.Waiting);
             lastWaveFinishedSpawning = false;
             currentWaveFinishedSpawning = false;
 
@@ -80,10 +80,10 @@ namespace DefaultNamespace {
             if (activeEnemies.Count == 0 && currentWaveFinishedSpawning) {
                 if (!lastWaveFinishedSpawning) {
                     nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
-                    ChangeState(IWaveManager.State.Waiting);
+                    ChangeState(WaveState.Waiting);
                 }
                 else {
-                    ChangeState(IWaveManager.State.LastWaveFinished);
+                    ChangeState(WaveState.LastWaveFinished);
                 }
             }
         }
@@ -123,7 +123,7 @@ namespace DefaultNamespace {
             currentWaveFinishedSpawning = false;
             numUnspawnedEnemiesSoFar += GetTotalEnemyCountInWave(waveNum);
             mostRecentWaveNum++;
-            ChangeState(IWaveManager.State.WaveInProgress);
+            ChangeState(WaveState.WaveInProgress);
 
             int numGroups = LevelData.Waves[waveNum].Groups.Count;
 
@@ -190,7 +190,7 @@ namespace DefaultNamespace {
             status.ModifyStat(StatType.Health, buffAmount);
         }
 
-        private void ChangeState(IWaveManager.State state) {
+        private void ChangeState(WaveState state) {
             if (OnWaveStateChanged != null) {
                 OnWaveStateChanged.Invoke(this, new WaveStateChangedEventArgs(state));
             }
@@ -210,11 +210,11 @@ namespace DefaultNamespace {
         }
 
         public void EndActiveWaves() {
-            if (currentState == IWaveManager.State.WaveInProgress) {
+            if (currentState == WaveState.WaveInProgress) {
                 StopActiveWaves();
                 ApplyWaveTerminationPenalties();
                 ClearActiveEnemies();
-                ChangeState(IWaveManager.State.Waiting);
+                ChangeState(WaveState.Waiting);
 
                 UpdateEnemiesRemainingLabel();
             }
@@ -229,7 +229,7 @@ namespace DefaultNamespace {
 
         private void ApplyWaveTerminationPenalties() {
             int totalRemainingEnemies = CalculateRemainingEnemiesSoFar();
-            OnPlayerEndedWave?.Invoke(this, new PlayerEndedWaveEventArgs { NumEnemiesRemaining = totalRemainingEnemies });
+            OnPlayerEndedWave?.Invoke(this, new PlayerEndedWaveEventArgs (totalRemainingEnemies));
             numUnspawnedEnemiesSoFar = 0;
         }
 

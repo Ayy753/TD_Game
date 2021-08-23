@@ -244,7 +244,7 @@ namespace DefaultNamespace {
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-            if (arg.newState == IWaveManager.State.WaveInProgress && CurrentBuildMode != BuildMode.None) {
+            if (arg.NewState == WaveState.WaveInProgress && CurrentBuildMode != BuildMode.None) {
                 ExitBuildOrDemolishMode();
             }
         }
