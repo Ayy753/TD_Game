@@ -1,13 +1,11 @@
 namespace DefaultNamespace {
 
-    using DefaultNamespace.GUI;
     using System.Collections.Generic;
     using UnityEngine;
     using Zenject;
 
     public class TestWaveManager : IWaveManager, IInitializable {
-        private IMessageSystem messageSystem;
-        private IGUIManager guiManager;
+        private readonly IMessageSystem messageSystem;
 
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
@@ -17,14 +15,13 @@ namespace DefaultNamespace {
 
         public int NumberOfWaves { get; private set; }
 
-        public TestWaveManager(IMessageSystem messageSystem, IGUIManager guiManager) {
+        public TestWaveManager(IMessageSystem messageSystem) {
             this.messageSystem = messageSystem;
-            this.guiManager = guiManager;
         }
 
         public void Initialize() {
-            guiManager.UpdateWaveNumber(0, 0);
-            guiManager.UpdateWaveCountdown(0);
+            OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(0, 0));
+            OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
         }
 
         public void StartNextWave() {
