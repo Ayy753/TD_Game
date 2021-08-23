@@ -20,6 +20,8 @@ namespace DefaultNamespace.GUI {
         }
 
         public void Initialize() {
+            waveManager.OnWaveStateChanged += WaveManager_OnWaveStateChanged;
+
             Debug.Log("initializing wave report panel");
             pnlWaveReport = GameObject.Find("pnlWaveReport");
             scrollViewContent = GameObject.Find("pnlWaveReport/Scroll View/Viewport/Content");
@@ -35,11 +37,16 @@ namespace DefaultNamespace.GUI {
             //  Generate initial wave report
             GenerateScoutReport();
         }
-
+        
         public void Dispose() {
+            waveManager.OnWaveStateChanged -= WaveManager_OnWaveStateChanged;
         }
 
-        public void GenerateScoutReport() {
+        private void WaveManager_OnWaveStateChanged(object sender, WaveStateChangedEventArgs args) {
+            GenerateScoutReport();
+        }
+
+        private void GenerateScoutReport() {
             Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = waveManager.GetCurrentWaveInfo();
             RemoveAllReportRows();
 
@@ -77,14 +84,6 @@ namespace DefaultNamespace.GUI {
             else {
                 pnlWaveReport.SetActive(true);
             }
-        }
-
-        public void CloseWaveReport() {
-            pnlWaveReport.SetActive(false);
-        }
-
-        public void ShowWaveReport() {
-            pnlWaveReport.SetActive(true);
         }
 
         public bool IsWaveReportOpen() {

@@ -9,14 +9,14 @@ namespace DefaultNamespace.GUI {
         protected BuildManager buildManager;
         protected IWaveManager waveManager;
         protected GameManager gameManager;
-        protected WaveReportPanel waveReportPanel;
+        protected IGUIManager guiController;
 
-        public ButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, WaveReportPanel waveReportPanel) {
+        public ButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, IGUIManager guiController) {
             Debug.Log("ButtonManager constuctor");
             this.buildManager = buildManager;
             this.waveManager = waveManager;
             this.gameManager = gameManager;
-            this.waveReportPanel = waveReportPanel;
+            this.guiController = guiController;
         }
 
         public void Initialize() {
@@ -58,6 +58,7 @@ namespace DefaultNamespace.GUI {
             Button btnToggleWaveReport = GameObject.Find("btnToggleWaveReport").GetComponent<Button>();
             Button btnCloseWaveReport = GameObject.Find("btnCloseWaveReport").GetComponent<Button>();
             Button btnEndWave = GameObject.Find("btnEndWave").GetComponent<Button>();
+            Button btnSettings = GameObject.Find("btnSettings").GetComponent<Button>();
 
             btnNextWave.onClick.AddListener(delegate { waveManager.StartNextWave(); });
             btnbtnDecreaseSpeed.onClick.AddListener(delegate { gameManager.DecreaseGameSpeed(); });
@@ -66,9 +67,10 @@ namespace DefaultNamespace.GUI {
             btnRestart.onClick.AddListener(delegate { gameManager.RestartLevel(); });
             btnExit.onClick.AddListener(delegate { gameManager.ExitGame(); });
             btnDemolish.onClick.AddListener(delegate { buildManager.EnterDemolishMode(); });
-            btnToggleWaveReport.onClick.AddListener(delegate { waveReportPanel.ToggleWaveReport(); });
-            btnCloseWaveReport.onClick.AddListener(delegate { waveReportPanel.CloseWaveReport(); });
+            btnToggleWaveReport.onClick.AddListener(delegate { guiController.ToggleWaveReportPanel(); });
+            btnCloseWaveReport.onClick.AddListener(delegate { guiController.HideWaveReportPanel(); });
             btnEndWave.onClick.AddListener(delegate { waveManager.EndActiveWaves(); });
+            btnSettings.onClick.AddListener(delegate { guiController.ShowSettingsPanel(); });
         }
 
         public void EnterBuildMode(StructureData structure) {

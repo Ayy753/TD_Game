@@ -5,14 +5,27 @@ namespace DefaultNamespace.GUI {
     using TMPro;
     using System;
 
+    public enum GuiState {
+        None,
+        WaveReport,
+        Menu,
+        Settings,
+        GameEnded
+    }
+
     public class GUIController : IGUIManager, IInitializable, IDisposable {
+
+        //  TODO: use constructor injection after decoupling wavemanager from GUI 
+        [Inject] private IWaveManager waveManager;
+        
         TMP_Text txtLives, txtGold;
         TMP_Text txtCurrentWave, txtTotalWaves, txtWaveCountdown, txtEnemiesRemaining;
         TMP_Text txtGameSpeed, txtFPS;
 
-        //  gameEnded panel is the parent for the other two panels
-        GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlPause;
+        GameObject pnlGameEnded, pnlGameOver, pnlGameWon, pnlMenu, pnlPause, pnlWaveReport, pnlSettings;
         GameObject imgBuildMenuLock;
+
+        private GuiState currentState;
 
         public GUIController() {
             Debug.Log("GUIController constuctor");
@@ -21,24 +34,42 @@ namespace DefaultNamespace.GUI {
         public void Initialize() {
             GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
             GameManager.OnLivesChanged += GameManager_OnLivesChanged;
+            waveManager.OnWaveStateChanged += WaveManager_OnWaveStateChanged;
+            InputHandler.OnCommandEntered += InputHandler_OnCommandEntered;
 
+            InitializeLabels();
+            InitializePanels();
+
+            SetState(GuiState.None);
+        }
+
+        public void Dispose() {
+            GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+            GameManager.OnLivesChanged -= GameManager_OnLivesChanged;
+            waveManager.OnWaveStateChanged -= WaveManager_OnWaveStateChanged;
+            InputHandler.OnCommandEntered -= InputHandler_OnCommandEntered;
+        }
+
+        private void InitializeLabels() {
             txtLives = GameObject.Find("txtLivesVal").GetComponent<TMP_Text>();
             txtGold = GameObject.Find("txtGoldVal").GetComponent<TMP_Text>();
+            txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
+            txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
+            txtWaveCountdown = GameObject.Find("txtWaveCountdown").GetComponent<TMP_Text>();
+            txtEnemiesRemaining = GameObject.Find("txtEnemiesRemaining").GetComponent<TMP_Text>();
+            txtGameSpeed = GameObject.Find("txtSpeed").GetComponent<TMP_Text>();
+            txtFPS = GameObject.Find("txtFPS").GetComponent<TMP_Text>();
+        }
 
+        private void InitializePanels() {
             pnlGameEnded = GameObject.Find("pnlGameEnded");
             pnlGameOver = GameObject.Find("pnlGameOver");
             pnlGameWon = GameObject.Find("pnlGameWon");
             pnlMenu = GameObject.Find("pnlMenu");
             imgBuildMenuLock = GameObject.Find("imgLock");
             pnlPause = GameObject.Find("pnlPause");
-
-            txtCurrentWave = GameObject.Find("txtCurrentWaveNum").GetComponent<TMP_Text>();
-            txtTotalWaves = GameObject.Find("txtTotalWaveNum").GetComponent<TMP_Text>();
-            txtWaveCountdown = GameObject.Find("txtWaveCountdown").GetComponent<TMP_Text>();
-            txtEnemiesRemaining = GameObject.Find("txtEnemiesRemaining").GetComponent<TMP_Text>();
-
-            txtGameSpeed = GameObject.Find("txtSpeed").GetComponent<TMP_Text>();
-            txtFPS = GameObject.Find("txtFPS").GetComponent<TMP_Text>();
+            pnlWaveReport = GameObject.Find("pnlWaveReport");
+            pnlSettings = GameObject.Find("pnlSettings");
 
             pnlGameEnded.SetActive(false);
             pnlGameOver.SetActive(false);
@@ -46,38 +77,64 @@ namespace DefaultNamespace.GUI {
             pnlMenu.SetActive(false);
             imgBuildMenuLock.SetActive(false);
             pnlPause.SetActive(false);
-        }
-
-        public void Dispose() {
-            GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-            GameManager.OnLivesChanged -= GameManager_OnLivesChanged;
+            pnlSettings.SetActive(false);
         }
 
         private void GameManager_OnGameStateChanged(object sender, OnGameStateChangedEventArgs e) {
             switch (e.NewState) {
                 case GameState.Running:
-                    UpdateSpeedPanel(e.GameSpeed);
                     HidePausePanel();
-                    HideMenu();
-                    HideGameEndedPanel();
                     break;
                 case GameState.Paused:
                     ShowPausePanel();
                     break;
                 case GameState.GameLost:
+                    HideWaveReportPanel();
                     ShowGameOverScreen();
                     break;
                 case GameState.GameWon:
+                    HideWaveReportPanel();
                     ShowGameWonScreen();
-                    break;
-                case GameState.Menu:
-                    ShowMenu();
                     break;
             }
         }
 
         private void GameManager_OnLivesChanged(object sender, OnLivesChangedEventArgs e) {
             UpdateLivesLabel(e.CurrentLives);
+        }
+
+        private void InputHandler_OnCommandEntered(InputHandler.Command command) {
+        if (command == InputHandler.Command.ToggleMenu) {
+                if (currentState == GuiState.WaveReport) {
+                    HideWaveReportPanel();
+                }
+                else if (currentState == GuiState.Settings) {
+                    HideSettingsPanel();
+                }
+                else if (currentState == GuiState.Menu) {
+                    HideMenu();
+                }
+                else if (currentState == GuiState.None) {
+                    ShowMenu();
+                }
+            }
+        }
+
+        private void WaveManager_OnWaveStateChanged(object sender, WaveStateChangedEventArgs args) {
+            if (currentState != GuiState.GameEnded) {
+                switch (args.newState) {
+                    case IWaveManager.State.Waiting:
+                        ShowWaveReportPanel();
+                        break;
+                    case IWaveManager.State.WaveInProgress:
+                        HideWaveReportPanel();
+                        break;
+                }
+            }
+        }
+
+        private void SetState(GuiState state) {
+            currentState = state;
         }
 
         public void UpdateGoldLabel(float gold) {
@@ -92,12 +149,16 @@ namespace DefaultNamespace.GUI {
             pnlMenu.SetActive(false);
             pnlGameEnded.SetActive(true);
             pnlGameOver.SetActive(true);
+            pnlGameWon.SetActive(false);
+            SetState(GuiState.GameEnded);
         }
 
         public void ShowGameWonScreen() {
             pnlMenu.SetActive(false);
             pnlGameEnded.SetActive(true);
             pnlGameWon.SetActive(true);
+            pnlGameOver.SetActive(false);
+            SetState(GuiState.GameEnded);
         }
 
         public void HideGameEndedPanel() {
@@ -109,11 +170,42 @@ namespace DefaultNamespace.GUI {
         public void ShowMenu() {
             pnlGameEnded.SetActive(true);
             pnlMenu.SetActive(true);
+            SetState(GuiState.Menu);
         }
 
         public void HideMenu() {
             pnlGameEnded.SetActive(false);
             pnlMenu.SetActive(false);
+            SetState(GuiState.None);
+        }
+
+        public void ShowWaveReportPanel() {
+            pnlWaveReport.SetActive(true);
+            SetState(GuiState.WaveReport);
+        }
+
+        public void HideWaveReportPanel() {
+            pnlWaveReport.SetActive(false);
+            SetState(GuiState.None);
+        }
+
+        public void ToggleWaveReportPanel() {
+            if (pnlWaveReport.activeInHierarchy) {
+                HideWaveReportPanel();
+            }
+            else {
+                ShowWaveReportPanel();
+            }
+        }
+
+        public void ShowSettingsPanel() {
+            pnlSettings.SetActive(true);
+            SetState(GuiState.Settings);
+        }
+
+        public void HideSettingsPanel() {
+            pnlSettings.SetActive(false);
+            SetState(GuiState.Menu);
         }
 
         public void UpdateWaveNumber(int current, int total) {

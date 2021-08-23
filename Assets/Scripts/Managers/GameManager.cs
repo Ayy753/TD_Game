@@ -10,8 +10,7 @@ namespace DefaultNamespace {
         Running,
         Paused,
         GameLost,
-        GameWon,
-        Menu
+        GameWon
     }
 
     public class OnGameStateChangedEventArgs : EventArgs {
@@ -35,7 +34,6 @@ namespace DefaultNamespace {
     public class GameManager : IInitializable, IDisposable {
         readonly IMessageSystem messageSystem;
         readonly IWaveManager waveManager;
-        readonly WaveReportPanel waveReportPanel;
 
         public int Lives { get; private set; }
         public GameState CurrentState { get; private set; }
@@ -51,10 +49,9 @@ namespace DefaultNamespace {
         public static event EventHandler<OnGameStateChangedEventArgs> OnGameStateChanged;
         public static event EventHandler<OnLivesChangedEventArgs> OnLivesChanged;
 
-        public GameManager(IMessageSystem messageSystem, IWaveManager waveManager, WaveReportPanel waveReportPanel) {
+        public GameManager(IMessageSystem messageSystem, IWaveManager waveManager) {
             this.messageSystem = messageSystem;
             this.waveManager = waveManager;
-            this.waveReportPanel = waveReportPanel;
         }
 
         public void Initialize() {
@@ -90,29 +87,6 @@ namespace DefaultNamespace {
                 case InputHandler.Command.IncreaseGameSpeed:
                     IncreaseGameSpeed();
                     break;
-                case InputHandler.Command.ToggleMenu:
-                    CloseReportPanelOrToggleMenu();
-                    break;
-            }
-        }
-
-        private void CloseReportPanelOrToggleMenu() {
-            if (waveReportPanel.IsWaveReportOpen()) {
-                waveReportPanel.CloseWaveReport();
-            }
-            else {
-                ToggleMenu();
-            }
-        }
-
-        private void ToggleMenu() {
-            if (!HasGameEnded()) {
-                if (CurrentState == GameState.Menu) {
-                    SetState(GameState.Running);
-                }
-                else {
-                    SetState(GameState.Menu);
-                }
             }
         }
 
@@ -168,16 +142,7 @@ namespace DefaultNamespace {
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-            if (arg.newState == IWaveManager.State.WaveInProgress) {
-                waveReportPanel.GenerateScoutReport();
-                waveReportPanel.CloseWaveReport();
-            }
-            else if (arg.newState == IWaveManager.State.Waiting) {
-                if (Lives > 0) {
-                    waveReportPanel.ShowWaveReport();
-                }
-            }
-            else if (arg.newState == IWaveManager.State.LastWaveFinished) {
+            if (arg.newState == IWaveManager.State.LastWaveFinished) {
                 GameWon();
             }
         }
@@ -212,9 +177,6 @@ namespace DefaultNamespace {
                 case GameState.GameLost:
                     Time.timeScale = 0;
                     break;
-                case GameState.Menu:
-                    Time.timeScale = 0;
-                    break;
                 default:
                     break;
             }
@@ -240,7 +202,7 @@ namespace DefaultNamespace {
         }
 
         private void TogglePause() {
-            if (!HasGameEnded() && CurrentState != GameState.Menu) {
+            if (!HasGameEnded() ) {
                 SetState(CurrentState == GameState.Paused ? GameState.Running : GameState.Paused);
             }
         }

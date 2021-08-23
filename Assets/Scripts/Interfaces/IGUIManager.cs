@@ -20,5 +20,10 @@ namespace DefaultNamespace.GUI {
         public void UnlockBuildMenu();
         public void ShowPausePanel();
         public void HidePausePanel();
+        public void ShowWaveReportPanel();
+        public void HideWaveReportPanel();
+        public void ToggleWaveReportPanel();
+        public void ShowSettingsPanel();
+        public void HideSettingsPanel();
     }
 }

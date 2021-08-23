@@ -8,7 +8,7 @@ namespace DefaultNamespace.GUI {
         private EnemySpawner enemySpawner;
         private IWallet wallet;
 
-        public TestButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner, IWallet wallet, WaveReportPanel waveReportPanel) : base(buildManager, waveManager, gameManager, waveReportPanel) {
+        public TestButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner, IWallet wallet, IGUIManager guiController) : base(buildManager, waveManager, gameManager, guiController) {
             Debug.Log("test build manager");
             this.enemySpawner = enemySpawner;
             this.wallet = wallet;
