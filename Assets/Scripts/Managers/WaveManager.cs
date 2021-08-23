@@ -195,21 +195,6 @@ namespace DefaultNamespace {
                 OnWaveStateChanged.Invoke(this, new WaveStateChangedEventArgs(state));
             }
             currentState = state;
-
-            switch (state) {
-                case IWaveManager.State.Waiting:
-                    guiController.UnlockBuildMenu();
-                    break;
-                case IWaveManager.State.WaveInProgress:
-                    guiController.LockBuildMenu();
-                    break;
-                case IWaveManager.State.LastWaveFinished:
-                    break;
-                default:
-                    break;
-            }
-
-            Debug.Log("wave manager switched state to " + state);
         }
 
         public void StartNextWave() {

@@ -125,9 +125,11 @@ namespace DefaultNamespace.GUI {
                 switch (args.newState) {
                     case IWaveManager.State.Waiting:
                         ShowWaveReportPanel();
+                        UnlockBuildMenu();
                         break;
                     case IWaveManager.State.WaveInProgress:
                         HideWaveReportPanel();
+                        LockBuildMenu();
                         break;
                 }
             }
