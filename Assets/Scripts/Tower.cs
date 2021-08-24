@@ -10,6 +10,7 @@
     public class Tower : MonoBehaviour, Itargetable {
         private List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
         private float timeSinceLastShot = float.MaxValue;
+        private float cooldown;
         private IEffectable target;
         private Transform turret;
         private EffectableFinder effectableFinder;
@@ -39,6 +40,7 @@
         private void Awake() {
             turret = transform.Find("Turret");
             effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
+            cooldown = TowerData.EffectGroup.Cooldown;
 
             StartCoroutine(TurretTracking());
             StartCoroutine(TargetFinder());
@@ -51,7 +53,7 @@
         private void ShootLogicTick() {
             timeSinceLastShot += Time.deltaTime;
 
-            if (target != null && timeSinceLastShot >= TowerData.ReloadTime) {
+            if (target != null && timeSinceLastShot >= cooldown) {
                 FaceTarget(target.GetTransform());
 
                 OnProjectileFired?.Invoke(null, new ProjectileFiredEventArgs {
@@ -111,7 +113,7 @@
         /// </summary>
         /// <returns></returns>
         private IEffectable FindTarget() {
-            IEffectable target = null;
+            target = null;
 
             switch (CurrentTargetMode) {
                 case TargetMode.Closest:

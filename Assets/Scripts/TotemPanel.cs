@@ -25,7 +25,7 @@ namespace DefaultNamespace.GUI {
             string descriptionText = string.Format(
                 "<b>Radius</b>: {0}m\n" +
                 "<b>Recharge time</b>: {1}s" + "\n" +
-                "<b>Area Effects</b>: {2}", totemData.EffectGroup.Radius, totemData.EffectDelay, totemData.EffectGroup.GetEffectInfo());
+                "<b>Area Effects</b>: {2}", totemData.EffectGroup.Radius, totemData.EffectGroup.Cooldown, totemData.EffectGroup.GetEffectInfo());
 
             txtTotemDescription.text = descriptionText;
         }

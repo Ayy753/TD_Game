@@ -28,6 +28,7 @@ namespace DefaultNamespace.EffectSystem {
         public TargetType Type { get; private set; }
         public string ParticleName { get; private set; }
         public SoundType SoundType { get; private set; }
+        public float Cooldown { get; private set; }
 
         private IEffect[] Effects;
         private EffectableFinder effectableFinder;
@@ -42,7 +43,7 @@ namespace DefaultNamespace.EffectSystem {
             effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
         }
 
-        public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundType soundType, float radius) {
+        public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundType soundType, float radius, float cooldown) {
             Name = name;
             Description = description;
             Effects = effects;
@@ -50,6 +51,7 @@ namespace DefaultNamespace.EffectSystem {
             Radius = radius;
             ParticleName = particleType;
             SoundType = soundType;
+            Cooldown = cooldown;
         }
 
         public IEffect[] GetEffects() {

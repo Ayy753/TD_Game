@@ -21,7 +21,7 @@ namespace DefaultNamespace {
 
         private void OnEnable() {
             TickManager.OnTick += HandleTick;
-            numberOfTicksPerCooldown = (int)(totemData.EffectDelay / TickManager.tickFrequency);
+            numberOfTicksPerCooldown = (int)(totemData.EffectGroup.Cooldown / TickManager.tickFrequency);
             tickCounter = 0;
         }
 

@@ -13,7 +13,7 @@ namespace DefaultNamespace.IO {
         private const string DEFAULT_PARTICLE_NAME = "Blood";
 
         private const string FilePath = "effects";
-        private List<EffectGroup> effectGroups = new List<EffectGroup>();
+        private readonly List<EffectGroup> effectGroups = new List<EffectGroup>();
 
         enum EffectType {
             Buff, Damage, DOT, StatMod, Debuff, Heal
@@ -50,6 +50,9 @@ namespace DefaultNamespace.IO {
 
             [JsonProperty("sound type")]
             public SoundType Sound { get; set; }
+
+            [JsonProperty("cooldown")]
+            public float Cooldown { get; set; }
         }
 
         private class ParsedEffect {
@@ -123,7 +126,7 @@ namespace DefaultNamespace.IO {
             }
             EffectGroup effectGroup = ScriptableObject.CreateInstance("EffectGroup") as EffectGroup;
             effectGroup.Init(parsedEffectGroup.Name, parsedEffectGroup.Description, effects, parsedEffectGroup.TargetType,
-                parsedEffectGroup.ParticleName, parsedEffectGroup.Sound, parsedEffectGroup.Radius);
+                parsedEffectGroup.ParticleName, parsedEffectGroup.Sound, parsedEffectGroup.Radius, parsedEffectGroup.Cooldown);
             effectGroups.Add(effectGroup);
         }
 

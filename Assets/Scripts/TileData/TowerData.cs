@@ -18,8 +18,6 @@ namespace DefaultNamespace {
         [field: SerializeField]
         public float Range { get; private set; }
         [field: SerializeField]
-        public float ReloadTime { get; set; }
-        [field: SerializeField]
         public override TileBase TileBase { get; protected set; }
         [field: SerializeField]
         public override int Cost { get; protected set; }
@@ -42,7 +40,7 @@ namespace DefaultNamespace {
                 "\n<b>Cost</b>: {1}g" +
                 "\n<b>Reload time</b>: {2}s" +
                 "\n<b>Total Damage</b>: {3}" +
-                "\n\n<b>Projectile Effects</b>:\n{4}", Range, Cost, ReloadTime, EffectGroup.GetTotalDamage(), EffectGroup.GetEffectInfo());
+                "\n\n<b>Projectile Effects</b>:\n{4}", Range, Cost, EffectGroup.Cooldown, EffectGroup.GetTotalDamage(), EffectGroup.GetEffectInfo());
         }
 
         public void SetEffectGroup(EffectGroup effectGroup) {

@@ -60,7 +60,7 @@ namespace DefaultNamespace.GUI {
             txtName.text = towerData.Name;
             txtRange.text = towerData.Range.ToString();
             txtDamage.text = towerData.EffectGroup.GetTotalDamage().ToString();
-            txtReloadTime.text = towerData.ReloadTime.ToString();
+            txtReloadTime.text = towerData.EffectGroup.Cooldown.ToString();
             txtProjectileType.text = towerData.EffectGroup.Name;
 
             string descriptionText = "<b>Description</b>:\n" + towerData.Description + "\n\n<b>Projectile Effects</b>: \n" + towerData.EffectGroup.GetEffectInfo();

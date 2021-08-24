@@ -5,6 +5,7 @@
       "description": "Slows target",
 	  "target type": "Individual",
 	  "sound type": "arrowHitFlesh",
+	  "cooldown" : 2,
       "effects": [
         {
           "type": "Debuff",
@@ -30,6 +31,7 @@
       "description": "Poisons target",
 	  "target type": "Individual",
 	  "sound type": "arrowHitFlesh",
+	  "cooldown" : 1.5,
       "effects": [
         {
           "type": "DOT",
@@ -51,6 +53,7 @@
 	  "particle effect" : "Explosion",
 	  "radius": 3,
 	  "sound type": "explosionTiny",
+	  "cooldown" : 3,
       "effects": [
         {
           "type": "Damage",
@@ -69,6 +72,7 @@
       "description": "Deals physical damage",
 	  "target type": "Individual",
 	  "sound type": "arrowHitFlesh",
+	  "cooldown" : 5,
       "effects": [
         {
           "type": "Damage",
@@ -82,6 +86,7 @@
       "description": "Deals physical damage",
 	  "target type": "Individual",
 	  "sound type": "arrowHitFlesh",
+	  "cooldown" : 1,
       "effects": [
         {
           "type": "Damage",
@@ -97,6 +102,7 @@
 	  "particle effect" : "Buff",
 	  "radius": 3,
 	  "sound type": "Buff",	  
+	  "cooldown" : 1,
       "effects": [
         {
           "type": "Buff",
@@ -113,6 +119,7 @@
 	  "particle effect" : "Heal",
 	  "radius": 3,
 	  "sound type": "Buff",	  
+	  "cooldown" : 1,
       "effects": [
         {
           "type": "Heal",
