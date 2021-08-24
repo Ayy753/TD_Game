@@ -19,7 +19,7 @@ namespace DefaultNamespace {
         private void Awake() {
             unitInput = transform.GetComponent<IUnitInput>();
             mapManager = GameObject.Find("MapManager").GetComponent<IMapManager>();
-            unitStatus = transform.GetComponent<Status>();
+            unitStatus = transform.GetComponent<IUnit>().GetStatus();
         }
 
         private void OnEnable() {
@@ -73,7 +73,7 @@ namespace DefaultNamespace {
         /// Recalculates effective speed if unit speed stat changes
         /// </summary>
         /// <param name="statType"></param>
-        private void HandleStatChanged(StatType statType) {
+        private void HandleStatChanged(StatType statType, float amount) {
             if (statType == StatType.Speed) {
                 cachedUnitSpeed = unitStatus.Speed.Value;
                 CalculateEffectiveSpeed();

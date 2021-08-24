@@ -1,17 +1,13 @@
 namespace DefaultNamespace.StatusSystem {
     using DefaultNamespace.EffectSystem;
     using System.Collections.Generic;
-    using UnityEngine;
 
     public enum StatType {
         Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed, Max
     }
 
-    public class Status : MonoBehaviour {
-        [field: SerializeField] public CharacterData characterData { get; private set; }
-        private IUnit unit;
-
-        private Stat[] Stats;
+    public class Status {
+        private readonly Stat[] Stats;
 
         public Resistance Armor { get; private set; }
         public Resistance ColdResist { get; private set; }
@@ -24,15 +20,13 @@ namespace DefaultNamespace.StatusSystem {
 
         private List<IStatusEffect> statusEffects;
 
-        public delegate void StatusChanged(StatType statType);
-        public delegate void ClearStatus();
-        
+        public delegate void StatusChanged(StatType statType, float amount);
         public event StatusChanged OnStatusChanged;
 
+        public delegate void ClearStatus();
+        public event ClearStatus OnStatusCleared;
 
-        private void Awake() {
-            unit = transform.GetComponent<IUnit>();
-
+        public Status(CharacterData characterData) {
             Armor = new Resistance(characterData.BaseArmor);
             ColdResist = new Resistance(characterData.BaseColdResist);
             FireResist = new Resistance(characterData.BaseFireResist);
@@ -46,7 +40,7 @@ namespace DefaultNamespace.StatusSystem {
             };
         }
 
-        private void OnEnable() {
+        public void Initialize() {
             TickManager.OnTick += OnTick;
 
             statusEffects = new List<IStatusEffect>();
@@ -56,8 +50,9 @@ namespace DefaultNamespace.StatusSystem {
             IsDead = false;
         }
 
-        private void OnDisable() {
+        public void Disabled() {
             TickManager.OnTick -= OnTick;
+            OnStatusCleared?.Invoke();
         }
 
         public void TakeDamage(float effectiveDamage) {
@@ -66,29 +61,20 @@ namespace DefaultNamespace.StatusSystem {
 
                 if (Health.Value <= 0) {
                     IsDead = true;
-                    unit.Died();
                 }
 
-                if (OnStatusChanged != null) {
-                    OnStatusChanged.Invoke(StatType.Health);
-                }
+                OnStatusChanged?.Invoke(StatType.Health, effectiveDamage);
             }
         }
 
         public void RestoreHealth(float amount) {
             Health.Heal(amount);
-
-            if (OnStatusChanged != null) {
-                OnStatusChanged.Invoke(StatType.Health);
-            }
+            OnStatusChanged?.Invoke(StatType.Health, amount);
         }
 
         public void ModifyStat(StatType type, float amount) {
             Stats[(int)type].ModifyStat(amount);
-
-            if (OnStatusChanged != null) {
-                OnStatusChanged.Invoke(type);
-            }
+            OnStatusChanged?.Invoke(type, amount);
         }
 
         public void ApplyEffectGroup(EffectGroup effectGroup) {
@@ -140,10 +126,6 @@ namespace DefaultNamespace.StatusSystem {
             if (totalDamageThisTick > 0) {
                 TakeDamage(totalDamageThisTick);
             }
-        }
-
-        public CharacterData GetCharacterData() {
-            return characterData;
         }
 
         public Stat GetStat(StatType type) {

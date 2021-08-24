@@ -49,7 +49,7 @@ namespace DefaultNamespace.GUI {
             txtUnitDescription.text = targetUnit.GetDescription();
         }
 
-        private void UpdateStatusPanel(StatType statType) {
+        private void UpdateStatusPanel(StatType statType, float amount) {
             switch (statType) {
                 case StatType.Armor:
                     txtArmor.text = targetStatus.Armor.Value.ToString();
@@ -90,12 +90,13 @@ namespace DefaultNamespace.GUI {
             PopulateStatusPanel();
 
             targetStatus.OnStatusChanged += UpdateStatusPanel;
+            targetStatus.OnStatusCleared += ClearTarget;
         }
 
         public void ClearTarget() {
             if (targetStatus != null) {
                 targetStatus.OnStatusChanged -= UpdateStatusPanel;
-                targetStatus = null;
+                targetStatus.OnStatusCleared -= ClearTarget;
             }
 
             pnlStausPanel.SetActive(false);

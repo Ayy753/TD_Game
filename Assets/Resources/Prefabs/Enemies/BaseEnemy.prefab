@@ -42,7 +42,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4859947566831994937}
   - component: {fileID: 444328968129443073}
-  - component: {fileID: 1434180137614920997}
   - component: {fileID: 7582326691124603673}
   - component: {fileID: 2825825280411538233}
   - component: {fileID: 4185904917884863898}
@@ -120,20 +119,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1434180137614920997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5663122499835614652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bc553d135a76a14f8089aaeb7587b16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <characterData>k__BackingField: {fileID: 11400000, guid: 5bd82c5e4dbba1746905445cd74bbb76,
-    type: 2}
 --- !u!114 &7582326691124603673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2c72cb4cae5bb4a93ac9aac866c0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <EnemyData>k__BackingField: {fileID: 11400000, guid: b777e691eec36144bac185971fdb0b02,
+    type: 2}
 --- !u!114 &2825825280411538233
 MonoBehaviour:
   m_ObjectHideFlags: 0

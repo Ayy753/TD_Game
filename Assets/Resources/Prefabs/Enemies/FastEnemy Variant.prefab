@@ -94,5 +94,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FastEnemy Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7582326691124603673, guid: 089247055ec737547ad9c65d4b8fc931,
+        type: 3}
+      propertyPath: <EnemyData>k__BackingField
+      value: 
+      objectReference: {fileID: 11400000, guid: b777e691eec36144bac185971fdb0b02,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 089247055ec737547ad9c65d4b8fc931, type: 3}

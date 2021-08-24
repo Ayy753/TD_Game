@@ -15,10 +15,9 @@ namespace DefaultNamespace {
             healthBarForeground.gameObject.transform.localScale = new Vector3(1, 0.25f, 1);
         }
 
-        private void OnDisable() {
+        public void OnDisable() {
             if (status != null) {
                 status.OnStatusChanged -= HandleStatChange;
-                status = null;
             }
         }
 
@@ -37,7 +36,7 @@ namespace DefaultNamespace {
             healthBarForeground.gameObject.transform.localScale = new Vector3(healthPercent, 0.25f, 1);
         }
 
-        private void HandleStatChange(StatType statType) {
+        private void HandleStatChange(StatType statType, float amount) {
             if (statType == StatType.Health) {
                 UpdateHealthBar();
             }

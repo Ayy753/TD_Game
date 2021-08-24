@@ -6,6 +6,8 @@ namespace DefaultNamespace {
     using Zenject;
 
     public class Enemy : MonoBehaviour, IUnit {
+        [field: SerializeField] public EnemyData EnemyData { get; private set; }
+
         private Status status;
         private HealthBar healthBar;
 
@@ -15,14 +17,32 @@ namespace DefaultNamespace {
         public static event EnemyReachedGate OnEnemyReachedGate;
         public static event EnemyDied OnEnemyDied;
         public event EventHandler TargetDisabled;
+        public event EventHandler<UnitTookDamageEventArgs> OnUnitTookDamage;
 
         private void Awake() {
             healthBar = transform.parent.GetComponentInChildren<HealthBar>();
-            status = transform.GetComponent<Status>();
+            status = new Status(EnemyData);
         }
 
         private void OnEnable() {
+            status.Initialize();
             healthBar.Initialize(status);
+
+            status.OnStatusChanged += Status_OnStatusChanged;
+        }
+
+        private void OnDisable() {
+            status.OnStatusChanged -= Status_OnStatusChanged;
+        }
+
+        private void Status_OnStatusChanged(StatType statType, float amount) {
+            if (statType == StatType.Health) {
+                OnUnitTookDamage?.Invoke(this, new UnitTookDamageEventArgs(amount));
+
+                if (status.Health.Value <= 0) {
+                    Died();
+                }
+            }
         }
 
         public void ReachedDestination() {
@@ -32,7 +52,7 @@ namespace DefaultNamespace {
             }
         }
 
-        public void Died() {
+        private void Died() {
             Despawn();
             if (OnEnemyDied != null) {
                 OnEnemyDied.Invoke(this);
@@ -40,9 +60,9 @@ namespace DefaultNamespace {
         }
 
         public void Despawn() {
-            if (TargetDisabled != null) {
-                TargetDisabled.Invoke(this, EventArgs.Empty);
-            }
+            TargetDisabled?.Invoke(this, EventArgs.Empty);
+
+            status.Disabled();
             transform.parent.gameObject.SetActive(false);
         }
 
@@ -55,19 +75,23 @@ namespace DefaultNamespace {
         }
 
         public float GetValue() {
-            return ((EnemyData)GetStatus().GetCharacterData()).BaseValue;
+            return EnemyData.BaseValue;
         }
 
         public EnemyData.EnemyType GetEnemyType() {
-            return ((EnemyData)GetStatus().GetCharacterData()).Type;
+            return EnemyData.Type;
         }
 
         public string GetDescription() {
-            return ((EnemyData)status.characterData).Description;
+            return EnemyData.Description;
         }
 
         public string GetName() {
-            return ((EnemyData)status.characterData).Name;
+            return EnemyData.Name;
+        }
+
+        public CharacterData GetCharacterData() {
+            return EnemyData;
         }
 
         public class Factory : PlaceholderFactory<EnemyData.EnemyType, Enemy> { }
