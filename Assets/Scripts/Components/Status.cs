@@ -63,7 +63,7 @@ namespace DefaultNamespace.StatusSystem {
                     IsDead = true;
                 }
 
-                OnStatusChanged?.Invoke(StatType.Health, effectiveDamage);
+                OnStatusChanged?.Invoke(StatType.Health, -effectiveDamage);
             }
         }
 

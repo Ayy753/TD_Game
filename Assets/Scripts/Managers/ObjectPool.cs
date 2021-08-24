@@ -120,7 +120,7 @@ namespace DefaultNamespace {
         public Enemy CreateEnemy(EnemyData.EnemyType type) {
             //  Find available enemy of a prefab type
             foreach (Enemy enemy in instantiatedEnemies) {
-                if (enemy.GetEnemyType() == type && enemy.gameObject.activeInHierarchy == false) {
+                if (enemy.GetEnemyType() == type && !enemy.gameObject.activeInHierarchy) {
                     enemy.transform.parent.gameObject.SetActive(true);
                     return enemy;
                 }
@@ -132,7 +132,15 @@ namespace DefaultNamespace {
 
             newEnemy.transform.parent.parent = enemyContainer.transform;
             instantiatedEnemies.Add(newEnemy);
+
+            newEnemy.OnUnitTookDamage += NewEnemy_OnUnitTookDamage;
+
             return newEnemy;
+        }
+
+        private void NewEnemy_OnUnitTookDamage(object sender, UnitTookDamageEventArgs e) {
+            float damageRounded = (float)Math.Round(e.DamageAmount, 1);
+            CreateFloatingText(((Enemy)sender).transform.position, damageRounded.ToString(), Color.red, 0.3f);
         }
 
         public Projectile CreateProjectile() {

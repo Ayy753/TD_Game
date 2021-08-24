@@ -36,7 +36,8 @@ namespace DefaultNamespace {
         }
 
         private void Status_OnStatusChanged(StatType statType, float amount) {
-            if (statType == StatType.Health) {
+            if (statType == StatType.Health && amount < 0) {
+
                 OnUnitTookDamage?.Invoke(this, new UnitTookDamageEventArgs(amount));
 
                 if (status.Health.Value <= 0) {
