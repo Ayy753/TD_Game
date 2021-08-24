@@ -8,9 +8,7 @@ namespace DefaultNamespace.EffectSystem {
         public float Potency { get; }
         public DamageType Type { get; private set; }
         public int RemainingTicks { get; private set; }
-
-        private Status unitStatus;
-        private float damagePerTick;
+        public float  DamagePerTick { get; set; }
 
         public DamageOverTime(float potency, float duration, DamageType damageType) {
             Duration = duration;
@@ -19,13 +17,12 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public void Apply(Status status) {
-            unitStatus = status;
             RemainingTicks = Mathf.CeilToInt(Duration / TickManager.tickFrequency);
-            damagePerTick = CalculateEffectiveDamage(unitStatus);
+            DamagePerTick = CalculateEffectiveDamage(status);
         }
 
         public float CalculateEffectiveDamage(Status effectableStatus) {
-            float resistence = unitStatus.GetStat((StatType)Type).Value;
+            float resistence = effectableStatus.GetStat((StatType)Type).Value;
             float effectiveDamage = (1 - resistence / 100) * Potency;
             float damagerPerTick = effectiveDamage / (Duration * (1 / TickManager.tickFrequency));
 
@@ -34,13 +31,11 @@ namespace DefaultNamespace.EffectSystem {
 
         public void OnTick() {
             RemainingTicks -= 1;
-            if (RemainingTicks > 0) {
-                unitStatus.TakeDamage(damagePerTick);
-            }
+            //  Total effect tick damage is applied by Status 
         }
 
         public void Remove() {
-            //  Does nothing for now
+            //  Does nothing 
         }
 
         public IStatusEffect Clone() {

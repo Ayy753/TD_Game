@@ -90,13 +90,11 @@ namespace DefaultNamespace.GUI {
             PopulateStatusPanel();
 
             targetStatus.OnStatusChanged += UpdateStatusPanel;
-            targetStatus.OnStatusCleared += ClearTarget;
         }
 
         public void ClearTarget() {
             if (targetStatus != null) {
                 targetStatus.OnStatusChanged -= UpdateStatusPanel;
-                targetStatus.OnStatusCleared -= ClearTarget;
                 targetStatus = null;
             }
 

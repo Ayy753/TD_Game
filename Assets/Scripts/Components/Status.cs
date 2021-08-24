@@ -11,7 +11,7 @@ namespace DefaultNamespace.StatusSystem {
         [field: SerializeField] public CharacterData characterData { get; private set; }
         private IUnit unit;
 
-        public Stat[] Stats;
+        private Stat[] Stats;
 
         public Resistance Armor { get; private set; }
         public Resistance ColdResist { get; private set; }
@@ -22,22 +22,13 @@ namespace DefaultNamespace.StatusSystem {
         public Speed Speed { get; private set; }
         public bool IsDead { get; private set; }
 
-        public List<IStatusEffect> statusEffects;
+        private List<IStatusEffect> statusEffects;
 
         public delegate void StatusChanged(StatType statType);
         public delegate void ClearStatus();
-
-        /// <summary>
-        /// Instance event StatusPanel subscribes to when unit is targetted
-        /// Fires when unit is damaged/healed, or a buff/debuff is applied or removed
-        /// </summary>
+        
         public event StatusChanged OnStatusChanged;
 
-        /// <summary>
-        /// Instance event StatusPanel subscribes to when unit is targetted
-        /// Fires when unit dies and the status panel should be cleared
-        /// </summary>
-        public event ClearStatus OnStatusCleared;
 
         private void Awake() {
             unit = transform.GetComponent<IUnit>();
@@ -51,8 +42,8 @@ namespace DefaultNamespace.StatusSystem {
             Speed = new Speed(characterData.BaseSpeed);
 
             Stats = new Stat[] {
-            Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed
-        };
+                Armor, ColdResist, FireResist, PoisonResist, LightningResist, Health, Speed
+            };
         }
 
         private void OnEnable() {
@@ -70,7 +61,7 @@ namespace DefaultNamespace.StatusSystem {
         }
 
         public void TakeDamage(float effectiveDamage) {
-            if (IsDead == false) {
+            if (!IsDead) {
                 Health.TakeDamage(effectiveDamage);
 
                 if (Health.Value <= 0) {
@@ -102,21 +93,52 @@ namespace DefaultNamespace.StatusSystem {
 
         public void ApplyEffectGroup(EffectGroup effectGroup) {
             foreach (IEffect effect in effectGroup.GetEffects()) {
-                if (effect is IStatusEffect) {
-                    statusEffects.Add((IStatusEffect)effect);
+                if (effect is IStatusEffect statusEffect) {
+                    statusEffects.Add(statusEffect);
                 }
-                effect.Apply(this);
+                if (!(effect is Damage)) {
+                    effect.Apply(this);
+                }
+            }
+
+            ApplyAllInstantDamage(effectGroup);
+        }
+
+        private void ApplyAllInstantDamage(EffectGroup effectGroup) {
+            float totalDamage = 0;
+
+            foreach (IEffect effect in effectGroup.GetEffects()) {
+                if (effect is Damage damage) {
+                    totalDamage += damage.CalculateEffectiveDamage(this);
+                }
+            }
+
+            if (totalDamage > 0) {
+                TakeDamage(totalDamage);
             }
         }
 
         private void OnTick() {
+            float totalDamageThisTick = 0;
+            IStatusEffect effect;
+
             for (int i = 0; i < statusEffects.Count; i++) {
-                statusEffects[i].OnTick();
-                if (statusEffects[i].RemainingTicks <= 0) {
-                    statusEffects[i].Remove();
-                    statusEffects.Remove(statusEffects[i]);
+                effect = statusEffects[i];
+
+                if (effect is DamageOverTime damageOverTime) {
+                    totalDamageThisTick += damageOverTime.DamagePerTick;
+                }
+                effect.OnTick();
+                
+                if (effect.RemainingTicks <= 0) {
+                    effect.Remove();
+                    statusEffects.Remove(effect);
                     i--;
                 }
+            }
+
+            if (totalDamageThisTick > 0) {
+                TakeDamage(totalDamageThisTick);
             }
         }
 

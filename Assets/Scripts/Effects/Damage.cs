@@ -11,8 +11,7 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public void Apply(Status status) {
-            float effectiveDamage = CalculateEffectiveDamage(status);
-            status.TakeDamage(effectiveDamage);
+            //  Total effect damage is applied by Status 
         }
 
         public float CalculateEffectiveDamage(Status effectableStatus) {
