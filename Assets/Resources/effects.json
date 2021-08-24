@@ -102,13 +102,13 @@
 	  "particle effect" : "Buff",
 	  "radius": 3,
 	  "sound type": "Buff",	  
-	  "cooldown" : 1,
+	  "cooldown" : 2,
       "effects": [
         {
           "type": "Buff",
           "statType": "Speed",
           "potency": 1,
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -119,11 +119,11 @@
 	  "particle effect" : "Heal",
 	  "radius": 3,
 	  "sound type": "Buff",	  
-	  "cooldown" : 1,
+	  "cooldown" : 2,
       "effects": [
         {
           "type": "Heal",
-          "potency": 5
+          "potency": 10
         }
       ]
     }	
