@@ -53,7 +53,11 @@ namespace DefaultNamespace {
         private void MoveToLastTargetPosition() {
             transform.position = Vector3.MoveTowards(transform.position, lastTargetPosition, PROJECTILE_SPEED * Time.deltaTime);
             if (transform.position == lastTargetPosition) {
-                ApplyEffectToArea(transform.position);
+
+                if (effectGroup.Type == EffectGroup.TargetType.Area) {
+                    ApplyEffectToArea(transform.position);
+                }
+
                 gameObject.SetActive(false);
             }
         }
