@@ -52,9 +52,10 @@ namespace DefaultNamespace {
 
         private void MoveToLastTargetPosition() {
             transform.position = Vector3.MoveTowards(transform.position, lastTargetPosition, PROJECTILE_SPEED * Time.deltaTime);
-            if (transform.position == lastTargetPosition)
+            if (transform.position == lastTargetPosition) {
                 ApplyEffectToArea(transform.position);
-            gameObject.SetActive(false);
+                gameObject.SetActive(false);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision) {
