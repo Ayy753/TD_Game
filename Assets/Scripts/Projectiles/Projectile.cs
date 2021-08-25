@@ -15,20 +15,29 @@ namespace DefaultNamespace {
             MoveTowardsDestination();
         }
 
-        public void Initialize(Vector3 startPos, Transform target, EffectGroup effectGroup) {
+        public void Initialize(Vector3 startPos, IEffectable target, EffectGroup effectGroup) {
             transform.position = startPos;
-            this.target = target;
+            this.target = target.GetTransform();
             targetDestroyed = false;
             dealtDamage = false;
             this.effectGroup = effectGroup;
+
+            Enemy.OnEnemyDied += Enemy_OnEnemyDied;
+        }
+
+        private void OnDisable() {
+            Enemy.OnEnemyDied -= Enemy_OnEnemyDied;
+        }
+
+        private void Enemy_OnEnemyDied(Enemy enemy) {
+            if (enemy.transform == target) {
+                targetDestroyed = true;
+                target = null;
+            }
         }
 
         private void MoveTowardsDestination() {
-            if (target.gameObject.activeInHierarchy == false) {
-                targetDestroyed = true;
-            }
-
-            if (targetDestroyed != true) {
+            if (!targetDestroyed) {
                 PursueTargetAndRecordLastPosition();
             }
             else {

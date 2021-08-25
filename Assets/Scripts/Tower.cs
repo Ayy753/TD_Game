@@ -21,7 +21,7 @@
         public class ProjectileFiredEventArgs : EventArgs {
             public EffectGroup EffectGroup { get; set; }
             public Vector3 Position { get; set; }
-            public Transform Target { get; set; }
+            public IEffectable Target { get; set; }
         }
 
         [field: SerializeField] public TowerData TowerData { get; private set; }
@@ -46,6 +46,20 @@
             StartCoroutine(TargetFinder());
         }
 
+        private void OnEnable() {
+            Enemy.OnEnemyDied += Enemy_OnEnemyDied;
+        }
+
+        private void OnDisable() {
+            Enemy.OnEnemyDied -= Enemy_OnEnemyDied;
+        }
+
+        private void Enemy_OnEnemyDied(Enemy enemy) {
+            if (enemy == target) {
+                target = null;
+            }
+        }
+
         private void Update() {
             ShootLogicTick();
         }
@@ -59,7 +73,7 @@
                 OnProjectileFired?.Invoke(null, new ProjectileFiredEventArgs {
                     EffectGroup = TowerData.EffectGroup,
                     Position = transform.position,
-                    Target = target.GetTransform()
+                    Target = target
                 });
 
                 timeSinceLastShot = 0;
