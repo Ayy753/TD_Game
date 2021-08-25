@@ -54,10 +54,10 @@ namespace DefaultNamespace {
         }
 
         private void Died() {
-            Despawn();
             if (OnEnemyDied != null) {
                 OnEnemyDied.Invoke(this);
             }
+            Despawn();
         }
 
         public void Despawn() {

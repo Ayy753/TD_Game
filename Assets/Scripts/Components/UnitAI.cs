@@ -40,7 +40,15 @@ namespace DefaultNamespace {
             onMainPath = true;
 
             pathFinder.PathRecalculated += OnPathRecalculated;
+            unit.TargetDisabled += UnitAI_TargetDisabled;
+        }
 
+        private void OnDisable() {
+            unit.TargetDisabled -= UnitAI_TargetDisabled;
+        }
+
+        private void UnitAI_TargetDisabled(object sender, EventArgs e) {
+            transform.parent.position = mainPath[0];
         }
 
         private void OnPathRecalculated(object sender, EventArgs e) {
