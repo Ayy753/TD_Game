@@ -37,7 +37,7 @@ namespace DefaultNamespace.IO {
 
             [JsonProperty("target type")]
             [JsonConverter(typeof(StringEnumConverter))]
-            public EffectGroup.TargetType TargetType { get; set; }
+            public TargetType TargetType { get; set; }
 
             [JsonProperty("particle effect", NullValueHandling = NullValueHandling.Ignore)]
             public string ParticleName { get; set; } = DEFAULT_PARTICLE_NAME;

@@ -7,6 +7,10 @@ namespace DefaultNamespace.EffectSystem {
     using System.Text;
     using UnityEngine;
 
+    public enum TargetType {
+        Individual, Area
+    }
+
     public class OnEffectUsedEventArgs : EventArgs {
         public Vector3 Position { get; private set; }
         public SoundType SoundType { get; private set; }
@@ -34,10 +38,6 @@ namespace DefaultNamespace.EffectSystem {
         private EffectableFinder effectableFinder;
 
         public static event EventHandler<OnEffectUsedEventArgs> OnEffectUsed;
-
-        public enum TargetType {
-            Individual, Area
-        }
 
         private void OnEnable() {
             effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();

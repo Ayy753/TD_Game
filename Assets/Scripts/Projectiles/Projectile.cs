@@ -53,7 +53,7 @@ namespace DefaultNamespace {
             transform.position = Vector3.MoveTowards(transform.position, lastTargetPosition, PROJECTILE_SPEED * Time.deltaTime);
             if (transform.position == lastTargetPosition) {
 
-                if (effectGroup.Type == EffectGroup.TargetType.Area) {
+                if (effectGroup.Type == TargetType.Area) {
                     ApplyEffectToArea(transform.position);
                 }
                 gameObject.SetActive(false);
@@ -67,7 +67,7 @@ namespace DefaultNamespace {
             if ((effectable != null && !effectAlreadyUsed) && (effectable.GetTransform() == target || targetDestroyed)) {
                 effectAlreadyUsed = true;
 
-                if (effectGroup.Type == EffectGroup.TargetType.Area) {
+                if (effectGroup.Type == TargetType.Area) {
                     ApplyEffectToArea(target.position);
                 }
                 else {
