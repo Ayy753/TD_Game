@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8786412208275405428}
   - component: {fileID: 6235283011187924282}
   m_Layer: 2
-  m_Name: SniperProjectile
+  m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71,8 +71,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -29511549
-  m_SortingLayer: -1
-  m_SortingOrder: 0
+  m_SortingLayer: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: eed4c9df603612946945bead4b42f15b, type: 3}
   m_Color: {r: 1, g: 0.6249813, b: 0, a: 1}
   m_FlipX: 0
@@ -96,8 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf046fbccafc7e64d90acf32eb16ca14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ProjectileData>k__BackingField: {fileID: 11400000, guid: ff3445b15080c3747a9673443536e0ca,
-    type: 2}
 --- !u!61 &6235283011187924282
 BoxCollider2D:
   m_ObjectHideFlags: 0
