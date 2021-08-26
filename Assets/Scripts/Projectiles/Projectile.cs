@@ -8,7 +8,7 @@ namespace DefaultNamespace {
         private Vector3 lastTargetPosition;
         private EffectGroup effectGroup;
         private bool targetDestroyed;
-        private bool dealtDamage;
+        private bool effectAlreadyUsed;
         private const float PROJECTILE_SPEED = 5F;
 
         private void Update() {
@@ -19,7 +19,7 @@ namespace DefaultNamespace {
             transform.position = startPos;
             this.target = target.GetTransform();
             targetDestroyed = false;
-            dealtDamage = false;
+            effectAlreadyUsed = false;
             this.effectGroup = effectGroup;
 
             Enemy.OnEnemyDied += Enemy_OnEnemyDied;
@@ -32,7 +32,6 @@ namespace DefaultNamespace {
         private void Enemy_OnEnemyDied(Enemy enemy) {
             if (enemy.transform == target) {
                 targetDestroyed = true;
-                target = null;
             }
         }
 
@@ -57,7 +56,6 @@ namespace DefaultNamespace {
                 if (effectGroup.Type == EffectGroup.TargetType.Area) {
                     ApplyEffectToArea(transform.position);
                 }
-
                 gameObject.SetActive(false);
             }
         }
@@ -65,24 +63,23 @@ namespace DefaultNamespace {
         private void OnTriggerEnter2D(Collider2D collision) {
             IEffectable effectable = collision.GetComponentInChildren<IEffectable>();
 
-            //  If it hit a unit, and hasn't damaged anything yet (to prevent it from damaging multiple units at the same time)
-            if (effectable != null && dealtDamage == false) {
-                //  If the unit is the target, or the target died and something else got hit
-                if (effectable.GetTransform() == target || targetDestroyed == true) {
-                    dealtDamage = true;
-                    ApplyEffectToIndividual(effectable);
-                    gameObject.SetActive(false);
+            //  Prevent effect from being triggered multiple times at once and ignore collisions with other objects if the current target is still active
+            if ((effectable != null && !effectAlreadyUsed) && (effectable.GetTransform() == target || targetDestroyed)) {
+                effectAlreadyUsed = true;
+
+                if (effectGroup.Type == EffectGroup.TargetType.Area) {
+                    ApplyEffectToArea(target.position);
                 }
+                else {
+                    ApplyEffectToIndividual(effectable);
+                }
+
+                gameObject.SetActive(false);
             }
         }
 
         private void ApplyEffectToIndividual(IEffectable effectable) {
-            if (effectGroup.Type == EffectGroup.TargetType.Individual) {
-                effectGroup.EffectTarget(effectable, transform.position);
-            }
-            else {
-                effectGroup.EffectArea(transform.position);
-            }
+            effectGroup.EffectTarget(effectable, transform.position);
         }
 
         private void ApplyEffectToArea(Vector3 center) {
