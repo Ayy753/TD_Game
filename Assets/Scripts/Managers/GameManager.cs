@@ -31,6 +31,14 @@ namespace DefaultNamespace {
         }
     }
 
+    public class OnGameSpeedChangedEventArgs : EventArgs {
+        public float GameSpeed { get; private set; }
+
+        public OnGameSpeedChangedEventArgs(float gameSpeed) {
+            GameSpeed = gameSpeed;
+        }
+    }
+
     public class GameManager : IInitializable, IDisposable {
         readonly IMessageSystem messageSystem;
         readonly IWaveManager waveManager;
@@ -48,6 +56,7 @@ namespace DefaultNamespace {
 
         public static event EventHandler<OnGameStateChangedEventArgs> OnGameStateChanged;
         public static event EventHandler<OnLivesChangedEventArgs> OnLivesChanged;
+        public static event EventHandler<OnGameSpeedChangedEventArgs> OnGameSpeedChanged;
 
         public GameManager(IMessageSystem messageSystem, IWaveManager waveManager) {
             this.messageSystem = messageSystem;
@@ -63,7 +72,7 @@ namespace DefaultNamespace {
 
             Debug.Log("GameManager initializing");
             GainLives(STARTING_LIVES);
-            currentGameSpeed = MIN_GAME_SPEED;
+            SetGameSpeed(MIN_GAME_SPEED);
             SetState(GameState.Running);
             SetTargetFramerate(DEFAULT_FRAMERATE);
         }
@@ -166,18 +175,12 @@ namespace DefaultNamespace {
         private void SetState(GameState state) {
             switch (state) {
                 case GameState.Running:
-                    Time.timeScale = currentGameSpeed;
+                    SetGameSpeed(currentGameSpeed);
                     break;
                 case GameState.Paused:
-                    Time.timeScale = 0;
-                    break;
                 case GameState.GameWon:
-                    Time.timeScale = 0;
-                    break;
                 case GameState.GameLost:
                     Time.timeScale = 0;
-                    break;
-                default:
                     break;
             }
 
@@ -186,19 +189,25 @@ namespace DefaultNamespace {
         }
 
         public void IncreaseGameSpeed() {
-            currentGameSpeed += GAME_SPEED_INCREMENT;
-            if (currentGameSpeed > MAX_GAME_SPEED) {
-                currentGameSpeed = MAX_GAME_SPEED;
-            }
-            SetState(GameState.Running);
+            SetGameSpeed(currentGameSpeed + GAME_SPEED_INCREMENT);
         }
 
         public void DecreaseGameSpeed() {
-            currentGameSpeed -= GAME_SPEED_INCREMENT;
-            if (currentGameSpeed < MIN_GAME_SPEED) {
+            SetGameSpeed(currentGameSpeed - GAME_SPEED_INCREMENT);
+        }
+
+        public void SetGameSpeed(float gameSpeed) {
+            currentGameSpeed = gameSpeed;
+
+            if (currentGameSpeed > MAX_GAME_SPEED) {
+                currentGameSpeed = MAX_GAME_SPEED;
+            }
+            else if (currentGameSpeed < MIN_GAME_SPEED) {
                 currentGameSpeed = MIN_GAME_SPEED;
             }
-            SetState(GameState.Running);
+
+            Time.timeScale = currentGameSpeed;
+            OnGameSpeedChanged?.Invoke(null, new OnGameSpeedChangedEventArgs(currentGameSpeed));
         }
 
         private void TogglePause() {

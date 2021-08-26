@@ -33,6 +33,7 @@ namespace DefaultNamespace.GUI {
         public void Initialize() {
             GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
             GameManager.OnLivesChanged += GameManager_OnLivesChanged;
+            GameManager.OnGameSpeedChanged += GameManager_OnGameSpeedChanged;
             waveManager.OnWaveStateChanged += WaveManager_OnWaveStateChanged;
             waveManager.OnCountDownChanged += WaveManager_OnCountDownChanged;
             waveManager.OnEnemiesRemainingChanged += WaveManager_OnEnemiesRemainingChanged;
@@ -48,6 +49,7 @@ namespace DefaultNamespace.GUI {
         public void Dispose() {
             GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
             GameManager.OnLivesChanged -= GameManager_OnLivesChanged;
+            GameManager.OnGameSpeedChanged -= GameManager_OnGameSpeedChanged;
             waveManager.OnWaveStateChanged -= WaveManager_OnWaveStateChanged;
             waveManager.OnCountDownChanged -= WaveManager_OnCountDownChanged;
             waveManager.OnEnemiesRemainingChanged -= WaveManager_OnEnemiesRemainingChanged;
@@ -106,6 +108,10 @@ namespace DefaultNamespace.GUI {
 
         private void GameManager_OnLivesChanged(object sender, OnLivesChangedEventArgs e) {
             UpdateLivesLabel(e.CurrentLives);
+        }
+
+        private void GameManager_OnGameSpeedChanged(object sender, OnGameSpeedChangedEventArgs e) {
+            UpdateSpeedPanel(e.GameSpeed);
         }
 
         private void InputHandler_OnCommandEntered(InputHandler.Command command) {
