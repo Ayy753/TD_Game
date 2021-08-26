@@ -88,6 +88,11 @@ namespace DefaultNamespace.EffectSystem {
                     result.Append(string.Format("Restores {0} HP\n", effect.Potency));
                 }
             }
+
+            if (Type == TargetType.Area) {
+                result.Append(string.Format("In a {0}m radius\n", Radius));
+            }
+
             return result.ToString();
         }
 
