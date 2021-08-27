@@ -1,5 +1,6 @@
 namespace DefaultNamespace.GUI {
 
+    using DefaultNamespace.IO;
     using System;
     using TMPro;
     using UnityEngine;

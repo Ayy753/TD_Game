@@ -1,6 +1,6 @@
 namespace DefaultNamespace {
 
-    using DefaultNamespace.GUI;
+    using DefaultNamespace.IO;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using Zenject;

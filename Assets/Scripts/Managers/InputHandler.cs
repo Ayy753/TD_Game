@@ -1,11 +1,18 @@
-namespace DefaultNamespace.GUI {
+namespace DefaultNamespace.IO {
 
-
+    using System;
     using System.Collections.Generic;
     using UnityEngine;
 
     public class InputHandler : MonoBehaviour {
-        private Dictionary<Command, KeyCode> commandToHotkeyDictionary;
+        private readonly Dictionary<Command, KeyCode> hotkeyDictionary = new Dictionary<Command, KeyCode>();
+        private readonly Dictionary<Command, KeyCode> DEFAULT_HOTKEY_DICTIONARY = new Dictionary<Command, KeyCode>() {
+            {Command.TogglePause, KeyCode.Space},
+            {Command.FollowTarget, KeyCode.F},
+            {Command.DecreaseGameSpeed, KeyCode.Minus},
+            {Command.IncreaseGameSpeed, KeyCode.Equals},
+            {Command.ToggleMenu, KeyCode.Escape},
+        };
 
         public delegate void KeyPressed(Command command);
         public static event KeyPressed OnCommandEntered;
@@ -19,34 +26,51 @@ namespace DefaultNamespace.GUI {
         }
 
         private void OnEnable() {
-            //  TODO: Load this from a pref file
-            commandToHotkeyDictionary = new Dictionary<Command, KeyCode>() {
-            {Command.TogglePause, KeyCode.Space},
-            {Command.FollowTarget, KeyCode.F},
-            {Command.DecreaseGameSpeed, KeyCode.Minus},
-            {Command.IncreaseGameSpeed, KeyCode.Equals},
-            {Command.ToggleMenu, KeyCode.Escape},
-        };
+            LoadUserPrefs();
+        }
+
+        private void OnDisable() {
+            SaveUserPrefs();
         }
 
         void Update() {
             PollHotkeysDown();
         }
 
+        private void LoadUserPrefs() {
+            foreach (Command command in Enum.GetValues(typeof(Command))) {
+                KeyCode defaultKey = DEFAULT_HOTKEY_DICTIONARY[command];
+                hotkeyDictionary[command] = (KeyCode)PlayerPrefs.GetInt(command.ToString(), (int)defaultKey);
+            }
+        }
+
+        private void ResetDefault() {
+            foreach (Command command in Enum.GetValues(typeof(Command))) {
+                hotkeyDictionary[command] = DEFAULT_HOTKEY_DICTIONARY[command];
+            }
+            SaveUserPrefs();
+        }
+
+        private void SaveUserPrefs() {
+            foreach (Command command in Enum.GetValues(typeof(Command))) {
+                PlayerPrefs.SetInt(command.ToString(), (int)hotkeyDictionary[command]);
+            }
+        }
+
         private void PollHotkeysDown() {
-            foreach (Command command in commandToHotkeyDictionary.Keys) {
-                if (Input.GetKeyDown(commandToHotkeyDictionary[command])) {
+            foreach (Command command in hotkeyDictionary.Keys) {
+                if (Input.GetKeyDown(hotkeyDictionary[command])) {
                     OnCommandEntered?.Invoke(command);
                 }
             }
         }
 
         public void AssignHotkeyToCommand(KeyCode hotKey, Command command) {
-            commandToHotkeyDictionary[command] = hotKey;
+            hotkeyDictionary[command] = hotKey;
         }
 
         public KeyCode GetHotkeyByCommand(Command command) {
-            return commandToHotkeyDictionary[command];
+            return hotkeyDictionary[command];
         }
     }
 }

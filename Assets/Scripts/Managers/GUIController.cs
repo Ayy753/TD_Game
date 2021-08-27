@@ -1,9 +1,10 @@
 namespace DefaultNamespace.GUI {
 
+    using DefaultNamespace.IO;
+    using System;
+    using TMPro;
     using UnityEngine;
     using Zenject;
-    using TMPro;
-    using System;
 
     public enum GuiState {
         None,

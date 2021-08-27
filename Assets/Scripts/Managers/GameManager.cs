@@ -1,6 +1,6 @@
 namespace DefaultNamespace {
 
-    using DefaultNamespace.GUI;
+    using DefaultNamespace.IO;
     using System;
     using UnityEngine;
     using UnityEngine.SceneManagement;
