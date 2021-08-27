@@ -115,8 +115,8 @@ namespace DefaultNamespace.GUI {
             UpdateSpeedPanel(e.GameSpeed);
         }
 
-        private void InputHandler_OnCommandEntered(InputHandler.Command command) {
-        if (command == InputHandler.Command.ToggleMenu) {
+        private void InputHandler_OnCommandEntered(Command command) {
+        if (command == Command.ToggleMenu) {
                 if (currentState == GuiState.WaveReport) {
                     HideWaveReportPanel();
                 }

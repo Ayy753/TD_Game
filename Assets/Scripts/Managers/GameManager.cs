@@ -85,15 +85,15 @@ namespace DefaultNamespace {
             SettingsPanel.OnTargetFpsChanged -= SettingsPanel_OnTargetFpsChanged;
         }
 
-        private void HandlekeyboardInput(InputHandler.Command command) {
+        private void HandlekeyboardInput(Command command) {
             switch (command) {
-                case InputHandler.Command.TogglePause:
+                case Command.TogglePause:
                     TogglePause();
                     break;
-                case InputHandler.Command.DecreaseGameSpeed:
+                case Command.DecreaseGameSpeed:
                     DecreaseGameSpeed();
                     break;
-                case InputHandler.Command.IncreaseGameSpeed:
+                case Command.IncreaseGameSpeed:
                     IncreaseGameSpeed();
                     break;
             }

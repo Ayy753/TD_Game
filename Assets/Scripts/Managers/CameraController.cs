@@ -82,8 +82,8 @@ namespace DefaultNamespace {
         /// Follows target if one exists
         /// </summary>
         /// <param name="command"></param>
-        private void HandleCommandEntered(InputHandler.Command command) {
-            if (command == InputHandler.Command.FollowTarget) {
+        private void HandleCommandEntered(Command command) {
+            if (command == Command.FollowTarget) {
                 Itargetable target = targetManager.GetTarget();
 
                 if (target != null) {

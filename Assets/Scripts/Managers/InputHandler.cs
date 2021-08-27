@@ -4,6 +4,14 @@ namespace DefaultNamespace.IO {
     using System.Collections.Generic;
     using UnityEngine;
 
+    public enum Command {
+        TogglePause,
+        FollowTarget,
+        DecreaseGameSpeed,
+        IncreaseGameSpeed,
+        ToggleMenu
+    }
+
     public class InputHandler : MonoBehaviour {
         private readonly Dictionary<Command, KeyCode> hotkeyDictionary = new Dictionary<Command, KeyCode>();
         private readonly Dictionary<Command, KeyCode> DEFAULT_HOTKEY_DICTIONARY = new Dictionary<Command, KeyCode>() {
@@ -16,14 +24,6 @@ namespace DefaultNamespace.IO {
 
         public delegate void KeyPressed(Command command);
         public static event KeyPressed OnCommandEntered;
-
-        public enum Command {
-            TogglePause,
-            FollowTarget,
-            DecreaseGameSpeed,
-            IncreaseGameSpeed,
-            ToggleMenu
-        }
 
         private void OnEnable() {
             LoadUserPrefs();

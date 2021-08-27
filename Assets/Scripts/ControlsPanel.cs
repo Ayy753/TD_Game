@@ -21,7 +21,7 @@ namespace DefaultNamespace.GUI {
             GameObject newControlPanel;
             TMP_Text txtControlName, txtControlHotkey;
 
-            foreach (InputHandler.Command command in Enum.GetValues(typeof(InputHandler.Command))) {
+            foreach (Command command in Enum.GetValues(typeof(Command))) {
                 newControlPanel = GameObject.Instantiate(controlPanelPrefab);
                 txtControlName = newControlPanel.transform.Find("txtControlName").GetComponent<TMP_Text>();
                 txtControlHotkey = newControlPanel.transform.Find("txtHotkey").GetComponent<TMP_Text>();
