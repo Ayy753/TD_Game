@@ -1,6 +1,7 @@
 namespace DefaultNamespace.SoundSystem {
 
     using DefaultNamespace.EffectSystem;
+    using DefaultNamespace.GUI;
     using UnityEngine;
 
     public enum SoundType {
