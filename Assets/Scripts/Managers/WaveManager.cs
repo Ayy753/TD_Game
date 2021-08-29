@@ -224,8 +224,8 @@ namespace DefaultNamespace {
                 StopActiveWaves();
                 ChangeState(WaveState.Waiting);
                 ClearActiveEnemies();
-                UpdateEnemiesRemainingLabel();
                 ApplyWaveTerminationPenalties();
+                UpdateEnemiesRemainingLabel();
             }
         }
 
