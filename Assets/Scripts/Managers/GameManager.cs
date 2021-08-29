@@ -163,8 +163,13 @@ namespace DefaultNamespace {
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
-            if (arg.NewState == WaveState.LastWaveFinished) {
-                GameWon();
+            switch (arg.NewState) {
+                case WaveState.Waiting:
+                    SetGameSpeed(MIN_GAME_SPEED);
+                    break;
+                case WaveState.LastWaveFinished:
+                    GameWon();
+                    break;
             }
         }
 
