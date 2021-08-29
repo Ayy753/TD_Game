@@ -192,31 +192,40 @@ namespace DefaultNamespace {
         }
 
         private void ChangeState(WaveState state) {
-            if (OnWaveStateChanged != null) {
-                OnWaveStateChanged.Invoke(this, new WaveStateChangedEventArgs(state));
+            switch (state) {
+                case WaveState.Waiting:
+                    asyncProcessor.StopCoroutine(nextWaveCountDown);
+                    OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(timeBetweenWaves));
+                    nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
+                    break;
+                case WaveState.WaveInProgress:
+                    asyncProcessor.StopCoroutine(nextWaveCountDown);
+                    OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
+                    OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
+                    UpdateEnemiesRemainingLabel();
+                    break;
+                case WaveState.LastWaveFinished:
+                    break;
             }
+                
             currentState = state;
+            OnWaveStateChanged?.Invoke(this, new WaveStateChangedEventArgs(state));
         }
 
         public void StartNextWave() {
             if (mostRecentWaveNum < NumberOfWaves) {
-                asyncProcessor.StopCoroutine(nextWaveCountDown);
-                OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
                 waveCoroutines.Add(asyncProcessor.StartCoroutine(LaunchWave(mostRecentWaveNum)));
                 messageSystem.DisplayMessage("Starting wave " + mostRecentWaveNum, Color.white, 1f);
-                OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
-                UpdateEnemiesRemainingLabel();
             }
         }
 
         public void EndActiveWaves() {
             if (currentState == WaveState.WaveInProgress) {
                 StopActiveWaves();
-                ApplyWaveTerminationPenalties();
-                ClearActiveEnemies();
                 ChangeState(WaveState.Waiting);
-
+                ClearActiveEnemies();
                 UpdateEnemiesRemainingLabel();
+                ApplyWaveTerminationPenalties();
             }
         }
 

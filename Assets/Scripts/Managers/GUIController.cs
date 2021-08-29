@@ -157,9 +157,11 @@ namespace DefaultNamespace.GUI {
                     break;
                 case GuiState.GameLost:
                     ShowGameOverScreen();
+                    HideWaveReportPanel();
                     break;
                 case GuiState.GameWon:
                     ShowGameWonScreen();
+                    HideWaveReportPanel();
                     break;
                 case GuiState.Paused:
                     ShowPausePanel();
