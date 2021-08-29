@@ -1,9 +1,19 @@
 namespace DefaultNamespace.GUI {
 
-    /// <summary>
-    /// Manages panels and label displays 
-    /// </summary>
+    using System;
+
+    public class GuiStateChangedEventArgs : EventArgs {
+        public GuiState NewState { get; private set; }
+
+        public GuiStateChangedEventArgs(GuiState newState) {
+            NewState = newState;
+        }
+    }
+
     public interface IGUIManager {
+        public delegate void GuiStateChangedEventHandler(object sender, GuiStateChangedEventArgs args);
+        public event GuiStateChangedEventHandler OnGuiStateChanged;
+
         public void UpdateGoldLabel(float gold);
         public void UpdateLivesLabel(int lives);
         public void ShowGameOverScreen();

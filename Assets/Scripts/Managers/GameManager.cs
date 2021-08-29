@@ -43,6 +43,7 @@ namespace DefaultNamespace {
     public class GameManager : IInitializable, IDisposable {
         readonly IMessageSystem messageSystem;
         readonly IWaveManager waveManager;
+        readonly IGUIManager guiController;
 
         public int Lives { get; private set; }
         public GameState CurrentState { get; private set; }
@@ -58,9 +59,10 @@ namespace DefaultNamespace {
         public static event EventHandler<OnLivesChangedEventArgs> OnLivesChanged;
         public static event EventHandler<OnGameSpeedChangedEventArgs> OnGameSpeedChanged;
 
-        public GameManager(IMessageSystem messageSystem, IWaveManager waveManager) {
+        public GameManager(IMessageSystem messageSystem, IWaveManager waveManager, IGUIManager guiController) {
             this.messageSystem = messageSystem;
             this.waveManager = waveManager;
+            this.guiController = guiController;
         }
 
         public void Initialize() {
@@ -71,6 +73,7 @@ namespace DefaultNamespace {
             waveManager.OnWaveStateChanged += HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave += WaveManager_OnPlayerEndedWave;
             SettingsPanel.OnTargetFpsChanged += SettingsPanel_OnTargetFpsChanged;
+            guiController.OnGuiStateChanged += GuiController_OnGuiStateChanged;
 
             SetGameSpeed(MIN_GAME_SPEED);
 
@@ -93,6 +96,7 @@ namespace DefaultNamespace {
             waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave -= WaveManager_OnPlayerEndedWave;
             SettingsPanel.OnTargetFpsChanged -= SettingsPanel_OnTargetFpsChanged;
+            guiController.OnGuiStateChanged -= GuiController_OnGuiStateChanged;
         }
 
         private void HandlekeyboardInput(Command command) {
@@ -169,6 +173,17 @@ namespace DefaultNamespace {
                     break;
                 case WaveState.LastWaveFinished:
                     GameWon();
+                    break;
+            }
+        }
+
+        private void GuiController_OnGuiStateChanged(object sender, GuiStateChangedEventArgs args) {
+            switch (args.NewState) {
+                case GuiState.Idle:
+                    Time.timeScale = currentGameSpeed;
+                    break;
+                case GuiState.Menu:
+                    Time.timeScale = 0;
                     break;
             }
         }

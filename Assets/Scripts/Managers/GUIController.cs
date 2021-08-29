@@ -28,6 +28,8 @@ namespace DefaultNamespace.GUI {
 
         private GuiState currentState;
 
+        public event IGUIManager.GuiStateChangedEventHandler OnGuiStateChanged;
+        
         public GUIController(IWaveManager waveManager) {
             Debug.Log("GUIController constuctor");
             this.waveManager = waveManager;
@@ -168,7 +170,7 @@ namespace DefaultNamespace.GUI {
                     break;
             }
 
-            Debug.Log("set state to " + currentState);
+            OnGuiStateChanged?.Invoke(this, new GuiStateChangedEventArgs(currentState));
         }
 
         private void GameManager_OnLivesChanged(object sender, OnLivesChangedEventArgs e) {
