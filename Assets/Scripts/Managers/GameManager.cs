@@ -44,16 +44,15 @@ namespace DefaultNamespace {
         readonly IMessageSystem messageSystem;
         readonly IWaveManager waveManager;
 
-        public int Lives { get; private set; } = STARTING_LIVES;
-        public GameState CurrentState { get; private set; } = GameState.Running;
+        public int Lives { get; private set; }
+        public GameState CurrentState { get; private set; }
 
         private const int STARTING_LIVES = 25;
         private const float MIN_GAME_SPEED = 1f;
         private const float MAX_GAME_SPEED = 3f;
         private const float GAME_SPEED_INCREMENT = 1f;
-        private const int DEFAULT_FRAMERATE = 60;
 
-        private float currentGameSpeed;
+        private float currentGameSpeed = MIN_GAME_SPEED;
 
         public static event EventHandler<OnGameStateChangedEventArgs> OnGameStateChanged;
         public static event EventHandler<OnLivesChangedEventArgs> OnLivesChanged;
@@ -65,13 +64,27 @@ namespace DefaultNamespace {
         }
 
         public void Initialize() {
+            Debug.Log("GameManager initializing");
+
             Enemy.OnEnemyReachedGate += HandleEnemyReachedGate;
             InputHandler.OnCommandEntered += HandlekeyboardInput;
             waveManager.OnWaveStateChanged += HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave += WaveManager_OnPlayerEndedWave;
             SettingsPanel.OnTargetFpsChanged += SettingsPanel_OnTargetFpsChanged;
 
-            Debug.Log("GameManager initializing");
+            SetGameSpeed(MIN_GAME_SPEED);
+
+            //  TODO: Fix this
+            //  Currently GuiControler responds to game state changing to 'Running' by disabling the 
+            //  wave panel before WaveReportPanel script is instantiated/initialized, causing an exception.
+            //  Therefore we need to initialize GameManager without having it fire an OnStateChanged event
+
+            //  Set state without firing OnStateChanged 
+            CurrentState = GameState.Running;
+
+            //  Initialize GUI lives label without calling GameContinued and having it fire OnStateChanged 
+            Lives = STARTING_LIVES;
+            OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));
         }
 
         public void Dispose() {

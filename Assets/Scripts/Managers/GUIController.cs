@@ -111,9 +111,11 @@ namespace DefaultNamespace.GUI {
             switch (args.NewState) {
                 case WaveState.Waiting:
                     SetState(GuiState.WaveReport);
+                    UnlockBuildMenu();
                     break;
                 case WaveState.WaveInProgress:
                     SetState(GuiState.Idle);
+                    LockBuildMenu();
                     break;
             }
         }
