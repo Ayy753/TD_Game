@@ -70,7 +70,7 @@ namespace DefaultNamespace.GUI {
             btnToggleWaveReport.onClick.AddListener(delegate { guiController.ToggleWaveReportPanel(); });
             btnCloseWaveReport.onClick.AddListener(delegate { guiController.HideWaveReportPanel(); });
             btnEndWave.onClick.AddListener(delegate { waveManager.EndActiveWaves(); });
-            btnSettings.onClick.AddListener(delegate { guiController.ShowSettingsPanel(); });
+            btnSettings.onClick.AddListener(delegate { guiController.OpenSettingsPanel(); });
         }
 
         public void EnterBuildMode(StructureData structure) {

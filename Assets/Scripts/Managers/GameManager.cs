@@ -44,8 +44,8 @@ namespace DefaultNamespace {
         readonly IMessageSystem messageSystem;
         readonly IWaveManager waveManager;
 
-        public int Lives { get; private set; }
-        public GameState CurrentState { get; private set; }
+        public int Lives { get; private set; } = STARTING_LIVES;
+        public GameState CurrentState { get; private set; } = GameState.Running;
 
         private const int STARTING_LIVES = 25;
         private const float MIN_GAME_SPEED = 1f;
@@ -72,10 +72,6 @@ namespace DefaultNamespace {
             SettingsPanel.OnTargetFpsChanged += SettingsPanel_OnTargetFpsChanged;
 
             Debug.Log("GameManager initializing");
-            GainLives(STARTING_LIVES);
-            SetGameSpeed(MIN_GAME_SPEED);
-            SetState(GameState.Running);
-            SetTargetFramerate(DEFAULT_FRAMERATE);
         }
 
         public void Dispose() {
@@ -130,18 +126,20 @@ namespace DefaultNamespace {
         }
 
         public void GainLife() {
+            int prevLives = Lives;
             Lives += 1;
             messageSystem.DisplayMessage("+1 life", Color.green);
-            if (Lives > 0) {
+            if (prevLives <= 0 && Lives > 0) {
                 GameContinued();
             }
             OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));
         }
 
         public void GainLives(int numLives) {
+            int prevLives = Lives;
             Lives += numLives;
             messageSystem.DisplayMessage($"+{numLives} lives", Color.red);
-            if (Lives > 0) {
+            if (prevLives <= 0 && Lives > 0) {
                 GameContinued();
             }
             OnLivesChanged?.Invoke(null, new OnLivesChangedEventArgs(Lives));

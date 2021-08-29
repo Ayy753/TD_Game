@@ -7,11 +7,13 @@ namespace DefaultNamespace.GUI {
     using Zenject;
 
     public enum GuiState {
-        None,
+        Idle,
         WaveReport,
         Menu,
         Settings,
-        GameEnded
+        GameLost,
+        GameWon,
+        Paused
     }
 
     public class GUIController : IGUIManager, IInitializable, IDisposable {
@@ -44,7 +46,7 @@ namespace DefaultNamespace.GUI {
             InitializeLabels();
             InitializePanels();
 
-            SetState(GuiState.None);
+            SetState(GuiState.WaveReport);
         }
 
         public void Dispose() {
@@ -91,20 +93,78 @@ namespace DefaultNamespace.GUI {
         private void GameManager_OnGameStateChanged(object sender, OnGameStateChangedEventArgs e) {
             switch (e.NewState) {
                 case GameState.Running:
-                    HidePausePanel();
+                    SetState(GuiState.Idle);
                     break;
                 case GameState.Paused:
-                    ShowPausePanel();
+                    SetState(GuiState.Paused);
                     break;
                 case GameState.GameLost:
-                    HideWaveReportPanel();
-                    ShowGameOverScreen();
+                    SetState(GuiState.GameLost);
                     break;
                 case GameState.GameWon:
-                    HideWaveReportPanel();
-                    ShowGameWonScreen();
+                    SetState(GuiState.GameWon);
                     break;
             }
+        }
+
+        private void WaveManager_OnWaveStateChanged(object sender, WaveStateChangedEventArgs args) {
+            switch (args.NewState) {
+                case WaveState.Waiting:
+                    SetState(GuiState.WaveReport);
+                    break;
+                case WaveState.WaveInProgress:
+                    SetState(GuiState.Idle);
+                    break;
+            }
+        }
+
+        private void InputHandler_OnCommandEntered(Command command) {
+            if (command == Command.ToggleMenu) {
+                switch (currentState) {
+                    case GuiState.Idle:
+                    case GuiState.Settings:
+                        SetState(GuiState.Menu);
+                        break;
+                    case GuiState.WaveReport:
+                    case GuiState.Menu:
+                        SetState(GuiState.Idle);
+                        break;
+                }
+            }
+        }
+
+        private void SetState(GuiState state) {
+            currentState = state;
+
+            switch (state) {
+                case GuiState.Idle:
+                    HidePausePanel();
+                    HideWaveReportPanel();
+                    HideMenu();
+                    break;
+                case GuiState.WaveReport:
+                    ShowWaveReportPanel();
+                    break;
+                case GuiState.Menu:
+                    HideSettingsPanel();
+                    ShowMenu();
+                    break;
+                case GuiState.Settings:
+                    HideMenu();
+                    ShowSettingsPanel();
+                    break;
+                case GuiState.GameLost:
+                    ShowGameOverScreen();
+                    break;
+                case GuiState.GameWon:
+                    ShowGameWonScreen();
+                    break;
+                case GuiState.Paused:
+                    ShowPausePanel();
+                    break;
+            }
+
+            Debug.Log("set state to " + currentState);
         }
 
         private void GameManager_OnLivesChanged(object sender, OnLivesChangedEventArgs e) {
@@ -113,38 +173,6 @@ namespace DefaultNamespace.GUI {
 
         private void GameManager_OnGameSpeedChanged(object sender, OnGameSpeedChangedEventArgs e) {
             UpdateSpeedPanel(e.GameSpeed);
-        }
-
-        private void InputHandler_OnCommandEntered(Command command) {
-        if (command == Command.ToggleMenu) {
-                if (currentState == GuiState.WaveReport) {
-                    HideWaveReportPanel();
-                }
-                else if (currentState == GuiState.Settings) {
-                    HideSettingsPanel();
-                }
-                else if (currentState == GuiState.Menu) {
-                    HideMenu();
-                }
-                else if (currentState == GuiState.None) {
-                    ShowMenu();
-                }
-            }
-        }
-
-        private void WaveManager_OnWaveStateChanged(object sender, WaveStateChangedEventArgs args) {
-            if (currentState != GuiState.GameEnded) {
-                switch (args.NewState) {
-                    case WaveState.Waiting:
-                        ShowWaveReportPanel();
-                        UnlockBuildMenu();
-                        break;
-                    case WaveState.WaveInProgress:
-                        HideWaveReportPanel();
-                        LockBuildMenu();
-                        break;
-                }
-            }
         }
 
         private void WaveManager_OnEnemiesRemainingChanged(object sender, EnemiesRemainingEventArgs args) {
@@ -157,10 +185,6 @@ namespace DefaultNamespace.GUI {
 
         private void WaveManager_OnCountDownChanged(object sender, WaveCountdownEventArgs args) {
             UpdateWaveCountdown(args.CountDown);
-        }
-
-        private void SetState(GuiState state) {
-            currentState = state;
         }
 
         public void UpdateGoldLabel(float gold) {
@@ -176,7 +200,6 @@ namespace DefaultNamespace.GUI {
             pnlGameEnded.SetActive(true);
             pnlGameOver.SetActive(true);
             pnlGameWon.SetActive(false);
-            SetState(GuiState.GameEnded);
         }
 
         public void ShowGameWonScreen() {
@@ -184,7 +207,6 @@ namespace DefaultNamespace.GUI {
             pnlGameEnded.SetActive(true);
             pnlGameWon.SetActive(true);
             pnlGameOver.SetActive(false);
-            SetState(GuiState.GameEnded);
         }
 
         public void HideGameEndedPanel() {
@@ -196,42 +218,40 @@ namespace DefaultNamespace.GUI {
         public void ShowMenu() {
             pnlGameEnded.SetActive(true);
             pnlMenu.SetActive(true);
-            SetState(GuiState.Menu);
         }
 
         public void HideMenu() {
             pnlGameEnded.SetActive(false);
             pnlMenu.SetActive(false);
-            SetState(GuiState.None);
         }
 
         public void ShowWaveReportPanel() {
             pnlWaveReport.SetActive(true);
-            SetState(GuiState.WaveReport);
         }
 
         public void HideWaveReportPanel() {
             pnlWaveReport.SetActive(false);
-            SetState(GuiState.None);
         }
 
         public void ToggleWaveReportPanel() {
             if (pnlWaveReport.activeInHierarchy) {
-                HideWaveReportPanel();
+                SetState(GuiState.Idle);
             }
             else {
-                ShowWaveReportPanel();
+                SetState(GuiState.WaveReport);
             }
+        }
+
+        public void OpenSettingsPanel() {
+            SetState(GuiState.Settings);
         }
 
         public void ShowSettingsPanel() {
             pnlSettings.SetActive(true);
-            SetState(GuiState.Settings);
         }
 
         public void HideSettingsPanel() {
             pnlSettings.SetActive(false);
-            SetState(GuiState.Menu);
         }
 
         public void UpdateWaveNumber(int current, int total) {
