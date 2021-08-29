@@ -26,5 +26,6 @@ namespace DefaultNamespace.GUI {
         public void ShowSettingsPanel();
         public void HideSettingsPanel();
         void OpenSettingsPanel();
+        void CloseWaveReportPanel();
     }
 }

@@ -68,7 +68,7 @@ namespace DefaultNamespace.GUI {
             btnExit.onClick.AddListener(delegate { gameManager.ExitGame(); });
             btnDemolish.onClick.AddListener(delegate { buildManager.EnterDemolishMode(); });
             btnToggleWaveReport.onClick.AddListener(delegate { guiController.ToggleWaveReportPanel(); });
-            btnCloseWaveReport.onClick.AddListener(delegate { guiController.HideWaveReportPanel(); });
+            btnCloseWaveReport.onClick.AddListener(delegate { guiController.CloseWaveReportPanel(); });
             btnEndWave.onClick.AddListener(delegate { waveManager.EndActiveWaves(); });
             btnSettings.onClick.AddListener(delegate { guiController.OpenSettingsPanel(); });
         }

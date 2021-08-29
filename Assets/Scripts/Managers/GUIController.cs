@@ -244,6 +244,10 @@ namespace DefaultNamespace.GUI {
             }
         }
 
+        public void CloseWaveReportPanel() {
+            SetState(GuiState.Idle);
+        }
+
         public void OpenSettingsPanel() {
             SetState(GuiState.Settings);
         }
