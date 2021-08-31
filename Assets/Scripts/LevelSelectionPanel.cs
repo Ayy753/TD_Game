@@ -30,6 +30,7 @@ namespace DefaultNamespace.GUI {
                 txtLevelName.text = level.LevelName.ToString();
                 button.transform.SetParent(pnlGrid);
                 button.GetComponent<Button>().onClick.AddListener(delegate { LoadLevel(level.LevelName); });
+                button.transform.localScale = Vector3.one;
             }
         }
 
