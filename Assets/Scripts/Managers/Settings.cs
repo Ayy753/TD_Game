@@ -27,9 +27,6 @@ namespace DefaultNamespace.IO {
 
         const int DEFAULT_FPS = 60;
         const float DEFAULT_VOLUME = 100f;
-        const int DEFAULT_SCREEN_WIDTH = 1980;
-        const int DEFAULT_SCREEN_HEIGHT = 1080;
-        const int DEFAULT_REFRESH_RATE = 60;
 
         private bool fullscreenEnabled;
 
@@ -40,12 +37,14 @@ namespace DefaultNamespace.IO {
             SettingsPanel.OnVolumeChanged += SettingsPanel_OnVolumeChanged;
             SettingsPanel.OnResolutionChanged += SettingsPanel_OnResolutionChanged;
             SettingsPanel.OnFullscreenChanged += SettingsPanel_OnFullscreenChanged;
+            
+            Resolution currentResolution = Screen.currentResolution;
 
             int targetFps = PlayerPrefs.GetInt("FPS", DEFAULT_FPS);
             float volume = PlayerPrefs.GetFloat("Volume", DEFAULT_VOLUME);
-            int screenWidth = PlayerPrefs.GetInt("ScreenWidth", DEFAULT_SCREEN_WIDTH);
-            int screenHeight = PlayerPrefs.GetInt("ScreenHeight", DEFAULT_SCREEN_HEIGHT);
-            int refreshRate = PlayerPrefs.GetInt("RefreshRate", DEFAULT_REFRESH_RATE);
+            int screenWidth = PlayerPrefs.GetInt("ScreenWidth", currentResolution.width);
+            int screenHeight = PlayerPrefs.GetInt("ScreenHeight", currentResolution.height);
+            int refreshRate = PlayerPrefs.GetInt("RefreshRate", currentResolution.refreshRate);
             
             int fullscreenInt = PlayerPrefs.GetInt("Fullscreen", 1);
             if (fullscreenInt == 1) 
