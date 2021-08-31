@@ -7,17 +7,15 @@ namespace DefaultNamespace.GUI {
     using Zenject;
 
     public class ControlsPanel : IInitializable {
-        InputHandler inputHandler;
-        Transform pnlControls;
-        GameObject controlPanelPrefab;
+        readonly InputHandler inputHandler;
 
         public ControlsPanel(InputHandler inputHandler) {
             this.inputHandler = inputHandler;
         }
 
         public void Initialize() {
-            pnlControls = GameObject.Find("pnlControls").transform;
-            controlPanelPrefab = Resources.Load<GameObject>("Prefabs/pnlControl");
+            Transform pnlControls = GameObject.Find("pnlControls").transform;
+            GameObject controlPanelPrefab = Resources.Load<GameObject>("Prefabs/pnlControl");
             GameObject newControlPanel;
             TMP_Text txtControlName, txtControlHotkey;
 
@@ -28,6 +26,7 @@ namespace DefaultNamespace.GUI {
                 txtControlName.text = command.ToString();
                 txtControlHotkey.text = inputHandler.GetHotkeyByCommand(command).ToString();
                 newControlPanel.transform.SetParent(pnlControls);
+                newControlPanel.transform.localScale = Vector3.one;
             }
         }
     }
