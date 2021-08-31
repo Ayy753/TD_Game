@@ -223,8 +223,8 @@ namespace DefaultNamespace {
             if (currentState == WaveState.WaveInProgress) {
                 StopActiveWaves();
                 ChangeState(WaveState.Waiting);
-                ClearActiveEnemies();
                 ApplyWaveTerminationPenalties();
+                ClearActiveEnemies();
                 UpdateEnemiesRemainingLabel();
             }
         }
