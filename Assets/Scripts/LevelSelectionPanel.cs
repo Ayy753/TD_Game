@@ -8,7 +8,7 @@ namespace DefaultNamespace.GUI {
     using Zenject;
 
     public class LevelSelectionPanel : IInitializable {
-        private LevelManager levelManager;
+        private readonly LevelManager levelManager;
 
         public LevelSelectionPanel(LevelManager levelManager) {
             this.levelManager = levelManager;

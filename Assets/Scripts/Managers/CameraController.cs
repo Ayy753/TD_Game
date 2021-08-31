@@ -54,7 +54,7 @@ namespace DefaultNamespace {
             //  Otherwise if user is focusing on a target
             else if (focusedTarget != null) {
                 //  If focused target becomes inactive, clear it to prevent reused enemies from being focused when respawned
-                if (focusedTarget.gameObject.activeInHierarchy == false) {
+                if (!focusedTarget.gameObject.activeInHierarchy) {
                     focusedTarget = null;
                 }
                 else {
@@ -63,7 +63,7 @@ namespace DefaultNamespace {
                 }
             }
 
-            if (EventSystem.current.IsPointerOverGameObject() == false && Input.mouseScrollDelta.y != 0) {
+            if (!EventSystem.current.IsPointerOverGameObject() && Input.mouseScrollDelta.y != 0) {
                 HandleScroll();
             }
         }

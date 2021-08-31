@@ -59,8 +59,8 @@ namespace DefaultNamespace {
         /// <param name="position"></param>
         /// <returns></returns>
         private bool IsValidTile(Vector3Int position) {
-            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) != true &&
-                mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position) == true) {
+            if (!mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) &&
+                mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position)) {
                 return true;
             }
             else {
@@ -132,7 +132,7 @@ namespace DefaultNamespace {
 
                 bool isInOpenList = CheckIfPositionIsInOpenListAndUpdateFScore(neighbourCoordinate, parent, openList, neighFCost);
 
-                if (isInOpenList == false) {
+                if (!isInOpenList) {
                     PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
                     openList.Add(successor);
                 }
@@ -220,7 +220,7 @@ namespace DefaultNamespace {
                                 }
 
                                 //  Otherwise, process this tile 
-                                if (skipSuccessor == false) {
+                                if (!skipSuccessor) {
                                     float tileCost = mapManager.GetTileCost(neighbourCoordinate);
                                     float neighGCost = tileCost + parent.Gcost;
                                     float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
@@ -240,7 +240,7 @@ namespace DefaultNamespace {
                                     }
 
                                     //  Otherwise add this successor to openList
-                                    if (skipSuccessor == false) {
+                                    if (!skipSuccessor) {
                                         PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
                                         openList.Add(successor);
                                     }
@@ -313,7 +313,7 @@ namespace DefaultNamespace {
                                 }
 
                                 //  Otherwise, process this tile 
-                                if (skipSuccessor == false) {
+                                if (!skipSuccessor) {
                                     float tileCost = mapManager.GetTileCost(neighbourCoordinate);
                                     float neighGCost = tileCost + parent.Gcost;
                                     float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
@@ -333,7 +333,7 @@ namespace DefaultNamespace {
                                     }
 
                                     //  Otherwise add this successor to openList
-                                    if (skipSuccessor == false) {
+                                    if (!skipSuccessor) {
                                         PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
                                         openList.Add(successor);
                                     }
@@ -403,7 +403,7 @@ namespace DefaultNamespace {
                                     }
                                 }
 
-                                if (inClosedList == false) {
+                                if (!inClosedList) {
                                     //  Might add some kind of heristic value later for tiebreaking
                                     float fScore = shortest.Fcost + tileCost;
 
@@ -418,7 +418,7 @@ namespace DefaultNamespace {
                                         }
                                     }
 
-                                    if (inOpenList == false) {
+                                    if (!inOpenList) {
                                         openList.Add(new PathNode(neighbour, fScore, 0, shortest));
                                     }
                                 }

@@ -13,7 +13,7 @@ namespace DefaultNamespace {
     /// </summary>
     public class LevelManager : IInitializable, IDisposable {
         List<LevelData> levelData;
-        private string filePath = "LevelData/PlayerProgress";
+        private readonly string filePath = "LevelData/PlayerProgress";
         public State CurrentState { get; private set; }
         public string CurrentLevelName { get; private set; }
 

@@ -7,8 +7,8 @@ namespace DefaultNamespace.GUI {
     using Zenject;
 
     public class TowerPanel : IInitializable {
-        IWallet wallet;
-        BuildManager buildManager;
+        readonly IWallet wallet;
+        readonly BuildManager buildManager;
 
         GameObject pnlTowerPanel;
         TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue, txtTowerDescription;
