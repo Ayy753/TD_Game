@@ -59,10 +59,11 @@ namespace DefaultNamespace {
         /// Save player's progres data
         /// </summary>
         private void SaveLevelData() {
-            Root root = new Root();
-            root.LevelData = levelData;
-            string jsonText = JsonConvert.SerializeObject(root);
-            File.WriteAllText(Application.dataPath + "/Resources/" + filePath + ".txt", jsonText);
+            //Root root = new Root();
+            //root.LevelData = levelData;
+            //string jsonText = JsonConvert.SerializeObject(root);
+            //File.WriteAllText(Application.dataPath + "/Resources/" + filePath + ".txt", jsonText);
+            Debug.LogWarning("Player progress save not implemented");
         }
 
         /// <summary>
