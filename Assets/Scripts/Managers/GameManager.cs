@@ -72,7 +72,6 @@ namespace DefaultNamespace {
             InputHandler.OnCommandEntered += HandlekeyboardInput;
             waveManager.OnWaveStateChanged += HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave += WaveManager_OnPlayerEndedWave;
-            SettingsPanel.OnTargetFpsChanged += SettingsPanel_OnTargetFpsChanged;
             guiController.OnGuiStateChanged += GuiController_OnGuiStateChanged;
 
             SetGameSpeed(MIN_GAME_SPEED);
@@ -95,7 +94,6 @@ namespace DefaultNamespace {
             InputHandler.OnCommandEntered -= HandlekeyboardInput;
             waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
             waveManager.OnPlayerEndedWave -= WaveManager_OnPlayerEndedWave;
-            SettingsPanel.OnTargetFpsChanged -= SettingsPanel_OnTargetFpsChanged;
             guiController.OnGuiStateChanged -= GuiController_OnGuiStateChanged;
         }
 
@@ -188,10 +186,6 @@ namespace DefaultNamespace {
             }
         }
 
-        private void SettingsPanel_OnTargetFpsChanged(object sender, TargetFpsChangedEventArgs e) {
-            SetTargetFramerate(e.TargetFps);
-        }
-
         private void GameLost() {
             SetState(GameState.GameLost);
         }
@@ -246,11 +240,6 @@ namespace DefaultNamespace {
             if (!HasGameEnded() ) {
                 SetState(CurrentState == GameState.Paused ? GameState.Running : GameState.Paused);
             }
-        }
-
-        private void SetTargetFramerate(int framerate) {
-            QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = framerate;
         }
 
         public void ExitGame() {

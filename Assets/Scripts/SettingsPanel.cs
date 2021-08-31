@@ -15,7 +15,7 @@ namespace DefaultNamespace.GUI {
         }
     }
 
-     public class TargetFpsChangedEventArgs : EventArgs {
+    public class TargetFpsChangedEventArgs : EventArgs {
         public int TargetFps { get; private set; }
 
         public TargetFpsChangedEventArgs(int targetFps) {
@@ -23,14 +23,39 @@ namespace DefaultNamespace.GUI {
         }
     }
 
+    public class ScreenSettingsChangedEventArgs : EventArgs {
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public int RefreshRate { get; private set; }
+
+        public ScreenSettingsChangedEventArgs(int width, int height, int refreshRate) {
+            Width = width;
+            Height = height;
+            RefreshRate = refreshRate;
+        }
+    }
+
+    public class FullscreenToggleChangedEventArgs : EventArgs {
+        public bool Fullscreen { get; private set; }
+        
+        public FullscreenToggleChangedEventArgs(bool fullscreen) {
+            Fullscreen = fullscreen;
+        }
+    }
+
     public class SettingsPanel : IInitializable, IDisposable {
 
         private Slider volumeSlider;
-        private Dropdown fpsDropdown;
+        private Dropdown fpsDropdown, resolutionDropdown;
         private TMP_Text txtVolume;
+        private Toggle fullscreenToggle;
+
+        private readonly Resolution[] resolutions = Screen.resolutions;
 
         public static event EventHandler<VolumeChangedEventArgs> OnVolumeChanged;
         public static event EventHandler<TargetFpsChangedEventArgs> OnTargetFpsChanged;
+        public static event EventHandler<ScreenSettingsChangedEventArgs> OnResolutionChanged;
+        public static event EventHandler<FullscreenToggleChangedEventArgs> OnFullscreenChanged;
 
         public void Initialize() {
             Settings.OnSettingsLoaded += Settings_OnSettingsLoaded;
@@ -38,18 +63,44 @@ namespace DefaultNamespace.GUI {
             volumeSlider = GameObject.Find("VolumeSlider").GetComponent<Slider>();
             fpsDropdown = GameObject.Find("FpsDropDownMenu").GetComponent<Dropdown>();
             txtVolume = GameObject.Find("txtVolume").GetComponent<TMP_Text>();
+            resolutionDropdown = GameObject.Find("dropdownResolution").GetComponent<Dropdown>();
+            fullscreenToggle = GameObject.Find("toggleFullscreen").GetComponent<Toggle>();
 
             volumeSlider.onValueChanged.AddListener(delegate { OnVolumeSliderChanged(); });
             fpsDropdown.onValueChanged.AddListener(delegate { OnFpsDropdownChanged(); });
+            resolutionDropdown.onValueChanged.AddListener( delegate { OnResolutionDropdownChanged(); });
+            fullscreenToggle.onValueChanged.AddListener( delegate { OnFullscreenToggled(); });
+
+            InitializeResolutionMenu();
         }
 
         public void Dispose() {
             Settings.OnSettingsLoaded -= Settings_OnSettingsLoaded;
         }
 
+        private void InitializeResolutionMenu() {
+            foreach (Resolution resolution in resolutions) {
+                resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
+            }
+        }
+
         private void Settings_OnSettingsLoaded(object sender, SettingsEventArgs e) {
             volumeSlider.value = e.Volume;
             fpsDropdown.value = GetFpsDropdownIndex(e.TargetFps);
+
+            fullscreenToggle.isOn = e.Fullscreen;
+
+            int width = e.ScreenWidth;
+            int height = e.ScreenHeight;
+            int refreshRate = e.RefreshRate;
+
+            Resolution resolution;
+            for (int i = 0; i < resolutions.Length; i++) {
+                resolution = resolutions[i];
+                if (resolution.width == width && resolution.height == height && resolution.refreshRate == refreshRate) {
+                    resolutionDropdown.value = i;
+                }
+            }
 
             UpdateVolumeLabel();
         }
@@ -87,6 +138,16 @@ namespace DefaultNamespace.GUI {
             catch (Exception e) {
                 Debug.LogError(e);
             }
+        }
+
+        private void OnResolutionDropdownChanged() {
+            int index = resolutionDropdown.value;
+            Resolution resolution = resolutions[index];
+            OnResolutionChanged?.Invoke(null, new ScreenSettingsChangedEventArgs(resolution.width, resolution.height, resolution.refreshRate));
+        }
+
+        private void OnFullscreenToggled() {
+            OnFullscreenChanged?.Invoke(null, new FullscreenToggleChangedEventArgs(fullscreenToggle.isOn));
         }
     }
 }
