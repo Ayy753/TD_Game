@@ -176,7 +176,7 @@ namespace DefaultNamespace {
         /// <param name="waveNum"></param>
         /// <returns></returns>
         private float CalculateWaveBuffPercentage(int waveNum) {
-            return (float)(Math.Pow(waveNum, 2) / 20);
+            return (float)(Math.Pow(waveNum, 2) / 25);
         }
 
         /// <summary>

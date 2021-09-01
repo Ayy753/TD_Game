@@ -9,7 +9,7 @@ namespace DefaultNamespace {
         private EffectGroup effectGroup;
         private bool targetDestroyed;
         private bool effectAlreadyUsed;
-        private const float PROJECTILE_SPEED = 5F;
+        private const float PROJECTILE_SPEED = 15F;
 
         private void Update() {
             MoveTowardsDestination();

@@ -18,8 +18,7 @@ MonoBehaviour:
     type: 3}
   <Type>k__BackingField: 3
   <Range>k__BackingField: 5
-  <ReloadTime>k__BackingField: 2
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
-  <Cost>k__BackingField: 125
+  <Cost>k__BackingField: 100
   <ProjectileName>k__BackingField: Frost Projectile
