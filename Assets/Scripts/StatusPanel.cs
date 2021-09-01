@@ -40,38 +40,40 @@ namespace DefaultNamespace.GUI {
             txtName.text = targetUnit.GetName();
             txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
             txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
-            txtArmor.text = targetStatus.Armor.Value.ToString();
-            txtFireResist.text = targetStatus.FireResist.Value.ToString();
-            txtColdResist.text = targetStatus.ColdResist.Value.ToString();
-            txtSpeed.text = targetStatus.Speed.Value.ToString();
-            txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
-            txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
+            txtArmor.text = Math.Round(targetStatus.Armor.Value, 1).ToString();
+            txtFireResist.text = Math.Round(targetStatus.FireResist.Value, 1).ToString();
+            txtColdResist.text = Math.Round(targetStatus.ColdResist.Value, 1).ToString();
+            txtSpeed.text = Math.Round(targetStatus.Speed.Value, 1).ToString();
+            txtPoisonResist.text = Math.Round(targetStatus.PoisonResist.Value, 1).ToString();
+            txtLightningResist.text = Math.Round(targetStatus.LightningResist.Value, 1).ToString();
             txtUnitDescription.text = targetUnit.GetDescription();
         }
 
         private void UpdateStatusPanel(StatType statType, float amount) {
+            string statValueRounded = Math.Round(targetStatus.GetStat(statType).Value, 1).ToString();
+
             switch (statType) {
                 case StatType.Armor:
-                    txtArmor.text = targetStatus.Armor.Value.ToString();
+                    txtArmor.text = statValueRounded;
                     break;
                 case StatType.ColdResist:
-                    txtColdResist.text = targetStatus.ColdResist.Value.ToString();
+                    txtColdResist.text = statValueRounded;
                     break;
                 case StatType.FireResist:
-                    txtFireResist.text = targetStatus.FireResist.Value.ToString();
+                    txtFireResist.text = statValueRounded;
                     break;
                 case StatType.PoisonResist:
-                    txtPoisonResist.text = targetStatus.PoisonResist.Value.ToString();
+                    txtPoisonResist.text = statValueRounded;
                     break;
                 case StatType.LightningResist:
-                    txtLightningResist.text = targetStatus.LightningResist.Value.ToString();
+                    txtLightningResist.text = statValueRounded;
                     break;
                 case StatType.Health:
-                    txtCurrentHealth.text = Math.Round(targetStatus.Health.Value, 1).ToString();
+                    txtCurrentHealth.text = statValueRounded;
                     txtMaxHealth.text = Math.Round(targetStatus.Health.MaxHealth, 1).ToString();
                     break;
                 case StatType.Speed:
-                    txtSpeed.text = targetStatus.Speed.Value.ToString();
+                    txtSpeed.text = statValueRounded;
                     break;
             }
         }
