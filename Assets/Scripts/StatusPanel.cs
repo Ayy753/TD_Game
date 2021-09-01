@@ -49,7 +49,15 @@ namespace DefaultNamespace.GUI {
             txtUnitDescription.text = targetUnit.GetDescription();
         }
 
-        private void UpdateStatusPanel(StatType statType, float amount) {
+        private void TargetStatus_OnStatusChanged(StatType statType, float amount) {
+            UpdateStatusPanel(statType);
+        }
+
+        private void TargetStatus_OnStatusCleared() {
+            ClearTarget();
+        }
+
+        private void UpdateStatusPanel(StatType statType) {
             string statValueRounded = Math.Round(targetStatus.GetStat(statType).Value, 1).ToString();
 
             switch (statType) {
@@ -91,14 +99,14 @@ namespace DefaultNamespace.GUI {
             healthBar.Initialize(targetStatus);
             PopulateStatusPanel();
 
-            targetStatus.OnStatusChanged += UpdateStatusPanel;
-            targetStatus.OnStatusCleared += ClearTarget;
+            targetStatus.OnStatusChanged += TargetStatus_OnStatusChanged;
+            targetStatus.OnStatusCleared += TargetStatus_OnStatusCleared;
         }
 
         public void ClearTarget() {
             if (targetStatus != null) {
-                targetStatus.OnStatusChanged -= UpdateStatusPanel;
-                targetStatus.OnStatusCleared -= ClearTarget;
+                targetStatus.OnStatusChanged -= TargetStatus_OnStatusChanged;
+                targetStatus.OnStatusCleared -= TargetStatus_OnStatusCleared;
             }
 
             pnlStausPanel.SetActive(false);
