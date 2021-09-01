@@ -23,10 +23,12 @@ namespace DefaultNamespace {
             this.effectGroup = effectGroup;
 
             Enemy.OnEnemyDied += Enemy_OnEnemyDied;
+            Enemy.OnEnemyReachedGate += Enemy_OnEnemyDied;
         }
 
         private void OnDisable() {
             Enemy.OnEnemyDied -= Enemy_OnEnemyDied;
+            Enemy.OnEnemyReachedGate -= Enemy_OnEnemyDied;
         }
 
         private void Enemy_OnEnemyDied(Enemy enemy) {
