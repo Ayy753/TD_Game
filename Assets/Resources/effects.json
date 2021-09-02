@@ -69,7 +69,7 @@
     },
 	{
       "name": "Sniper Projectile",
-      "description": "Deals physical damage",
+      "description": "Deals physical damage and reduces armor",
 	  "target type": "Individual",
 	  "sound type": "arrowHitFlesh",
 	  "cooldown" : 5,
@@ -78,7 +78,14 @@
           "type": "Damage",
           "damageType": "Physical",
           "potency": 20
-        }		
+        },
+		{
+          "type": "Debuff",
+          "statType": "Armor",
+          "potency": 5,
+          "duration": 9001,
+		  "resistType" : "Physical"
+        }
       ]
     },	
 	{
