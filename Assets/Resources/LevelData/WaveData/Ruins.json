@@ -32,6 +32,9 @@
 			{"EnemyType":"Fast", "NumEnemies":20, "TimebetweenSpawns":0.3},
 			{"EnemyType":"Fast", "NumEnemies":20, "TimebetweenSpawns":0.3},
 			{"EnemyType":"Fast", "NumEnemies":20, "TimebetweenSpawns":0.3}			
+		], "TimebetweenGroups" : 2},
+		{"Groups" : [
+			{"EnemyType":"GigaCrab", "NumEnemies":1, "TimebetweenSpawns":0.3}
 		], "TimebetweenGroups" : 2}
 	]	
 }

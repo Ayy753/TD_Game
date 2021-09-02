@@ -73,6 +73,9 @@ namespace DefaultNamespace {
                     case "StrongEnemy Variant":
                         enemyTypeToPrefab.Add(EnemyData.EnemyType.Strong, prefab);
                         break;
+                    case "GigaCrab Variant":
+                        enemyTypeToPrefab.Add(EnemyData.EnemyType.GigaCrab, prefab);
+                        break;
                     default:
                         throw new System.Exception(string.Format("Enemy prefab name \"{0}\" does not match any Enemy.Type values ", prefab.name));
                 }

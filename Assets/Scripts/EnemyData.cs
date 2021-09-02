@@ -12,7 +12,8 @@
         public enum EnemyType {
             Fast,
             Normal,
-            Strong
+            Strong,
+            GigaCrab
         }
 
         public override string ToString() {
