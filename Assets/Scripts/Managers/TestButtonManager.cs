@@ -24,6 +24,7 @@ namespace DefaultNamespace.GUI {
             Button btnSpawnNormal = GameObject.Find("btnSpawnNormalEnemy").GetComponent<Button>();
             Button btnSpawnStrong = GameObject.Find("btnSpawnStrongEnemy").GetComponent<Button>();
             Button btnSpawnGigaCrab = GameObject.Find("btnSpawnGigaCrab").GetComponent<Button>();
+            Button btnSpawnTrilobite = GameObject.Find("btnSpawnTrilobite").GetComponent<Button>();
             Button btnAddGold = GameObject.Find("btnAddGold").GetComponent<Button>();
             Button btnAddLife = GameObject.Find("btnAddLife").GetComponent<Button>();
             Button btnRemoveLife = GameObject.Find("btnRemoveLife").GetComponent<Button>();
@@ -32,6 +33,7 @@ namespace DefaultNamespace.GUI {
             btnSpawnNormal.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.Normal); });
             btnSpawnStrong.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.Strong); });
             btnSpawnGigaCrab.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.GigaCrab); });
+            btnSpawnTrilobite.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(EnemyData.EnemyType.Trilobite); });
             btnAddGold.onClick.AddListener(delegate { wallet.GainMoney(100); });
             btnAddLife.onClick.AddListener(delegate { gameManager.GainLife(); });
             btnRemoveLife.onClick.AddListener(delegate { gameManager.LoseLife(); });
