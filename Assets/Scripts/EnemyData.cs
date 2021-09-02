@@ -13,7 +13,8 @@
             Fast,
             Normal,
             Strong,
-            GigaCrab
+            GigaCrab,
+            Trilobite
         }
 
         public override string ToString() {

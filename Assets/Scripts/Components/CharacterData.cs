@@ -1,5 +1,6 @@
 namespace DefaultNamespace {
 
+    using DefaultNamespace.EffectSystem;
     using UnityEngine;
 
     [CreateAssetMenu(fileName = "New Character", menuName = "Character Data")]
@@ -11,17 +12,31 @@ namespace DefaultNamespace {
         [field: SerializeField] public float BaseLightningResist { get; private set; }
         [field: SerializeField] public float BaseArmor { get; private set; }
         [field: SerializeField] public float BaseSpeed { get; private set; }
+        [field: SerializeField] public string AbilityName { get; private set; }
+
+        public EffectGroup EffectGroup { get; private set; }
 
         public override string ToString() {
-            return string.Format("" +
-                "<b>Health</b>: {0}\n" +
-                "<b>FireResist</b>: {1}\n" +
-                "<b>ColdResist</b>: {2}\n" +
-                "<b>PoisonResist</b>: {3}\n" +
-                "<b>LightningResist</b>: {4}\n" +
-                "<b>Armor</b>: {5}\n" +
-                "<b>Speed</b>: {6}\n",
-                BaseHealth, BaseFireResist, BaseColdResist, BasePoisonResist, BaseLightningResist, BaseArmor, BaseSpeed);
+            string effectGroupInfo = EffectGroup == null ? "None" : EffectGroup.ToString();
+            string result = 
+                $"<b>Health</b>: {BaseHealth}\n" +
+                $"<b>FireResist</b>: {BaseFireResist}\n" +
+                $"<b>ColdResist</b>: {BaseColdResist}\n" +
+                $"<b>PoisonResist</b>: {BasePoisonResist}\n" +
+                $"<b>LightningResist</b>: {BaseLightningResist}\n" +
+                $"<b>Armor</b>: {BaseArmor}\n" +
+                $"<b>Speed</b>: {BaseSpeed}\n" +
+                $"<b>Ability</b>: {effectGroupInfo}";
+            return result;
+        }
+
+        public void SetEffectGroup(EffectGroup effectGroup) {
+            if (effectGroup.Type == TargetType.Individual) {
+                Debug.LogError("Individual targetting effects not supported");
+            }
+            else {
+                EffectGroup = effectGroup;
+            }
         }
     }
 }

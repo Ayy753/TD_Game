@@ -60,6 +60,14 @@ namespace DefaultNamespace {
             //  Link enemy types to prefabs
             for (int i = 0; i < enemyPrefabs.Length; i++) {
                 GameObject prefab = enemyPrefabs[i];
+                Enemy enemy = prefab.GetComponentInChildren<Enemy>();
+                
+                string abilityName = enemy.EnemyData.AbilityName;
+                if ( !string.IsNullOrEmpty(abilityName)) {
+                    EffectGroup effectGroup = effectParser.GetEffectGroup(abilityName);
+                    enemy.EnemyData.SetEffectGroup(effectGroup);
+                }
+
                 switch (prefab.name) {
                     case "BaseEnemy":
                         //  Ignore this because it does not get instantiated
@@ -75,6 +83,9 @@ namespace DefaultNamespace {
                         break;
                     case "GigaCrab Variant":
                         enemyTypeToPrefab.Add(EnemyData.EnemyType.GigaCrab, prefab);
+                        break;
+                    case "Trilobite Variant":
+                        enemyTypeToPrefab.Add(EnemyData.EnemyType.Trilobite, prefab);
                         break;
                     default:
                         throw new System.Exception(string.Format("Enemy prefab name \"{0}\" does not match any Enemy.Type values ", prefab.name));
