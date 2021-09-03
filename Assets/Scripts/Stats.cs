@@ -1,6 +1,16 @@
 namespace DefaultNamespace.StatusSystem {
 
     public class Resistance : Stat {
+        public override float Value {
+            get {
+                float effectiveValue = baseValue + modification;
+                if (effectiveValue < 0) {
+                    return 0;
+                }
+                else return effectiveValue; 
+            }
+        }
+
         public Resistance(float baseValue) {
             this.baseValue = baseValue;
         }
