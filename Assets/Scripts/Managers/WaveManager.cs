@@ -33,6 +33,7 @@ namespace DefaultNamespace {
         private bool currentWaveFinishedSpawning;
         private WaveState currentState;
         private const float VALUE_SCALE_FACTOR = 50f;
+        private const float HEALTH_SCALE_FACTOR = 25f;
 
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
@@ -183,7 +184,7 @@ namespace DefaultNamespace {
         /// <param name="waveNum"></param>
         /// <returns></returns>
         private float CalculateWaveBuffPercentage(int waveNum) {
-            return (float)(Math.Pow(waveNum, 2) / 25);
+            return (float)(Math.Pow(waveNum, 2) / HEALTH_SCALE_FACTOR);
         }
 
         /// <summary>
@@ -194,7 +195,7 @@ namespace DefaultNamespace {
         private void ApplyWaveBuff(Status status, int waveNum) {
             float buffPercentage = CalculateWaveBuffPercentage(waveNum);
             float baseHealth = status.Health.Value;
-            float buffAmount = buffPercentage * baseHealth;
+            float buffAmount = Mathf.Round(buffPercentage * baseHealth);
             status.ModifyStat(StatType.Health, buffAmount);
         }
 
