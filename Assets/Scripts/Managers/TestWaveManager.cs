@@ -36,5 +36,13 @@ namespace DefaultNamespace {
         public void EndActiveWaves() {
             messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
         }
+
+        public float GetHealthModifierForNextWave() {
+            throw new System.NotImplementedException();
+        }
+
+        public float GetValueModifierForNextWave() {
+            throw new System.NotImplementedException();
+        }
     }
 }

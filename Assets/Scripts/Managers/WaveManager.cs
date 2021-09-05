@@ -20,6 +20,7 @@ namespace DefaultNamespace {
         private Root LevelData;
 
         public int NumberOfWaves { get; private set; }
+        public float HealthModifier { get; private set; }
         private int mostRecentWaveNum = 0;
         private int numUnspawnedEnemiesSoFar;
 
@@ -31,6 +32,7 @@ namespace DefaultNamespace {
         private bool lastWaveFinishedSpawning;
         private bool currentWaveFinishedSpawning;
         private WaveState currentState;
+        private const float VALUE_SCALE_FACTOR = 50f;
 
         public event IWaveManager.WaveStateChangedEventHandler OnWaveStateChanged;
         public event IWaveManager.PlayerEndedWaveEventHandler OnPlayerEndedWave;
@@ -134,6 +136,7 @@ namespace DefaultNamespace {
                 for (int i = 0; i < group.NumEnemies; i++) {
                     Enemy enemy = enemySpawner.SpawnEnemy(group.EnemyType);
                     ApplyWaveBuff(enemy.GetStatus(), waveNum);
+                    ScaleEnemyValue(enemy);
                     activeEnemies.Add(enemy);
                     numUnspawnedEnemiesSoFar--;
 
@@ -170,6 +173,10 @@ namespace DefaultNamespace {
             return totalEnemies;
         }
 
+        public float GetHealthModifierForNextWave() {
+            return CalculateWaveBuffPercentage(mostRecentWaveNum);
+        }
+
         /// <summary>
         /// Calculates the percentage of the unit's base health that will be added based on wave number
         /// </summary>
@@ -189,6 +196,15 @@ namespace DefaultNamespace {
             float baseHealth = status.Health.Value;
             float buffAmount = buffPercentage * baseHealth;
             status.ModifyStat(StatType.Health, buffAmount);
+        }
+
+        private void ScaleEnemyValue(Enemy enemy) {
+            int baseValue = enemy.EnemyData.BaseValue;
+            enemy.ModifiedValue = (int)Mathf.Round( baseValue + baseValue * mostRecentWaveNum/VALUE_SCALE_FACTOR);
+        }
+
+        public float GetValueModifierForNextWave() {
+            return mostRecentWaveNum/VALUE_SCALE_FACTOR;
         }
 
         private void ChangeState(WaveState state) {

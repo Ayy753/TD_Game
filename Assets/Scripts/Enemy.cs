@@ -6,6 +6,7 @@ namespace DefaultNamespace {
 
     public class Enemy : MonoBehaviour, IUnit {
         [field: SerializeField] public EnemyData EnemyData { get; private set; }
+        public int ModifiedValue { get; set; }
 
         private Status status;
         private HealthBar healthBar;
@@ -102,7 +103,7 @@ namespace DefaultNamespace {
         }
 
         public float GetValue() {
-            return EnemyData.BaseValue;
+            return ModifiedValue;
         }
 
         public EnemyData.EnemyType GetEnemyType() {

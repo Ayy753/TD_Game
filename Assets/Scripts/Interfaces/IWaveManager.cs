@@ -70,7 +70,9 @@ namespace DefaultNamespace {
         public int NumberOfWaves { get; }
         public void StartNextWave();
         public void EndActiveWaves();
+        public float GetHealthModifierForNextWave();
 
         public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo();
+        float GetValueModifierForNextWave();
     }
 }

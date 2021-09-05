@@ -74,7 +74,10 @@ namespace DefaultNamespace.GUI {
             txtAmount.text = enemyAmount.ToString();
             icon.sprite = enemyData.Icon;
 
-            icon.GetComponent<EnemyIcon>().enemyData = enemyData;
+            EnemyIcon enemyIcon = icon.GetComponent<EnemyIcon>();
+            enemyIcon.EnemyData = enemyData;
+            enemyIcon.SetHealthModifier(waveManager.GetHealthModifierForNextWave());
+            enemyIcon.SetValueModifier(waveManager.GetValueModifierForNextWave());
         }
 
         public void ToggleWaveReport() {
