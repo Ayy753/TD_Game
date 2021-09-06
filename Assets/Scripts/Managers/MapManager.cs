@@ -6,7 +6,6 @@ namespace DefaultNamespace.TilemapSystem {
     using Zenject;
 
     public class MapManager : MonoBehaviour, IMapManager, IInitializable {
-        private Tilemap groundLayer, decoreLayer, structureLayer, platformLayer;
         private Dictionary<TileBase, TileData> dataFromTiles;
         private Dictionary<IMapManager.Layer, Tilemap> layerToTilemap;
 
@@ -15,34 +14,12 @@ namespace DefaultNamespace.TilemapSystem {
         public void Initialize() {
             Debug.Log("initaliziing MapManager");
 
-            InitializeTileData();
             InitializeTilemap();
-        }
-
-        private void InitializeTileData() {
-            TileData[] tileDatas = Resources.LoadAll<TileData>("ScriptableObjects/TileData");
-
-            dataFromTiles = new Dictionary<TileBase, TileData>();
-
-            if (groundLayer == null || decoreLayer == null || structureLayer == null || platformLayer == null) {
-                Debug.LogError("One of the tilemap layers is missing");
-            }
-
-            if (tileDatas.Length == 0) {
-                Debug.LogError("There are no tiledata scriptable objects in the resource folder");
-            }
-
-            for (int i = 0; i < tileDatas.Length; i++) {
-                //  Link TileBase objects to TileData 
-                //  Since towers share the same tower base we need to ensure they dont get added twice
-                if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true) {
-                    dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
-                }
-            }
+            InitializeTileData();
         }
 
         private void InitializeTilemap() {
-            Tilemap level1, level2, level3, level4;
+            Tilemap groundLayer, decoreLayer, structureLayer, platformLayer, level1, level2, level3, level4;
 
             groundLayer = GameObject.Find("GroundLayer").GetComponent<Tilemap>();
             decoreLayer = GameObject.Find("DecorationLayer").GetComponent<Tilemap>();
@@ -64,6 +41,24 @@ namespace DefaultNamespace.TilemapSystem {
                 {IMapManager.Layer.Level3, level3 },
                 {IMapManager.Layer.Level4, level4 }
             };
+        }
+
+        private void InitializeTileData() {
+            TileData[] tileDatas = Resources.LoadAll<TileData>("ScriptableObjects/TileData");
+
+            dataFromTiles = new Dictionary<TileBase, TileData>();
+
+            if (tileDatas.Length == 0) {
+                Debug.LogError("There are no tiledata scriptable objects in the resource folder");
+            }
+
+            for (int i = 0; i < tileDatas.Length; i++) {
+                //  Link TileBase objects to TileData 
+                //  Since towers share the same tower base we need to ensure they dont get added twice
+                if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true) {
+                    dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
+                }
+            }
         }
 
         /// <summary>
