@@ -6,21 +6,43 @@ namespace DefaultNamespace.TilemapSystem {
     using Zenject;
 
     public class MapManager : MonoBehaviour, IMapManager, IInitializable {
-        private Tilemap groundLayer, decoreLayer, structureLayer, platformLayer, level1, level2, level3, level4;
-
-        TileData[] tileDatas;
+        private Tilemap groundLayer, decoreLayer, structureLayer, platformLayer;
         private Dictionary<TileBase, TileData> dataFromTiles;
         private Dictionary<IMapManager.Layer, Tilemap> layerToTilemap;
 
-        //  Stores all the tiles that have been tinted
-        private List<HighlightedTile> highlightedTiles;
+        private readonly List<HighlightedTile> highlightedTiles = new List<HighlightedTile>();
 
         public void Initialize() {
             Debug.Log("initaliziing MapManager");
 
-            highlightedTiles = new List<HighlightedTile>();
+            InitializeTileData();
+            InitializeTilemap();
+        }
+
+        private void InitializeTileData() {
+            TileData[] tileDatas = Resources.LoadAll<TileData>("ScriptableObjects/TileData");
+
             dataFromTiles = new Dictionary<TileBase, TileData>();
-            tileDatas = Resources.LoadAll<TileData>("ScriptableObjects/TileData");
+
+            if (groundLayer == null || decoreLayer == null || structureLayer == null || platformLayer == null) {
+                Debug.LogError("One of the tilemap layers is missing");
+            }
+
+            if (tileDatas.Length == 0) {
+                Debug.LogError("There are no tiledata scriptable objects in the resource folder");
+            }
+
+            for (int i = 0; i < tileDatas.Length; i++) {
+                //  Link TileBase objects to TileData 
+                //  Since towers share the same tower base we need to ensure they dont get added twice
+                if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true) {
+                    dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
+                }
+            }
+        }
+
+        private void InitializeTilemap() {
+            Tilemap level1, level2, level3, level4;
 
             groundLayer = GameObject.Find("GroundLayer").GetComponent<Tilemap>();
             decoreLayer = GameObject.Find("DecorationLayer").GetComponent<Tilemap>();
@@ -32,36 +54,16 @@ namespace DefaultNamespace.TilemapSystem {
             level3 = GameObject.Find("Level3").GetComponent<Tilemap>();
             level4 = GameObject.Find("Level4").GetComponent<Tilemap>();
 
-            if (groundLayer == null || decoreLayer == null || structureLayer == null || platformLayer == null) {
-                Debug.LogError("One of the tilemap layers is missing");
-            }
-
-            //Debug.Log("tiledatas count: " + tileDatas.Length);
-
-            if (tileDatas.Length == 0) {
-                Debug.LogError("There are no tiledata scriptable objects in the resource folder");
-            }
-
-            for (int i = 0; i < tileDatas.Length; i++) {
-                //  Link TileBase objects to TileData 
-                //  Since towers share the same tower base we need to ensure they dont get added twice
-                if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true) {
-                    //Debug.Log(string.Format("Adding: tile name:{0} tilebase:{1}", tileDatas[i].name, tileDatas[i].TileBase.name));
-                    dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
-                }
-            }
-
             layerToTilemap = new Dictionary<IMapManager.Layer, Tilemap>() {
-            {IMapManager.Layer.GroundLayer, groundLayer },
-            {IMapManager.Layer.DecoreLayer, decoreLayer },
-            {IMapManager.Layer.PlatformLayer, platformLayer },
-            {IMapManager.Layer.StructureLayer, structureLayer },
-            {IMapManager.Layer.Level1, level1 },
-            {IMapManager.Layer.Level2, level2 },
-            {IMapManager.Layer.Level3, level3 },
-            {IMapManager.Layer.Level4, level4 }
-        };
-
+                {IMapManager.Layer.GroundLayer, groundLayer },
+                {IMapManager.Layer.DecoreLayer, decoreLayer },
+                {IMapManager.Layer.PlatformLayer, platformLayer },
+                {IMapManager.Layer.StructureLayer, structureLayer },
+                {IMapManager.Layer.Level1, level1 },
+                {IMapManager.Layer.Level2, level2 },
+                {IMapManager.Layer.Level3, level3 },
+                {IMapManager.Layer.Level4, level4 }
+            };
         }
 
         /// <summary>
