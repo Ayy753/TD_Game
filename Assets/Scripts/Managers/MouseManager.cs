@@ -5,7 +5,7 @@
     using UnityEngine;
     using UnityEngine.EventSystems;
 
-    class MouseManager : MonoBehaviour {
+    public class MouseManager : MonoBehaviour {
         private Vector3Int lastTileHovered = Vector3Int.zero;
         private bool wasLeftMouseDown = false;
         private bool wasRightMouseDown = false;
