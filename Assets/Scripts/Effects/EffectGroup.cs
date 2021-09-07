@@ -39,10 +39,6 @@ namespace DefaultNamespace.EffectSystem {
 
         public static event EventHandler<OnEffectUsedEventArgs> OnEffectUsed;
 
-        private void OnEnable() {
-            effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
-        }
-
         public void Init(string name, string description, IEffect[] effects, TargetType targetType, string particleType, SoundType soundType, float radius, float cooldown) {
             Name = name;
             Description = description;
@@ -128,7 +124,17 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         private List<IEffectable> GetEffectableObjectsInRange(Vector3 center) {
-            return effectableFinder.GetEffectableObjectsInRange(center, Radius);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(center, Radius);
+            List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
+
+            foreach (var collider in colliders) {
+                IEffectable effectable = collider.GetComponent<IEffectable>();
+                if (effectable != null) {
+                    effectableObjectsInRange.Add(effectable);
+                }
+            }
+
+            return effectableObjectsInRange;
         }
 
         private void ApplyEffects(IEffectable target) {
