@@ -136,7 +136,7 @@ namespace DefaultNamespace {
 
                 for (int i = 0; i < group.NumEnemies; i++) {
                     Enemy enemy = enemySpawner.SpawnEnemy(group.EnemyType);
-                    ApplyWaveBuff(enemy.GetStatus(), waveNum);
+                    ApplyWaveBuff(enemy.Status, waveNum);
                     ScaleEnemyValue(enemy);
                     activeEnemies.Add(enemy);
                     numUnspawnedEnemiesSoFar--;

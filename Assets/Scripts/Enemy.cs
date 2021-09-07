@@ -8,7 +8,7 @@ namespace DefaultNamespace {
         [field: SerializeField] public EnemyData EnemyData { get; private set; }
         public int ModifiedValue { get; set; }
 
-        private Status status;
+        public Status Status { get; set; }
         private HealthBar healthBar;
 
         public delegate void EnemyReachedGate(Enemy enemy);
@@ -25,7 +25,7 @@ namespace DefaultNamespace {
 
         private void Awake() {
             healthBar = transform.parent.GetComponentInChildren<HealthBar>();
-            status = new Status(EnemyData);
+            Status = new Status(EnemyData);
 
             if (EnemyData.EffectGroup != null) {
                 hasAbility = true;
@@ -40,15 +40,15 @@ namespace DefaultNamespace {
         }
 
         private void OnEnable() {
-            status.Initialize();
-            healthBar.Initialize(status);
+            Status.Initialize();
+            healthBar.Initialize(Status);
 
-            status.OnStatusChanged += Status_OnStatusChanged;
+            Status.OnStatusChanged += Status_OnStatusChanged;
             TickManager.OnTick += TickManager_OnTick;
         }
 
         private void OnDisable() {
-            status.OnStatusChanged -= Status_OnStatusChanged;
+            Status.OnStatusChanged -= Status_OnStatusChanged;
             TickManager.OnTick -= TickManager_OnTick;
         }
 
@@ -57,7 +57,7 @@ namespace DefaultNamespace {
 
                 OnUnitTookDamage?.Invoke(this, new UnitTookDamageEventArgs(amount));
 
-                if (status.Health.Value <= 0) {
+                if (Status.Health.Value <= 0) {
                     Died();
                 }
             }
@@ -90,12 +90,8 @@ namespace DefaultNamespace {
         public void Despawn() {
             TargetDisabled?.Invoke(this, EventArgs.Empty);
 
-            status.Disabled();
+            Status.Disabled();
             transform.parent.gameObject.SetActive(false);
-        }
-
-        public Status GetStatus() {
-            return status;
         }
 
         public Transform GetTransform() {

@@ -95,7 +95,7 @@ namespace DefaultNamespace.GUI {
             pnlStausPanel.SetActive(true);
 
             targetUnit = unit;
-            targetStatus = unit.GetStatus();
+            targetStatus = unit.Status;
             healthBar.Initialize(targetStatus);
             PopulateStatusPanel();
 

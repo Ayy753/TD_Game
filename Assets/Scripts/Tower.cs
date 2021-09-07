@@ -198,7 +198,7 @@
             float lowestHealth = float.MaxValue;
 
             foreach (IEffectable effectable in effectableObjectsInRange) {
-                float health = effectable.GetStatus().Health.Value;
+                float health = effectable.Status.Health.Value;
                 if (health < lowestHealth) {
                     lowestHealth = health;
                     lowestEnemy = effectable;
@@ -216,7 +216,7 @@
             float highestHealth = float.MinValue;
 
             foreach (IEffectable effectable in effectableObjectsInRange) {
-                float health = effectable.GetStatus().Health.Value;
+                float health = effectable.Status.Health.Value;
                 if (health > highestHealth) {
                     highestHealth = health;
                     highestEnemy = effectable;

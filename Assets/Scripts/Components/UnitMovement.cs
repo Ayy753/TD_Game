@@ -19,7 +19,7 @@ namespace DefaultNamespace {
         private void Awake() {
             unitInput = transform.GetComponent<IUnitInput>();
             mapManager = GameObject.Find("MapManager").GetComponent<IMapManager>();
-            unitStatus = transform.GetComponent<IUnit>().GetStatus();
+            unitStatus = transform.GetComponent<IUnit>().Status;
         }
 
         private void OnEnable() {

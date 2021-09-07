@@ -132,7 +132,7 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         private void ApplyEffects(IEffectable target) {
-            Status status = target.GetStatus();
+            Status status = target.Status;
             status.ApplyEffectGroup(this);
         }
     }
