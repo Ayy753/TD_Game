@@ -449,7 +449,11 @@ namespace DefaultNamespace {
         }
 
         public bool WouldBlockPath(Vector3Int position) {
-            if (IsOnMainPath(position)){
+            if (position == Vector3Int.FloorToInt(entrance.position) || position == Vector3Int.FloorToInt(exit.position)) {
+                return true;
+            }
+
+            else if (IsOnMainPath(position)){
                 List<PathNode> openList = new List<PathNode>();
                 List<PathNode> closedList = new List<PathNode>();
 
