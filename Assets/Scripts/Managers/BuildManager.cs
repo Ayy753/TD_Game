@@ -98,13 +98,16 @@ namespace DefaultNamespace {
             if (!CanAffordStructure(structureData)) {
                 messageSystem.DisplayMessage("You cannot afford " + structureData.Cost, Color.red);
             }
-            else if (!CanBuildStructureAtPosition(structureData, position)) {
-                messageSystem.DisplayMessage("You cannot build here", Color.red);
-            }
-            else {
-                BuyStructure(structureData);
-                BuildStructure(structureData, position);
-                messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structureData.Cost), Color.yellow);
+            else{
+                StructureBuildError buildError = ValidateStructureBuildAtPosition(structureData, position);
+                if (buildError != StructureBuildError.None) {
+                    messageSystem.DisplayMessage(GetBuildErrorMessage(buildError), Color.red);
+                }
+                else {
+                    BuyStructure(structureData);
+                    BuildStructure(structureData, position);
+                    messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structureData.Cost), Color.yellow);
+                }
             }
         }
 
@@ -112,8 +115,26 @@ namespace DefaultNamespace {
             return wallet.CanAfford(structureData.Cost);
         }
 
-        private bool CanBuildStructureAtPosition(StructureData structureData, Vector3Int position) {
-            return buildValidator.CanBuildStructureOverPosition(position, structureData);
+        private StructureBuildError ValidateStructureBuildAtPosition(StructureData structureData, Vector3Int position) {
+            return buildValidator.ValidateStructureBuildabilityOverPosition(position, structureData);
+        }
+
+        private string GetBuildErrorMessage(StructureBuildError buildError) {
+            switch (buildError) {
+                case StructureBuildError.NoGround:
+                    return "There is no ground to build on";
+                case StructureBuildError.GroundUnstable:
+                    return "The ground is too unstable to build on";
+                case StructureBuildError.StructurePresent:
+                    return "There is a structure present here";
+                case StructureBuildError.BlockingPath:
+                    return "You cannot block the path";
+                case StructureBuildError.TowerAdjacent:
+                    return "You cannot build towers next to each other";
+                default:
+                    Debug.LogError("Build error is invalid");
+                    return string.Empty;
+            }
         }
 
         private void BuyStructure(StructureData structureData) {

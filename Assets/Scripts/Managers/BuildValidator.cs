@@ -3,6 +3,15 @@ namespace DefaultNamespace {
     using DefaultNamespace.TilemapSystem;
     using UnityEngine;
 
+    public enum StructureBuildError {
+        None,
+        NoGround,
+        GroundUnstable,
+        StructurePresent,
+        BlockingPath,
+        TowerAdjacent
+    }
+
     public class BuildValidator : IBuildValidator {
         readonly IMapManager mapManager;
         readonly IPathfinder pathfinder;
@@ -10,6 +19,35 @@ namespace DefaultNamespace {
         public BuildValidator(IMapManager mapManager, IPathfinder pathfinder) {
             this.mapManager = mapManager;
             this.pathfinder = pathfinder;
+        }
+
+        public StructureBuildError ValidateStructureBuildabilityOverPosition(Vector3Int position, StructureData structureData) {
+            StructureBuildError buildError = ValidatePositionBuildability(position);
+            if (buildError != StructureBuildError.None){
+                return buildError;
+            }
+            else if(structureData is TowerData && IsTowerAtOrAdjacent(position)) {
+                return StructureBuildError.TowerAdjacent;
+            }
+            else {
+                return StructureBuildError.None;
+            }
+        }
+
+        public StructureBuildError ValidatePositionBuildability(Vector3Int position) {
+            if (!DoesTileContainGround(position)) {
+                return StructureBuildError.NoGround;
+            }
+            else if (!IsGroundSolid(position)) {
+                return StructureBuildError.GroundUnstable;
+            }
+            else if (!IsPositionEmpty(position)) {
+                return StructureBuildError.StructurePresent;
+            }
+            else if (WouldBuildingBlockPath(position)) {
+                return StructureBuildError.BlockingPath;
+            }
+            else return StructureBuildError.None;
         }
 
         public bool CanBuildStructureOverPosition(Vector3Int position, StructureData structureData) {
