@@ -1,6 +1,7 @@
 namespace DefaultNamespace.GUI {
 
     using DefaultNamespace;
+    using System;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -12,8 +13,8 @@ namespace DefaultNamespace.GUI {
 
         GameObject pnlTowerPanel;
         TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue, txtTowerDescription;
-        Button btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom, btnSell;
-        Button[] targetButtons;
+        Button btnSell;
+        TMP_Dropdown targetModeDropdown;
         Tower currentlySelectedTower;
 
         public TowerPanel(IWallet wallet, BuildManager buildManager) {
@@ -33,25 +34,37 @@ namespace DefaultNamespace.GUI {
             txtProjectileType = GameObject.Find("txtProjectileTypeVal").GetComponent<TMP_Text>();
             txtTowerDescription = GameObject.Find("txtTowerDescription").GetComponent<TMP_Text>();
 
-            btnClosest = GameObject.Find("btnClosest").GetComponent<Button>();
-            btnFurthest = GameObject.Find("btnFurthest").GetComponent<Button>();
-            btnLowHP = GameObject.Find("btnLowest").GetComponent<Button>();
-            btnHighHP = GameObject.Find("btnHighest").GetComponent<Button>();
-            btnRandom = GameObject.Find("btnRandom").GetComponent<Button>();
             btnSell = GameObject.Find("btnSell").GetComponent<Button>();
 
-            targetButtons = new Button[] { btnClosest, btnFurthest, btnLowHP, btnHighHP, btnRandom };
-
+            targetModeDropdown = GameObject.Find("dropdownTargetMode").GetComponent<TMP_Dropdown>();
             txtSellValue = GameObject.Find("txtSellVal").GetComponent<TMP_Text>();
 
-            btnClosest.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Closest); });
-            btnFurthest.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Furthest); });
-            btnLowHP.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.LowestHealth); });
-            btnHighHP.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.HighestHealth); });
-            btnRandom.onClick.AddListener(delegate { SetTargetMode(Tower.TargetMode.Random); });
             btnSell.onClick.AddListener(delegate { SellTower(); });
+            targetModeDropdown.onValueChanged.AddListener(delegate { TargetModeChanged(); });
 
             pnlTowerPanel.SetActive(false);
+        }
+
+        private void TargetModeChanged() {
+            int index = targetModeDropdown.value;
+            string optionText = targetModeDropdown.options[index].text;
+            switch (optionText) {
+                case "Closest":
+                    SetTargetMode(Tower.TargetMode.Closest);
+                    break;
+                case "Furthest":
+                    SetTargetMode(Tower.TargetMode.Furthest);
+                    break;
+                case "Random":
+                    SetTargetMode(Tower.TargetMode.Random);
+                    break;
+                case "Lowest health":
+                    SetTargetMode(Tower.TargetMode.LowestHealth);
+                    break;
+                case "Highest health":
+                    SetTargetMode(Tower.TargetMode.HighestHealth);
+                    break;
+            }
         }
 
         private void UpdateTowerPanel() {
@@ -69,38 +82,36 @@ namespace DefaultNamespace.GUI {
             int sellValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
             txtSellValue.text = sellValue.ToString();
 
-            UpdateButtonColors(currentlySelectedTower.CurrentTargetMode);
+            UpdateTargetDropdownIndex();
         }
 
-        private void UpdateButtonColors(Tower.TargetMode targetMode) {
-            //  Remove highlight from each button
-            for (int i = 0; i < targetButtons.Length; i++) {
-                targetButtons[i].image.color = Color.white;
-            }
-
-            Button selectedBtn;
-
-            switch (targetMode) {
+        private void UpdateTargetDropdownIndex() {
+            switch (currentlySelectedTower.CurrentTargetMode) {
                 case Tower.TargetMode.Closest:
-                    selectedBtn = btnClosest;
+                    targetModeDropdown.value = GetDropdwonIndexByName("Closest");
                     break;
                 case Tower.TargetMode.Furthest:
-                    selectedBtn = btnFurthest;
+                    targetModeDropdown.value = GetDropdwonIndexByName("Furthest");
                     break;
                 case Tower.TargetMode.Random:
-                    selectedBtn = btnRandom;
+                    targetModeDropdown.value = GetDropdwonIndexByName("Random");
                     break;
                 case Tower.TargetMode.LowestHealth:
-                    selectedBtn = btnLowHP;
+                    targetModeDropdown.value = GetDropdwonIndexByName("Lowest health");
                     break;
                 case Tower.TargetMode.HighestHealth:
-                    selectedBtn = btnHighHP;
+                    targetModeDropdown.value = GetDropdwonIndexByName("Highest health");
                     break;
-                default:
-                    throw new System.Exception("Tower panel button does not exist for target mode: " + targetMode);
             }
+        }
 
-            selectedBtn.image.color = selectedBtn.colors.selectedColor;
+        private int GetDropdwonIndexByName(string name) {
+            for (int i = 0; i < targetModeDropdown.options.Count; i++) {
+                if (targetModeDropdown.options[i].text == name) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -118,7 +129,6 @@ namespace DefaultNamespace.GUI {
 
         public void SetTargetMode(Tower.TargetMode targetMode) {
             currentlySelectedTower.ChangeTargetMode(targetMode);
-            UpdateButtonColors(targetMode);
         }
 
         public void TargetTower(Tower tower) {
