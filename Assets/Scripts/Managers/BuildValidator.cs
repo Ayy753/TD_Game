@@ -25,10 +25,10 @@ namespace DefaultNamespace {
         }
 
         public bool IsPositionBuildable(Vector3Int position) {
-            if (!DoesTileContainGround(position) || !IsGroundSolid(position) || !IsPositionEmpty(position) || WouldBuildingBlockPath(position)) {
-                return false;
-            }
-            return true;
+            return DoesTileContainGround(position)
+                && IsGroundSolid(position)
+                && IsPositionEmpty(position)
+                && !WouldBuildingBlockPath(position);
         }
 
         private bool DoesTileContainGround(Vector3Int position) {
