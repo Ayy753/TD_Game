@@ -448,6 +448,80 @@ namespace DefaultNamespace {
             return false;
         }
 
+        public bool WouldBlockPath(Vector3Int position) {
+            if (IsOnMainPath(position)){
+                List<PathNode> openList = new List<PathNode>();
+                List<PathNode> closedList = new List<PathNode>();
+
+                Vector3Int entranceCoordinate = Vector3Int.FloorToInt(entrance.transform.position);
+                Vector3Int exitCoordinate = Vector3Int.FloorToInt(exit.transform.position);
+
+                PathNode initialStep = new PathNode(entranceCoordinate);
+                openList.Add(initialStep);
+
+                while (openList.Count > 0) {
+                    PathNode currentNode = openList[0];
+                    foreach (PathNode node in openList) {
+                        if (node.Fcost < currentNode.Fcost) {
+                            currentNode = node;
+                        }
+                    }
+
+                    PathNode parent = currentNode;
+                    openList.Remove(currentNode);
+                    closedList.Add(currentNode);
+                    if (currentNode.Coordinate == exitCoordinate) {
+                        return false;
+                    }
+
+                    for (int x = -1; x <= 1; x++) {
+                        for (int y = -1; y <= 1; y++) {
+                            if ((x == 0 && y != 0) || (x != 0 && y == 0)) {
+                                Vector3Int neighbourCoordinate = parent.Coordinate + new Vector3Int(x, y, 0);
+                                bool skipSuccessor = false;
+
+                                if (IsValidTile(neighbourCoordinate) && neighbourCoordinate != position) {
+                                    foreach (PathNode node in closedList) {
+                                        if (node.Coordinate == neighbourCoordinate) {
+                                            skipSuccessor = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!skipSuccessor) {
+                                        float tileCost = mapManager.GetTileCost(neighbourCoordinate);
+                                        float neighGCost = tileCost + parent.Gcost;
+                                        float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
+                                        float neighFCost = neighGCost + neighHCost;
+
+                                        foreach (PathNode node in openList) {
+                                            if (node.Coordinate == neighbourCoordinate) {
+                                                if (node.Fcost < neighFCost) {
+                                                    node.Fcost = neighFCost;
+                                                    node.ParentNode = parent;
+                                                }
+                                                skipSuccessor = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!skipSuccessor) {
+                                            PathNode successor = new PathNode(neighbourCoordinate, neighGCost, neighHCost, parent);
+                                            openList.Add(successor);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         /// <summary>
         /// An object representing a node in a path chain
         /// </summary>

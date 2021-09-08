@@ -23,6 +23,7 @@ namespace DefaultNamespace {
         /// </summary>
         /// <returns></returns>
         public List<Vector3Int> GetDemolishPreviewPath(Vector3Int positionDemolished);
+        bool WouldBlockPath(Vector3Int position);
 
         /// <summary>
         /// Pathfinding to join main path
