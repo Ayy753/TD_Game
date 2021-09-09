@@ -34,7 +34,9 @@
             Furthest,
             Random,
             LowestHealth,
-            HighestHealth
+            HighestHealth,
+            HighestArmor,
+            Fastest
         }
 
         private void Awake() {
@@ -147,8 +149,15 @@
                 case TargetMode.Random:
                     target = FindRandomEnemy();
                     break;
+                case TargetMode.HighestArmor:
+                    target = FindHighestArmorEnemy();
+                    break;
+                case TargetMode.Fastest:
+                    target = FindFastestTarget();
+                    break;
                 default:
-                    throw new Exception("Target mode invalid");
+                    Debug.LogError("Target mode invalid");
+                    break;
             }
             return target;
         }
@@ -233,6 +242,32 @@
             if (effectableObjectsInRange.Count > 0) {
                 int index = UnityEngine.Random.Range(0, effectableObjectsInRange.Count);
                 return effectableObjectsInRange[index];
+            }
+            return null;
+        }
+
+        private IEffectable FindHighestArmorEnemy() {
+            if (effectableObjectsInRange.Count > 0) {
+                IEffectable highestArmor = effectableObjectsInRange[0];
+                for (int i = 0; i < effectableObjectsInRange.Count; i++) {
+                    if (effectableObjectsInRange[i].Status.Armor.Value > highestArmor.Status.Armor.Value) {
+                        highestArmor = effectableObjectsInRange[i];
+                    }
+                }
+                return highestArmor;
+            }
+            return null;
+        }
+
+        private IEffectable FindFastestTarget() {
+            if (effectableObjectsInRange.Count > 0) {
+                IEffectable fastest = effectableObjectsInRange[0];
+                for (int i = 0; i < effectableObjectsInRange.Count; i++) {
+                    if (effectableObjectsInRange[i].Status.Speed.Value > fastest.Status.Speed.Value) {
+                        fastest = effectableObjectsInRange[i];
+                    }
+                }
+                return fastest;
             }
             return null;
         }

@@ -64,6 +64,12 @@ namespace DefaultNamespace.GUI {
                 case "Highest health":
                     SetTargetMode(Tower.TargetMode.HighestHealth);
                     break;
+                case "Highest armor":
+                    SetTargetMode(Tower.TargetMode.HighestArmor);
+                    break;
+                case "Fastest":
+                    SetTargetMode(Tower.TargetMode.Fastest);
+                    break;
             }
         }
 
@@ -101,6 +107,12 @@ namespace DefaultNamespace.GUI {
                     break;
                 case Tower.TargetMode.HighestHealth:
                     targetModeDropdown.value = GetDropdwonIndexByName("Highest health");
+                    break;
+                case Tower.TargetMode.HighestArmor:
+                    targetModeDropdown.value = GetDropdwonIndexByName("Highest armor");
+                    break;
+                case Tower.TargetMode.Fastest:
+                    targetModeDropdown.value = GetDropdwonIndexByName("Fastest");
                     break;
             }
         }

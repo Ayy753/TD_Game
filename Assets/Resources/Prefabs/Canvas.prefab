@@ -2221,6 +2221,10 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Highest health
       m_Image: {fileID: 0}
+    - m_Text: Highest armor
+      m_Image: {fileID: 0}
+    - m_Text: Fastest
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
