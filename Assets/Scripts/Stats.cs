@@ -16,34 +16,42 @@ namespace DefaultNamespace.StatusSystem {
     }
 
     public class Health : Stat {
-        public float MaxHealth { get { return baseValue + modification; } }
-        public override float Value { get { return MaxHealth - DamageInflicted; } }
+
+        private float maxHealth, damageInflicted;
+
+        public float MaxHealth { get { return maxHealth; } }
+        public override float Value { get { return value; } }
+
         public float DamageInflicted {
             get { return damageInflicted; }
-            protected set {
-                damageInflicted = value;
-                if (damageInflicted < 0) {
-                    damageInflicted = 0;
-                }
-            }
         }
-        private float damageInflicted;
 
         public Health(float baseValue) {
             this.baseValue = baseValue;
         }
 
         public override void Initialize() {
-            base.Initialize();
             damageInflicted = 0;
+            base.Initialize();
+        }
+
+        protected override void CalculateValues() {
+            if (damageInflicted < 0) {
+                damageInflicted = 0;
+            }
+
+            maxHealth = baseValue + modification;
+            value = MaxHealth - DamageInflicted;
         }
 
         public void TakeDamage(float amount) {
-            DamageInflicted += amount;
+            damageInflicted += amount;
+            CalculateValues();
         }
 
         public void Heal(float amount) {
-            DamageInflicted -= amount;
+            damageInflicted -= amount;
+            CalculateValues();
         }
     }
 }
