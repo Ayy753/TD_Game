@@ -1,9 +1,25 @@
 namespace DefaultNamespace.StatusSystem {
 
     public abstract class Stat {
-        public virtual float Value { get { return baseValue + modification; } protected set { } }
+
         protected float baseValue;
         protected float modification;
+        protected float minimumValue = 0;
+        protected float maximumValue = 100;
+
+        public virtual float Value {
+            get {
+                float effectiveValue = baseValue + modification;
+                if (effectiveValue < minimumValue)
+                    return minimumValue;
+                else if (effectiveValue > maximumValue) {
+                    return maximumValue;
+                }
+                else
+                    return effectiveValue;
+            }
+        }
+
         public virtual void ModifyStat(float amount) {
             modification += amount;
         }
