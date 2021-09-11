@@ -1,5 +1,6 @@
 namespace DefaultNamespace {
-
+    using DefaultNamespace.TilemapSystem;
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
@@ -31,23 +32,46 @@ namespace DefaultNamespace {
         }
 
         private void HandleNewTileHovered(Vector3Int tileCoords) {
-            if (buildManager.CurrentBuildMode == BuildMode.Build) {
-                if (pathFinder.IsOnMainPath(tileCoords) && buildValidator.IsPositionBuildable(tileCoords)) {
-                    List<Vector3Int> path = pathFinder.GetBuildPreviewPath(tileCoords);
-                    RenderPath(path);
+            BuildMode buildMode = buildManager.CurrentBuildMode;
+
+            if (buildMode == BuildMode.Build) {
+                if (buildManager.CurrentlySelectedStructure is PlatformData) {
+                    RenderPlatformBuildPreview(tileCoords);
                 }
                 else {
-                    ClearPath();
+                   RenderStructureBuildPreview(tileCoords);
                 }
             }
-            else if (buildManager.CurrentBuildMode == BuildMode.Demolish) {
-                if (buildValidator.IsStructurePresentAndDemolishable(tileCoords)) {
-                    List<Vector3Int> path = pathFinder.GetDemolishPreviewPath(tileCoords);
-                    RenderPath(path);
-                }
-                else {
-                    ClearPath();
-                }
+            else if (buildMode == BuildMode.Demolish) {
+                RenderStructureDemolishPreview(tileCoords);
+            }
+        }
+
+        private void RenderPlatformBuildPreview(Vector3Int tileCoords) {
+            PlatformBuildError error = buildValidator.ValidatePlatformBuildabilityOverPosition(tileCoords);
+            if (error == PlatformBuildError.None) {
+                List<Vector3Int> path = pathFinder.GetPlatformBuiltPreviewPath(tileCoords, ((PlatformData)buildManager.CurrentlySelectedStructure).WalkCost);
+                RenderPath(path);
+            }
+        }
+
+        private void RenderStructureBuildPreview(Vector3Int tileCoords) {
+            if (pathFinder.IsOnMainPath(tileCoords) && buildValidator.IsPositionBuildable(tileCoords)) {
+                List<Vector3Int> path = pathFinder.GetBuildPreviewPath(tileCoords);
+                RenderPath(path);
+            }
+            else {
+                ClearPath();
+            }
+        }
+
+        private void RenderStructureDemolishPreview(Vector3Int tileCoords) {
+            if (buildValidator.IsStructurePresentAndDemolishable(tileCoords)) {
+                List<Vector3Int> path = pathFinder.GetDemolishPreviewPath(tileCoords);
+                RenderPath(path);
+            }
+            else {
+                ClearPath();
             }
         }
 

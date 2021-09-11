@@ -44,5 +44,7 @@ namespace DefaultNamespace {
         /// Fires when path is recalculated
         /// </summary>
         public event EventHandler PathRecalculated;
+
+        List<Vector3Int> GetPlatformBuiltPreviewPath(Vector3Int positionBuilt, float platformMovementCost);
     }
 }
