@@ -4,7 +4,7 @@
 
     public class HighlightedTile {
         public Vector3Int Position { get; private set; }
-        public IMapManager.Layer Layer { get; private set; }
+        public MapLayer Layer { get; private set; }
         public Color Color { get; private set; }
         public Color PreviousColor { get; private set; }
 
@@ -15,7 +15,7 @@
         /// <param name="layer">Layer on TileMap</param>
         /// <param name="color">Color to highlight</param>
         /// <param name="previousColor">Previous color for reverting highlight (defaults to white)</param>
-        public HighlightedTile(Vector3Int position, IMapManager.Layer layer, Color color, Color? previousColor = null) {
+        public HighlightedTile(Vector3Int position, MapLayer layer, Color color, Color? previousColor = null) {
             Position = position;
             Layer = layer;
             Color = color;

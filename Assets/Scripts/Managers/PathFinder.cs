@@ -59,8 +59,8 @@ namespace DefaultNamespace {
         /// <param name="position"></param>
         /// <returns></returns>
         private bool IsValidTile(Vector3Int position) {
-            if (!mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position) &&
-                mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position)) {
+            if (!mapManager.ContainsTileAt(MapLayer.StructureLayer, position) &&
+                mapManager.ContainsTileAt(MapLayer.GroundLayer, position)) {
                 return true;
             }
             else {

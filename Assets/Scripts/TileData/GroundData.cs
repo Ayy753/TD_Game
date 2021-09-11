@@ -17,7 +17,7 @@ namespace DefaultNamespace.TilemapSystem {
         public float WalkCost { get; private set; }
         [field: SerializeField]
         public bool IsSolid { get; private set; }
-        public override IMapManager.Layer Layer { get; protected set; } = IMapManager.Layer.GroundLayer;
+        public override MapLayer Layer { get; protected set; } = MapLayer.GroundLayer;
         public string GetDisplayText() {
             return ToString();
         }

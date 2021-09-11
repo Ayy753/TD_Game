@@ -169,7 +169,7 @@ namespace DefaultNamespace {
         }
 
         private StructureData GetStructureDataAtPosition(Vector3Int position) {
-            return (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+            return (StructureData)mapManager.GetTileData(MapLayer.StructureLayer, position);
         }
 
         private float GetSellValue(StructureData structureData) {
@@ -191,7 +191,7 @@ namespace DefaultNamespace {
                 DestroyTower(tower);
             }
 
-            mapManager.RemoveTile(IMapManager.Layer.StructureLayer, position);
+            mapManager.RemoveTile(MapLayer.StructureLayer, position);
             OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
         }
 

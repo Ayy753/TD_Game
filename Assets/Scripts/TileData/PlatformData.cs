@@ -15,7 +15,7 @@ namespace DefaultNamespace.TilemapSystem {
         public override TileBase TileBase { get; protected set; }
         [field: SerializeField]
         public float WalkCost { get; protected set; }
-        public override IMapManager.Layer Layer { get; protected set; } = IMapManager.Layer.GroundLayer;
+        public override MapLayer Layer { get; protected set; } = MapLayer.GroundLayer;
 
         public override string ToString() {
             return base.ToString() + string.Format("\n<b>Walk cost</b>: {0}", WalkCost);

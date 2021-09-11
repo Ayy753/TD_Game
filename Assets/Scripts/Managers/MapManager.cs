@@ -7,7 +7,7 @@ namespace DefaultNamespace.TilemapSystem {
 
     public class MapManager : MonoBehaviour, IMapManager, IInitializable {
         private Dictionary<TileBase, TileData> dataFromTiles;
-        private Dictionary<IMapManager.Layer, Tilemap> layerToTilemap;
+        private Dictionary<MapLayer, Tilemap> layerToTilemap;
 
         private readonly List<HighlightedTile> highlightedTiles = new List<HighlightedTile>();
 
@@ -31,15 +31,15 @@ namespace DefaultNamespace.TilemapSystem {
             level3 = GameObject.Find("Level3").GetComponent<Tilemap>();
             level4 = GameObject.Find("Level4").GetComponent<Tilemap>();
 
-            layerToTilemap = new Dictionary<IMapManager.Layer, Tilemap>() {
-                {IMapManager.Layer.GroundLayer, groundLayer },
-                {IMapManager.Layer.DecoreLayer, decoreLayer },
-                {IMapManager.Layer.PlatformLayer, platformLayer },
-                {IMapManager.Layer.StructureLayer, structureLayer },
-                {IMapManager.Layer.Level1, level1 },
-                {IMapManager.Layer.Level2, level2 },
-                {IMapManager.Layer.Level3, level3 },
-                {IMapManager.Layer.Level4, level4 }
+            layerToTilemap = new Dictionary<MapLayer, Tilemap>() {
+                {MapLayer.GroundLayer, groundLayer },
+                {MapLayer.DecoreLayer, decoreLayer },
+                {MapLayer.PlatformLayer, platformLayer },
+                {MapLayer.StructureLayer, structureLayer },
+                {MapLayer.Level1, level1 },
+                {MapLayer.Level2, level2 },
+                {MapLayer.Level3, level3 },
+                {MapLayer.Level4, level4 }
             };
         }
 
@@ -66,7 +66,7 @@ namespace DefaultNamespace.TilemapSystem {
         /// </summary>
         /// <param name="layer"></param>
         /// <returns></returns>
-        private Tilemap GetLayer(IMapManager.Layer layer) {
+        private Tilemap GetLayer(MapLayer layer) {
             return layerToTilemap[layer];
         }
 
@@ -78,7 +78,7 @@ namespace DefaultNamespace.TilemapSystem {
         /// <param name="layer">Layer to search</param>
         /// <param name="position">Position of tile</param>
         /// <returns></returns>
-        public TileData GetTileData(IMapManager.Layer layer, Vector3Int position) {
+        public TileData GetTileData(MapLayer layer, Vector3Int position) {
             //  2D tilemap
             position.z = 0;
 
@@ -90,11 +90,11 @@ namespace DefaultNamespace.TilemapSystem {
         }
 
         public void SetTile(Vector3Int position, TileData tileData) {
-            IMapManager.Layer layer = tileData.Layer;
+            MapLayer layer = tileData.Layer;
             GetLayer(layer).SetTile(position, tileData.TileBase);
         }
 
-        public void RemoveTile(IMapManager.Layer layer, Vector3Int position) {
+        public void RemoveTile(MapLayer layer, Vector3Int position) {
             GetLayer(layer).SetTile(position, null);
         }
 
@@ -104,11 +104,11 @@ namespace DefaultNamespace.TilemapSystem {
         /// <param name="position"></param>
         /// <returns></returns>
         public float GetTileCost(Vector3Int position) {
-            if (ContainsTileAt(IMapManager.Layer.PlatformLayer, position)) {
-                return ((PlatformData)GetTileData(IMapManager.Layer.PlatformLayer, position)).WalkCost;
+            if (ContainsTileAt(MapLayer.PlatformLayer, position)) {
+                return ((PlatformData)GetTileData(MapLayer.PlatformLayer, position)).WalkCost;
             }
             else {
-                return ((GroundData)GetTileData(IMapManager.Layer.GroundLayer, position)).WalkCost;
+                return ((GroundData)GetTileData(MapLayer.GroundLayer, position)).WalkCost;
             }
         }
 
@@ -118,7 +118,7 @@ namespace DefaultNamespace.TilemapSystem {
         /// <param name="layer"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        public bool ContainsTileAt(IMapManager.Layer layer, Vector3Int position) {
+        public bool ContainsTileAt(MapLayer layer, Vector3Int position) {
             if (GetLayer(layer).GetTile(position) != null)
                 return true;
             else
@@ -126,7 +126,7 @@ namespace DefaultNamespace.TilemapSystem {
         }
 
         #region Tile Highlighting
-        public void HighlightTile(IMapManager.Layer layer, Vector3Int position, Color color) {
+        public void HighlightTile(MapLayer layer, Vector3Int position, Color color) {
             Tilemap tileMapLayer = GetLayer(layer);
             Color? previousColor = null;
 
@@ -150,7 +150,7 @@ namespace DefaultNamespace.TilemapSystem {
             }
         }
 
-        public void UnhighlightTile(IMapManager.Layer layer, Vector3Int position) {
+        public void UnhighlightTile(MapLayer layer, Vector3Int position) {
             foreach (HighlightedTile tile in highlightedTiles) {
                 if (layer == tile.Layer && position == tile.Position) {
                     highlightedTiles.Remove(tile);
@@ -161,17 +161,17 @@ namespace DefaultNamespace.TilemapSystem {
         }
 
         public void HighlightTopTile(Vector3Int position, Color color) {
-            for (int i = (int)IMapManager.Layer.Max - 1; i >= 0; i--) {
-                if (ContainsTileAt((IMapManager.Layer)i, position)) {
-                    HighlightTile((IMapManager.Layer)i, position, color);
+            for (int i = (int)MapLayer.Max - 1; i >= 0; i--) {
+                if (ContainsTileAt((MapLayer)i, position)) {
+                    HighlightTile((MapLayer)i, position, color);
                 }
             }
         }
 
         public void UnhighlightTopTile(Vector3Int position) {
-            for (int i = (int)IMapManager.Layer.Max - 1; i >= 0; i--) {
-                if (ContainsTileAt((IMapManager.Layer)i, position)) {
-                    UnhighlightTile((IMapManager.Layer)i, position);
+            for (int i = (int)MapLayer.Max - 1; i >= 0; i--) {
+                if (ContainsTileAt((MapLayer)i, position)) {
+                    UnhighlightTile((MapLayer)i, position);
                 }
             }
         }
@@ -188,19 +188,19 @@ namespace DefaultNamespace.TilemapSystem {
         /// <param name="path"></param>
         public void HighlightPath(List<Vector3Int> path, Color color) {
             foreach (Vector3Int tile in path) {
-                HighlightTile(IMapManager.Layer.GroundLayer, tile, color);
+                HighlightTile(MapLayer.GroundLayer, tile, color);
             }
         }
         #endregion
 
         public bool IsGroundSolid(Vector3Int position) {
-            if (((GroundData)(GetTileData(IMapManager.Layer.GroundLayer, position))).IsSolid) {
+            if (((GroundData)(GetTileData(MapLayer.GroundLayer, position))).IsSolid) {
                 return true;
             }
             return false;
         }
 
-        public Vector3Int[] GetTilePositionsOnLayer(IMapManager.Layer layer) {
+        public Vector3Int[] GetTilePositionsOnLayer(MapLayer layer) {
             Tilemap tilemap = GetLayer(layer);
             List<Vector3Int> tilePositions = new List<Vector3Int>();
 

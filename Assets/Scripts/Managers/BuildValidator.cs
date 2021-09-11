@@ -70,11 +70,11 @@ namespace DefaultNamespace {
         }
 
         private bool DoesTileContainGround(Vector3Int position) {
-            return mapManager.ContainsTileAt(IMapManager.Layer.GroundLayer, position);
+            return mapManager.ContainsTileAt(MapLayer.GroundLayer, position);
         }
 
         private bool IsPositionEmpty(Vector3Int position) {
-            return !mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position);
+            return !mapManager.ContainsTileAt(MapLayer.StructureLayer, position);
         }
 
         private bool IsGroundSolid(Vector3Int position) {
@@ -86,7 +86,7 @@ namespace DefaultNamespace {
         }
 
         public bool IsStructurePresentAndDemolishable(Vector3Int position) {
-            StructureData structureData = (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+            StructureData structureData = (StructureData)mapManager.GetTileData(MapLayer.StructureLayer, position);
             if (structureData != null && structureData.Demolishable) {
                 return true;
             }
@@ -97,7 +97,7 @@ namespace DefaultNamespace {
             for (int x = -1; x <= 1; x++) {
                 for (int y = -1; y <= 1; y++) {
                     Vector3Int neighbour = position + new Vector3Int(x, y, 0);
-                    StructureData structureData = (StructureData)mapManager.GetTileData(IMapManager.Layer.StructureLayer, neighbour);
+                    StructureData structureData = (StructureData)mapManager.GetTileData(MapLayer.StructureLayer, neighbour);
                     if (structureData != null && structureData.GetType() == typeof(TowerData)) {
                         return true;
                     }

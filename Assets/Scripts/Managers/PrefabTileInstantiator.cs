@@ -52,10 +52,10 @@ namespace DefaultNamespace {
         /// Creates totem gameobject for each totem placeholder on tilemap
         /// </summary>
         private void InstantiateTotems() {
-            Vector3Int[] tilePositions = mapManager.GetTilePositionsOnLayer(IMapManager.Layer.StructureLayer);
+            Vector3Int[] tilePositions = mapManager.GetTilePositionsOnLayer(MapLayer.StructureLayer);
 
             foreach (Vector3Int position in tilePositions) {
-                TilemapSystem.TileData tileData = mapManager.GetTileData(IMapManager.Layer.StructureLayer, position);
+                TilemapSystem.TileData tileData = mapManager.GetTileData(MapLayer.StructureLayer, position);
                 if (tileData is TotemData) {
                     GameObject gameObject = GameObject.Instantiate(totemToPrefab[(TotemData)tileData]);
                     Totem totem = gameObject.GetComponent<Totem>();

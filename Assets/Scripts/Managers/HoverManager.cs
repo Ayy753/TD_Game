@@ -110,7 +110,7 @@ namespace DefaultNamespace {
         private void UnHoverGrid(Vector3Int start, Vector3Int end) {
             for (int x = start.x; x <= end.x; x++) {
                 for (int y = start.y; y <= end.y; y++) {
-                    mapManager.HighlightTile(IMapManager.Layer.GroundLayer, new Vector3Int(x, y, 0), Color.white);
+                    mapManager.HighlightTile(MapLayer.GroundLayer, new Vector3Int(x, y, 0), Color.white);
                     mapManager.UnhighlightTopTile(new Vector3Int(x, y, 0));
                 }
             }
@@ -127,8 +127,8 @@ namespace DefaultNamespace {
             HoverGrid(bottomLeft, topRight, color);
 
             //  If center contains structure, color it red
-            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) {
-                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.red);
+            if (mapManager.ContainsTileAt(MapLayer.StructureLayer, position)) {
+                mapManager.HighlightTile(MapLayer.StructureLayer, position, Color.red);
             }
         }
 
@@ -142,8 +142,8 @@ namespace DefaultNamespace {
             UnHoverGrid(bottomLeft, topRight);
 
             //  If center contains structure, remove tint
-            if (mapManager.ContainsTileAt(IMapManager.Layer.StructureLayer, position)) {
-                mapManager.HighlightTile(IMapManager.Layer.StructureLayer, position, Color.white);
+            if (mapManager.ContainsTileAt(MapLayer.StructureLayer, position)) {
+                mapManager.HighlightTile(MapLayer.StructureLayer, position, Color.white);
             }
         }
 
