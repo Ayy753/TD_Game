@@ -12,6 +12,12 @@ namespace DefaultNamespace {
         TowerAdjacent
     }
 
+    public enum PlatformBuildError {
+        None,
+        GroundStable,
+        AlreadyContainsPlatform
+    }
+
     public class BuildValidator : IBuildValidator {
         readonly IMapManager mapManager;
         readonly IPathfinder pathfinder;
@@ -104,6 +110,26 @@ namespace DefaultNamespace {
                 }
             }
             return false;
+        }
+
+        public bool CanBuildPlatformOverPosition(Vector3Int position) {
+            return ValidatePlatformBuildabilityOverPosition(position) == PlatformBuildError.None;
+        }
+
+        public PlatformBuildError ValidatePlatformBuildabilityOverPosition(Vector3Int position) {
+            if (DoesTileContainGround(position) && IsGroundSolid(position)) {
+                return PlatformBuildError.GroundStable;
+            }
+            else if (DoesTileContainPlatform(position)) {
+                return PlatformBuildError.AlreadyContainsPlatform;
+            }
+            else {
+                return PlatformBuildError.None;
+            }
+        }
+
+        private bool DoesTileContainPlatform(Vector3Int position) {
+            return mapManager.ContainsTileAt(MapLayer.PlatformLayer, position);
         }
     }
 }

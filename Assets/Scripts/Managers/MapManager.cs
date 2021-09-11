@@ -55,6 +55,9 @@ namespace DefaultNamespace.TilemapSystem {
             for (int i = 0; i < tileDatas.Length; i++) {
                 //  Link TileBase objects to TileData 
                 //  Since towers share the same tower base we need to ensure they dont get added twice
+
+                Debug.Log(tileDatas[i].Name);
+
                 if (dataFromTiles.ContainsKey(tileDatas[i].TileBase) != true) {
                     dataFromTiles.Add(tileDatas[i].TileBase, tileDatas[i]);
                 }

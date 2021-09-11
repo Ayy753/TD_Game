@@ -29,7 +29,7 @@ namespace DefaultNamespace.GUI {
         /// </summary>
         public void CreateBuildMenuButtons() {
             GameObject structureBuildBtnPrefab = Resources.Load<GameObject>("Prefabs/NewBuildMenuButton");
-            StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData/StructureData");
+            StructureData[] structureDatas = Resources.LoadAll<StructureData>("ScriptableObjects/TileData");
             GameObject scrollViewContentBox = GameObject.Find("pnlBuildMenu/Scroll View/Viewport/Content");
 
             foreach (StructureData structure in structureDatas) {

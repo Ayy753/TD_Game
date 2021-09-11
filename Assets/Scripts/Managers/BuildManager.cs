@@ -15,7 +15,7 @@ namespace DefaultNamespace {
     public class StructureChangedEventArgs : EventArgs {
         public BuildMode ChangeType { get; private set; }
         public Vector3Int Position { get; private set; }
-
+            
         public StructureChangedEventArgs(BuildMode changeType, Vector3Int position) {
             ChangeType = changeType;
             Position = position;
@@ -69,7 +69,12 @@ namespace DefaultNamespace {
         private void HandleLeftMouseUp() {
             if (!HasGameEnded() && !IsMouseOverGUI()) {
                 if (CurrentBuildMode == BuildMode.Build) {
-                    TryToBuyAndBuildStructureAndDisplayMessages(CurrentlySelectedStructure, lastPositionHovered);
+                    if (CurrentlySelectedStructure is PlatformData) {
+                        TryToBuyAndBuildPlatformAndDisplayMessages(lastPositionHovered);
+                    }
+                    else {
+                        TryToBuyAndBuildStructureAndDisplayMessages(CurrentlySelectedStructure, lastPositionHovered);
+                    }
                 }
                 else if (CurrentBuildMode == BuildMode.Demolish) {
                     TryToDemolishAndSellStructureAndDisplayMessages(lastPositionHovered);
@@ -106,7 +111,6 @@ namespace DefaultNamespace {
                 else {
                     BuyStructure(structureData);
                     BuildStructure(structureData, position);
-                    messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structureData.Cost), Color.yellow);
                 }
             }
         }
@@ -139,6 +143,7 @@ namespace DefaultNamespace {
 
         private void BuyStructure(StructureData structureData) {
             wallet.SpendMoney(structureData.Cost);
+            messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", structureData.Cost), Color.yellow);
         }
 
         private void BuildStructure(StructureData structureData, Vector3Int position) {
@@ -147,6 +152,48 @@ namespace DefaultNamespace {
             }
 
             mapManager.SetTile(position, structureData);
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
+        }
+
+        private void TryToBuyAndBuildPlatformAndDisplayMessages(Vector3Int lastPositionHovered) {
+            if (!CanAffordStructure(CurrentlySelectedStructure)) {
+                messageSystem.DisplayMessage($"Cannot afford {CurrentlySelectedStructure.Cost}", Color.red);
+            }
+            else {
+                PlatformBuildError error = ValidatePlatformBuildabilityOverPosition(lastPositionHovered);
+                if (error != PlatformBuildError.None) {
+                    messageSystem.DisplayMessage(GetPlatformBuildErrorMessage(error), Color.red);
+                }
+                else {
+                    BuyPlatform((PlatformData)CurrentlySelectedStructure);
+                    BuildPlatform(lastPositionHovered);
+                }
+            } 
+        }
+
+        private PlatformBuildError ValidatePlatformBuildabilityOverPosition(Vector3Int lastPositionHovered) {
+            return buildValidator.ValidatePlatformBuildabilityOverPosition(lastPositionHovered);
+        }
+
+        private string GetPlatformBuildErrorMessage(PlatformBuildError error) {
+            switch (error) {
+                case PlatformBuildError.GroundStable:
+                    return "The ground here is already stable enough to build on";
+                case PlatformBuildError.AlreadyContainsPlatform:
+                    return "There is already a platform here";
+                default:
+                    Debug.LogError("PlatformBuildError is invalid");
+                    return string.Empty;
+            }
+        }
+
+        private void BuyPlatform(PlatformData platformData) {
+            wallet.SpendMoney(platformData.Cost);
+            messageSystem.DisplayMessageAtCursor(string.Format("Spent {0}g", platformData.Cost), Color.yellow);
+        }
+
+        private void BuildPlatform(Vector3Int position) {
+            mapManager.SetTile(lastPositionHovered, CurrentlySelectedStructure);
             OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
         }
 

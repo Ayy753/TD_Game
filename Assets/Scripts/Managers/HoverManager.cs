@@ -7,7 +7,7 @@ namespace DefaultNamespace {
 
     public class HoverManager : IInitializable, IDisposable {
         private IMapManager mapManager;
-        private IBuildValidator hoverValidator;
+        private IBuildValidator buildValidator;
         private BuildManager buildManager;
         private IWaveManager waveManager;
 
@@ -18,7 +18,7 @@ namespace DefaultNamespace {
 
         public HoverManager(IMapManager mapManager, IBuildValidator hoverValidator, BuildManager buildManager, IWaveManager waveManager) {
             this.mapManager = mapManager;
-            this.hoverValidator = hoverValidator;
+            this.buildValidator = hoverValidator;
             this.buildManager = buildManager;
             this.waveManager = waveManager;
         }
@@ -67,36 +67,52 @@ namespace DefaultNamespace {
             }
         }
 
-        /// <summary>
-        /// Highlights the tile being hovered over while in build
-        /// or demolish mode
-        /// </summary>
-        /// <param name="position">Mouse cursor position</param>
         private void HoverTile(Vector3Int position) {
-            Color highlightColor;
-
             if (buildMode == BuildMode.Build) {
-                if (hoverValidator.CanBuildStructureOverPosition(position, structureData))
-                    highlightColor = Color.green;
-                else
-                    highlightColor = Color.red;
-
-                if (structureData.GetType() == typeof(TowerData)) {
-                    lastSelectedStructureWasTower = true;
-                    HoverTowerGrid(position, highlightColor);
+                if (structureData is PlatformData) {
+                    HoverPlatformBuild(position);
                 }
                 else {
-                    lastSelectedStructureWasTower = false;
-                    mapManager.HighlightTopTile(position, highlightColor);
+                    HoverStructureBuild(position);
                 }
             }
             else if (buildMode == BuildMode.Demolish) {
-                if (hoverValidator.IsStructurePresentAndDemolishable(position) == true)
-                    highlightColor = Color.green;
-                else
-                    highlightColor = Color.red;
+                HoverStructureDemolish(position);
+            }
+        }
+
+        private void HoverPlatformBuild(Vector3Int position) {
+            if (buildValidator.CanBuildPlatformOverPosition(position)) {
+                mapManager.HighlightTopTile(position, Color.green);
+            }
+            else {
+                mapManager.HighlightTopTile(position, Color.red);
+            }
+        }
+
+        private void HoverStructureBuild(Vector3Int position) {
+            Color highlightColor;
+
+            if (buildValidator.CanBuildStructureOverPosition(position, structureData))
+                highlightColor = Color.green;
+            else
+                highlightColor = Color.red;
+
+            if (structureData.GetType() == typeof(TowerData)) {
+                lastSelectedStructureWasTower = true;
+                HoverTowerGrid(position, highlightColor);
+            }
+            else {
+                lastSelectedStructureWasTower = false;
                 mapManager.HighlightTopTile(position, highlightColor);
             }
+        }
+
+        private void HoverStructureDemolish(Vector3Int position) {
+            if (buildValidator.IsStructurePresentAndDemolishable(position))
+                mapManager.HighlightTopTile(position, Color.green);
+            else
+                mapManager.HighlightTopTile(position, Color.red);
         }
 
         private void HoverGrid(Vector3Int start, Vector3Int end, Color color) {
