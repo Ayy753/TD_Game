@@ -20,9 +20,13 @@ namespace DefaultNamespace.TilemapSystem {
         public override int Cost { get; protected set; }
         [field: SerializeField]
         public override bool Buildable { get; protected set; }
-
+        [field: SerializeField]
+        public bool CanBeBuiltOn { get; protected set; }
         public override string ToString() {
-            return base.ToString() + string.Format("\n<b>Walk cost</b>: {0}", WalkCost);
+            return base.ToString() +
+                $"\n<b>Walk cost</b>: {WalkCost}" +
+                $"\n<b>Can be built on</b>: {CanBeBuiltOn}" +
+                $"\n<b>Cost</b>: {Cost}";
         }
     }
 }

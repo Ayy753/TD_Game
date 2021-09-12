@@ -46,7 +46,7 @@ namespace DefaultNamespace.TilemapSystem {
         /// <param name="path"></param>
         public void HighlightPath(List<Vector3Int> path, Color color);
 
-        bool IsGroundSolid(Vector3Int position);
+        bool CanGroundOrPlatformBeBuiltOn(Vector3Int position);
         void RemoveTile(MapLayer layer, Vector3Int position);
 
         /// <summary>

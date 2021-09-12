@@ -21,3 +21,4 @@ MonoBehaviour:
   <WalkCost>k__BackingField: 1
   <Cost>k__BackingField: 25
   <Buildable>k__BackingField: 1
+  <CanBeBuiltOn>k__BackingField: 1

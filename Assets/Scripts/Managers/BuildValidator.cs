@@ -84,7 +84,7 @@ namespace DefaultNamespace {
         }
 
         private bool IsGroundSolid(Vector3Int position) {
-            return mapManager.IsGroundSolid(position);
+            return mapManager.CanGroundOrPlatformBeBuiltOn(position);
         }
 
         private bool WouldBuildingBlockPath(Vector3Int position) {
