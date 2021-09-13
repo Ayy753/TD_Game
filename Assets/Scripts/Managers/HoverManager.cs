@@ -109,7 +109,7 @@ namespace DefaultNamespace {
         }
 
         private void HoverStructureDemolish(Vector3Int position) {
-            if (buildValidator.IsStructurePresentAndDemolishable(position))
+            if (buildValidator.IsStructurePresentAndDemolishable(position) || buildValidator.IsPlatformPresentAndDemolishable(position))
                 mapManager.HighlightTopTile(position, Color.green);
             else
                 mapManager.HighlightTopTile(position, Color.red);

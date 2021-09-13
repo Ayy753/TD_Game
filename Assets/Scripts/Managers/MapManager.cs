@@ -197,11 +197,13 @@ namespace DefaultNamespace.TilemapSystem {
         #endregion
 
         public bool CanGroundOrPlatformBeBuiltOn(Vector3Int position) {
-            if (ContainsTileAt(MapLayer.PlatformLayer, position) && ((PlatformData)(GetTileData(MapLayer.PlatformLayer, position))).CanBeBuiltOn) {
-                return true;
-            }
-            else if (((GroundData)(GetTileData(MapLayer.GroundLayer, position))).IsSolid) {
-                return true;
+            if (ContainsTileAt(MapLayer.GroundLayer, position)) {
+                if (ContainsTileAt(MapLayer.PlatformLayer, position) && ((PlatformData)(GetTileData(MapLayer.PlatformLayer, position))).CanBeBuiltOn) {
+                    return true;
+                }
+                else if (((GroundData)(GetTileData(MapLayer.GroundLayer, position))).IsSolid) {
+                    return true;
+                }
             }
             return false;
         }

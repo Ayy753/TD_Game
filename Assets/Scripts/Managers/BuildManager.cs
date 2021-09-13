@@ -77,9 +77,33 @@ namespace DefaultNamespace {
                     }
                 }
                 else if (CurrentBuildMode == BuildMode.Demolish) {
-                    TryToDemolishAndSellStructureAndDisplayMessages(lastPositionHovered);
+                    if (TileContainsPlatform(lastPositionHovered)) {
+                        TryToDemolishAndSellPlatformAndDisplayMessages(lastPositionHovered);
+                    }
+                    else {
+                        TryToDemolishAndSellStructureAndDisplayMessages(lastPositionHovered);
+                    }
                 }
             }
+        }
+
+        private bool TileContainsPlatform(Vector3Int position) {
+            if (mapManager.ContainsTileAt(MapLayer.PlatformLayer, position)) {
+                return true;
+            }
+            return false;
+        }
+
+        private void TryToDemolishAndSellPlatformAndDisplayMessages(Vector3Int lastPositionHovered) {
+            if (buildValidator.IsPlatformPresentAndDemolishable(lastPositionHovered)) {
+                PlatformData platform = (PlatformData)mapManager.GetTileData(MapLayer.PlatformLayer, lastPositionHovered);
+                SellStructure(platform);
+                DemolishPlatformAtPosition(lastPositionHovered);
+            }
+        }
+
+        private void DemolishPlatformAtPosition(Vector3Int position) {
+            mapManager.RemoveTile(MapLayer.PlatformLayer, position);
         }
 
         private bool HasGameEnded() {
@@ -161,6 +185,7 @@ namespace DefaultNamespace {
             }
             else {
                 PlatformBuildError error = ValidatePlatformBuildabilityOverPosition(lastPositionHovered);
+
                 if (error != PlatformBuildError.None) {
                     messageSystem.DisplayMessage(GetPlatformBuildErrorMessage(error), Color.red);
                 }
@@ -177,6 +202,8 @@ namespace DefaultNamespace {
 
         private string GetPlatformBuildErrorMessage(PlatformBuildError error) {
             switch (error) {
+                case PlatformBuildError.NoGround:
+                    return "There is nothing to build over";
                 case PlatformBuildError.GroundStable:
                     return "The ground here is already stable enough to build on";
                 case PlatformBuildError.AlreadyContainsPlatform:
@@ -203,11 +230,8 @@ namespace DefaultNamespace {
             }
             else {
                 StructureData structureAtPosition = GetStructureDataAtPosition(position);
-                float sellValue = GetSellValue(structureAtPosition);
-
                 SellStructure(structureAtPosition);
                 DemolishStructureAtPosition(position);
-                messageSystem.DisplayMessageAtCursor(string.Format("+{0}g", sellValue), Color.yellow);
             }
         }
 
@@ -228,6 +252,7 @@ namespace DefaultNamespace {
         private void SellStructure(StructureData structureData) {
             float sellValue = GetSellValue(structureData);
             wallet.GainMoney(sellValue);
+            messageSystem.DisplayMessageAtCursor(string.Format("+{0}g", sellValue), Color.yellow);
         }
 
         private void DemolishStructureAtPosition(Vector3Int position) {

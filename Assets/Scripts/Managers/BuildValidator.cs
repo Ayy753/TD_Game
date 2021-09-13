@@ -14,8 +14,9 @@ namespace DefaultNamespace {
 
     public enum PlatformBuildError {
         None,
-        GroundStable,
-        AlreadyContainsPlatform
+        NoGround,
+        AlreadyContainsPlatform,
+        GroundStable
     }
 
     public class BuildValidator : IBuildValidator {
@@ -117,11 +118,14 @@ namespace DefaultNamespace {
         }
 
         public PlatformBuildError ValidatePlatformBuildabilityOverPosition(Vector3Int position) {
-            if (DoesTileContainGround(position) && IsGroundSolid(position)) {
-                return PlatformBuildError.GroundStable;
+            if (!DoesTileContainGround(position)) {
+                return PlatformBuildError.NoGround;
             }
             else if (DoesTileContainPlatform(position)) {
                 return PlatformBuildError.AlreadyContainsPlatform;
+            }
+            else if (IsGroundSolid(position)) {
+                return PlatformBuildError.GroundStable;
             }
             else {
                 return PlatformBuildError.None;
@@ -130,6 +134,16 @@ namespace DefaultNamespace {
 
         private bool DoesTileContainPlatform(Vector3Int position) {
             return mapManager.ContainsTileAt(MapLayer.PlatformLayer, position);
+        }
+
+        public bool IsPlatformPresentAndDemolishable(Vector3Int position) {
+            if (DoesTileContainPlatform(position)) {
+                PlatformData platform = (PlatformData)mapManager.GetTileData(MapLayer.PlatformLayer, position);
+                if (platform.Demolishable) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

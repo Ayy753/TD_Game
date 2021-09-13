@@ -21,6 +21,8 @@ namespace DefaultNamespace.TilemapSystem {
         [field: SerializeField]
         public override bool Buildable { get; protected set; }
         [field: SerializeField]
+        public override bool Demolishable { get; protected set; }
+        [field: SerializeField]
         public bool CanBeBuiltOn { get; protected set; }
         public override string ToString() {
             return base.ToString() +

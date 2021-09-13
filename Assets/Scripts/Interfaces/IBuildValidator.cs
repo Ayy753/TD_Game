@@ -11,5 +11,6 @@ namespace DefaultNamespace {
         public StructureBuildError ValidatePositionBuildability(Vector3Int position);
         PlatformBuildError ValidatePlatformBuildabilityOverPosition(Vector3Int position);
         bool CanBuildPlatformOverPosition(Vector3Int position);
+        bool IsPlatformPresentAndDemolishable(Vector3Int position);
     }
 }
