@@ -1,17 +1,19 @@
 namespace DefaultNamespace.StatusSystem {
 
     public class Resistance : Stat {
-        public Resistance(float baseValue) {
+        public Resistance(float baseValue){
             this.baseValue = baseValue;
+            Initialize();
         }
     }
 
     public class Speed : Stat {
         private const float MINIMUM_SPEED = 0.2f;
 
-        public Speed(float baseValue) {
+        public Speed(float baseValue){
             this.baseValue = baseValue;
             minimumValue = MINIMUM_SPEED;
+            Initialize();
         }
     }
 
@@ -26,8 +28,9 @@ namespace DefaultNamespace.StatusSystem {
             get { return damageInflicted; }
         }
 
-        public Health(float baseValue) {
+        public Health(float baseValue){
             this.baseValue = baseValue;
+            Initialize();
         }
 
         public override void Initialize() {
