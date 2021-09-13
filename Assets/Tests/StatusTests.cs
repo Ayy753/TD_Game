@@ -14,18 +14,28 @@ namespace Tests {
             CharacterData characterData = (CharacterData)ScriptableObject.CreateInstance(typeof(CharacterData));
             typeof(CharacterData).GetProperty(nameof(characterData.BaseArmor)).SetValue(characterData, 20);
             typeof(CharacterData).GetProperty(nameof(characterData.BaseHealth)).SetValue(characterData, 100);
+            IEffectable effectable = CreateMockEffectable(characterData);
+            Damage damage = new Damage(5, DamageType.Physical);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { damage });
 
+            effectGroup.EffectTarget(effectable);
+            
+            Assert.AreEqual(96, effectable.Status.Health.Value);
+        }
+
+        private IEffectable CreateMockEffectable(CharacterData characterData) {
             Status status = new Status(characterData);
             IEffectable effectable = Substitute.For<IEffectable>();
             effectable.Status = status;
 
-            Damage damage = new Damage(5, DamageType.Physical);
-            IEffect[] effects = new IEffect[] { damage };
+            return effectable;
+        }
+
+        private EffectGroup CreateMockEffectGroup(IEffect[] effects) {
             EffectGroup effectGroup = (EffectGroup)ScriptableObject.CreateInstance(typeof(EffectGroup));
             effectGroup.Init(string.Empty, string.Empty, effects, TargetType.Individual, string.Empty, SoundType.arrowHitFlesh, 0, 0);
 
-            effectGroup.EffectTarget(effectable);
-            Assert.AreEqual(96, status.Health.Value);
+            return effectGroup;
         }
     }
 }
