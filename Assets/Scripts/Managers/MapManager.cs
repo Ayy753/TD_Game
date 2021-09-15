@@ -222,5 +222,14 @@ namespace DefaultNamespace.TilemapSystem {
             }
             return tilePositions.ToArray();
         }
+
+        public TileData GetTopTileData(Vector3Int position) {
+            for (int i = (int)MapLayer.Max - 1; i >= 0; i--) {
+                if (ContainsTileAt((MapLayer)i, position)) {
+                    return GetTileData((MapLayer)i, position);
+                }
+            }
+            return null;
+        }
     }
 }
