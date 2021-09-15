@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb11fc07db2987d4a8fbeaf45492aa47, type: 3}
   m_Name: MountainTile
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <Description>k__BackingField: 
+  <Name>k__BackingField: Mountain
+  <Description>k__BackingField: Rocky terrain
   <Icon>k__BackingField: {fileID: 21300210, guid: fd104c8cb6a94e1395fffa05d7783f58,
     type: 3}
   <TileBase>k__BackingField: {fileID: 11400000, guid: 4bd65fd909a29d2d5fb4dc767416fbe7,
     type: 2}
-  <WalkCost>k__BackingField: 1
+  <WalkCost>k__BackingField: 1.5
   <IsSolid>k__BackingField: 1

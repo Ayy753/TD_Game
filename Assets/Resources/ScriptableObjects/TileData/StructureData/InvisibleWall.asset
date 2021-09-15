@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Cost>k__BackingField: 0
   <Name>k__BackingField: Invisible Wall
-  <Description>k__BackingField: Blocks path
+  <Description>k__BackingField: Blocks unwalkable terrain such as cliffs
   <Icon>k__BackingField: {fileID: 21300000, guid: 399fb4e4314880447ae2eadf773ebfe1,
     type: 3}
   <TileBase>k__BackingField: {fileID: 11400000, guid: 00b45e61dc6c6464a8ba3074e7e33483,
     type: 2}
   <Demolishable>k__BackingField: 0
+  <Buildable>k__BackingField: 0
