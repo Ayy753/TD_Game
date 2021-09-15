@@ -223,10 +223,14 @@ namespace DefaultNamespace.TilemapSystem {
             return tilePositions.ToArray();
         }
 
-        public TileData GetTopTileData(Vector3Int position) {
-            for (int i = (int)MapLayer.Max - 1; i >= 0; i--) {
-                if (ContainsTileAt((MapLayer)i, position)) {
-                    return GetTileData((MapLayer)i, position);
+        public TileData GetTopLayerTileDataIgnoreDecore(Vector3Int position) {
+            MapLayer layer;
+            int layerCount = (int)MapLayer.Max - 1;
+
+            for (int i = layerCount; i >= 0; i--) {
+                layer = (MapLayer)i;
+                if (layer != MapLayer.DecoreLayer && ContainsTileAt(layer, position)) {
+                    return GetTileData(layer, position);
                 }
             }
             return null;

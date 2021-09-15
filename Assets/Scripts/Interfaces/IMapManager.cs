@@ -55,6 +55,6 @@ namespace DefaultNamespace.TilemapSystem {
         /// <param name="layer"></param>
         /// <returns></returns>
         public Vector3Int[] GetTilePositionsOnLayer(MapLayer layer);
-        TileData GetTopTileData(Vector3Int position);
+        TileData GetTopLayerTileDataIgnoreDecore(Vector3Int position);
     }
 }
