@@ -77,11 +77,11 @@ namespace DefaultNamespace {
                     }
                 }
                 else if (CurrentBuildMode == BuildMode.Demolish) {
-                    if (TileContainsStructure(lastPositionHovered)) {
-                        TryToDemolishAndSellStructure(lastPositionHovered);
+                    if (IsStructurePresentAndDemolishable(lastPositionHovered)) {
+                        DemolishAndSellStructure(lastPositionHovered);
                     }
-                    else if (TileContainsPlatform(lastPositionHovered)) {
-                        TryToDemolishAndSellPlatform(lastPositionHovered);
+                    else if (IsPlatformPresentAndDemolishable(lastPositionHovered)) {
+                        DemolishAndSellPlatform(lastPositionHovered);
                     }
                     else {
                         messageSystem.DisplayMessage("There is no demolishable structure here", Color.red);
@@ -90,26 +90,18 @@ namespace DefaultNamespace {
             }
         }
 
-        private bool TileContainsStructure(Vector3Int position) {
-            if (mapManager.ContainsTileAt(MapLayer.StructureLayer, position)) {
-                return true;
-            }
-            return false;
+        private bool IsStructurePresentAndDemolishable(Vector3Int position) {
+            return buildValidator.IsStructurePresentAndDemolishable(position);
         }
 
-        private bool TileContainsPlatform(Vector3Int position) {
-            if (mapManager.ContainsTileAt(MapLayer.PlatformLayer, position)) {
-                return true;
-            }
-            return false;
+         private bool IsPlatformPresentAndDemolishable(Vector3Int position) {
+            return buildValidator.IsPlatformPresentAndDemolishable(position);
         }
 
-        private void TryToDemolishAndSellPlatform(Vector3Int lastPositionHovered) {
-            if (buildValidator.IsPlatformPresentAndDemolishable(lastPositionHovered)) {
-                PlatformData platform = (PlatformData)mapManager.GetTileData(MapLayer.PlatformLayer, lastPositionHovered);
-                SellStructure(platform);
-                DemolishPlatformAtPosition(lastPositionHovered);
-            }
+        private void DemolishAndSellPlatform(Vector3Int lastPositionHovered) {
+            PlatformData platform = (PlatformData)mapManager.GetTileData(MapLayer.PlatformLayer, lastPositionHovered);
+            SellStructure(platform);
+            DemolishPlatformAtPosition(lastPositionHovered);
         }
 
         private void DemolishPlatformAtPosition(Vector3Int position) {
@@ -234,16 +226,10 @@ namespace DefaultNamespace {
             OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
         }
 
-        private void TryToDemolishAndSellStructure(Vector3Int position) {
-            if (IsDemolishableStructureAtPosition(position)) {
-                StructureData structureAtPosition = GetStructureDataAtPosition(position);
-                SellStructure(structureAtPosition);
-                DemolishStructureAtPosition(position);
-            }
-        }
-
-        private bool IsDemolishableStructureAtPosition(Vector3Int position) {
-            return buildValidator.IsStructurePresentAndDemolishable(position);
+        private void DemolishAndSellStructure(Vector3Int position) {
+            StructureData structureAtPosition = GetStructureDataAtPosition(position);
+            SellStructure(structureAtPosition);
+            DemolishStructureAtPosition(position);
         }
 
         private StructureData GetStructureDataAtPosition(Vector3Int position) {
@@ -382,7 +368,7 @@ namespace DefaultNamespace {
 
         public void SellTower(Tower tower) {
             Vector3Int positiion = Vector3Int.FloorToInt(tower.gameObject.transform.position);
-            TryToDemolishAndSellStructure(positiion);
+            DemolishAndSellStructure(positiion);
         }
     }
 }
