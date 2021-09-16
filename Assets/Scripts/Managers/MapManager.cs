@@ -164,18 +164,16 @@ namespace DefaultNamespace.TilemapSystem {
         }
 
         public void HighlightTopTile(Vector3Int position, Color color) {
-            for (int i = (int)MapLayer.Max - 1; i >= 0; i--) {
-                if (ContainsTileAt((MapLayer)i, position)) {
-                    HighlightTile((MapLayer)i, position, color);
-                }
+            TileData topTile = GetTopLayerTileData(position, true);
+            if (topTile != null) {
+                HighlightTile(topTile.Layer, position, color);
             }
         }
 
         public void UnhighlightTopTile(Vector3Int position) {
-            for (int i = (int)MapLayer.Max - 1; i >= 0; i--) {
-                if (ContainsTileAt((MapLayer)i, position)) {
-                    UnhighlightTile((MapLayer)i, position);
-                }
+            TileData topTile = GetTopLayerTileData(position, true);
+            if (topTile != null) {
+                UnhighlightTile(topTile.Layer, position);
             }
         }
 
@@ -223,13 +221,13 @@ namespace DefaultNamespace.TilemapSystem {
             return tilePositions.ToArray();
         }
 
-        public TileData GetTopLayerTileDataIgnoreDecore(Vector3Int position) {
+        public TileData GetTopLayerTileData(Vector3Int position, bool ignoreDecor) {
             MapLayer layer;
             int layerCount = (int)MapLayer.Max - 1;
 
             for (int i = layerCount; i >= 0; i--) {
                 layer = (MapLayer)i;
-                if (layer != MapLayer.DecoreLayer && ContainsTileAt(layer, position)) {
+                if ((ignoreDecor && layer != MapLayer.DecoreLayer) && ContainsTileAt(layer, position)) {
                     return GetTileData(layer, position);
                 }
             }
