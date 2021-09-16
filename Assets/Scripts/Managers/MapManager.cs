@@ -63,12 +63,7 @@ namespace DefaultNamespace.TilemapSystem {
                 }
             }
         }
-
-        /// <summary>
-        /// Get TileMap corrisponding to Layers enum
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <returns></returns>
+        
         private Tilemap GetLayer(MapLayer layer) {
             return layerToTilemap[layer];
         }
@@ -78,9 +73,6 @@ namespace DefaultNamespace.TilemapSystem {
         /// Note: Tilebase is the dictionary key and there are multiple tower types that share the same towerbase, and the same key can't exist twice...
         /// Therefore only one towerbase key was added in the dictonary and this should not be used to get the tower type at this position.
         /// </summary>
-        /// <param name="layer">Layer to search</param>
-        /// <param name="position">Position of tile</param>
-        /// <returns></returns>
         public TileData GetTileData(MapLayer layer, Vector3Int position) {
             //  2D tilemap
             position.z = 0;
@@ -101,11 +93,6 @@ namespace DefaultNamespace.TilemapSystem {
             GetLayer(layer).SetTile(position, null);
         }
 
-        /// <summary>
-        /// Gets tile cost of a ground tile, or the platform built over it
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
         public float GetTileCost(Vector3Int position) {
             if (ContainsTileAt(MapLayer.PlatformLayer, position)) {
                 return ((PlatformData)GetTileData(MapLayer.PlatformLayer, position)).WalkCost;
@@ -115,12 +102,6 @@ namespace DefaultNamespace.TilemapSystem {
             }
         }
 
-        /// <summary>
-        /// Does a coordinate in specified layer contain a tile?
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
         public bool ContainsTileAt(MapLayer layer, Vector3Int position) {
             if (GetLayer(layer).GetTile(position) != null)
                 return true;
@@ -183,10 +164,6 @@ namespace DefaultNamespace.TilemapSystem {
             }
         }
 
-        /// <summary>
-        /// Highlights the tiles in an array on the ground layer
-        /// </summary>
-        /// <param name="path"></param>
         public void HighlightPath(List<Vector3Int> path, Color color) {
             foreach (Vector3Int tile in path) {
                 HighlightTile(MapLayer.GroundLayer, tile, color);
