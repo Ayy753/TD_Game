@@ -12,6 +12,7 @@ namespace DefaultNamespace.TilemapSystem {
         PlatformLayer,
         StructureLayer,
         DecoreLayer,
+        TheVoid,
         Max
     }
 
