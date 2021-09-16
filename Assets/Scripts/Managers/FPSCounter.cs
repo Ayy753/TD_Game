@@ -1,41 +1,29 @@
-namespace DefaultNamespace {
-
-    using DefaultNamespace.GUI;
-    using System.Collections;
+namespace DefaultNamespace.GUI {
     using UnityEngine;
-    using Zenject;
+    using TMPro;
 
-    public class FPSCounter : IInitializable {
-        IGUIManager guiController;
-        AsyncProcessor asyncProcessor;
+    public class FPSCounter : MonoBehaviour {
+        private const float UPDATE_RATE = 2.0f;
+        private int frameCount;
+        private float dt;
+        private float fps;
 
-        public FPSCounter(IGUIManager guiController, AsyncProcessor asyncProcessor) {
-            this.guiController = guiController;
-            this.asyncProcessor = asyncProcessor;
+        TMP_Text fpsText;
+
+        private void Awake() {
+            fpsText = GameObject.Find("txtFPS").GetComponent<TMP_Text>();
+            Debug.Log("starting fps counter");
         }
 
-        public void Initialize() {
-            asyncProcessor.StartCoroutine(FpsPoller());
-        }
+        public void Update() {
+            frameCount++;
+            dt += Time.unscaledDeltaTime;
+            if (dt > 1.0f / UPDATE_RATE) {
+                fps = frameCount / dt;
+                frameCount = 0;
+                dt -= 1.0f / UPDATE_RATE;
 
-        private IEnumerator FpsPoller() {
-            int numSamples = 5;
-            int sampleCount = 0;
-            float accumulatedFrames = 0;
-            float averageFps;
-
-            while (true) {
-                accumulatedFrames += Time.unscaledDeltaTime;
-                sampleCount++;
-
-                if (sampleCount == numSamples) {
-                    averageFps = accumulatedFrames / numSamples;
-                    guiController.UpdateFPSCounter(Mathf.RoundToInt(1 / averageFps));
-                    sampleCount = 0;
-                    accumulatedFrames = 0;
-                }
-
-                yield return new WaitForSecondsRealtime(0.1f);
+                fpsText.text = fps.ToString();
             }
         }
     }
