@@ -19,7 +19,7 @@ MonoBehaviour:
   <TileBase>k__BackingField: {fileID: 11400000, guid: 497090e6ada36ae41906314b333f9772,
     type: 2}
   <WalkCost>k__BackingField: 1
-  <Cost>k__BackingField: 25
+  <Cost>k__BackingField: 10
   <Buildable>k__BackingField: 1
   <Demolishable>k__BackingField: 1
   <CanBeBuiltOn>k__BackingField: 1
