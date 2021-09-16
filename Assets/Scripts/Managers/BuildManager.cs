@@ -106,6 +106,7 @@ namespace DefaultNamespace {
 
         private void DemolishPlatformAtPosition(Vector3Int position) {
             mapManager.RemoveTile(MapLayer.PlatformLayer, position);
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Demolish, position));
         }
 
         private bool HasGameEnded() {
@@ -257,7 +258,7 @@ namespace DefaultNamespace {
             }
 
             mapManager.RemoveTile(MapLayer.StructureLayer, position);
-            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Build, position));
+            OnStructureChanged.Invoke(null, new StructureChangedEventArgs(BuildMode.Demolish, position));
         }
 
         private void HandleNewTileHovered(Vector3Int position) {

@@ -27,18 +27,26 @@ namespace DefaultNamespace {
             MouseManager.OnHoveredNewTile += HandleNewTileHovered;
             MouseManager.OnRightMouseUp += PauseHighlighting;
             waveManager.OnWaveStateChanged += HandleWaveStateChanged;
+            BuildManager.OnStructureChanged += BuildManager_OnStructureChanged;
         }
+
 
         public void Dispose() {
             MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
             MouseManager.OnRightMouseUp -= PauseHighlighting;
             waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
+            BuildManager.OnStructureChanged += BuildManager_OnStructureChanged;
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
             if (arg.NewState == WaveState.WaveInProgress) {
                 UnhoverLastTile();
             }
+        }
+
+        private void BuildManager_OnStructureChanged(object sender, StructureChangedEventArgs e) {
+            //  Updates tile highlighting 
+            HandleNewTileHovered(e.Position);
         }
 
         /// <summary>
