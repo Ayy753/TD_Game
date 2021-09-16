@@ -54,11 +54,11 @@ TagManager:
   - name: Level4
     uniqueID: 683636827
     locked: 0
-  - name: Structures
-    uniqueID: 2468381851
-    locked: 0
   - name: Platforms
     uniqueID: 2088701345
+    locked: 0
+  - name: Structures
+    uniqueID: 2468381851
     locked: 0
   - name: Decore
     uniqueID: 2556452261

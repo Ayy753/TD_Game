@@ -9,8 +9,8 @@ namespace DefaultNamespace.TilemapSystem {
         Level2,
         Level3,
         Level4,
-        StructureLayer,
         PlatformLayer,
+        StructureLayer,
         DecoreLayer,
         Max
     }
