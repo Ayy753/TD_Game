@@ -40,12 +40,6 @@ namespace DefaultNamespace.TilemapSystem {
         /// </summary>
         public void UnhighlightAll();
 
-        /// <summary>
-        /// Highlights the tiles in an array on the ground layer
-        /// </summary>
-        /// <param name="path"></param>
-        public void HighlightPath(List<Vector3Int> path, Color color);
-
         bool CanGroundOrPlatformBeBuiltOn(Vector3Int position);
         void RemoveTile(MapLayer layer, Vector3Int position);
 

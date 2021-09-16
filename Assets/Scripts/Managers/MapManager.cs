@@ -112,26 +112,28 @@ namespace DefaultNamespace.TilemapSystem {
         #region Tile Highlighting
         public void HighlightTile(MapLayer layer, Vector3Int position, Color color) {
             Tilemap tileMapLayer = GetLayer(layer);
-            Color? previousColor = null;
 
-            //  Check if there is a tile at this position
-            if (tileMapLayer.HasTile(position) == true) {
-                //  If this tile is already tinted, remove it from the collection and keep track of previous color
-                foreach (HighlightedTile tile in highlightedTiles) {
-                    if (tile.Layer == layer && tile.Position == position) {
-                        previousColor = tile.Color;
-                        highlightedTiles.Remove(tile);
-                        break;
-                    }
-                }
-                tileMapLayer.SetTileFlags(position, TileFlags.None);
-                tileMapLayer.SetColor(position, color);
+            if (tileMapLayer.HasTile(position)) {
+                RemoveHighlightedTile(layer, position);
+                AddHighlightedTile(layer, position, color);
+            }
+        }
 
-                //  Don't store highlighted tile if a color is being removed 
-                if (color != Color.white) {
-                    highlightedTiles.Add(new HighlightedTile(position, layer, color, previousColor));
+        private void RemoveHighlightedTile(MapLayer layer, Vector3Int position) {
+            foreach (HighlightedTile tile in highlightedTiles) {
+                if (tile.Layer == layer && tile.Position == position) {
+                    highlightedTiles.Remove(tile);
+                    break;
                 }
             }
+        }
+
+        private void AddHighlightedTile(MapLayer layer, Vector3Int position, Color color) {
+            Tilemap tileMapLayer = GetLayer(layer);
+
+            tileMapLayer.SetTileFlags(position, TileFlags.None);
+            tileMapLayer.SetColor(position, color);
+            highlightedTiles.Add(new HighlightedTile(position, layer, color));
         }
 
         public void UnhighlightTile(MapLayer layer, Vector3Int position) {
@@ -161,12 +163,6 @@ namespace DefaultNamespace.TilemapSystem {
         public void UnhighlightAll() {
             while (highlightedTiles.Count > 0) {
                 UnhighlightTile(highlightedTiles[0].Layer, highlightedTiles[0].Position);
-            }
-        }
-
-        public void HighlightPath(List<Vector3Int> path, Color color) {
-            foreach (Vector3Int tile in path) {
-                HighlightTile(MapLayer.GroundLayer, tile, color);
             }
         }
         #endregion
