@@ -99,20 +99,15 @@ namespace DefaultNamespace {
         }
 
         private void HoverStructureBuild(Vector3Int position) {
-            Color highlightColor;
-
-            if (buildValidator.CanBuildStructureOverPosition(position, structureData))
-                highlightColor = Color.green;
-            else
-                highlightColor = Color.red;
+            bool buildable = buildValidator.CanBuildStructureOverPosition(position, structureData);
 
             if (structureData.GetType() == typeof(TowerData)) {
                 lastSelectedStructureWasTower = true;
-                HoverTowerGrid(position, highlightColor);
+                HoverTowerGrid(position, buildable);
             }
             else {
                 lastSelectedStructureWasTower = false;
-                mapManager.HighlightTopTile(position, highlightColor);
+                mapManager.HighlightTopTile(position, buildable ? Color.green : Color.red);
             }
         }
 
@@ -141,18 +136,19 @@ namespace DefaultNamespace {
         }
 
         /// <summary>
-        /// Hovers a 3x3 grid around tower center
+        /// Highlights a 3x3 grid around tower center
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="color"></param>
-        private void HoverTowerGrid(Vector3Int position, Color color) {
+        private void HoverTowerGrid(Vector3Int position, bool validPosition) {
             Vector3Int bottomLeft = position + new Vector3Int(-1, -1, 0);
             Vector3Int topRight = position + new Vector3Int(1, 1, 0);
-            HoverGrid(bottomLeft, topRight, color);
 
-            //  If center contains structure, color it red
-            if (mapManager.ContainsTileAt(MapLayer.StructureLayer, position)) {
-                mapManager.HighlightTile(MapLayer.StructureLayer, position, Color.red);
+            HoverGrid(bottomLeft, topRight, Color.yellow);
+
+            if (validPosition) {
+                mapManager.HighlightTopTile(position, Color.green);
+            }
+            else {
+                mapManager.HighlightTopTile(position, Color.red);
             }
         }
 
