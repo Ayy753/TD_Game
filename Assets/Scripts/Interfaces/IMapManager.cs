@@ -20,34 +20,13 @@ namespace DefaultNamespace.TilemapSystem {
         public void SetTile(Vector3Int position, TileData tileData);
         float GetTileCost(Vector3Int neighbourCoordinate);
         bool ContainsTileAt(MapLayer structureLayer, Vector3Int position);
-
-
         public void HighlightTile(MapLayer layer, Vector3Int position, Color color);
-
-        /// <summary>
-        /// Removes tile highlight
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <param name="position"></param>
         public void UnhighlightTile(MapLayer layer, Vector3Int position);
-
         public void HighlightTopTile(Vector3Int position, Color color);
-
         public void UnhighlightTopTile(Vector3Int position);
-
-        /// <summary>
-        /// Removes the tinting from all tiles
-        /// </summary>
         public void UnhighlightAll();
-
         bool CanGroundOrPlatformBeBuiltOn(Vector3Int position);
         void RemoveTile(MapLayer layer, Vector3Int position);
-
-        /// <summary>
-        /// Returns the position of all non-empty tiles on a layer
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <returns></returns>
         public Vector3Int[] GetTilePositionsOnLayer(MapLayer layer);
         TileData GetTopLayerTileData(Vector3Int position, bool ignoreDecor);
     }
