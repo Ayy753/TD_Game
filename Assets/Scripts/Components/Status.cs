@@ -9,7 +9,7 @@ namespace DefaultNamespace.StatusSystem {
     public class Status {
         private readonly Stat[] Stats;
 
-        public Resistance Armor { get; private set; }
+        public Armor Armor { get; private set; }
         public Resistance ColdResist { get; private set; }
         public Resistance FireResist { get; private set; }
         public Resistance PoisonResist { get; private set; }
@@ -27,7 +27,7 @@ namespace DefaultNamespace.StatusSystem {
         public event ClearStatus OnStatusCleared;
 
         public Status(CharacterData characterData) {
-            Armor = new Resistance(characterData.BaseArmor);
+            Armor = new Armor(characterData.BaseArmor);
             ColdResist = new Resistance(characterData.BaseColdResist);
             FireResist = new Resistance(characterData.BaseFireResist);
             PoisonResist = new Resistance(characterData.BasePoisonResist);

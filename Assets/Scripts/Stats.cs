@@ -3,6 +3,14 @@ namespace DefaultNamespace.StatusSystem {
     public class Resistance : Stat {
         public Resistance(float baseValue){
             this.baseValue = baseValue;
+            minimumValue = -75f;
+            Initialize();
+        }
+    }
+
+    public class Armor : Resistance {
+        public Armor(float baseValue) : base(baseValue) {
+            minimumValue = 0f;
             Initialize();
         }
     }
