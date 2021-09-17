@@ -2,6 +2,7 @@ namespace DefaultNamespace {
 
     using DefaultNamespace.StatusSystem;
     using DefaultNamespace.TilemapSystem;
+    using System;
     using UnityEngine;
 
     public class UnitMovement : MonoBehaviour, IUnitMovement {
@@ -15,6 +16,8 @@ namespace DefaultNamespace {
 
         private const int maxTileCost = 15;
         private float cachedUnitSpeed, effectiveSpeed;
+
+        public event EventHandler<NewTileReachedEventArgs> OnNewTileReached;
 
         private void Awake() {
             unitInput = transform.GetComponent<IUnitInput>();
@@ -93,7 +96,8 @@ namespace DefaultNamespace {
                 transform.parent.position = Vector3.MoveTowards(transform.parent.position, nextTileWithOffset, effectiveSpeed * Time.deltaTime);
             }
             else {
-                unitInput.ReachedNextTile();
+                OnNewTileReached?.Invoke(this, new NewTileReachedEventArgs(nextTile));
+
                 nextTile = unitInput.GetNextTile();
                 nextTileWithOffset = nextTile + TILEMAP_OFFSET;
             }

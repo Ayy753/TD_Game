@@ -12,6 +12,7 @@ namespace DefaultNamespace {
     public class UnitAI : MonoBehaviour, IUnitInput {
         IPathfinder pathFinder;
         IUnit unit;
+        private IUnitMovement unitMovement;
 
         private List<Vector3Int> mainPath;
         private int pathIndex;
@@ -26,6 +27,7 @@ namespace DefaultNamespace {
         private void Awake() {
             pathFinder = GameObject.Find("PathFinder").GetComponent<IPathfinder>();
             unit = transform.GetComponent<IUnit>();
+            unitMovement = transform.GetComponent<IUnitMovement>();
         }
 
         private void OnEnable() {
@@ -41,10 +43,13 @@ namespace DefaultNamespace {
 
             pathFinder.PathRecalculated += OnPathRecalculated;
             unit.TargetDisabled += UnitAI_TargetDisabled;
+            unitMovement.OnNewTileReached += UnitMovement_OnNewTileReached;
         }
 
         private void OnDisable() {
+            pathFinder.PathRecalculated -= OnPathRecalculated;
             unit.TargetDisabled -= UnitAI_TargetDisabled;
+            unitMovement.OnNewTileReached -= UnitMovement_OnNewTileReached;
         }
 
         private void UnitAI_TargetDisabled(object sender, EventArgs e) {
@@ -72,6 +77,10 @@ namespace DefaultNamespace {
             }
 
             mainPath = pathFinder.GetMainPath();
+        }
+
+        private void UnitMovement_OnNewTileReached(object sender, NewTileReachedEventArgs e) {
+            ReachedNextTile();
         }
 
         public void ReachedNextTile() {
