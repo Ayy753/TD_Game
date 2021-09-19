@@ -1,4 +1,5 @@
 namespace DefaultNamespace {
+    using DefaultNamespace.EffectSystem;
     using DefaultNamespace.StatusSystem;
     using System;
     using UnityEngine;
@@ -116,6 +117,10 @@ namespace DefaultNamespace {
 
         public CharacterData GetCharacterData() {
             return EnemyData;
+        }
+
+        public void ApplyEffectGroup(EffectGroup effectGroup) {
+            Status.ApplyEffectGroup(effectGroup);
         }
 
         public class Factory : PlaceholderFactory<EnemyData.EnemyType, Enemy> { }
