@@ -35,7 +35,7 @@ namespace DefaultNamespace {
             MouseManager.OnHoveredNewTile -= HandleNewTileHovered;
             MouseManager.OnRightMouseUp -= PauseHighlighting;
             waveManager.OnWaveStateChanged -= HandleWaveStateChanged;
-            BuildManager.OnStructureChanged += BuildManager_OnStructureChanged;
+            BuildManager.OnStructureChanged -= BuildManager_OnStructureChanged;
         }
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
