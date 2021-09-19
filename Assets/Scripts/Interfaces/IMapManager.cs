@@ -30,5 +30,6 @@ namespace DefaultNamespace.TilemapSystem {
         void RemoveTile(MapLayer layer, Vector3Int position);
         public Vector3Int[] GetTilePositionsOnLayer(MapLayer layer);
         TileData GetTopLayerTileData(Vector3Int position, bool ignoreDecor);
+        MapLayer GetTopLayer(Vector3Int position, bool ignoreDecor);
     }
 }

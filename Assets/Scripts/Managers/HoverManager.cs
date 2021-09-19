@@ -12,6 +12,8 @@ namespace DefaultNamespace {
         private IWaveManager waveManager;
 
         private Vector3Int lastHoveredPosition = Vector3Int.down;
+        private MapLayer lastHoveredLayer;
+
         private bool lastSelectedStructureWasTower = false;
         private StructureData structureData;
         private BuildMode buildMode = BuildMode.None;
@@ -62,6 +64,7 @@ namespace DefaultNamespace {
             }
             if (buildMode != BuildMode.None) {
                 lastHoveredPosition = tileCoords;
+                lastHoveredLayer = mapManager.GetTopLayer(tileCoords, true);
                 HoverTile(tileCoords);
             }
         }
@@ -70,9 +73,7 @@ namespace DefaultNamespace {
             if (lastSelectedStructureWasTower == true) {
                 UnhoverTowerGrid(lastHoveredPosition);
             }
-            else {
-                mapManager.UnhighlightTopTile(lastHoveredPosition);
-            }
+            mapManager.UnhighlightTile(lastHoveredLayer, lastHoveredPosition);
         }
 
         private void HoverTile(Vector3Int position) {

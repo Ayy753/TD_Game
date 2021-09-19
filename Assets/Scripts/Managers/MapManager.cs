@@ -207,7 +207,7 @@ namespace DefaultNamespace.TilemapSystem {
             }
         }
 
-        private MapLayer GetTopLayer(Vector3Int position, bool ignoreDecor) {
+        public MapLayer GetTopLayer(Vector3Int position, bool ignoreDecor) {
             MapLayer layer;
             int layerCount = (int)MapLayer.Max - 2;
 
