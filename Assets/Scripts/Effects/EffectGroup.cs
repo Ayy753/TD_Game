@@ -35,6 +35,7 @@ namespace DefaultNamespace.EffectSystem {
         public float Cooldown { get; private set; }
 
         private IEffect[] Effects;
+        private EffectableFinder effectableFinder;
 
         public static event EventHandler<OnEffectUsedEventArgs> OnEffectUsed;
 
@@ -137,7 +138,8 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         private void ApplyEffects(IEffectable target) {
-            target.ApplyEffectGroup(this);
+            Status status = target.Status;
+            status.ApplyEffectGroup(this);
         }
     }
 }

@@ -4,6 +4,5 @@ namespace DefaultNamespace.EffectSystem {
 
     public interface IEffectable : ITransform {
         public Status Status { get; set; }
-        public void ApplyEffectGroup(EffectGroup effectGroup);
     }
 }
