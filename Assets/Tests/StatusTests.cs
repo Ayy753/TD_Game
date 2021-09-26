@@ -35,10 +35,73 @@ namespace Tests {
             Assert.AreEqual(96, effectable.Status.Health.Value);
         }
 
+        [Test]
+        public void Speed_Always_Greater_Than_0() {
+            IEffectable effectable = CreateMockEffectable(characterData);
+            Debuff speedDebuff = new Debuff(10000, 60, StatType.Speed, DamageType.Cold);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { speedDebuff });
+
+            effectGroup.EffectTarget(effectable);
+
+            Assert.IsTrue(effectable.Status.Speed.Value > 0);
+        }
+
+        [Test]
+        public void Armor_Cannot_Fall_Below_0() {
+            IEffectable effectable = CreateMockEffectable(characterData);
+            Debuff armorDebuff = new Debuff(10000, 60, StatType.Armor, DamageType.Physical);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { armorDebuff });
+
+            effectGroup.EffectTarget(effectable);
+
+            Assert.IsTrue(effectable.Status.Armor.Value >= 0);
+        }
+
+        [Test]
+        public void Fire_Resist_Cannot_Fall_Below_Negative_75() {
+            IEffectable effectable = CreateMockEffectable(characterData);
+            Debuff fireResistDebuff = new Debuff(10000, 60, StatType.FireResist, DamageType.Fire);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { fireResistDebuff });
+
+            effectGroup.EffectTarget(effectable);
+
+            Assert.IsTrue(effectable.Status.FireResist.Value >= -75);
+        }
+
+        [Test]
+        public void Fire_Resist_Cannot_Exceed_100() {
+            IEffectable effectable = CreateMockEffectable(characterData);
+            Buff fireResistBuff = new Buff(10000, 60, StatType.FireResist);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { fireResistBuff });
+
+            effectGroup.EffectTarget(effectable);
+
+            Assert.IsTrue(effectable.Status.FireResist.Value <= 100);
+        }
+
+        [Test]
+        public void Fire_Damage_Against_100_Fire_Resist_Is_Zero() {
+            IEffectable effectable = CreateMockEffectable(characterData);
+
+            //  Raise fire resist to 100%
+            Buff fireResistBuff = new Buff(100, 60, StatType.FireResist);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { fireResistBuff });
+            effectGroup.EffectTarget(effectable);
+
+            //  Record health and deal fire damage
+            float healthBefore = effectable.Status.Health.Value;
+            Damage fireDamage = new Damage(125, DamageType.Fire);
+            EffectGroup fireEffect = CreateMockEffectGroup(new IEffect[] { fireDamage });
+            fireEffect.EffectTarget(effectable);
+
+            Assert.IsTrue(effectable.Status.Health.Value == healthBefore);
+        }
+
         private IEffectable CreateMockEffectable(CharacterData characterData) {
             Status status = new Status(characterData);
             IEffectable effectable = Substitute.For<IEffectable>();
             effectable.Status = status;
+            status.Initialize();
 
             return effectable;
         }
