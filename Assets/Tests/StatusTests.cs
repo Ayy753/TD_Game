@@ -38,7 +38,7 @@ namespace Tests {
         [Test]
         public void Speed_Always_Greater_Than_0() {
             IEffectable effectable = CreateMockEffectable(characterData);
-            Debuff speedDebuff = new Debuff(10000, 60, StatType.Speed, DamageType.Cold);
+            Debuff speedDebuff = new Debuff(10000, 0, StatType.Speed, DamageType.Cold, false);
             EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { speedDebuff });
 
             effectGroup.EffectTarget(effectable);
@@ -49,7 +49,7 @@ namespace Tests {
         [Test]
         public void Armor_Cannot_Fall_Below_0() {
             IEffectable effectable = CreateMockEffectable(characterData);
-            Debuff armorDebuff = new Debuff(10000, 60, StatType.Armor, DamageType.Physical);
+            Debuff armorDebuff = new Debuff(10000, 60, StatType.Armor, DamageType.Physical, false);
             EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { armorDebuff });
 
             effectGroup.EffectTarget(effectable);
@@ -60,7 +60,7 @@ namespace Tests {
         [Test]
         public void Fire_Resist_Cannot_Fall_Below_Negative_75() {
             IEffectable effectable = CreateMockEffectable(characterData);
-            Debuff fireResistDebuff = new Debuff(10000, 60, StatType.FireResist, DamageType.Fire);
+            Debuff fireResistDebuff = new Debuff(10000, 60, StatType.FireResist, DamageType.Fire, false);
             EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { fireResistDebuff });
 
             effectGroup.EffectTarget(effectable);
@@ -71,7 +71,7 @@ namespace Tests {
         [Test]
         public void Fire_Resist_Cannot_Exceed_100() {
             IEffectable effectable = CreateMockEffectable(characterData);
-            Buff fireResistBuff = new Buff(10000, 60, StatType.FireResist);
+            Buff fireResistBuff = new Buff(10000, 60, StatType.FireResist, false);
             EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { fireResistBuff });
 
             effectGroup.EffectTarget(effectable);
@@ -84,7 +84,7 @@ namespace Tests {
             IEffectable effectable = CreateMockEffectable(characterData);
 
             //  Raise fire resist to 100%
-            Buff fireResistBuff = new Buff(100, 60, StatType.FireResist);
+            Buff fireResistBuff = new Buff(100, 60, StatType.FireResist, false);
             EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { fireResistBuff });
             effectGroup.EffectTarget(effectable);
 

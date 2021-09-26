@@ -3,16 +3,17 @@
     {
       "name": "Frost Projectile",
       "description": "Slows target",
-	  "target type": "Individual",
-	  "sound type": "arrowHitFlesh",
-	  "cooldown" : 1,
+      "target type": "Individual",
+      "sound type": "arrowHitFlesh",
+      "cooldown" : 1,
       "effects": [
         {
           "type": "Debuff",
           "statType": "Speed",
           "potency": 0.5,
           "duration": 1,
-		  "resistType" : "Cold"
+          "resistType" : "Cold",
+          "expires" : true
         },
         {
           "type": "Damage",
@@ -29,15 +30,16 @@
     {
       "name": "Poison Projectile",
       "description": "Poisons target",
-	  "target type": "Individual",
-	  "sound type": "arrowHitFlesh",
-	  "cooldown" : 1.5,
+      "target type": "Individual",
+      "sound type": "arrowHitFlesh",
+      "cooldown" : 1.5,
       "effects": [
         {
           "type": "DOT",
           "damageType": "Poison",
           "potency": 10,
-          "duration": 20
+          "duration": 20,
+          "expires" : true
         },
         {
           "type": "Damage",
@@ -46,93 +48,94 @@
         }
       ]
     },
-	{
+    {
       "name": "Splash Projectile",
       "description": "Does fire and physical area damage",
-	  "target type": "Area",
-	  "particle effect" : "Explosion",
-	  "radius": 3,
-	  "sound type": "explosionTiny",
-	  "cooldown" : 3,
+      "target type": "Area",
+      "particle effect" : "Explosion",
+      "radius": 3,
+      "sound type": "explosionTiny",
+      "cooldown" : 3,
       "effects": [
         {
           "type": "Damage",
-	      "damageType": "Fire",
+          "damageType": "Fire",
           "potency": 2.5
         },
         {
           "type": "Damage",
-	      "damageType": "Physical",
+          "damageType": "Physical",
           "potency": 2.5
-        }		
+        }       
       ]
     },
-	{
+    {
       "name": "Sniper Projectile",
       "description": "Deals physical damage and reduces armor",
-	  "target type": "Individual",
-	  "sound type": "arrowHitFlesh",
-	  "cooldown" : 5,
+      "target type": "Individual",
+      "sound type": "arrowHitFlesh",
+      "cooldown" : 5,
       "effects": [
         {
           "type": "Damage",
           "damageType": "Physical",
           "potency": 20
         },
-		{
+        {
           "type": "Debuff",
           "statType": "Armor",
           "potency": 5,
-          "duration": 9001,
-		  "resistType" : "Physical"
+          "resistType" : "Physical",
+          "expires" : false
         }
       ]
-    },	
-	{
+    },  
+    {
       "name": "Bullet Projectile",
       "description": "Deals physical damage",
-	  "target type": "Individual",
-	  "sound type": "arrowHitFlesh",
-	  "cooldown" : 1,
+      "target type": "Individual",
+      "sound type": "arrowHitFlesh",
+      "cooldown" : 1,
       "effects": [
         {
           "type": "Damage",
           "damageType": "Physical",
           "potency": 5
-        }		
+        }       
       ]
-    },		
-	{
+    },      
+    {
       "name": "Area Speed Buff",
       "description": "Increases speed",
-	  "target type": "Area",
-	  "particle effect" : "Buff",
-	  "radius": 3,
-	  "sound type": "Buff",	  
-	  "cooldown" : 2,
+      "target type": "Area",
+      "particle effect" : "Buff",
+      "radius": 3,
+      "sound type": "Buff",   
+      "cooldown" : 2,
       "effects": [
         {
           "type": "Buff",
           "statType": "Speed",
           "potency": 1,
-          "duration": 2
+          "duration": 2,
+          "expires" : true
         }
       ]
     },
-	{
+    {
       "name": "Area Heal",
       "description": "Heals units",
-	  "target type": "Area",
-	  "particle effect" : "Heal",
-	  "radius": 3,
-	  "sound type": "Buff",	  
-	  "cooldown" : 2,
+      "target type": "Area",
+      "particle effect" : "Heal",
+      "radius": 3,
+      "sound type": "Buff",   
+      "cooldown" : 2,
       "effects": [
         {
           "type": "Heal",
           "potency": 10
         }
       ]
-    }	
+    }   
   ]
 }

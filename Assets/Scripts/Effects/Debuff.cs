@@ -8,13 +8,16 @@ namespace DefaultNamespace.EffectSystem {
         public StatType Type { get; private set; }
         public int RemainingTicks { get; private set; }
         public DamageType ResistType { get; private set; }
+        public bool Expires { get; private set; }
+
         private Status unitStatus;
 
-        public Debuff(float potency, float duration, StatType statType, DamageType resistType) {
+        public Debuff(float potency, float duration, StatType statType, DamageType resistType, bool expires) {
             Potency = potency;
             Type = statType;
             Duration = duration;
             ResistType = resistType;
+            Expires = expires;
         }
 
         public void Apply(Status status) {
@@ -35,7 +38,9 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public void OnTick() {
-            RemainingTicks -= 1;
+            if (Expires) {
+                RemainingTicks -= 1;
+            }
         }
 
         public void Remove() {

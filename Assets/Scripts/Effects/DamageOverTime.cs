@@ -9,11 +9,13 @@ namespace DefaultNamespace.EffectSystem {
         public DamageType Type { get; private set; }
         public int RemainingTicks { get; private set; }
         public float  DamagePerTick { get; set; }
+        public bool Expires { get; private set; }
 
-        public DamageOverTime(float potency, float duration, DamageType damageType) {
+        public DamageOverTime(float potency, float duration, DamageType damageType, bool expires) {
             Duration = duration;
             Potency = potency;
             Type = damageType;
+            Expires = expires;
         }
 
         public void Apply(Status status) {
@@ -30,7 +32,9 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public void OnTick() {
-            RemainingTicks -= 1;
+            if (Expires) {
+                RemainingTicks -= 1;
+            }
             //  Total effect tick damage is applied by Status 
         }
 

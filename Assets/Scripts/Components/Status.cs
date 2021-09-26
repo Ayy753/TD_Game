@@ -116,7 +116,7 @@ namespace DefaultNamespace.StatusSystem {
                 }
                 effect.OnTick();
                 
-                if (effect.RemainingTicks <= 0) {
+                if (effect.Expires && effect.RemainingTicks <= 0) {
                     effect.Remove();
                     statusEffects.Remove(effect);
                     i--;

@@ -77,6 +77,9 @@ namespace DefaultNamespace.IO {
             [JsonProperty("resistType", NullValueHandling = NullValueHandling.Ignore)]
             [JsonConverter(typeof(StringEnumConverter))]
             public DamageType ResistType { get; set; }
+
+            [JsonProperty("expires", NullValueHandling = NullValueHandling.Ignore)]
+            public bool Expires { get; set; } = true;
         }
 
         /// <summary>
@@ -103,19 +106,19 @@ namespace DefaultNamespace.IO {
                 ParsedEffect currentEffect = parsedEffectGroup.Effects[i];
                 switch (currentEffect.EffectType) {
                     case EffectType.Buff:
-                        effects[i] = new Buff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType);
+                        effects[i] = new Buff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType, currentEffect.Expires);
                         break;
                     case EffectType.Damage:
                         effects[i] = new Damage(currentEffect.Potency, currentEffect.DamageType);
                         break;
                     case EffectType.DOT:
-                        effects[i] = new DamageOverTime(currentEffect.Potency, currentEffect.Duration, currentEffect.DamageType);
+                        effects[i] = new DamageOverTime(currentEffect.Potency, currentEffect.Duration, currentEffect.DamageType, currentEffect.Expires);
                         break;
                     case EffectType.StatMod:
                         effects[i] = new StatMod(currentEffect.Potency, currentEffect.StatType);
                         break;
                     case EffectType.Debuff:
-                        effects[i] = new Debuff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType, currentEffect.ResistType);
+                        effects[i] = new Debuff(currentEffect.Potency, currentEffect.Duration, currentEffect.StatType, currentEffect.ResistType, currentEffect.Expires);
                         break;
                     case EffectType.Heal:
                         effects[i] = new Heal(currentEffect.Potency);

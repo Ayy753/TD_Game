@@ -7,13 +7,15 @@ namespace DefaultNamespace.EffectSystem {
         public float Potency { get; }
         public StatType Type { get; private set; }
         public int RemainingTicks { get; private set; }
+        public bool Expires { get; private set; }
 
         private Status unitStatus;
 
-        public Buff(float potency, float duration, StatType statType) {
+        public Buff(float potency, float duration, StatType statType, bool expires) {
             Potency = potency;
             Type = statType;
             Duration = duration;
+            Expires = expires;
         }
 
         public void Apply(Status status) {
@@ -23,7 +25,9 @@ namespace DefaultNamespace.EffectSystem {
         }
 
         public void OnTick() {
-            RemainingTicks -= 1;
+            if (Expires) {
+                RemainingTicks -= 1;
+            }
         }
 
         public void Remove() {
