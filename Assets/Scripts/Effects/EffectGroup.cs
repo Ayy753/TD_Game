@@ -72,13 +72,17 @@ namespace DefaultNamespace.EffectSystem {
                     result.Append( string.Format("Deals {0} {1} damage\n", effect.Potency, damage.Type));
                 }
                 else if (effect is DamageOverTime dot) {
-                    result.Append(string.Format("Deals {0} {1} damage over {2} seconds\n", effect.Potency, dot.Type, dot.Duration));
+                    result.Append($"Deals {effect.Potency} {dot.Type} damage");
+                    result.Append(dot.Expires ? $" over {dot.Duration} seconds\n" : "\n");
                 }
                 else if (effect is Debuff debuff) {
-                    result.Append(string.Format("Reduces {0} by {1} for {2} seconds\n", debuff.Type, effect.Potency, debuff.Duration));
+                    result.Append($"Reduces {debuff.Type} by {effect.Potency}");
+                    result.Append(debuff.Expires ? $" for {debuff.Duration} seconds\n" : "\n");
                 }
                 else if (effect is Buff buff) {
-                    result.Append(string.Format("Increases {0} by {1} for {2} seconds\n", buff.Type, effect.Potency, buff.Duration));
+                    result.Append($"Increases {buff.Type} by {effect.Potency}");
+                    result.Append(buff.Expires ? $" for {buff.Duration} seconds\n" : "\n");
+
                 }
                 else if (effect is Heal) {
                     result.Append(string.Format("Restores {0} HP\n", effect.Potency));
