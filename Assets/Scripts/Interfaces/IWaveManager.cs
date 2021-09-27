@@ -4,8 +4,9 @@ namespace DefaultNamespace {
     using System.Collections.Generic;
 
     public enum WaveState {
-        WaitingBetweenWaves,
+        StartOfLevel,
         WaveInProgress,
+        WaitingBetweenWaves,
         LastWaveFinished
     }
 
