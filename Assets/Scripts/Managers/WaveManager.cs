@@ -57,17 +57,13 @@ namespace DefaultNamespace {
             LevelData = waveParser.LoadWaveData();
             NumberOfWaves = LevelData.Waves.Count;
 
-            nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
             activeEnemies = new List<Enemy>();
-            ChangeState(WaveState.Waiting);
             lastWaveFinishedSpawning = false;
             currentWaveFinishedSpawning = false;
 
             mostRecentWaveNum = 0;
 
-            messageSystem.DisplayMessage(string.Format("First wave starts in {0} seconds", timeBeforeFirstWave), Color.white, 1f);
-
-            OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(timeBeforeFirstWave));
+            OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
             OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
             OnEnemiesRemainingChanged?.Invoke(null, new EnemiesRemainingEventArgs(0));
         }
@@ -83,7 +79,6 @@ namespace DefaultNamespace {
 
             if (activeEnemies.Count == 0 && currentWaveFinishedSpawning) {
                 if (!lastWaveFinishedSpawning) {
-                    nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
                     ChangeState(WaveState.Waiting);
                 }
                 else {
@@ -211,12 +206,18 @@ namespace DefaultNamespace {
         private void ChangeState(WaveState state) {
             switch (state) {
                 case WaveState.Waiting:
-                    asyncProcessor.StopCoroutine(nextWaveCountDown);
+                    if (nextWaveCountDown != null) {
+                        asyncProcessor.StopCoroutine(nextWaveCountDown);
+                    }
+
                     OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(timeBetweenWaves));
                     nextWaveCountDown = asyncProcessor.StartCoroutine(NextWaveCountDown());
                     break;
                 case WaveState.WaveInProgress:
-                    asyncProcessor.StopCoroutine(nextWaveCountDown);
+                    if (nextWaveCountDown != null) {
+                        asyncProcessor.StopCoroutine(nextWaveCountDown);
+                    }
+
                     OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
                     OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
                     UpdateEnemiesRemainingLabel();
