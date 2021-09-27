@@ -25,7 +25,6 @@ namespace DefaultNamespace {
         private int numUnspawnedEnemiesSoFar;
 
         private const int timeBetweenWaves = 30;
-        private const int timeBeforeFirstWave = 60;
         private Coroutine nextWaveCountDown;
         private readonly List<Coroutine> waveCoroutines = new List<Coroutine>();
 
@@ -97,14 +96,7 @@ namespace DefaultNamespace {
         }
 
         private IEnumerator NextWaveCountDown() {
-            int secondsUntilNextWave;
-
-            if (mostRecentWaveNum == 0) {
-                secondsUntilNextWave = timeBeforeFirstWave;
-            }
-            else {
-                secondsUntilNextWave = timeBetweenWaves;
-            }
+            int secondsUntilNextWave = timeBetweenWaves;
 
             while (secondsUntilNextWave > 0) {
                 if (secondsUntilNextWave <= 5) {
