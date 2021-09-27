@@ -78,7 +78,7 @@ namespace DefaultNamespace {
 
             if (activeEnemies.Count == 0 && currentWaveFinishedSpawning) {
                 if (!lastWaveFinishedSpawning) {
-                    ChangeState(WaveState.Waiting);
+                    ChangeState(WaveState.WaitingBetweenWaves);
                 }
                 else {
                     ChangeState(WaveState.LastWaveFinished);
@@ -197,7 +197,7 @@ namespace DefaultNamespace {
 
         private void ChangeState(WaveState state) {
             switch (state) {
-                case WaveState.Waiting:
+                case WaveState.WaitingBetweenWaves:
                     if (nextWaveCountDown != null) {
                         asyncProcessor.StopCoroutine(nextWaveCountDown);
                     }
@@ -232,7 +232,7 @@ namespace DefaultNamespace {
         public void EndActiveWaves() {
             if (currentState == WaveState.WaveInProgress) {
                 StopActiveWaves();
-                ChangeState(WaveState.Waiting);
+                ChangeState(WaveState.WaitingBetweenWaves);
                 ApplyWaveTerminationPenalties();
                 ClearActiveEnemies();
                 UpdateEnemiesRemainingLabel();

@@ -166,7 +166,7 @@ namespace DefaultNamespace {
 
         private void HandleWaveStateChanged(object sender, WaveStateChangedEventArgs arg) {
             switch (arg.NewState) {
-                case WaveState.Waiting:
+                case WaveState.WaitingBetweenWaves:
                     SetGameSpeed(MIN_GAME_SPEED);
                     break;
                 case WaveState.LastWaveFinished:

@@ -111,7 +111,7 @@ namespace DefaultNamespace.GUI {
 
         private void WaveManager_OnWaveStateChanged(object sender, WaveStateChangedEventArgs args) {
             switch (args.NewState) {
-                case WaveState.Waiting:
+                case WaveState.WaitingBetweenWaves:
                     SetState(GuiState.WaveReport);
                     UnlockBuildMenu();
                     break;
