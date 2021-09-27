@@ -62,9 +62,7 @@ namespace DefaultNamespace {
 
             mostRecentWaveNum = 0;
 
-            OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
-            OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
-            OnEnemiesRemainingChanged?.Invoke(null, new EnemiesRemainingEventArgs(0));
+            ChangeState(WaveState.StartOfLevel);
         }
 
         public void Dispose() {
@@ -197,6 +195,11 @@ namespace DefaultNamespace {
 
         private void ChangeState(WaveState state) {
             switch (state) {
+                case WaveState.StartOfLevel:
+                    OnCountDownChanged?.Invoke(null, new WaveCountdownEventArgs(0));
+                    OnWaveNumberChanged?.Invoke(null, new WaveNumberEventArgs(mostRecentWaveNum, NumberOfWaves));
+                    OnEnemiesRemainingChanged?.Invoke(null, new EnemiesRemainingEventArgs(0)); 
+                    break;
                 case WaveState.WaitingBetweenWaves:
                     if (nextWaveCountDown != null) {
                         asyncProcessor.StopCoroutine(nextWaveCountDown);
