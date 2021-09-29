@@ -58,6 +58,23 @@ namespace Tests {
         }
 
         [Test]
+        public void Cant_Reduce_Armor_When_Armor_Is_100_Percent() {
+            IEffectable effectable = CreateMockEffectable(characterData);
+
+            //  Raise armor to 100%
+            Buff armorBuff = new Buff(100, 60, StatType.Armor, false);
+            EffectGroup effectGroup = CreateMockEffectGroup(new IEffect[] { armorBuff });
+            effectGroup.EffectTarget(effectable);
+
+            //  Try debuffing armor
+            Debuff armorDebuff = new Debuff(5, 60, StatType.Armor, DamageType.Physical, false);
+            effectGroup = CreateMockEffectGroup(new IEffect[] { armorDebuff });
+            effectGroup.EffectTarget(effectable);
+
+            Assert.IsTrue(effectable.Status.Armor.Value == 100);
+        }
+
+        [Test]
         public void Fire_Resist_Cannot_Fall_Below_Negative_75() {
             IEffectable effectable = CreateMockEffectable(characterData);
             Debuff fireResistDebuff = new Debuff(10000, 60, StatType.FireResist, DamageType.Fire, false);
