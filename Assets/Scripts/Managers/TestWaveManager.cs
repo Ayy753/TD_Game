@@ -28,9 +28,9 @@ namespace DefaultNamespace {
             messageSystem.DisplayMessage("There are no waves in this test environment", Color.white);
         }
 
-        public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
+        public Dictionary<int, int> GetCurrentWaveInfo() {
             Debug.LogWarning("There are no waves in this test environment");
-            return new Dictionary<EnemyData.EnemyType, int>();
+            return new Dictionary<int, int>();
         }
 
         public void EndActiveWaves() {

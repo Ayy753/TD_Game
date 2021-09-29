@@ -120,7 +120,7 @@ namespace DefaultNamespace {
                 Group group = LevelData.Waves[waveNum].Groups[g];
 
                 for (int i = 0; i < group.NumEnemies; i++) {
-                    Enemy enemy = enemySpawner.SpawnEnemy(group.EnemyType);
+                    Enemy enemy = enemySpawner.SpawnEnemy(group.EnemyId);
                     ApplyWaveBuff(enemy.Status, waveNum);
                     ScaleEnemyValue(enemy);
                     activeEnemies.Add(enemy);
@@ -262,20 +262,20 @@ namespace DefaultNamespace {
             activeEnemies.Clear();
         }
 
-        public Dictionary<EnemyData.EnemyType, int> GetCurrentWaveInfo() {
-            Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = new Dictionary<EnemyData.EnemyType, int>();
+        public Dictionary<int, int> GetCurrentWaveInfo() {
+            Dictionary<int, int> enemyIdToAmount = new Dictionary<int, int>();
 
             if (mostRecentWaveNum < LevelData.Waves.Count) {
                 foreach (Group group in LevelData.Waves[mostRecentWaveNum].Groups) {
-                    if (enemyTypeToAmount.ContainsKey(group.EnemyType)) {
-                        enemyTypeToAmount[group.EnemyType] += group.NumEnemies;
+                    if (enemyIdToAmount.ContainsKey(group.EnemyId)) {
+                        enemyIdToAmount[group.EnemyId] += group.NumEnemies;
                     }
                     else {
-                        enemyTypeToAmount.Add(group.EnemyType, group.NumEnemies);
+                        enemyIdToAmount.Add(group.EnemyId, group.NumEnemies);
                     }
                 }
             }
-            return enemyTypeToAmount;
+            return enemyIdToAmount;
         }
     }
 }

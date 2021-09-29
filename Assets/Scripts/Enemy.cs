@@ -102,8 +102,8 @@ namespace DefaultNamespace {
             return ModifiedValue;
         }
 
-        public EnemyData.EnemyType GetEnemyType() {
-            return EnemyData.Type;
+        public int GetEnemyId() {
+            return EnemyData.EnemyId;
         }
 
         public string GetDescription() {
@@ -118,6 +118,6 @@ namespace DefaultNamespace {
             return EnemyData;
         }
 
-        public class Factory : PlaceholderFactory<EnemyData.EnemyType, Enemy> { }
+        public class Factory : PlaceholderFactory<int, Enemy> { }
     }
 }

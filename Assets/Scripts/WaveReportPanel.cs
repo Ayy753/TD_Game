@@ -13,7 +13,7 @@ namespace DefaultNamespace.GUI {
         private GameObject scrollViewContent;
         private GameObject reportRowPrefab;
 
-        private Dictionary<EnemyData.EnemyType, EnemyData> enemyTypeToEnemyData;
+        private Dictionary<int, EnemyData> enemyTypeToEnemyData;
 
         public WaveReportPanel(IWaveManager waveManager) {
             this.waveManager = waveManager;
@@ -27,11 +27,11 @@ namespace DefaultNamespace.GUI {
             scrollViewContent = GameObject.Find("pnlWaveReport/Scroll View/Viewport/Content");
             reportRowPrefab = Resources.Load<GameObject>("Prefabs/pnlWaveReportRow");
 
-            enemyTypeToEnemyData = new Dictionary<EnemyData.EnemyType, EnemyData>();
+            enemyTypeToEnemyData = new Dictionary<int, EnemyData>();
             EnemyData[] enemyDatas = Resources.LoadAll<EnemyData>("ScriptableObjects/EnemyData");
 
             foreach (EnemyData enemyData in enemyDatas) {
-                enemyTypeToEnemyData.Add(enemyData.Type, enemyData);
+                enemyTypeToEnemyData.Add(enemyData.EnemyId, enemyData);
             }
 
             //  Generate initial wave report
@@ -47,12 +47,12 @@ namespace DefaultNamespace.GUI {
         }
 
         private void GenerateScoutReport() {
-            Dictionary<EnemyData.EnemyType, int> enemyTypeToAmount = waveManager.GetCurrentWaveInfo();
+            Dictionary<int, int> enemyIdToAmount = waveManager.GetCurrentWaveInfo();
             RemoveAllReportRows();
 
-            foreach (EnemyData.EnemyType enemyType in enemyTypeToAmount.Keys) {
-                int enemyAmount = enemyTypeToAmount[enemyType];
-                CreateReportRow(enemyType, enemyAmount);
+            foreach (int enemyId in enemyIdToAmount.Keys) {
+                int enemyAmount = enemyIdToAmount[enemyId];
+                CreateReportRow(enemyId, enemyAmount);
             }
         }
 
@@ -62,14 +62,14 @@ namespace DefaultNamespace.GUI {
             }
         }
 
-        private void CreateReportRow(EnemyData.EnemyType enemyType, int enemyAmount) {
+        private void CreateReportRow(int enemyId, int enemyAmount) {
             GameObject row = GameObject.Instantiate(reportRowPrefab, scrollViewContent.transform);
 
             Image icon = row.transform.Find("imgIcon").GetComponent<Image>();
             TMP_Text txtType = row.transform.Find("pnlInfo/pnlTypeAndAmount/txtType").GetComponent<TMP_Text>();
             TMP_Text txtAmount = row.transform.Find("pnlInfo/pnlTypeAndAmount/txtAmount").GetComponent<TMP_Text>();
 
-            EnemyData enemyData = enemyTypeToEnemyData[enemyType];
+            EnemyData enemyData = enemyTypeToEnemyData[enemyId];
             txtType.text = enemyData.Name;
             txtAmount.text = enemyAmount.ToString();
             icon.sprite = enemyData.Icon;

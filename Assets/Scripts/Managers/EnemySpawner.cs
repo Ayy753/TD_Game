@@ -7,7 +7,7 @@ namespace DefaultNamespace {
             this.objectPool = objectPool;
         }
 
-        public Enemy SpawnEnemy(EnemyData.EnemyType type) {
+        public Enemy SpawnEnemy(int type) {
             return objectPool.CreateEnemy(type);
         }
     }

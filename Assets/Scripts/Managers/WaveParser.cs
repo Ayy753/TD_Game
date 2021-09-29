@@ -33,13 +33,13 @@ namespace DefaultNamespace.IO.WaveData {
     /// A group of enemies
     /// </summary>
     public class Group {
-        public EnemyData.EnemyType EnemyType { get; set; }
+        public int EnemyId { get; set; }
         public int NumEnemies { get; set; }
         public float TimebetweenSpawns { get; set; }
 
         public override string ToString() {
             return string.Format("{0} X{1}",
-                    EnemyType, NumEnemies);
+                    EnemyId, NumEnemies);
         }
     }
 

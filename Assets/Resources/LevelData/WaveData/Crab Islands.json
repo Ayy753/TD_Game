@@ -2,22 +2,22 @@
 	"waves" : 
 	[
 		{"Groups" : [
-			{"EnemyType":"Strong", "NumEnemies":7, "TimebetweenSpawns":15}
+			{"EnemyId":2, "NumEnemies":7, "TimebetweenSpawns":15}
 		], "TimebetweenGroups" : 30}, 
 		{ "Groups" : [
-			{"EnemyType":"Strong", "NumEnemies":8, "TimebetweenSpawns":13}
+			{"EnemyId":2, "NumEnemies":8, "TimebetweenSpawns":13}
 		], "TimebetweenGroups" : 30},
 		{"Groups" : [
-			{"EnemyType":"Strong", "NumEnemies":8, "TimebetweenSpawns":10},
-			{"EnemyType":"Strong", "NumEnemies":8, "TimebetweenSpawns":10}
+			{"EnemyId":2, "NumEnemies":8, "TimebetweenSpawns":10},
+			{"EnemyId":2, "NumEnemies":8, "TimebetweenSpawns":10}
 		], "TimebetweenGroups" : 25},
 		{"Groups" : [
-			{"EnemyType":"Strong", "NumEnemies":10, "TimebetweenSpawns":8},
-			{"EnemyType":"Strong", "NumEnemies":10, "TimebetweenSpawns":8}
+			{"EnemyId":2, "NumEnemies":10, "TimebetweenSpawns":8},
+			{"EnemyId":2, "NumEnemies":10, "TimebetweenSpawns":8}
 		], "TimebetweenGroups" : 20},
 		{"Groups" : [
-			{"EnemyType":"Strong", "NumEnemies":12, "TimebetweenSpawns":6},
-			{"EnemyType":"Strong", "NumEnemies":12, "TimebetweenSpawns":6}
+			{"EnemyId":2, "NumEnemies":12, "TimebetweenSpawns":6},
+			{"EnemyId":2, "NumEnemies":12, "TimebetweenSpawns":6}
 		], "TimebetweenGroups" : 15},				
 	]	
 }

@@ -13,7 +13,7 @@ namespace DefaultNamespace {
         private readonly DiContainer _container;
         private List<Enemy> instantiatedEnemies;
         private GameObject enemyContainer;
-        private Dictionary<EnemyData.EnemyType, GameObject> enemyTypeToPrefab;
+        private Dictionary<int, GameObject> enemyIdToPrefab;
 
         private readonly GameObject projectilePrefab;
         private List<Projectile> instantiatedProjectiles;
@@ -55,40 +55,22 @@ namespace DefaultNamespace {
 
         private void InitializeEnemies() {
             GameObject[] enemyPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemies");
-            enemyTypeToPrefab = new Dictionary<EnemyData.EnemyType, GameObject>();
+            enemyIdToPrefab = new Dictionary<int, GameObject>();
 
-            //  Link enemy types to prefabs
+            //  Link enemy Ids to prefabs
             for (int i = 0; i < enemyPrefabs.Length; i++) {
                 GameObject prefab = enemyPrefabs[i];
                 Enemy enemy = prefab.GetComponentInChildren<Enemy>();
-                
-                string abilityName = enemy.EnemyData.AbilityName;
-                if ( !string.IsNullOrEmpty(abilityName)) {
-                    EffectGroup effectGroup = effectParser.GetEffectGroup(abilityName);
-                    enemy.EnemyData.SetEffectGroup(effectGroup);
-                }
 
-                switch (prefab.name) {
-                    case "BaseEnemy":
-                        //  Ignore this because it does not get instantiated
-                        break;
-                    case "FastEnemy Variant":
-                        enemyTypeToPrefab.Add(EnemyData.EnemyType.Fast, prefab);
-                        break;
-                    case "NormalEnemy Variant":
-                        enemyTypeToPrefab.Add(EnemyData.EnemyType.Normal, prefab);
-                        break;
-                    case "StrongEnemy Variant":
-                        enemyTypeToPrefab.Add(EnemyData.EnemyType.Strong, prefab);
-                        break;
-                    case "GigaCrab Variant":
-                        enemyTypeToPrefab.Add(EnemyData.EnemyType.GigaCrab, prefab);
-                        break;
-                    case "Trilobite Variant":
-                        enemyTypeToPrefab.Add(EnemyData.EnemyType.Trilobite, prefab);
-                        break;
-                    default:
-                        throw new System.Exception(string.Format("Enemy prefab name \"{0}\" does not match any Enemy.Type values ", prefab.name));
+                //  Ignore baseEnemy prefab
+                if (enemy.EnemyData != null) {
+                    string abilityName = enemy.EnemyData.AbilityName;
+                    if ( !string.IsNullOrEmpty(abilityName)) {
+                        EffectGroup effectGroup = effectParser.GetEffectGroup(abilityName);
+                        enemy.EnemyData.SetEffectGroup(effectGroup);
+                    }
+
+                    enemyIdToPrefab.Add(enemy.EnemyData.EnemyId, prefab);
                 }
             }
         }
@@ -131,17 +113,17 @@ namespace DefaultNamespace {
             projectile.Initialize(e.Position, e.Target, e.EffectGroup);
         }
 
-        public Enemy CreateEnemy(EnemyData.EnemyType type) {
+        public Enemy CreateEnemy(int enemyId) {
             //  Find available enemy of a prefab type
             foreach (Enemy enemy in instantiatedEnemies) {
-                if (enemy.GetEnemyType() == type && !enemy.gameObject.activeInHierarchy) {
+                if (enemy.GetEnemyId() == enemyId && !enemy.gameObject.activeInHierarchy) {
                     enemy.transform.parent.gameObject.SetActive(true);
                     return enemy;
                 }
             }
 
             //  Instantiate new enemy if none are available in pool
-            GameObject prefab = enemyTypeToPrefab[type];
+            GameObject prefab = enemyIdToPrefab[enemyId];
             Enemy newEnemy = _container.InstantiatePrefabForComponent<Enemy>(prefab);
 
             newEnemy.transform.parent.parent = enemyContainer.transform;
