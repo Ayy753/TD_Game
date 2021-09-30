@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09a7a92c697de634b9a08924fdb21bb3, type: 3}
+  m_Name: TitaniumElemental
+  m_EditorClassIdentifier: 
+  <BaseHealth>k__BackingField: 50
+  <BaseFireResist>k__BackingField: 0
+  <BaseColdResist>k__BackingField: 0
+  <BasePoisonResist>k__BackingField: 0
+  <BaseLightningResist>k__BackingField: 0
+  <BaseArmor>k__BackingField: 100
+  <BaseSpeed>k__BackingField: 0.25
+  <AbilityName>k__BackingField: 
+  <BaseValue>k__BackingField: 0
+  <Name>k__BackingField: Titanium Elemental
+  <Description>k__BackingField: Immune to physical damage and armor reduction
+  <EnemyId>k__BackingField: 5
+  <Icon>k__BackingField: {fileID: 21300000, guid: 00a468ed8fc6f804cae0701efea0af8d,
+    type: 3}
