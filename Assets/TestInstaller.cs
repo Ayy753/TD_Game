@@ -17,11 +17,11 @@ namespace DefaultNamespace.Installers {
             Container.BindInterfacesAndSelfTo<PathFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ObjectPool>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ParticlePool>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TestButtonManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<SettingsPanel>().AsSingle();
             Container.BindInterfacesAndSelfTo<GUIController>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TestWaveManager>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<BuildManager>().AsSingle().NonLazy();
             Container.Bind<MouseManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();

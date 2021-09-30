@@ -1,12 +1,16 @@
 namespace DefaultNamespace.GUI {
-
+    using System;
+    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
+    using TMPro;
 
     public class TestButtonManager : ButtonManager, IInitializable {
-        private EnemySpawner enemySpawner;
-        private IWallet wallet;
+        private readonly EnemySpawner enemySpawner;
+        private readonly IWallet wallet;
+        private TMP_Dropdown spawnDropdown;
+        Dictionary<int, EnemyData> enemyIdToEnemyData;
 
         public TestButtonManager(BuildManager buildManager, IWaveManager waveManager, GameManager gameManager, EnemySpawner enemySpawner, IWallet wallet, IGUIManager guiController) : base(buildManager, waveManager, gameManager, guiController) {
             Debug.Log("test build manager");
@@ -16,28 +20,46 @@ namespace DefaultNamespace.GUI {
 
         public new void Initialize() {
             base.Initialize();
+
+            spawnDropdown = GameObject.Find("dropdownSpawn").GetComponent<TMP_Dropdown>();
+            enemyIdToEnemyData = enemySpawner.EnemyIdToEnemyData();
             BindButtonsInScene();
         }
 
         public new void BindButtonsInScene() {
-            Button btnSpawnFast = GameObject.Find("btnSpawnFastEnemy").GetComponent<Button>();
-            Button btnSpawnNormal = GameObject.Find("btnSpawnNormalEnemy").GetComponent<Button>();
-            Button btnSpawnStrong = GameObject.Find("btnSpawnStrongEnemy").GetComponent<Button>();
-            Button btnSpawnGigaCrab = GameObject.Find("btnSpawnGigaCrab").GetComponent<Button>();
-            Button btnSpawnTrilobite = GameObject.Find("btnSpawnTrilobite").GetComponent<Button>();
+            foreach (EnemyData enemy in enemyIdToEnemyData.Values) {
+                spawnDropdown.options.Add(new TMP_Dropdown.OptionData(enemy.Name));
+            }
+
+            Button btnSpawn = GameObject.Find("btnSpawn").GetComponent<Button>();
             Button btnAddGold = GameObject.Find("btnAddGold").GetComponent<Button>();
             Button btnAddLife = GameObject.Find("btnAddLife").GetComponent<Button>();
             Button btnRemoveLife = GameObject.Find("btnRemoveLife").GetComponent<Button>();
 
-            btnSpawnFast.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(0); });
-            btnSpawnNormal.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(1); });
-            btnSpawnStrong.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(2); });
-            btnSpawnGigaCrab.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(3); });
-            btnSpawnTrilobite.onClick.AddListener(delegate { enemySpawner.SpawnEnemy(4); });
-
+            btnSpawn.onClick.AddListener(delegate { TrySpawningSelectedEnemy(); });
             btnAddGold.onClick.AddListener(delegate { wallet.GainMoney(100); });
             btnAddLife.onClick.AddListener(delegate { gameManager.GainLife(); });
             btnRemoveLife.onClick.AddListener(delegate { gameManager.LoseLife(); });
+        }
+
+        private void TrySpawningSelectedEnemy() {
+            try {
+                int id = CurrentlySelectedDropdownOption();
+                enemySpawner.SpawnEnemy(id);
+            }
+            catch (Exception e) {
+                Debug.LogError(e.Message);
+            }
+        }
+
+        private int CurrentlySelectedDropdownOption() {
+            foreach (EnemyData enemyData in enemyIdToEnemyData.Values) {
+                if (spawnDropdown.options[spawnDropdown.value].text == enemyData.Name) {
+                    return enemyData.EnemyId;
+                }
+            }
+
+            throw new Exception("Could not find ID of selected dropdown option");
         }
     }
 }
