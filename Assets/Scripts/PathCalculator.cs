@@ -70,7 +70,6 @@ namespace DefaultNamespace.TilemapSystem {
         private Vector3Int exitCoordinate;
         private List<PathNode> openList;
         private List<PathNode> closedList;
-        private List<Vector3Int> nodeList;
 
         public enum PathCondition {
             None,
@@ -83,7 +82,6 @@ namespace DefaultNamespace.TilemapSystem {
             this.mapManager = mapManager;
             this.entranceCoordinate = entranceCoordinate;
             this.exitCoordinate = exitCoordinate;
-            List<Vector3Int> nodeList = CalculatePath();
         }
 
         public List<Vector3Int> CalculatePath() {
