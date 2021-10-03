@@ -26,15 +26,13 @@ namespace DefaultNamespace.EffectSystem {
             float resistence = unitStatus.GetStat((StatType)ResistType).Value;
             float effectiveness = (1 - resistence / 100);
 
-            if (effectiveness < 0) {
-                effectiveness = 0;
-            }
-
             Potency = effectiveness * Potency;
             Duration = effectiveness * Duration;
-
-            unitStatus.ModifyStat(Type, -Potency);
             RemainingTicks = Mathf.CeilToInt(Duration / TickManager.tickFrequency);
+
+            if (effectiveness > 0) {
+                unitStatus.ModifyStat(Type, -Potency);
+            }
         }
 
         public void OnTick() {

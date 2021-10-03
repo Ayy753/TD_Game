@@ -79,11 +79,12 @@ namespace DefaultNamespace.StatusSystem {
 
         public void ApplyEffectGroup(EffectGroup effectGroup) {
             foreach (IEffect effect in effectGroup.GetEffects()) {
-                if (effect is IStatusEffect statusEffect) {
-                    statusEffects.Add(statusEffect);
-                }
                 if (!(effect is Damage)) {
                     effect.Apply(this);
+                }
+
+                if (effect.Potency > 0 && effect is IStatusEffect statusEffect) {
+                    statusEffects.Add(statusEffect);
                 }
             }
 
