@@ -234,10 +234,10 @@ namespace DefaultNamespace.TilemapSystem {
             }
         }
 
-        private void ProcessNeighbourForBuildPreview(Vector3Int position, PathNode parent, Vector3Int positionBlocked) {
-            Vector3Int neighbourCoordinate = parent.Coordinate + position;
+        private void ProcessNeighbourForBuildPreview(Vector3Int offset, PathNode parent, Vector3Int positionBlocked) {
+            Vector3Int neighbourCoordinate = parent.Coordinate + offset;
 
-            if (IsValidTile(neighbourCoordinate) && neighbourCoordinate != positionBlocked) {
+            if (IsValidTile(neighbourCoordinate) && neighbourCoordinate != positionBlocked && !IsPositionInClosedList(neighbourCoordinate)) {
                 float tileCost = mapManager.GetTileCost(neighbourCoordinate);
                 float neighGCost = tileCost + parent.Gcost;
                 float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
@@ -255,7 +255,7 @@ namespace DefaultNamespace.TilemapSystem {
         private void ProcessNeighbourForDemolishPreivew(Vector3Int position, PathNode parent, Vector3Int positionDemolished) {
             Vector3Int neighbourCoordinate = parent.Coordinate + position;
 
-            if (IsValidTile(neighbourCoordinate) || neighbourCoordinate == positionDemolished) {
+            if ((IsValidTile(neighbourCoordinate) || neighbourCoordinate == positionDemolished) && !IsPositionInClosedList(neighbourCoordinate)) {
                 float tileCost = mapManager.GetTileCost(neighbourCoordinate);
                 float neighGCost = tileCost + parent.Gcost;
                 float neighHCost = ManhattanDistance(neighbourCoordinate, exitCoordinate);
