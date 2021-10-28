@@ -16,11 +16,9 @@ namespace DefaultNamespace.StatusSystem {
     }
 
     public class Speed : Stat {
-        private const float MINIMUM_SPEED = 0.2f;
-
         public Speed(float baseValue){
-            this.baseValue = baseValue;
-            minimumValue = MINIMUM_SPEED;
+            this.baseValue = baseValue; 
+            minimumValue = 0.2f;
             Initialize();
         }
     }
