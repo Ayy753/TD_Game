@@ -1,7 +1,9 @@
+# About
+A Tower Defense Game made using the [Unity](https://unity.com/) game engine 
+
+[Latest Release](https://github.com/Ayy753/TD_Game//releases/latest/) | [Direct download link](https://github.com/Ayy753/TD_Game/releases/download/v0.13.0/Tower_Defense_v0.13.0_Win_x86_64.zip)
+
 # System Summery
-
-Made using the [Unity](https://unity.com/) game engine 
-
 ## Frameworks/Libraries: 
 
 - [Zenject](https://github.com/modesttree/Zenject#readme) for dependency injection
