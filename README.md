@@ -21,6 +21,22 @@ Made using the [Unity](https://unity.com/) game engine
 
 - [GameManager](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/GameManager.cs) is responsible for controlling the game state and implements a basic state machine. 
 
+- [WaveManager](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/WaveManager.cs) handles spawning enemy waves and also uses a state machine to keep track of wave state
+
+## Custom input system
+
+Typically Unity developers poll mouse actions and key presses in the update method of every Monobehavior object that deals with user input. 
+This system however has dedicated classes that poll for input and fire events that other classes respond to.
+
+- [InputHandler](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/InputHandler.cs) polls for a set of configurable hotkeys
+- [MouseManager](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/MouseManager.cs) fires events when user hovers over a new tile, on left/right mouse up/down, when gameobjects are clicked, and when IToolTipable objects are hovered/unhovered
+
+## Object Pooling
+
+GameObjects that would be frequently created and destroyed are instead recycled to boost performance in the [ObjectPool](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/ObjectPool.cs) class.
+
+The same applies to the [ParticlePool](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/ParticlePool.cs) class
+
 ## Build System
 
 Build functionality has been split up into three major components 
