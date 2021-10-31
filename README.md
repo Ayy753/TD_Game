@@ -11,6 +11,12 @@ A Tower Defense Game made using the [Unity](https://unity.com/) game engine
 - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@1.1/manual/index.html) For Unit Testing
 - [Newtonsoft Json](https://www.newtonsoft.com/json) For deserializing JSON objects
 
+## Dependency Injection
+The DI interface bindings are defined in installer files.
+
+- [Main Installer](https://github.com/Ayy753/TD_Game/blob/master/Assets/MainInstaller.cs)
+- [Test Installer](https://github.com/Ayy753/TD_Game/blob/master/Assets/TestInstaller.cs)
+
 ## Core Systems
 
 - [MapManager](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/MapManager.cs) was built over Unity's 2d TileMap system to extend it's functionality and link TileData to positions in the world. It is used by other partts of the system to modify and query the tiles on the map. 
@@ -66,4 +72,9 @@ Build functionality has been split up into three major components
 
 - [Stats](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Stats.cs) override the abstract Stat class, adding additional functionality and constraints.
 
-The Resistence class is a generic override of Stat that is used to define each resist type
+- The Resistence class is a generic override of Stat that is used to define each resist type
+
+## Unit Testing 
+
+- [Status Tests](https://github.com/Ayy753/TD_Game/blob/master/Assets/Tests/StatusTests.cs)
+
