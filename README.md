@@ -1,7 +1,9 @@
 # About
-A Tower Defense Game made using the [Unity](https://unity.com/) game engine 
+A Tower Defense Game made using the [Unity](https://unity.com/) game engine and written in C#
 
 [Latest Release](https://github.com/Ayy753/TD_Game//releases/latest/) | [Direct download link](https://github.com/Ayy753/TD_Game/releases/download/v0.13.0/Tower_Defense_v0.13.0_Win_x86_64.zip)
+
+![Screencap](https://github.com/Ayy753/TD_Game/blob/master/screencap.png?raw=true)
 
 # System Summery
 ## Frameworks/Libraries: 
