@@ -21,9 +21,9 @@ The DI interface bindings are defined in installer files.
 
 ## Core Systems
 
-- [MapManager](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/MapManager.cs) was built over Unity's 2d TileMap system to extend it's functionality and link TileData to positions in the world. It is used by other partts of the system to modify and query the tiles on the map. 
+- [MapManager](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/MapManager.cs) was built over Unity's 2d TileMap system to extend it's functionality and link [TileData](https://github.com/Ayy753/TD_Game/tree/master/Assets/Scripts/TileData) to positions in the world. It is used by other parts of the system to modify and query tiles on the map. 
 
-- [Pathfinder](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/PathFinder.cs) (not fully refactored) is used to query the path through level and check how build/demolish actions would affect the current path.
+- [Pathfinder](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/PathFinder.cs) (not fully refactored) is used to query the path through level and preview how build/demolish actions would affect the current path.
 
 - [PathCalculator](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/PathCalculator.cs) was created to address repeating code in the several variations of path preview calculations while refactoring PathFinder.
 
@@ -35,7 +35,7 @@ The DI interface bindings are defined in installer files.
 
 ## Custom input system
 
-Typically Unity developers poll mouse actions and key presses in the update method of every Monobehavior object that deals with user input. 
+Typically Unity developers poll mouse actions and key presses in the [update method](https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html) of every Monobehavior object that deals with user input. 
 This system however has dedicated classes that poll for input and fire events that other classes respond to.
 
 - [InputHandler](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/InputHandler.cs) polls for a set of configurable hotkeys
@@ -62,7 +62,7 @@ Build functionality has been split up into three major components
 
 ## Status/Effect System
 
-- [EffectGroup](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Effects/EffectGroup.cs) is an object that contains a list of Effects and is stored in the [effects.json](https://github.com/Ayy753/TD_Game/blob/master/Assets/Resources/effects.json) file, and deserialized using [EffectParser](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/EffectParserJSON.cs) 
+- [EffectGroup](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Effects/EffectGroup.cs) is an object that contains a list of [Effects](https://github.com/Ayy753/TD_Game/tree/master/Assets/Scripts/Effects) and is stored in the [effects.json](https://github.com/Ayy753/TD_Game/blob/master/Assets/Resources/effects.json) file, and deserialized using [EffectParser](https://github.com/Ayy753/TD_Game/blob/master/Assets/Scripts/Managers/EffectParserJSON.cs) 
 
 - [Effects](https://github.com/Ayy753/TD_Game/tree/master/Assets/Scripts/Effects) are composited implementations of the [IEffect](https://github.com/Ayy753/TD_Game/tree/master/Assets/Scripts/Interfaces/Effects) interface and it's derivitives 
 
