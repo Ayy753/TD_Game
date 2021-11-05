@@ -4,138 +4,162 @@
       "name": "Frost Projectile",
       "description": "Slows target",
       "target type": "Individual",
-      "sound type": "arrowHitFlesh",
-      "cooldown" : 1,
+      "particle effect": "Blood",
       "effects": [
         {
+          "name": "Speed Debuff",
           "type": "Debuff",
-          "statType": "Speed",
           "potency": 0.5,
-          "duration": 1,
-          "resistType" : "Cold",
-          "expires" : true
+          "duration": 1.0,
+          "statType": "Speed",
+          "resistType": "Cold",
+          "expires": true
         },
         {
+          "name": "Cold Damage",
           "type": "Damage",
+          "potency": 1.0,
           "damageType": "Cold",
-          "potency": 1
+          "expires": true
         },
         {
+          "name": "Physical Damage",
           "type": "Damage",
+          "potency": 1.0,
           "damageType": "Physical",
-          "potency": 1
+          "expires": true
         }
-      ]
+      ],
+      "sound type": "arrowHitFlesh",
+      "cooldown": 1.0
     },
     {
       "name": "Poison Projectile",
       "description": "Poisons target",
       "target type": "Individual",
-      "sound type": "arrowHitFlesh",
-      "cooldown" : 1.5,
+      "particle effect": "Blood",
       "effects": [
         {
+          "name": "Poison DOT",
           "type": "DOT",
+          "potency": 10.0,
+          "duration": 20.0,
           "damageType": "Poison",
-          "potency": 10,
-          "duration": 20,
-          "expires" : true
+          "expires": true
         },
         {
+          "name": "Physical Damage",
           "type": "Damage",
+          "potency": 1.0,
           "damageType": "Physical",
-          "potency": 1
+          "expires": true
         }
-      ]
+      ],
+      "sound type": "arrowHitFlesh",
+      "cooldown": 1.5
     },
     {
       "name": "Splash Projectile",
       "description": "Does fire and physical area damage",
       "target type": "Area",
-      "particle effect" : "Explosion",
-      "radius": 3,
-      "sound type": "explosionTiny",
-      "cooldown" : 3,
+      "particle effect": "Explosion",
+      "radius": 3.0,
       "effects": [
         {
+          "name": "Fire Damage",
           "type": "Damage",
+          "potency": 2.5,
           "damageType": "Fire",
-          "potency": 2.5
+          "expires": true
         },
         {
+          "name": "Physical Damage",
           "type": "Damage",
+          "potency": 2.5,
           "damageType": "Physical",
-          "potency": 2.5
-        }       
-      ]
+          "expires": true
+        }
+      ],
+      "sound type": "explosionTiny",
+      "cooldown": 3.0
     },
     {
       "name": "Sniper Projectile",
       "description": "Deals physical damage and reduces armor",
       "target type": "Individual",
-      "sound type": "arrowHitFlesh",
-      "cooldown" : 5,
+      "particle effect": "Blood",
       "effects": [
         {
+          "name": "Physical Damage",
           "type": "Damage",
+          "potency": 20.0,
           "damageType": "Physical",
-          "potency": 20
+          "expires": true
         },
         {
+          "name": "Armor Debuff",
           "type": "Debuff",
+          "potency": 5.0,
           "statType": "Armor",
-          "potency": 5,
-          "resistType" : "Physical",
-          "expires" : false
+          "resistType": "Physical",
+          "expires": false
         }
-      ]
-    },  
+      ],
+      "sound type": "arrowHitFlesh",
+      "cooldown": 5.0
+    },
     {
       "name": "Bullet Projectile",
       "description": "Deals physical damage",
       "target type": "Individual",
-      "sound type": "arrowHitFlesh",
-      "cooldown" : 1,
+      "particle effect": "Blood",
       "effects": [
         {
+          "name": "Physical Damage",
           "type": "Damage",
+          "potency": 5.0,
           "damageType": "Physical",
-          "potency": 5
-        }       
-      ]
-    },      
+          "expires": true
+        }
+      ],
+      "sound type": "arrowHitFlesh",
+      "cooldown": 1.0
+    },
     {
       "name": "Area Speed Buff",
       "description": "Increases speed",
       "target type": "Area",
-      "particle effect" : "Buff",
-      "radius": 3,
-      "sound type": "Buff",   
-      "cooldown" : 2,
+      "particle effect": "Buff",
+      "radius": 3.0,
       "effects": [
         {
+          "name": "Speed Buff",
           "type": "Buff",
+          "potency": 1.0,
+          "duration": 2.0,
           "statType": "Speed",
-          "potency": 1,
-          "duration": 2,
-          "expires" : true
+          "expires": true
         }
-      ]
+      ],
+      "sound type": "buff",
+      "cooldown": 2.0
     },
     {
       "name": "Area Heal",
       "description": "Heals units",
       "target type": "Area",
-      "particle effect" : "Heal",
-      "radius": 3,
-      "sound type": "Buff",   
-      "cooldown" : 2,
+      "particle effect": "Heal",
+      "radius": 3.0,
       "effects": [
         {
+          "name": "Heal",
           "type": "Heal",
-          "potency": 10
+          "potency": 10.0,
+          "expires": true
         }
-      ]
-    }   
+      ],
+      "sound type": "buff",
+      "cooldown": 2.0
+    }
   ]
 }
