@@ -16,6 +16,12 @@ namespace DefaultNamespace.StatusSystem {
             }
         }
 
+        public virtual float BaseValue {
+            get {
+                return baseValue;
+            }
+        }
+
         public virtual void ModifyStat(float amount) {
             modification += amount;
             CalculateValues();

@@ -60,21 +60,28 @@ namespace DefaultNamespace.GUI {
         private void UpdateStatusPanel(StatType statType) {
             string statValueRounded = Math.Round(targetStatus.GetStat(statType).Value, 1).ToString();
 
+            Color textColor = StatModColor(statType);
+
             switch (statType) {
                 case StatType.Armor:
                     txtArmor.text = statValueRounded;
+                    txtArmor.color = textColor;
                     break;
                 case StatType.ColdResist:
                     txtColdResist.text = statValueRounded;
+                    txtColdResist.color = textColor;
                     break;
                 case StatType.FireResist:
                     txtFireResist.text = statValueRounded;
+                    txtFireResist.color = textColor;
                     break;
                 case StatType.PoisonResist:
                     txtPoisonResist.text = statValueRounded;
+                    txtPoisonResist.color = textColor;
                     break;
                 case StatType.LightningResist:
                     txtLightningResist.text = statValueRounded;
+                    txtLightningResist.color = textColor;
                     break;
                 case StatType.Health:
                     txtCurrentHealth.text = statValueRounded;
@@ -82,7 +89,21 @@ namespace DefaultNamespace.GUI {
                     break;
                 case StatType.Speed:
                     txtSpeed.text = statValueRounded;
+                    txtSpeed.color = textColor;
                     break;
+            }
+        }
+
+        private Color StatModColor(StatType statType) {
+            Stat SelectedStat = targetStatus.GetStat(statType);
+            if (SelectedStat.Value == SelectedStat.BaseValue) {
+                return Color.white;
+            }
+            if (SelectedStat.Value > SelectedStat.BaseValue) {
+                return Color.green;
+            }
+            else {
+                return Color.red;
             }
         }
 
