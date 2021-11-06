@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74dbf4b14ba866f45871afc2590c1384, type: 3}
+  m_Name: Stealth Detector
+  m_EditorClassIdentifier: 
+  <Name>k__BackingField: Stealth Detector
+  <Description>k__BackingField: Targets stealth units
+  <Icon>k__BackingField: {fileID: 21300000, guid: 2c0a15f651b441648a0cf93c568fd6b7,
+    type: 3}
+  <Range>k__BackingField: 5
+  <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
+    type: 2}
+  <Cost>k__BackingField: 150
+  <ProjectileName>k__BackingField: Bullet Projectile
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 192
