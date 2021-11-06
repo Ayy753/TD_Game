@@ -32,8 +32,6 @@ namespace DefaultNamespace.GUI {
             txtUnitDescription = GameObject.Find("txtUnitDescription").GetComponent<TMP_Text>();
 
             healthBar = GameObject.Find("pnlStatus").GetComponentInChildren<HealthBar>();
-
-            pnlStausPanel.SetActive(false);
         }
 
         private void PopulateStatusPanel() {
@@ -47,6 +45,17 @@ namespace DefaultNamespace.GUI {
             txtPoisonResist.text = Math.Round(targetStatus.PoisonResist.Value, 1).ToString();
             txtLightningResist.text = Math.Round(targetStatus.LightningResist.Value, 1).ToString();
             txtUnitDescription.text = targetUnit.GetDescription();
+
+            UpdateStatColors();
+        }
+
+        private void UpdateStatColors() {
+            txtArmor.color = StatModColor(StatType.Armor);
+            txtFireResist.color = StatModColor(StatType.FireResist);
+            txtColdResist.color = StatModColor(StatType.ColdResist);
+            txtSpeed.color = StatModColor(StatType.Speed);
+            txtPoisonResist.color = StatModColor(StatType.PoisonResist);
+            txtLightningResist.color = StatModColor(StatType.LightningResist);
         }
 
         private void TargetStatus_OnStatusChanged(StatType statType, float amount) {
