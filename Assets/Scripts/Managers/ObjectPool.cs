@@ -19,7 +19,7 @@ namespace DefaultNamespace {
         private List<Projectile> instantiatedProjectiles;
         private GameObject projectileContainer;
 
-        private Dictionary<TowerData.TowerType, GameObject> towerTypeToPrefab;
+        private Dictionary<string, GameObject> towerNameToPrefab;
 
         private readonly GameObject floatingTextPrefab;
         private List<FloatingText> instantiatedFloatingTexts;
@@ -77,34 +77,22 @@ namespace DefaultNamespace {
 
         private void InitializeTowers() {
             GameObject[] towerPrefabs = Resources.LoadAll<GameObject>("Prefabs/Towers");
-            towerTypeToPrefab = new Dictionary<TowerData.TowerType, GameObject>();
+            towerNameToPrefab = new Dictionary<string, GameObject>();
 
             for (int i = 0; i < towerPrefabs.Length; i++) {
                 GameObject prefab = towerPrefabs[i];
-                switch (prefab.name) {
-                    case "BulletTower":
-                        towerTypeToPrefab.Add(TowerData.TowerType.Bullet, prefab);
-                        break;
-                    case "SniperTower":
-                        towerTypeToPrefab.Add(TowerData.TowerType.Sniper, prefab);
-                        break;
-                    case "SplashTower":
-                        towerTypeToPrefab.Add(TowerData.TowerType.Splash, prefab);
-                        break;
-                    case "FrostTower":
-                        towerTypeToPrefab.Add(TowerData.TowerType.Frost, prefab);
-                        break;
-                    case "PoisonTower":
-                        towerTypeToPrefab.Add(TowerData.TowerType.Poison, prefab);
-                        break;
-                    default:
-                        throw new System.Exception(string.Format("Tower name \"{0}\" does not match any TowerData.TowerType value", prefab.name));
-                }
-
-                //  Set effect group for this towerdata object
                 TowerData towerData = prefab.GetComponent<Tower>().TowerData;
-                EffectGroup effectGroup = effectParser.GetEffectGroup(towerData.ProjectileName);
-                towerData.SetEffectGroup(effectGroup);
+
+                if (towerNameToPrefab.ContainsKey(towerData.Name)) {
+                    Debug.LogError($"Error: Duplicate tower name: {towerData.Name}.");
+                }
+                else {
+                    towerNameToPrefab.Add(towerData.Name, prefab);
+
+                    //  Set effect group for this towerdata object
+                    EffectGroup effectGroup = effectParser.GetEffectGroup(towerData.ProjectileName);
+                    towerData.SetEffectGroup(effectGroup);
+                }
             }
         }
 
@@ -156,8 +144,8 @@ namespace DefaultNamespace {
         }
 
         //  Don't know if its worth pooling towers but other objects will create/destroy them via object pool
-        public Tower CreateTower(TowerData.TowerType type) {
-            GameObject prefab = towerTypeToPrefab[type];
+        public Tower CreateTower(string name) {
+            GameObject prefab = towerNameToPrefab[name];
             Tower tower = _container.InstantiatePrefabForComponent<Tower>(prefab);
             return tower;
         }

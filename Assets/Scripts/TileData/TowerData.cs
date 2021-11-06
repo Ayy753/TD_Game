@@ -14,8 +14,6 @@ namespace DefaultNamespace {
         [field: SerializeField]
         public override Sprite Icon { get; protected set; }
         [field: SerializeField]
-        public TowerType Type { get; protected set; }
-        [field: SerializeField]
         public float Range { get; private set; }
         [field: SerializeField]
         public override TileBase TileBase { get; protected set; }

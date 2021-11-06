@@ -317,7 +317,7 @@ namespace DefaultNamespace {
         }
 
         private void InstantiateTowerGameObjectAtPosition(TowerData towerData, Vector3Int position) {
-            Tower tower = objectPool.CreateTower(towerData.Type);
+            Tower tower = objectPool.CreateTower(towerData.Name);
             tower.gameObject.transform.position = position + tilemapOffset;
         }
 
