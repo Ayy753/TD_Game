@@ -22,3 +22,6 @@ MonoBehaviour:
     type: 2}
   <Cost>k__BackingField: 150
   <ProjectileName>k__BackingField: Sniper Projectile
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64

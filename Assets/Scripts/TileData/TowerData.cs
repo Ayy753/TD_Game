@@ -25,6 +25,8 @@ namespace DefaultNamespace {
         public EffectGroup EffectGroup { get; protected set; }
         [field: SerializeField]
         public string ProjectileName { get; protected set; }
+        [field: SerializeField]
+        public LayerMask TargetMask { get; protected set; }
 
         public enum TowerType {
             Bullet,

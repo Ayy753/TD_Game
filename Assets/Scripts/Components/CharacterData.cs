@@ -13,6 +13,7 @@ namespace DefaultNamespace {
         [field: SerializeField] public float BaseArmor { get; private set; }
         [field: SerializeField] public float BaseSpeed { get; private set; }
         [field: SerializeField] public string AbilityName { get; private set; }
+        [field: SerializeField] public LayerMask TargetMask { get; private set; }
 
         public EffectGroup EffectGroup { get; private set; }
 

@@ -123,7 +123,7 @@
         }
 
         private List<IEffectable> GetEffectableObjectsInRange(Vector3 position) {
-            return effectableFinder.GetEffectableObjectsInRange(position, Radius);
+            return effectableFinder.GetEffectableObjectsInRange(position, Radius, TowerData.TargetMask);
         }
 
         /// <summary>

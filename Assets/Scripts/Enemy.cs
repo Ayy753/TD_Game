@@ -24,6 +24,8 @@ namespace DefaultNamespace {
         private int ticksPerCooldown;
 
         private void Awake() {
+            gameObject.layer = (int)Mathf.Log(EnemyData.TargetMask.value, 2);
+
             healthBar = transform.parent.GetComponentInChildren<HealthBar>();
             Status = new Status(EnemyData);
 

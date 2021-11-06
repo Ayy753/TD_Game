@@ -20,6 +20,9 @@ MonoBehaviour:
   <BaseArmor>k__BackingField: 50
   <BaseSpeed>k__BackingField: 1
   <AbilityName>k__BackingField: Area Heal
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
   <BaseValue>k__BackingField: 100
   <Name>k__BackingField: Trilobite
   <Description>k__BackingField: Not a burnt burger with hairs sticking out

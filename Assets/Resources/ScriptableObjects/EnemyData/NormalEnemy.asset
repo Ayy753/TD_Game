@@ -20,6 +20,9 @@ MonoBehaviour:
   <BaseArmor>k__BackingField: 0
   <BaseSpeed>k__BackingField: 1
   <AbilityName>k__BackingField: 
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Normal Enemy
   <Description>k__BackingField: A regular enemy with no special characteristics

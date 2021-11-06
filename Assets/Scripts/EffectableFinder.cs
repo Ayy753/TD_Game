@@ -3,8 +3,8 @@ namespace DefaultNamespace.EffectSystem {
     using UnityEngine;
 
     public class EffectableFinder : MonoBehaviour {
-        public List<IEffectable> GetEffectableObjectsInRange(Vector3 center, float range) {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(center, range);
+        public List<IEffectable> GetEffectableObjectsInRange(Vector3 center, float range, LayerMask targetMask) {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(center, range, targetMask);
             List<IEffectable> effectableObjectsInRange = new List<IEffectable>();
 
             foreach (var collider in colliders) {

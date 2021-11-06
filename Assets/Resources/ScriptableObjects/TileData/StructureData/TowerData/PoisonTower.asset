@@ -18,8 +18,10 @@ MonoBehaviour:
     type: 3}
   <Type>k__BackingField: 4
   <Range>k__BackingField: 8
-  <ReloadTime>k__BackingField: 1.5
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
   <Cost>k__BackingField: 125
   <ProjectileName>k__BackingField: Poison Projectile
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64

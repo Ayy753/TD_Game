@@ -20,6 +20,9 @@ MonoBehaviour:
   <BaseArmor>k__BackingField: 100
   <BaseSpeed>k__BackingField: 0.25
   <AbilityName>k__BackingField: 
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
   <BaseValue>k__BackingField: 0
   <Name>k__BackingField: Titanium Elemental
   <Description>k__BackingField: Immune to physical damage and armor reduction

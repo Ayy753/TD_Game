@@ -19,10 +19,14 @@ MonoBehaviour:
   <BaseLightningResist>k__BackingField: 0
   <BaseArmor>k__BackingField: 0
   <BaseSpeed>k__BackingField: 3
+  <AbilityName>k__BackingField: 
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
   <BaseValue>k__BackingField: 5
   <Name>k__BackingField: Fast Enemy
   <Description>k__BackingField: A weak enemy that moves fast and can overwhelm defenses
     in large numbers.
-  <Type>k__BackingField: 0
+  <EnemyId>k__BackingField: 0
   <Icon>k__BackingField: {fileID: 21300000, guid: cbdc43a7ac3cd944fa626c2102f94283,
     type: 3}
