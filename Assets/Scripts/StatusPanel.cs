@@ -32,6 +32,8 @@ namespace DefaultNamespace.GUI {
             txtUnitDescription = GameObject.Find("txtUnitDescription").GetComponent<TMP_Text>();
 
             healthBar = GameObject.Find("pnlStatus").GetComponentInChildren<HealthBar>();
+
+            pnlStausPanel.SetActive(false);
         }
 
         private void PopulateStatusPanel() {
