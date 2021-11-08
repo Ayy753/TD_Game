@@ -26,14 +26,6 @@ namespace DefaultNamespace {
         [field: SerializeField]
         public LayerMask TargetMask { get; protected set; }
 
-        public enum TowerType {
-            Bullet,
-            Splash,
-            Sniper,
-            Frost,
-            Poison
-        }
-
         public override string ToString() {
             return base.ToString()
                 + string.Format("\n<b>Range</b>: {0}m" +
