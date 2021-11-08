@@ -2,6 +2,7 @@ namespace DefaultNamespace {
 
     using DefaultNamespace.EffectSystem;
     using DefaultNamespace.TilemapSystem;
+    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.Tilemaps;
 
@@ -27,12 +28,29 @@ namespace DefaultNamespace {
         public LayerMask TargetMask { get; protected set; }
 
         public override string ToString() {
-            return base.ToString()
-                + string.Format("\n<b>Range</b>: {0}m" +
-                "\n<b>Cost</b>: {1}g" +
-                "\n<b>Reload time</b>: {2}s" +
-                "\n<b>Total Damage</b>: {3}" +
-                "\n\n<b>Projectile Effects</b>:\n{4}", Range, Cost, EffectGroup.Cooldown, EffectGroup.GetTotalDamage(), EffectGroup.GetEffectInfo());
+            return base.ToString() +
+                $"\n<b>Target Types</b>: {TargetTypes()}" +
+                $"\n<b>Range</b>: {Range}m" +
+                $"\n<b>Cost</b>: {Cost}g" +
+                $"\n<b>Reload time</b>: {EffectGroup.Cooldown}s" +
+                $"\n<b>Total Damage</b>: {EffectGroup.GetTotalDamage()}" +
+                $"\n\n<b>Projectile Effects</b>:\n{EffectGroup.GetEffectInfo()}";
+        }
+
+        private string TargetTypes() {
+            List<string> targetTypes = new List<string>();
+
+            if ((TargetMask & 1 << LayerMask.NameToLayer("Invisible")) != 0) {
+                targetTypes.Add("Invisible");
+            }
+            if ((TargetMask & 1 << LayerMask.NameToLayer("Ground")) != 0) {
+                targetTypes.Add("Ground");
+            }
+            if ((TargetMask & 1 << LayerMask.NameToLayer("Flying")) != 0) {
+                targetTypes.Add("Flying");
+            }
+
+            return string.Join(", ", targetTypes.ToArray());
         }
 
         public void SetEffectGroup(EffectGroup effectGroup) {
