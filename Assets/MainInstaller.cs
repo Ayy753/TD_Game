@@ -51,6 +51,7 @@ namespace DefaultNamespace.Installers {
             Container.Bind<EffectableFinder>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<Settings>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TileInfoPanel>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<EffectGroupInitializer>().AsSingle().NonLazy();
 
             //  Factory bindings
             Container.BindIFactory<Enemy, Enemy.Factory>();

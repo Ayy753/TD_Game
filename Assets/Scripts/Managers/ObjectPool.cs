@@ -88,10 +88,6 @@ namespace DefaultNamespace {
                 }
                 else {
                     towerNameToPrefab.Add(towerData.Name, prefab);
-
-                    //  Set effect group for this towerdata object
-                    EffectGroup effectGroup = effectParser.GetEffectGroup(towerData.ProjectileName);
-                    towerData.SetEffectGroup(effectGroup);
                 }
             }
         }
