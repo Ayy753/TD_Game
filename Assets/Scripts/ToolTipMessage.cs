@@ -11,5 +11,9 @@ namespace DefaultNamespace.GUI {
         public string GetDisplayText() {
             return message;
         }
+
+        public void SetDisplayMessage(string message) {
+            this.message = message;
+        }
     }
 }

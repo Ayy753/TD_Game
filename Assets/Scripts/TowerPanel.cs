@@ -2,6 +2,7 @@ namespace DefaultNamespace.GUI {
 
     using DefaultNamespace;
     using System;
+    using System.Text;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -131,7 +132,9 @@ namespace DefaultNamespace.GUI {
         }
 
         private void UpdateUpgradeButton(TowerData towerData) {
+            ToolTipMessage tooltipMessag = btnUpgrade.GetComponent<ToolTipMessage>();
             if (towerData.UpgradePaths != null && towerData.UpgradePaths.Length > 0) {
+                tooltipMessag.SetDisplayMessage(UpgradeDifference());
                 btnUpgrade.interactable = true;
                 string upgradeId = towerData.UpgradePaths[0];
                 int cost = buildManager.GetTowerData(upgradeId).Cost;
@@ -140,6 +143,7 @@ namespace DefaultNamespace.GUI {
             else {
                 btnUpgrade.interactable = false;
                 txtUpgradeButton.text = "No upgrade available";
+                tooltipMessag.SetDisplayMessage("None");
             }
         }
 
@@ -178,6 +182,26 @@ namespace DefaultNamespace.GUI {
                 buildManager.UpgradeTower(currentlySelectedTower, upgradeId);
                 UpdateTowerPanel();
             }
+        }
+
+        private string UpgradeDifference() {
+            TowerData current = currentlySelectedTower.TowerData;
+            string upgradeId = current.UpgradePaths[0];
+            TowerData upgrade = buildManager.GetTowerData(upgradeId);
+
+            StringBuilder sb = new StringBuilder();
+
+            if (upgrade.EffectGroup.GetTotalDamage() > current.EffectGroup.GetTotalDamage()) {
+                sb.AppendLine($"Total Damage +{upgrade.EffectGroup.GetTotalDamage() - current.EffectGroup.GetTotalDamage()}");
+            }
+            if (upgrade.Range > current.Range) {
+                sb.AppendLine($"Range +{upgrade.Range - current.Range}");
+            }
+            if (upgrade.EffectGroup.Radius > current.EffectGroup.Radius) {
+                sb.AppendLine($"AOE Radius +{upgrade.Range - current.Range}");
+            }
+
+            return sb.ToString();
         }
     }
 }
