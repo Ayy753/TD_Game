@@ -24,7 +24,7 @@ namespace DefaultNamespace {
         private int ticksPerCooldown;
 
         private void Awake() {
-            gameObject.layer = (int)Mathf.Log(EnemyData.TargetMask.value, 2);
+            AssignTargetMask();
 
             healthBar = transform.parent.GetComponentInChildren<HealthBar>();
             Status = new Status(EnemyData);
@@ -39,6 +39,10 @@ namespace DefaultNamespace {
             else {
                 hasAbility = false;
             }
+        }
+
+        private void AssignTargetMask() {
+            gameObject.layer = (int)Mathf.Log(EnemyData.TargetMask.value, 2);
         }
 
         private void OnEnable() {
