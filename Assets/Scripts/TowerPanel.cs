@@ -198,7 +198,7 @@ namespace DefaultNamespace.GUI {
                 sb.AppendLine($"Range +{upgrade.Range - current.Range}");
             }
             if (upgrade.EffectGroup.Radius > current.EffectGroup.Radius) {
-                sb.AppendLine($"AOE Radius +{upgrade.Range - current.Range}");
+                sb.AppendLine($"AOE Radius +{upgrade.EffectGroup.Radius - current.EffectGroup.Radius}");
             }
 
             return sb.ToString();
