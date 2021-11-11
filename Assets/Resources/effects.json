@@ -177,6 +177,56 @@
       ],
       "sound type": "arrowHitFlesh",
       "cooldown": 1.0
+    },
+    {
+      "name": "Splash Projectile+1",
+      "description": "Does fire and physical area damage",
+      "target type": "Area",
+      "particle effect": "Explosion",
+      "radius": 3.5,
+      "effects": [
+        {
+          "name": "Fire Damage",
+          "type": "Damage",
+          "potency": 3.5,
+          "damageType": "Fire",
+          "expires": true
+        },
+        {
+          "name": "Physical Damage",
+          "type": "Damage",
+          "potency": 3.5,
+          "damageType": "Physical",
+          "expires": true
+        }
+      ],
+      "sound type": "explosionTiny",
+      "cooldown": 3.0
+    },
+    {
+      "name": "Splash Projectile+2",
+      "description": "Does fire and physical area damage",
+      "target type": "Area",
+      "particle effect": "Explosion",
+      "radius": 4.0,
+      "effects": [
+        {
+          "name": "Fire Damage",
+          "type": "Damage",
+          "potency": 4.5,
+          "damageType": "Fire",
+          "expires": true
+        },
+        {
+          "name": "Physical Damage",
+          "type": "Damage",
+          "potency": 4.5,
+          "damageType": "Physical",
+          "expires": true
+        }
+      ],
+      "sound type": "explosionTiny",
+      "cooldown": 3.0
     }
   ]
 }
