@@ -33,7 +33,7 @@ namespace DefaultNamespace.GUI {
             GameObject scrollViewContentBox = GameObject.Find("pnlBuildMenu/Scroll View/Viewport/Content");
 
             foreach (StructureData structure in structureDatas) {
-                if (structure.Buildable == true) {
+                if (structure.Buildable && !structure.Name.Contains("+")) {
                     GameObject newButton = GameObject.Instantiate(structureBuildBtnPrefab);
                     newButton.transform.SetParent(scrollViewContentBox.transform);
                     newButton.GetComponent<Image>().sprite = structure.Icon;

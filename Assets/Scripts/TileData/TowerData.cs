@@ -26,6 +26,8 @@ namespace DefaultNamespace {
         public string ProjectileName { get; protected set; }
         [field: SerializeField]
         public LayerMask TargetMask { get; protected set; }
+        [field: SerializeField]
+        public string[] UpgradePaths { get; protected set; }
 
         public override string ToString() {
             return base.ToString() +

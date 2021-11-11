@@ -311,6 +311,11 @@
             return TowerData.Name;
         }
 
+        public void Upgrade(TowerData newTowerData) {
+            TowerData = newTowerData;
+            cooldown = TowerData.EffectGroup.Cooldown;
+        }
+
         public class Factory : PlaceholderFactory<Tower> { }
     }
 }

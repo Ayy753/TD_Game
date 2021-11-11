@@ -12,8 +12,8 @@ namespace DefaultNamespace.GUI {
         readonly BuildManager buildManager;
 
         GameObject pnlTowerPanel;
-        TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue, txtTowerDescription;
-        Button btnSell;
+        TMP_Text txtName, txtRange, txtDamage, txtReloadTime, txtProjectileType, txtSellValue, txtTowerDescription, txtUpgradeButton;
+        Button btnSell, btnUpgrade;
         TMP_Dropdown targetModeDropdown;
         Tower currentlySelectedTower;
 
@@ -35,11 +35,14 @@ namespace DefaultNamespace.GUI {
             txtTowerDescription = GameObject.Find("txtTowerDescription").GetComponent<TMP_Text>();
 
             btnSell = GameObject.Find("btnSell").GetComponent<Button>();
+            btnUpgrade = GameObject.Find("btnUpgrade").GetComponent <Button>();
 
             targetModeDropdown = GameObject.Find("dropdownTargetMode").GetComponent<TMP_Dropdown>();
             txtSellValue = GameObject.Find("txtSellVal").GetComponent<TMP_Text>();
+            txtUpgradeButton = GameObject.Find("txtUpgradeButton").GetComponent<TMP_Text>();
 
             btnSell.onClick.AddListener(delegate { SellTower(); });
+            btnUpgrade.onClick.AddListener(delegate { UpgradeTower(); });
             targetModeDropdown.onValueChanged.AddListener(delegate { TargetModeChanged(); });
 
             pnlTowerPanel.SetActive(false);
@@ -89,6 +92,7 @@ namespace DefaultNamespace.GUI {
             txtSellValue.text = sellValue.ToString();
 
             UpdateTargetDropdownIndex();
+            UpdateUpgradeButton(towerData);
         }
 
         private void UpdateTargetDropdownIndex() {
@@ -126,6 +130,20 @@ namespace DefaultNamespace.GUI {
             return -1;
         }
 
+        private void UpdateUpgradeButton(TowerData towerData) {
+            if (towerData.UpgradePaths != null && towerData.UpgradePaths.Length > 0) {
+                btnUpgrade.interactable = true;
+                string upgradeId = towerData.UpgradePaths[0];
+                int cost = buildManager.GetTowerData(upgradeId).Cost;
+                txtUpgradeButton.text = $"Upgrade for {cost} gold";
+            }
+            else {
+                btnUpgrade.interactable = false;
+                txtUpgradeButton.text = "No upgrade available";
+            }
+        }
+
+
         /// <summary>
         /// Sells the currently selected tower
         /// </summary>
@@ -152,6 +170,14 @@ namespace DefaultNamespace.GUI {
         public void ClearTarget() {
             currentlySelectedTower = null;
             pnlTowerPanel.SetActive(false);
+        }
+
+        private void UpgradeTower() {
+            if (currentlySelectedTower.TowerData.UpgradePaths.Length > 0) {
+                string upgradeId = currentlySelectedTower.TowerData.UpgradePaths[0];
+                buildManager.UpgradeTower(currentlySelectedTower, upgradeId);
+                UpdateTowerPanel();
+            }
         }
     }
 }

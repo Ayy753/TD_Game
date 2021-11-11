@@ -160,6 +160,23 @@
       ],
       "sound type": "buff",
       "cooldown": 2.0
+    },
+    {
+      "name": "Bullet Projectile+1",
+      "description": "",
+      "target type": "Individual",
+      "particle effect": "Blood",
+      "effects": [
+        {
+          "name": "Physical Damage",
+          "type": "Damage",
+          "potency": 10.0,
+          "damageType": "Physical",
+          "expires": true
+        }
+      ],
+      "sound type": "arrowHitFlesh",
+      "cooldown": 1.0
     }
   ]
 }

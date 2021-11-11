@@ -371,5 +371,34 @@ namespace DefaultNamespace {
             Vector3Int positiion = Vector3Int.FloorToInt(tower.gameObject.transform.position);
             DemolishAndSellStructure(positiion);
         }
+
+        public void UpgradeTower(Tower tower, string upgradeId) {
+            TowerData towerData = GetTowerData(upgradeId);
+
+            if (CanAffordStructure(towerData)) {
+                if (towerData != null) {
+                    tower.Upgrade(towerData);
+                    BuyStructure(towerData);
+                }
+                else {
+                    Debug.LogError("towerdata is null");
+                }
+            }
+            else {
+                messageSystem.DisplayMessage("You cannot afford " + towerData.Cost, Color.red);
+            }
+        }
+
+        public TowerData GetTowerData(string id) {
+            TowerData[] towerPrefabs = Resources.LoadAll<TowerData>("ScriptableObjects/TileData/StructureData/TowerData");
+
+            foreach (TowerData data in towerPrefabs) {
+                if (data.name == id) {
+                    return data;
+                }
+            }
+
+            throw new ArgumentException($"{id} not found");
+        }
     }
 }
