@@ -369,7 +369,9 @@ namespace DefaultNamespace {
 
         public void SellTower(Tower tower) {
             Vector3Int positiion = Vector3Int.FloorToInt(tower.gameObject.transform.position);
-            DemolishAndSellStructure(positiion);
+            DemolishStructureAtPosition(positiion);
+            int value = (int)(tower.TotalCost * wallet.GetResellPercentageInDecimal());
+            wallet.GainMoney(value);
         }
 
         public void UpgradeTower(Tower tower, string upgradeId) {

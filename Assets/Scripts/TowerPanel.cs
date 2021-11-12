@@ -89,7 +89,7 @@ namespace DefaultNamespace.GUI {
             string descriptionText = "<b>Description</b>:\n" + towerData.Description + "\n\n<b>Projectile Effects</b>: \n" + towerData.EffectGroup.GetEffectInfo();
             txtTowerDescription.text = descriptionText;
 
-            int sellValue = Mathf.RoundToInt(towerData.Cost * wallet.GetResellPercentageInDecimal());
+            int sellValue = Mathf.RoundToInt(currentlySelectedTower.TotalCost * wallet.GetResellPercentageInDecimal());
             txtSellValue.text = sellValue.ToString();
 
             UpdateTargetDropdownIndex();

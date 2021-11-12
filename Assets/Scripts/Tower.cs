@@ -15,6 +15,8 @@
         private Transform turret;
         private EffectableFinder effectableFinder;
 
+        public int TotalCost { get; private set; }
+
         public event EventHandler TargetDisabled;
         public static event EventHandler<ProjectileFiredEventArgs> OnProjectileFired;
 
@@ -43,6 +45,7 @@
             turret = transform.Find("Turret");
             effectableFinder = GameObject.Find("EffectableFinder").GetComponent<EffectableFinder>();
             cooldown = TowerData.EffectGroup.Cooldown;
+            TotalCost = TowerData.Cost;
 
             StartCoroutine(TurretTracking());
             StartCoroutine(TargetFinder());
@@ -314,6 +317,7 @@
         public void Upgrade(TowerData newTowerData) {
             TowerData = newTowerData;
             cooldown = TowerData.EffectGroup.Cooldown;
+            TotalCost += newTowerData.Cost;
         }
 
         public class Factory : PlaceholderFactory<Tower> { }
