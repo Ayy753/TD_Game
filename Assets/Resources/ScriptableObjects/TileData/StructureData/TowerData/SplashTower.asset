@@ -16,7 +16,6 @@ MonoBehaviour:
   <Description>k__BackingField: Does area damage
   <Icon>k__BackingField: {fileID: 21300000, guid: aad74aacff08e7847a60d3fdf59b206f,
     type: 3}
-  <Type>k__BackingField: 1
   <Range>k__BackingField: 3
   <TileBase>k__BackingField: {fileID: 11400000, guid: fa90b1d07545bff4abb750a39b594cf7,
     type: 2}
@@ -25,3 +24,5 @@ MonoBehaviour:
   <TargetMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
+  <UpgradePaths>k__BackingField:
+  - SplashTower+1
